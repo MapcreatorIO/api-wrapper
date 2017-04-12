@@ -10,7 +10,7 @@ export default class ImplicitFlow extends OAuth {
 
     this.redirectUri = redirect_uri;
 
-    if (this.redirectUri === '' && window) {
+    if (this.redirectUri === '') {
       // Drop the anchor (if any)
       this.redirectUri = window.location.toString().split('#')[0];
     }
