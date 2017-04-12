@@ -17,12 +17,44 @@ export function isParentOf(parent, child) {
   child = typeof child === 'function' ? child : child.constructor;
 
   do {
-    if(child.name === parent.name) {
+    if (child.name === parent.name) {
       return true;
     }
 
     child = Object.getPrototypeOf(child);
-  } while(child.name !== '');
+  } while (child.name !== '');
 
   return false;
+}
+
+export function makeRequest(url, method = 'GET', body = '', headers = {}) {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+
+    request.open(method.toUpperCase(), url, true);
+
+    if (body) {
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    }
+
+    for(let key of Object.keys(headers)) {
+      request.setRequestHeader(key, headers[key]);
+    }
+
+    request.onreadystatechange = () => {
+      if(request.readyState === 4) {
+        if(request.status >= 200 && request.status < 300) {
+          resolve(request);
+        } else {
+          reject(request);
+        }
+      }
+    };
+
+    if (body) {
+      request.send(body);
+    } else {
+      request.send();
+    }
+  });
 }

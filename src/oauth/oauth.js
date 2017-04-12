@@ -1,5 +1,6 @@
 import OAuthToken from "./OAuthToken";
 
+// TODO: Make abstract
 export default class OAuth {
   constructor(client_id, scope) {
     this.client_id = client_id;
@@ -8,8 +9,13 @@ export default class OAuth {
     this.host = 'https://api.Maps4News.com';
     this.path = '/';
   }
+
+  /**
+   * If the current
+   * @returns {boolean}
+   */
   get authenticated() {
-    return this.token !== null;
+    return this.token !== null && !this.token.expired;
   }
 
   authenticate() {

@@ -2,7 +2,7 @@ import ImplicitFlow from './oauth/ImplicitFlow';
 import PasswordFlow from './oauth/PasswordFlow';
 
 // Make sure that the client id matches the return url
-const auth = new ImplicitFlow('5');
+const auth = new PasswordFlow('7', 'Lkwi2l4XjcBGvzOqIqPQvmNXQOozoxwoMvhf7FpV', 'test@example.com', 'test', '');
 auth.host = 'http://localhost:8000';
 console.log('Authenticated: ' + auth.authenticated);
 
