@@ -25,11 +25,15 @@ export default class OAuthToken {
     return 'maps4news_oauth';
   }
 
-  static fromAnchorParams(query) {
+  static fromResponseObject(data) {
+    if(typeof data === 'string') {
+      data = JSON.parse(data);
+    }
+
     return new OAuthToken(
-      query['access_token'],
-      query['token_type'],
-      Number(query['expires_in'])
+      data['access_token'],
+      data['token_type'],
+      Number(data['expires_in'])
     )
   }
 

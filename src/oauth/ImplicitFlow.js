@@ -23,7 +23,7 @@ export default class ImplicitFlow extends OAuth {
       const anchorParams = this._getOAuthAnchorParams();
       this._cleanAnchorParams();
 
-      this.token = OAuthToken.fromAnchorParams(anchorParams)
+      this.token = OAuthToken.fromResponseObject(anchorParams)
     }
   }
 

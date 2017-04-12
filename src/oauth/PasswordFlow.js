@@ -1,5 +1,6 @@
 import OAuth from "./oauth";
 import {encodeQueryString, makeRequest} from "../util";
+import OAuthToken from "./OAuthToken";
 
 export default class PasswordFlow extends OAuth {
   constructor(client_id, secret, username, password, scope = '') {
@@ -29,7 +30,8 @@ export default class PasswordFlow extends OAuth {
 
     return new Promise((resolve, reject) => {
       makeRequest(url, "POST", query).then(request => {
-        console.log(request.responseText);
+        this.token = OAuthToken.fromResponseObject(request.responseText);
+        resolve(this.token);
       }).catch(reject); // TODO: better catch
     });
   }
