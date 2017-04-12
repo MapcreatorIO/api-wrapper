@@ -16,7 +16,10 @@
     "url": "https://github.com/MapOnline/m4n-api/issues"
   },
   "homepage": "https://github.com/MapOnline/m4n-api#readme",
-  "dependencies": {},
+  "dependencies": {
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.3"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-preset-babili": "0.0.12",

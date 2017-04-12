@@ -1,24 +1,3 @@
-// http://stackoverflow.com/a/40393932
-export function getBaseClass(targetClass) {
-  if (targetClass instanceof Function) {
-    let baseClass = targetClass;
-
-    while (baseClass) {
-      const newBaseClass = Object.getPrototypeOf(baseClass);
-
-      if (newBaseClass && newBaseClass !== Object && newBaseClass.name) {
-        baseClass = newBaseClass;
-      } else {
-        break;
-      }
-    }
-
-    return baseClass;
-  } else {
-    throw new TypeError();
-  }
-}
-
 // http://stackoverflow.com/a/39828481
 export function encodeQueryString(paramsObject) {
   return Object
@@ -27,3 +6,23 @@ export function encodeQueryString(paramsObject) {
     .join('&');
 }
 
+/**
+ *
+ * @param parent Instance or Class
+ * @param child Instance or Class
+ * @returns {boolean}
+ */
+export function isParentOf(parent, child) {
+  parent = typeof parent === 'function' ? parent : parent.constructor;
+  child = typeof child === 'function' ? child : child.constructor;
+
+  do {
+    if(child.name === parent.name) {
+      return true;
+    }
+
+    child = Object.getPrototypeOf(child);
+  } while(child.name !== '');
+
+  return false;
+}

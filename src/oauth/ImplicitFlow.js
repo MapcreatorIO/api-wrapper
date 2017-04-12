@@ -4,12 +4,11 @@ import {encodeQueryString} from '../util';
 
 export default class ImplicitFlow extends OAuth {
   constructor(client_id, redirect_uri = '', scope = '') {
-    super(client_id);
+    super(client_id, scope);
 
     this.path = '/oauth/authorize';
 
     this.redirectUri = redirect_uri;
-    this.scope = scope;
 
     if (this.redirectUri === '') {
       // Drop the anchor (if any)
@@ -40,10 +39,10 @@ export default class ImplicitFlow extends OAuth {
       scope: this.scope
     };
 
-    const url = `${this.host + this.path}?${encodeQueryString(queryParams)}`;
-    window.location = url;
+    window.location = `${this.host + this.path}?${encodeQueryString(queryParams)}`;
   }
 
+  //noinspection JSMethodCanBeStatic
   _getAnchorParams() {
     const out = {};
     const query = window.location.hash.substr(1);
