@@ -58,7 +58,7 @@ export default class OAuthToken {
       const cookies = `; ${document.cookie}`;
       const parts = cookies.split(`; ${OAuthToken.storageName}=`);
       if (parts.length === 2) {
-        const raw = decodeURIComponent(parts[2].split(";")[0]);
+        const raw = decodeURIComponent(parts[1].split(";")[0]);
         const data = JSON.parse(raw);
 
         console.log('Recovered session from https cookie');
@@ -81,7 +81,7 @@ export default class OAuthToken {
       }
     }
 
-    console.log('Could not recover session from https cookie or localStorage')
+    console.log('Could not recover session from https cookie or localStorage');
     return null;
   }
 }
