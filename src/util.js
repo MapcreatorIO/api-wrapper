@@ -27,9 +27,22 @@ export function isParentOf(parent, child) {
   return false;
 }
 
+/**
+ *
+ * @param url
+ * @param method
+ * @param body
+ * @type body string
+ * @param headers
+ * @returns {Promise}
+ */
 export function makeRequest(url, method = 'GET', body = '', headers = {}) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
+
+    if(typeof body === 'object') {
+      body = JSON.stringify(body);
+    }
 
     request.open(method.toUpperCase(), url, true);
 
