@@ -13,6 +13,12 @@ export default class OAuth {
   }
 
   authenticate() {
-    throw new Error()
+    if (this.authenticated) {
+      return new Promise(resolve => {
+        resolve(this.token);
+      });
+    }
+
+    return null;
   }
 }

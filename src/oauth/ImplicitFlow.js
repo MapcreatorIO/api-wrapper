@@ -10,7 +10,7 @@ export default class ImplicitFlow extends OAuth {
 
     this.redirectUri = redirect_uri;
 
-    if (this.redirectUri === '') {
+    if (this.redirectUri === '' && window) {
       // Drop the anchor (if any)
       this.redirectUri = window.location.toString().split('#')[0];
     }
@@ -27,19 +27,23 @@ export default class ImplicitFlow extends OAuth {
     }
   }
 
-  authenticate(force=false) {
-    if (this.authenticated) {
-      return;
+  authenticate() {
+    let promise = super.authenticate();
+    if(promise) {
+      return promise;
     }
 
-    const queryParams = {
-      client_id: this.client_id,
-      redirect_uri: this.redirectUri,
-      response_type: 'token',
-      scope: this.scope
-    };
+    // This promise will never be fulfilled
+    return new Promise(() => {
+      const queryParams = {
+        client_id: this.client_id,
+        redirect_uri: this.redirectUri,
+        response_type: 'token',
+        scope: this.scope
+      };
 
-    window.location = `${this.host + this.path}?${encodeQueryString(queryParams)}`;
+      window.location = `${this.host + this.path}?${encodeQueryString(queryParams)}`;
+    });
   }
 
   //noinspection JSMethodCanBeStatic
