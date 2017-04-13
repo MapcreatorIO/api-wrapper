@@ -3,6 +3,10 @@ import OAuthToken from "./OAuthToken";
 // TODO: Make abstract
 export default class OAuth {
   constructor(client_id, scope) {
+    if (this.constructor === OAuth) {
+      throw TypeError('Can not make an instance of an abstract class');
+    }
+
     this.client_id = client_id;
     this.scope = scope;
     this.token = OAuthToken.recover();
