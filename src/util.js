@@ -61,10 +61,14 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
       body = JSON.stringify(body);
     }
 
+    const hasContentType = Object.keys(headers)
+        .filter(x => x.toLowerCase() === 'content-type')
+        .length > 0;
+
     request.open(method.toUpperCase(), url, true);
 
-    if (body) {
-      request.setRequestHeader("Content-type", "application/json");
+    if (body && !hasContentType) {
+      request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
 
     for (let key of Object.keys(headers)) {
