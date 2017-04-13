@@ -2,7 +2,8 @@ import ImplicitFlow from './oauth/ImplicitFlow';
 import PasswordFlow from './oauth/PasswordFlow';
 
 // Make sure that the client id matches the return url
-const auth = new PasswordFlow('7', 'Lkwi2l4XjcBGvzOqIqPQvmNXQOozoxwoMvhf7FpV', 'test@example.com', 'test', '');
+//const auth = new PasswordFlow('2', 'PaP9APjSrJ8G206OJTUxGHQnfo2fDTt1FysCN5UU', 'test@example.com', 'test', '');
+const auth = new ImplicitFlow('1');
 auth.host = 'http://localhost:8000';
 console.log('Authenticated: ' + auth.authenticated);
 
@@ -10,4 +11,3 @@ auth.authenticate().then(token => {
   console.log(token.toString());
   token.save();
 });
-

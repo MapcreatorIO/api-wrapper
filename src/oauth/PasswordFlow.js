@@ -1,14 +1,16 @@
 import OAuth from "./oauth";
 import {encodeQueryString, makeRequest} from "../util";
 import OAuthToken from "./OAuthToken";
+import StateContainer from "./StateContainer";
 
 export default class PasswordFlow extends OAuth {
-  constructor(client_id, secret, username, password, scope = '') {
+  constructor(client_id, secret, username, password, scope = '', useState = true) {
     super(client_id, scope);
 
     this.secret = secret;
     this.username = username;
     this.password = password;
+    this.useState = useState;
 
     this.path = '/oauth/token';
 
@@ -30,8 +32,16 @@ export default class PasswordFlow extends OAuth {
 
     return new Promise((resolve, reject) => {
       makeRequest(url, "POST", query).then(request => {
-        this.token = OAuthToken.fromResponseObject(request.responseText);
-        resolve(this.token);
+        const data = JSON.parse(request.responseText);
+
+        if(this.useState && !StateContainer.validate(data['state'])) {
+          console.log('Encountered an invalid state response, ignoring token');
+          reject(request);
+        } else {
+          this.token = OAuthToken.fromResponseObject(data);
+          resolve(this.token);
+        }
+
       }).catch(reject); // TODO: better catch
     });
   }

@@ -1,4 +1,5 @@
 import OAuthToken from "./OAuthToken";
+import StateContainer from "./StateContainer";
 
 // TODO: Make abstract
 export default class OAuth {

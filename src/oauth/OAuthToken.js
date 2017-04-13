@@ -26,7 +26,7 @@ export default class OAuthToken {
   }
 
   static fromResponseObject(data) {
-    if(typeof data === 'string') {
+    if (typeof data === 'string') {
       data = JSON.parse(data);
     }
 

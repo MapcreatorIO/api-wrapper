@@ -1,14 +1,16 @@
 import OAuth from './oauth';
 import OAuthToken from './OAuthToken';
 import {encodeQueryString} from '../util';
+import StateContainer from "./StateContainer";
 
 export default class ImplicitFlow extends OAuth {
-  constructor(client_id, redirect_uri = '', scope = '') {
+  constructor(client_id, redirect_uri = '', scope = '', useState = true) {
     super(client_id, scope);
 
     this.path = '/oauth/authorize';
 
     this.redirectUri = redirect_uri;
+    this.useState = useState;
 
     if (this.redirectUri === '') {
       // Drop the anchor (if any)
@@ -19,17 +21,26 @@ export default class ImplicitFlow extends OAuth {
       'access_token', 'token_type', 'expires_in'
     ];
 
+    if(this.useState) {
+      this._anchorParams.push('state');
+    }
+
     if (this._anchorContainsOAuthResponse()) {
       const anchorParams = this._getOAuthAnchorParams();
       this._cleanAnchorParams();
 
-      this.token = OAuthToken.fromResponseObject(anchorParams)
+      if(this.useState && !StateContainer.validate(anchorParams['state'])) {
+        console.log('Encountered an invalid state response, ignoring token');
+        throw Error('Invalid state in url');
+      } else {
+        this.token = OAuthToken.fromResponseObject(anchorParams)
+      }
     }
   }
 
   authenticate() {
     let promise = super.authenticate();
-    if(promise) {
+    if (promise) {
       return promise;
     }
 
@@ -41,6 +52,10 @@ export default class ImplicitFlow extends OAuth {
         response_type: 'token',
         scope: this.scope
       };
+
+      if(this.useState) {
+        queryParams['state'] = StateContainer.generate();
+      }
 
       window.location = `${this.host + this.path}?${encodeQueryString(queryParams)}`;
     });
