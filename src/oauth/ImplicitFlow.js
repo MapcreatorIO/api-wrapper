@@ -4,7 +4,7 @@ import {encodeQueryString} from '../util';
 import StateContainer from "./StateContainer";
 
 export default class ImplicitFlow extends OAuth {
-  constructor(client_id, redirect_uri = '', scope = '', useState = true) {
+  constructor(client_id, redirect_uri = '', scope = '*', useState = true) {
     super(client_id, scope);
 
     this.path = '/oauth/authorize';

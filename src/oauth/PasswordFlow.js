@@ -4,7 +4,7 @@ import OAuthToken from "./OAuthToken";
 import StateContainer from "./StateContainer";
 
 export default class PasswordFlow extends OAuth {
-  constructor(client_id, secret, username, password, scope = '', useState = true) {
+  constructor(client_id, secret, username, password, scope = '*', useState = true) {
     super(client_id, scope);
 
     this.secret = secret;

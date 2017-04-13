@@ -2,7 +2,7 @@ import ImplicitFlow from "./ImplicitFlow";
 import OAuthToken from "./OAuthToken";
 
 export default class ImplicitFlowPopup extends ImplicitFlow {
-  constructor(client_id, redirect_uri = '', scope = '', useState = false) {
+  constructor(client_id, redirect_uri = '', scope = '*', useState = false) {
     super(client_id, redirect_uri, scope, useState);
 
     this.windowOptions = 'width=800, height=600';

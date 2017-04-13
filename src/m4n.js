@@ -22,7 +22,7 @@ auth.authenticate().then(token => {
     Accept: 'application/json',
     Authorization: token.toString()
   };
-  makeRequest('http://localhost:8000/v1/users/me', 'GET', '', headers).then(response => {
+  makeRequest(`${auth.host}/v1/users/me`, 'GET', '', headers).then(response => {
     const data = JSON.parse(response.responseText);
 
     document.getElementById('content').innerHTML += JSON.stringify(data, null, 2);
