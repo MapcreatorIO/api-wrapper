@@ -14,7 +14,8 @@ export default class OAuthToken {
   }
 
   toString() {
-    return `${this.type} ${this.token}`;
+    //return `${this.type} ${this.token}`;
+    return `Bearer ${this.token}`;
   }
 
   get expired() {

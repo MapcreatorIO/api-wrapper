@@ -1,4 +1,5 @@
-export class StaticClassError extends Error {}
+export class StaticClassError extends Error {
+}
 
 // http://stackoverflow.com/a/39828481
 export function encodeQueryString(paramsObject) {
@@ -30,9 +31,9 @@ export function isParentOf(parent, child) {
 }
 
 // http://stackoverflow.com/a/8809472
-export function generateUUID () { // Public Domain/MIT
+export function generateUUID() { // Public Domain/MIT
   let d = new Date().getTime();
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
     d += performance.now(); //use high-precision timer if available
   }
 
@@ -56,23 +57,23 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
 
-    if(typeof body === 'object') {
+    if (typeof body === 'object') {
       body = JSON.stringify(body);
     }
 
     request.open(method.toUpperCase(), url, true);
 
     if (body) {
-      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      request.setRequestHeader("Content-type", "application/json");
     }
 
-    for(let key of Object.keys(headers)) {
+    for (let key of Object.keys(headers)) {
       request.setRequestHeader(key, headers[key]);
     }
 
     request.onreadystatechange = () => {
-      if(request.readyState === 4) {
-        if(request.status >= 200 && request.status < 300) {
+      if (request.readyState === 4) {
+        if (request.status >= 200 && request.status < 300) {
           resolve(request);
         } else {
           reject(request);
