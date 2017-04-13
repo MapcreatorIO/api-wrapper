@@ -1,6 +1,6 @@
-import OAuth from './OAuth';
-import OAuthToken from './OAuthToken';
-import {encodeQueryString} from '../util';
+import OAuth from "./OAuth";
+import OAuthToken from "./OAuthToken";
+import {encodeQueryString} from "../util";
 import StateContainer from "./StateContainer";
 
 export default class ImplicitFlow extends OAuth {
@@ -21,7 +21,7 @@ export default class ImplicitFlow extends OAuth {
       'access_token', 'token_type', 'expires_in'
     ];
 
-    if(this.useState) {
+    if (this.useState) {
       this._anchorParams.push('state');
     }
 
@@ -29,7 +29,7 @@ export default class ImplicitFlow extends OAuth {
       const anchorParams = this._getOAuthAnchorParams();
       this._cleanAnchorParams();
 
-      if(this.useState && !StateContainer.validate(anchorParams['state'])) {
+      if (this.useState && !StateContainer.validate(anchorParams['state'])) {
         console.log('Encountered an invalid state response, ignoring token');
         console.log('State: ' + anchorParams['state']);
         console.log(StateContainer.list());
@@ -61,7 +61,7 @@ export default class ImplicitFlow extends OAuth {
       scope: this.scope
     };
 
-    if(this.useState) {
+    if (this.useState) {
       queryParams['state'] = StateContainer.generate();
     }
 

@@ -25,11 +25,11 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
   authenticate() {
     // Should be super.super.authenticate() :<
     /*
-    let promise = super.authenticate();
-    if (promise) {
-      return promise;
-    }
-    */
+     let promise = super.authenticate();
+     if (promise) {
+     return promise;
+     }
+     */
 
     if (this.authenticated) {
       return new Promise(resolve => {
@@ -44,7 +44,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
         this.windowOptions
       );
 
-      const ticker = setInterval(function() {
+      const ticker = setInterval(function () {
         if (popup.closed) {
           clearInterval(ticker);
           console.log('Pop-up auth window closed');
@@ -52,7 +52,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
           const token = OAuthToken.recover(ImplicitFlowPopup.localStorageKey);
           localStorage.removeItem(ImplicitFlowPopup.localStorageKey);
 
-          if(!token) {
+          if (!token) {
             // TODO: Make reject consistent
             reject()
           } else {

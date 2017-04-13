@@ -34,7 +34,7 @@ export default class PasswordFlow extends OAuth {
       makeRequest(url, "POST", query).then(request => {
         const data = JSON.parse(request.responseText);
 
-        if(this.useState && !StateContainer.validate(data['state'])) {
+        if (this.useState && !StateContainer.validate(data['state'])) {
           console.log('Encountered an invalid state response, ignoring token');
           reject(request);
         } else {

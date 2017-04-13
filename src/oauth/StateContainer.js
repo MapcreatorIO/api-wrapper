@@ -39,7 +39,7 @@ export default class StateContainer {
       const key = localStorage.key(i);
       const key_prefix = key.slice(0, StateContainer.prefix.length);
 
-      if(key_prefix === StateContainer.prefix) {
+      if (key_prefix === StateContainer.prefix) {
         localStorage.removeItem(key);
       }
     }
@@ -52,7 +52,7 @@ export default class StateContainer {
       const key = localStorage.key(i);
       const key_prefix = key.slice(0, StateContainer.prefix.length);
 
-      if(key_prefix === StateContainer.prefix) {
+      if (key_prefix === StateContainer.prefix) {
         out[key] = localStorage.getItem(key);
       }
     }
