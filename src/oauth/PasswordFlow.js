@@ -1,4 +1,4 @@
-import OAuth from "./oauth";
+import OAuth from "./OAuth";
 import {encodeQueryString, makeRequest} from "../util";
 import OAuthToken from "./OAuthToken";
 import StateContainer from "./StateContainer";
