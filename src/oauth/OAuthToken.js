@@ -22,7 +22,7 @@ export default class OAuthToken {
   }
 
   static get storageName() {
-    return 'maps4news_oauth';
+    return 'm4n_api_token';
   }
 
   static fromResponseObject(data) {
@@ -37,7 +37,7 @@ export default class OAuthToken {
     )
   }
 
-  save() {
+  save(name = OAuthToken.storageName, forceLocalStorage = false) {
     const data = {
       token: this.token,
       type: this.type,
@@ -48,19 +48,19 @@ export default class OAuthToken {
       console.log('Storing session as https cookie');
 
       const dataEncoded = encodeURIComponent(JSON.stringify(data));
-      document.cookie = `${OAuthToken.storageName}=${dataEncoded}; expires=${this.expires.toUTCString()}`;
+      document.cookie = `${name}=${dataEncoded}; expires=${this.expires.toUTCString()}`;
     } else {
       console.log('Storing session in localStorage');
 
-      localStorage.setItem(OAuthToken.storageName, JSON.stringify(data));
+      localStorage.setItem(name, JSON.stringify(data));
     }
   }
 
-  static recover() {
+  static recover(name = OAuthToken.storageName) {
     // Cookie
     if (window.location.protocol === "https:") {
       const cookies = `; ${document.cookie}`;
-      const parts = cookies.split(`; ${OAuthToken.storageName}=`);
+      const parts = cookies.split(`; ${name}=`);
       if (parts.length === 2) {
         const raw = decodeURIComponent(parts[1].split(";")[0]);
         const data = JSON.parse(raw);
@@ -72,7 +72,7 @@ export default class OAuthToken {
     }
 
     // LocalStorage
-    const raw = localStorage.getItem(OAuthToken.storageName);
+    const raw = localStorage.getItem(name);
     if (raw) {
       const data = JSON.parse(raw);
 
