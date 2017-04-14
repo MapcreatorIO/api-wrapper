@@ -12,10 +12,10 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {boolean} useState - use state verification
-   * @param {Array<string>} scope - A list of required scopes
+   * @param {Array<string>} scopes - A list of required scopes
    */
-  constructor(clientId, redirectUri = '', scope = ['*'], useState = false) {
-    super(clientId, redirectUri, scope, useState);
+  constructor(clientId, redirectUri = '', scopes = ['*'], useState = false) {
+    super(clientId, redirectUri, scopes, useState);
 
     this.windowOptions = 'width=800, height=600';
 

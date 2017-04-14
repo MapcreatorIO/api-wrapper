@@ -15,10 +15,10 @@ export default class ImplicitFlow extends OAuth {
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {boolean} useState - use state verification
-   * @param {Array<string>} scope - A list of required scopes
+   * @param {Array<string>} scopes - A list of required scopes
    */
-  constructor(clientId, redirectUri = '', scope = ['*'], useState = true) {
-    super(clientId, scope);
+  constructor(clientId, redirectUri = '', scopes = ['*'], useState = true) {
+    super(clientId, scopes);
 
     this.path = '/oauth/authorize';
 
@@ -77,10 +77,10 @@ export default class ImplicitFlow extends OAuth {
    */
   _buildRedirectUrl() {
     const queryParams = {
-      clientId: this.clientId,
+      client_id: this.clientId,
       redirect_uri: this.redirectUri,
       response_type: 'token',
-      scope: this.scope
+      scope: this.scopes.join(' '),
     };
 
     if (this.useState) {
@@ -114,7 +114,7 @@ export default class ImplicitFlow extends OAuth {
    * @returns {object<string, string>} List of OAuth anchor parameters
    * @private
    */
-  _getOAuthAnchorParams(query=undefined) {
+  _getOAuthAnchorParams(query = undefined) {
     query = query || this._getAnchorParams();
 
     return Object.keys(query)
@@ -151,6 +151,6 @@ export default class ImplicitFlow extends OAuth {
     // Check if all the params are in the anchor
     return this._anchorParams.reduce((output, key) =>
       output && queryKeys.includes(key)
-    , true);
+      , true);
   }
 }

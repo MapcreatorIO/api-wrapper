@@ -6,9 +6,9 @@ import {makeRequest} from "./util/requests";
 
 
 // Make sure that the client id matches the return url
-const auth = new PasswordFlow('3', 'y1Y4SKvERlKbdpaj98IhXZ9dCyXKzocwRhnuQxua', 'test@example.com', 'test');
+//const auth = new PasswordFlow('3', 'y1Y4SKvERlKbdpaj98IhXZ9dCyXKzocwRhnuQxua', 'test@example.com', 'test');
 //const auth = new ImplicitFlowPopup('1');
-//const auth = new ImplicitFlow('1');
+const auth = new ImplicitFlow('1');
 auth.host = 'http://localhost:8000';
 console.log('Authenticated: ' + auth.authenticated);
 

@@ -7,8 +7,10 @@ export default class OAuthToken {
    * @param {string} token - OAuth token
    * @param {string} type - token type
    * @param {Date|Number} expires - expire time in seconds or Date
+   * @param {Array<string>} scopes - Any scopes
    */
-  constructor(token, type, expires) {
+  constructor(token, type, expires, scopes = []) {
+    this.scopes = scopes || [];
     this.token = token;
     this.type = type
       .toLowerCase()
@@ -61,7 +63,8 @@ export default class OAuthToken {
     return new OAuthToken(
       data['access_token'],
       data['token_type'],
-      Number(data['expires_in'])
+      Number(data['expires_in']),
+      data['scope'] || [],
     )
   }
 

@@ -12,10 +12,10 @@ export default class PasswordFlow extends OAuth {
    * @param {string} secret - OAuth secret
    * @param {string} username
    * @param {string} password
-   * @param {Array<string>} scope - A list of required scopes
+   * @param {Array<string>} scopes - A list of required scopes
    */
-  constructor(clientId, secret, username, password, scope = ['*']) {
-    super(clientId, scope);
+  constructor(clientId, secret, username, password, scopes = ['*']) {
+    super(clientId, scopes);
 
     this.secret = secret;
     this.username = username;
@@ -37,11 +37,11 @@ export default class PasswordFlow extends OAuth {
     const url = this.host + this.path;
     const query = {
       grant_type: 'password',
-      clientId: this.clientId,
+      client_id: this.clientId,
       client_secret: this.secret,
       username: this.username,
       password: this.password,
-      scope: this.scope.join(' '),
+      scope: this.scopes.join(' '),
     };
 
     return new Promise((resolve, reject) => {
@@ -49,6 +49,7 @@ export default class PasswordFlow extends OAuth {
         const data = JSON.parse(request.responseText);
 
         this.token = OAuthToken.fromResponseObject(data);
+        this.token.scopes = this.scopes;
         resolve(this.token);
       }).catch(reject); // TODO: better catch
     });
