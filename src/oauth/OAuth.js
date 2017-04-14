@@ -11,7 +11,7 @@ export default class OAuth {
     }
 
     this.clientId = clientId;
-    this.scope = scope;
+    this.scope = scope || ['*'];
     this.token = OAuthToken.recover();
     this.host = 'https://api.Maps4News.com';
     this.path = '/';
