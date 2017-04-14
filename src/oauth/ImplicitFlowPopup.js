@@ -1,9 +1,10 @@
-import ImplicitFlow from "./ImplicitFlow";
-import OAuthToken from "./OAuthToken";
-
 /**
  * Implicit OAuth flow using a pop-up.
  */
+import ImplicitFlow from "./ImplicitFlow";
+import OAuthToken from "./OAuthToken";
+import OAuthError from "./OAuthError";
+
 export default class ImplicitFlowPopup extends ImplicitFlow {
   /**
    * Implicit pop-up authentication flow
@@ -19,9 +20,10 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
     this.windowOptions = 'width=800, height=600';
 
-    if (this.token && window.name === ImplicitFlowPopup.popupWindowName) {
-      this.token.save(ImplicitFlowPopup.localStorageKey, true);
-      console.log(this.token);
+    if (window.name === ImplicitFlowPopup.popupWindowName) {
+      let data = this.token.toResponseObject() || this._getAnchorParams();
+      localStorage.setItem(ImplicitFlowPopup.localStorageKey, JSON.stringify(data));
+
       window.close();
     }
   }
@@ -49,6 +51,11 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @returns {Promise}
    */
   authenticate() {
+    if (window.name === ImplicitFlowPopup.popupWindowName) {
+      return new Promise(() => {
+      });
+    }
+
     // Should be super.super.authenticate() :/
     if (this.authenticated) {
       return new Promise(resolve => {
@@ -67,15 +74,15 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
         if (popup.closed) {
           clearInterval(ticker);
 
-          const token = OAuthToken.recover(ImplicitFlowPopup.localStorageKey);
+          const data = JSON.parse(localStorage.getItem(ImplicitFlowPopup.localStorageKey));
           localStorage.removeItem(ImplicitFlowPopup.localStorageKey);
 
-          if (!token) {
-            // TODO: Make reject consistent
-            reject()
+          if (!data) {
+            reject(new OAuthError('window_closed', 'Pop-up window was closed'));
+          } else if (data.error) {
+            reject(new OAuthError(data.error, data.message));
           } else {
-            this.token = token;
-            resolve(this.token);
+            resolve(this.token = OAuthToken.fromResponseObject(data));
           }
         }
       }, 500);

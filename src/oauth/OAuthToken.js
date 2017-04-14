@@ -34,6 +34,19 @@ export default class OAuthToken {
   }
 
   /**
+   * Get equivalent OAuth response object
+   * @returns {{access_token: (string|*), token_type: string, expires_in: number, scope: (Array.<string>|Array|*)}}
+   */
+  toResponseObject() {
+    return {
+      access_token: this.token,
+      token_type: this.type.toLowerCase(),
+      expires_in: this.expires - Date.now(),
+      scope: this.scopes,
+    }
+  }
+
+  /**
    * If the token has expired
    * @returns {boolean}
    */

@@ -1,13 +1,14 @@
-import OAuthToken from "./OAuthToken";
-
 /**
  *
  * @abstract
  */
+import OAuthToken from "./OAuthToken";
+import {AbstractClassError, AbstractMethodError} from "../util/AbstractError";
+
 export default class OAuth {
   constructor(clientId, scope) {
     if (this.constructor === OAuth) {
-      throw TypeError('Can not make an instance of an abstract class');
+      throw AbstractClassError();
     }
 
     this.clientId = clientId;
@@ -30,12 +31,6 @@ export default class OAuth {
    * @returns {Promise}
    */
   authenticate() {
-    if (this.authenticated) {
-      return new Promise(resolve => {
-        resolve(this.token);
-      });
-    }
-
-    return null;
+    throw new AbstractMethodError();
   }
 }
