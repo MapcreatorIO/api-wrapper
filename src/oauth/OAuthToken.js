@@ -1,7 +1,18 @@
+/**
+ * Oauth token container
+ */
 export default class OAuthToken {
+  /**
+   *
+   * @param {string} token - OAuth token
+   * @param {string} type - token type
+   * @param {Date|Number} expires - expire time in seconds or Date
+   */
   constructor(token, type, expires) {
     this.token = token;
-    this.type = type;
+    this.type = type
+      .toLowerCase()
+      .replace(/(\s|^)\w/g, x => x.toUpperCase());
 
     if (typeof expires === 'number') {
       // Expires is in seconds
@@ -13,19 +24,35 @@ export default class OAuthToken {
     }
   }
 
+  /**
+   * @returns {string}
+   */
   toString() {
-    //return `${this.type} ${this.token}`;
-    return `Bearer ${this.token}`;
+    return `${this.type} ${this.token}`;
   }
 
+  /**
+   * If the token has expired
+   * @returns {boolean}
+   */
   get expired() {
     return new Date() > this.expires;
   }
 
+  /**
+   * Internal storage key name
+   * @returns {string}
+   * @constant
+   */
   static get storageName() {
     return 'm4n_api_token';
   }
 
+  /**
+   * Build instance from response object
+   * @param {string|object} data - object or JSON string
+   * @returns {OAuthToken}
+   */
   static fromResponseObject(data) {
     if (typeof data === 'string') {
       data = JSON.parse(data);
@@ -38,6 +65,11 @@ export default class OAuthToken {
     )
   }
 
+  /**
+   * Store the token for later recovery. Token will be stored in HTTPs cookie if possible.
+   * @param {string} name - db key name
+   * @param {boolean} forceLocalStorage - force the token to be stored in the localStorage
+   */
   save(name = OAuthToken.storageName, forceLocalStorage = false) {
     const data = {
       token: this.token,
@@ -45,18 +77,20 @@ export default class OAuthToken {
       expires: this.expires.toUTCString()
     };
 
-    if (window.location.protocol === "https:") {
-      console.log('Storing session as https cookie');
+    if (window.location.protocol === "https:" && !forceLocalStorage) {
 
       const dataEncoded = encodeURIComponent(JSON.stringify(data));
-      document.cookie = `${name}=${dataEncoded}; expires=${this.expires.toUTCString()}`;
+      document.cookie = `${name}=${dataEncoded}; expires=${data.expires}`;
     } else {
-      console.log('Storing session in localStorage');
-
       localStorage.setItem(name, JSON.stringify(data));
     }
   }
 
+  /**
+   * Recover a token
+   * @param name -
+   * @returns {OAuthToken|null} - null if none could be recovered
+   */
   static recover(name = OAuthToken.storageName) {
     // Cookie
     if (window.location.protocol === "https:") {
@@ -65,8 +99,6 @@ export default class OAuthToken {
       if (parts.length === 2) {
         const raw = decodeURIComponent(parts[1].split(";")[0]);
         const data = JSON.parse(raw);
-
-        console.log('Recovered session from https cookie');
 
         return new OAuthToken(data.token, data.type, new Date(data.expires));
       }
@@ -80,13 +112,10 @@ export default class OAuthToken {
       const instance = new OAuthToken(data.token, data.type, new Date(data.expires));
 
       if (!instance.expired) {
-        console.log('Recovered session from localStorage');
-
         return instance;
       }
     }
 
-    console.log('Could not recover session from https cookie or localStorage');
     return null;
   }
 }

@@ -1,10 +1,21 @@
 import OAuth from "./OAuth";
-import {encodeQueryString, makeRequest} from "../util";
 import OAuthToken from "./OAuthToken";
+import {encodeQueryString, makeRequest} from "../util/requests";
 
+/**
+ * Password authentication flow
+ */
 export default class PasswordFlow extends OAuth {
-  constructor(client_id, secret, username, password, scope = '*') {
-    super(client_id, scope);
+  /**
+   * Password authentication flow
+   * @param {string} clientId - OAuth client id
+   * @param {string} secret - OAuth secret
+   * @param {string} username
+   * @param {string} password
+   * @param {Array<string>} scope - A list of required scopes
+   */
+  constructor(clientId, secret, username, password, scope = ['*']) {
+    super(clientId, scope);
 
     this.secret = secret;
     this.username = username;
@@ -12,20 +23,25 @@ export default class PasswordFlow extends OAuth {
 
     this.path = '/oauth/token';
 
+    // Because the client requires a secret HTTP is highly recommended
     if (window.location.protocol !== "https:") {
-      console.log('Page was not loaded using https. You\'re probably leaking secrets right now');
+      console.warn('Page was not loaded using https. You\'re probably leaking secrets right now');
     }
   }
 
+  /**
+   * Authenticate
+   * @returns {Promise}
+   */
   authenticate() {
     const url = this.host + this.path;
     const query = {
       grant_type: 'password',
-      client_id: this.client_id,
+      clientId: this.clientId,
       client_secret: this.secret,
       username: this.username,
       password: this.password,
-      scope: this.scope
+      scope: this.scope.join(' '),
     };
 
     return new Promise((resolve, reject) => {

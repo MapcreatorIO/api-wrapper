@@ -1,9 +1,21 @@
 import ImplicitFlow from "./ImplicitFlow";
 import OAuthToken from "./OAuthToken";
 
+/**
+ * Implicit OAuth flow using a pop-up.
+ */
 export default class ImplicitFlowPopup extends ImplicitFlow {
-  constructor(client_id, redirect_uri = '', scope = '*', useState = false) {
-    super(client_id, redirect_uri, scope, useState);
+  /**
+   * Implicit pop-up authentication flow
+   * @param {string} clientId - OAuth client id
+   * @param {string} redirectUri - redirectUri for obtaining the token. This should be a
+   *                               page with this script on it. If left empty the current
+   *                               url will be used.
+   * @param {boolean} useState - use state verification
+   * @param {Array<string>} scope - A list of required scopes
+   */
+  constructor(clientId, redirectUri = '', scope = ['*'], useState = false) {
+    super(clientId, redirectUri, scope, useState);
 
     this.windowOptions = 'width=800, height=600';
 
@@ -14,23 +26,30 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
     }
   }
 
+  /**
+   * Popup window name
+   * @returns {string}
+   * @constant
+   */
   static get popupWindowName() {
     return 'm4n_api_auth';
   }
 
+  /**
+   * localStorage key name for temporarily storing the token
+   * @returns {string}
+   * @constant
+   */
   static get localStorageKey() {
     return 'm4n_api_auth_response';
   }
 
+  /**
+   * Authenticate
+   * @returns {Promise}
+   */
   authenticate() {
-    // Should be super.super.authenticate() :<
-    /*
-     let promise = super.authenticate();
-     if (promise) {
-     return promise;
-     }
-     */
-
+    // Should be super.super.authenticate() :/
     if (this.authenticated) {
       return new Promise(resolve => {
         resolve(this.token);
@@ -44,10 +63,9 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
         this.windowOptions
       );
 
-      const ticker = setInterval(function () {
+      const ticker = setInterval(() => {
         if (popup.closed) {
           clearInterval(ticker);
-          console.log('Pop-up auth window closed');
 
           const token = OAuthToken.recover(ImplicitFlowPopup.localStorageKey);
           localStorage.removeItem(ImplicitFlowPopup.localStorageKey);
@@ -56,8 +74,6 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
             // TODO: Make reject consistent
             reject()
           } else {
-            console.log('Pop-up auth returned token');
-
             this.token = token;
             resolve(this.token);
           }

@@ -1,23 +1,38 @@
-import {generateUUID, StaticClassError} from "../util";
+/**
+ * OAuth state container
+ * @static
+ */
+import StaticClass from "../util/StaticClass";
+import Uuid from "../util/uuid";
 
-
-export default class StateContainer {
-  constructor() {
-    throw StaticClassError();
-  }
-
+export default class StateContainer extends StaticClass {
+  /**
+   * LocalStorage key prefix
+   * @returns {string}
+   * @constant
+   */
   static get prefix() {
     return 'm4n_state_';
   }
 
+  /**
+   * Generate and store a state that can be checked at a later point
+   * @returns {string} - state
+   */
   static generate() {
     const key = StateContainer.prefix + Date.now();
-    const value = generateUUID();
+    const value = Uuid.uuid4();
 
     localStorage.setItem(key, value);
     return value;
   }
 
+  /**
+   * Validate a state
+   * @param {string} state - state to validate
+   * @param {boolean} purge - remove from state db after validation
+   * @returns {boolean} state valid
+   */
   static validate(state, purge = true) {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -34,6 +49,9 @@ export default class StateContainer {
     return false;
   }
 
+  /**
+   * Remove all states from the state db
+   */
   static clean() {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -45,6 +63,10 @@ export default class StateContainer {
     }
   }
 
+  /**
+   * Get states with their corresponding state db key
+   * @returns {object<string, string>}
+   */
   static list() {
     const out = {};
 

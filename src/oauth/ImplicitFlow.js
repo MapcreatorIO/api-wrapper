@@ -1,18 +1,31 @@
 import OAuth from "./OAuth";
 import OAuthToken from "./OAuthToken";
-import {encodeQueryString} from "../util";
 import StateContainer from "./StateContainer";
+import {encodeQueryString} from "../util/requests";
 
+/**
+ * Implicit OAuth flow using redirection
+ */
 export default class ImplicitFlow extends OAuth {
-  constructor(client_id, redirect_uri = '', scope = '*', useState = true) {
-    super(client_id, scope);
+
+  /**
+   * Implicit authentication flow
+   * @param {string} clientId - OAuth client id
+   * @param {string} redirectUri - redirectUri for obtaining the token. This should be a
+   *                               page with this script on it. If left empty the current
+   *                               url will be used.
+   * @param {boolean} useState - use state verification
+   * @param {Array<string>} scope - A list of required scopes
+   */
+  constructor(clientId, redirectUri = '', scope = ['*'], useState = true) {
+    super(clientId, scope);
 
     this.path = '/oauth/authorize';
 
-    this.redirectUri = redirect_uri;
+    this.redirectUri = redirectUri;
     this.useState = useState;
 
-    if (this.redirectUri === '') {
+    if (!this.redirectUri) {
       // Drop the anchor (if any)
       this.redirectUri = window.location.toString().split('#')[0];
     }
@@ -41,6 +54,10 @@ export default class ImplicitFlow extends OAuth {
     }
   }
 
+  /**
+   * Authenticate
+   * @returns {Promise}
+   */
   authenticate() {
     let promise = super.authenticate();
     if (promise) {
@@ -53,9 +70,14 @@ export default class ImplicitFlow extends OAuth {
     });
   }
 
+  /**
+   * Builds the url for redirection
+   * @returns {string}
+   * @private
+   */
   _buildRedirectUrl() {
     const queryParams = {
-      client_id: this.client_id,
+      clientId: this.clientId,
       redirect_uri: this.redirectUri,
       response_type: 'token',
       scope: this.scope
@@ -69,6 +91,11 @@ export default class ImplicitFlow extends OAuth {
   }
 
   //noinspection JSMethodCanBeStatic
+  /**
+   * Builds an object containing all the anchor parameters
+   * @returns {object<string, string>}
+   * @private
+   */
   _getAnchorParams() {
     const out = {};
     const query = window.location.hash.substr(1);
@@ -81,7 +108,13 @@ export default class ImplicitFlow extends OAuth {
     return out;
   }
 
-  _getOAuthAnchorParams(query) {
+  /**
+   * Fetch OAuth anchor params
+   * @param {string|undefined} query
+   * @returns {object<string, string>} List of OAuth anchor parameters
+   * @private
+   */
+  _getOAuthAnchorParams(query=undefined) {
     query = query || this._getAnchorParams();
 
     return Object.keys(query)
@@ -92,6 +125,10 @@ export default class ImplicitFlow extends OAuth {
       }, {});
   }
 
+  /**
+   * Remove OAuth related anchor parameters
+   * @private
+   */
   _cleanAnchorParams() {
     const anchorParams = this._getAnchorParams();
 
@@ -103,12 +140,17 @@ export default class ImplicitFlow extends OAuth {
     window.location.hash = encodeQueryString(anchorParams);
   }
 
+  /**
+   * Test if the anchor contains an OAuth response
+   * @returns {boolean}
+   * @private
+   */
   _anchorContainsOAuthResponse() {
     const queryKeys = Object.keys(this._getOAuthAnchorParams());
 
     // Check if all the params are in the anchor
     return this._anchorParams.reduce((output, key) =>
       output && queryKeys.includes(key)
-    );
+    , true);
   }
 }

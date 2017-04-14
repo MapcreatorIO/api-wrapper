@@ -1,13 +1,16 @@
 import OAuthToken from "./OAuthToken";
 
-// TODO: Make abstract
+/**
+ *
+ * @abstract
+ */
 export default class OAuth {
-  constructor(client_id, scope) {
+  constructor(clientId, scope) {
     if (this.constructor === OAuth) {
       throw TypeError('Can not make an instance of an abstract class');
     }
 
-    this.client_id = client_id;
+    this.clientId = clientId;
     this.scope = scope;
     this.token = OAuthToken.recover();
     this.host = 'https://api.Maps4News.com';
@@ -15,13 +18,17 @@ export default class OAuth {
   }
 
   /**
-   * If the current
+   * If the current instance has a valid token
    * @returns {boolean}
    */
   get authenticated() {
     return this.token !== null && !this.token.expired;
   }
 
+  /**
+   * Authenticate
+   * @returns {Promise}
+   */
   authenticate() {
     if (this.authenticated) {
       return new Promise(resolve => {
