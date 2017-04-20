@@ -8,6 +8,7 @@ node('npm && grunt') {
 
 	stage('build') {
 		sh 'npm install'
+		sh '$(npm bin)/eslint --no-color --max-warnings 5 src'
 		sh 'grunt production'
 		sh 'rm -rf node_modules'
 	}
