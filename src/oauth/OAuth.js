@@ -2,17 +2,23 @@
  *
  * @abstract
  */
-import OAuthToken from "./OAuthToken";
-import {AbstractClassError, AbstractMethodError} from "../util/AbstractError";
+import OAuthToken from './OAuthToken';
+import {AbstractClassError, AbstractMethodError} from '../util/AbstractError';
 
 export default class OAuth {
-  constructor(clientId, scope) {
+  /**
+   * OAuth base class
+   * @param {string} clientId - OAuth client id
+   * @param {Array<string>} scopes - A list of required scopes
+   * @returns {void}
+   */
+  constructor(clientId, scopes = ['*']) {
     if (this.constructor === OAuth) {
-      throw AbstractClassError();
+      throw new AbstractClassError();
     }
 
     this.clientId = clientId;
-    this.scopes = scope || ['*'];
+    this.scopes = scopes;
     this.token = OAuthToken.recover();
     this.host = 'https://api.Maps4News.com';
     this.path = '/';
@@ -20,7 +26,7 @@ export default class OAuth {
 
   /**
    * If the current instance has a valid token
-   * @returns {boolean}
+   * @returns {boolean} - if a valid token is availble
    */
   get authenticated() {
     return this.token !== null && !this.token.expired;
@@ -28,7 +34,7 @@ export default class OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise}
+   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
    */
   authenticate() {
     throw new AbstractMethodError();

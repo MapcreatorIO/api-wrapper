@@ -2,7 +2,7 @@
  * Tests if the parent is a parent of child
  * @param {function|object} parent - Instance or Class
  * @param {function|object} child - Instance or Class
- * @returns {boolean}
+ * @returns {boolean} - is parent a parent of child
  *
  * @example
  * class A {}

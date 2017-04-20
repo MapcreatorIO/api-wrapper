@@ -6,7 +6,7 @@
  * @param {string|object<string, string>} body - raw body content or object to be json encoded
  * @param {object<string, string>} headers - headers
  *
- * @returns {Promise}
+ * @returns {Promise} - resolves/rejects with XMLHttpRequest object. Rejects if status code != 2xx
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}) {
   return new Promise((resolve, reject) => {
@@ -23,14 +23,14 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
       body = JSON.stringify(body);
 
       if (!hasContentType) {
-        headers["Content-Type"] = "application/json";
+        headers['Content-Type'] = 'application/json';
       }
     } else if (body && !hasContentType) {
-      headers["Content-Type"] = "application/x-www-form-urlencoded";
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
     }
 
     // Apply headers
-    for (let key of Object.keys(headers)) {
+    for (const key of Object.keys(headers)) {
       request.setRequestHeader(key, headers[key]);
     }
 
@@ -56,7 +56,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
 /**
  * Encodes an object to a http query string
  * @param {object<string, string>} paramsObject - data to be encoded
- * @returns {string}
+ * @returns {string} - encoded http query string
  *
  * @see http://stackoverflow.com/a/39828481
  */

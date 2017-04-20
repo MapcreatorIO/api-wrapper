@@ -1,9 +1,9 @@
 /**
  * Implicit OAuth flow using a pop-up.
  */
-import ImplicitFlow from "./ImplicitFlow";
-import OAuthToken from "./OAuthToken";
-import OAuthError from "./OAuthError";
+import ImplicitFlow from './ImplicitFlow';
+import OAuthToken from './OAuthToken';
+import OAuthError from './OAuthError';
 
 export default class ImplicitFlowPopup extends ImplicitFlow {
   /**
@@ -12,8 +12,9 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @param {string} redirectUri - redirectUri for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
-   * @param {boolean} useState - use state verification
    * @param {Array<string>} scopes - A list of required scopes
+   * @param {boolean} useState - use state verification
+   * @returns {void}
    */
   constructor(clientId, redirectUri = '', scopes = ['*'], useState = false) {
     super(clientId, redirectUri, scopes, useState);
@@ -21,7 +22,8 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
     this.windowOptions = 'width=800, height=600';
 
     if (window.name === ImplicitFlowPopup.popupWindowName) {
-      let data = this.token.toResponseObject() || this._getAnchorParams();
+      const data = this.token.toResponseObject() || this._getAnchorParams();
+
       localStorage.setItem(ImplicitFlowPopup.localStorageKey, JSON.stringify(data));
 
       window.close();
@@ -30,7 +32,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * Popup window name
-   * @returns {string}
+   * @returns {string} - window.name of the created pop-up
    * @constant
    */
   static get popupWindowName() {
@@ -39,7 +41,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * localStorage key name for temporarily storing the token
-   * @returns {string}
+   * @returns {string} - key name
    * @constant
    */
   static get localStorageKey() {
@@ -48,7 +50,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * Authenticate
-   * @returns {Promise}
+   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
    */
   authenticate() {
     if (window.name === ImplicitFlowPopup.popupWindowName) {
@@ -75,6 +77,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
           clearInterval(ticker);
 
           const data = JSON.parse(localStorage.getItem(ImplicitFlowPopup.localStorageKey));
+
           localStorage.removeItem(ImplicitFlowPopup.localStorageKey);
 
           if (!data) {
