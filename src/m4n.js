@@ -1,6 +1,10 @@
 /* eslint-disable */
-import ImplicitFlow from "./oauth/ImplicitFlow";
+
+import ImplicitFlow from './oauth/ImplicitFlow';
+import PasswordFlow from './oauth/PasswordFlow';
+import ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
 import {makeRequest} from "./util/requests";
+import OAuthError from "./oauth/OAuthError";
 import StateContainer from "./oauth/StateContainer";
 import OAuthToken from "./oauth/OAuthToken";
 
@@ -13,7 +17,7 @@ const auth = new ImplicitFlow("1");
 auth.host = "http://localhost:8000";
 console.log("Authenticated: " + auth.authenticated);
 
-window.addEventListener(() => {// Run auth code after window load
+window.addEventListener('load', () => {// Run auth code after window load
   auth.authenticate().then(token => {
     console.log(token.toString());
     token.save();
@@ -36,7 +40,7 @@ window.addEventListener(() => {// Run auth code after window load
 
       content.innerHTML += JSON.stringify(data, null, 2);
 
-      if (data.type === "AuthenticationException") {
+      if(data.type === "AuthenticationException") {
         StateContainer.clean();
         localStorage.removeItem(OAuthToken.storageName);
 
