@@ -162,8 +162,9 @@ export default class ImplicitFlow extends OAuth {
     const queryKeys = Object.keys(this._getOAuthAnchorParams());
 
     // Check if all the params are in the anchor
-    return this._anchorParams.reduce((output, key) =>
-      output && queryKeys.includes(key), true);
+    return this._anchorParams.reduce((output, key) => {
+      return output && queryKeys.includes(key)
+    }, true);
   }
 
   /**
