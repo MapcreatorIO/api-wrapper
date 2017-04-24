@@ -1,9 +1,10 @@
 module.exports = function (grunt) {
-
   grunt.initConfig({
     browserify: {
       client: {
-        src: ['src/**.js'],
+        src: [
+          'src/m4n.js'
+        ],
         dest: 'dist/m4n.js',
         options: {
           transform: ['babelify']
@@ -14,7 +15,7 @@ module.exports = function (grunt) {
     watch: {
       javascript: {
         tasks: ['default'],
-        files: ['src/**.js']
+        files: ['src/*.js', 'src/**/*.js']
       },
     },
 
