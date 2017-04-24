@@ -11,7 +11,7 @@ export default class OAuthToken {
    * @returns {void}
    */
   constructor(token, type, expires, scopes = []) {
-    this.scopes = scopes || [];
+    this.scopes = scopes;
     this.token = token;
     this.type = type
       .toLowerCase()
