@@ -1,9 +1,6 @@
-import ImplicitFlow from './oauth/ImplicitFlow';
-import PasswordFlow from './oauth/PasswordFlow';
-import ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
 /* eslint-disable */
+import ImplicitFlow from "./oauth/ImplicitFlow";
 import {makeRequest} from "./util/requests";
-import OAuthError from "./oauth/OAuthError";
 import StateContainer from "./oauth/StateContainer";
 import OAuthToken from "./oauth/OAuthToken";
 
@@ -16,37 +13,38 @@ const auth = new ImplicitFlow("1");
 auth.host = "http://localhost:8000";
 console.log("Authenticated: " + auth.authenticated);
 
-window.onload = ()=> // Run auth code after window load
-auth.authenticate().then(token => {
-  console.log(token.toString());
-  token.save();
+window.addEventListener(() => {// Run auth code after window load
+  auth.authenticate().then(token => {
+    console.log(token.toString());
+    token.save();
 
-  document.getElementById("content").innerHTML = "Authenticated!\n";
+    document.getElementById("content").innerHTML = "Authenticated!\n";
 
-  const headers = {
-    Accept: "application/json",
-    Authorization: token.toString(),
-  };
+    const headers = {
+      Accept: "application/json",
+      Authorization: token.toString(),
+    };
 
-  makeRequest(`${auth.host}/v1/users/me`, "GET", "", headers).then(response => {
-    const data = JSON.parse(response.responseText);
+    makeRequest(`${auth.host}/v1/users/me`, "GET", "", headers).then(response => {
+      const data = JSON.parse(response.responseText);
 
-    document.getElementById("content").innerHTML += JSON.stringify(data, null, 2);
-  }).catch(response => {
-    const data = JSON.parse(response.responseText).error;
+      document.getElementById("content").innerHTML += JSON.stringify(data, null, 2);
+    }).catch(response => {
+      const data = JSON.parse(response.responseText).error;
 
-    const content = document.getElementById("content");
+      const content = document.getElementById("content");
 
-    content.innerHTML += JSON.stringify(data, null, 2);
+      content.innerHTML += JSON.stringify(data, null, 2);
 
-    if(data.type === "AuthenticationException") {
-      StateContainer.clean();
-      localStorage.removeItem(OAuthToken.storageName);
+      if (data.type === "AuthenticationException") {
+        StateContainer.clean();
+        localStorage.removeItem(OAuthToken.storageName);
 
-      content.innerHTML += "\n\nCleaned up localStorage";
-    }
+        content.innerHTML += "\n\nCleaned up localStorage";
+      }
 
+    });
+  }).catch(err => {
+    document.getElementById("content").innerHTML = err.toString();
   });
-}).catch(err => {
-  document.getElementById("content").innerHTML = err.toString();
 });
