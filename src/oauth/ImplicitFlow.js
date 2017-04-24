@@ -58,24 +58,17 @@ export default class ImplicitFlow extends OAuth {
    * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
    */
   authenticate() {
-    if (this.authenticated) {
-      return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+      if (this.authenticated) {
         resolve(this.token);
-      });
-    } else if (this._anchorContainsError()) {
-
-      return new Promise((resolve, reject) => {
+      } else if (this._anchorContainsError()) {
         const err = this._getError();
-
         this._cleanAnchorParams();
 
         reject(err);
-      });
-    }
-
-    // This promise will never be fulfilled
-    return new Promise(() => {
-      window.location = this._buildRedirectUrl();
+      } else {
+        window.location = this._buildRedirectUrl();
+      }
     });
   }
 
