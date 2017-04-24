@@ -163,7 +163,7 @@ export default class ImplicitFlow extends OAuth {
 
     // Check if all the params are in the anchor
     return this._anchorParams.reduce((output, key) => {
-      return output && queryKeys.includes(key)
+      return output && queryKeys.includes(key);
     }, true);
   }
 
