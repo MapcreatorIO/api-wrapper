@@ -3,7 +3,7 @@
  * @abstract
  */
 import OAuthToken from './OAuthToken';
-import {AbstractClassError, AbstractMethodError} from '../util/AbstractError';
+import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractError';
 
 export default class OAuth {
   /**

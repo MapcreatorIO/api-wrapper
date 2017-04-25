@@ -63,6 +63,7 @@ export default class ImplicitFlow extends OAuth {
         resolve(this.token);
       } else if (this._anchorContainsError()) {
         const err = this._getError();
+
         this._cleanAnchorParams();
 
         reject(err);

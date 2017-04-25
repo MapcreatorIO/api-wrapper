@@ -10,13 +10,15 @@
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}) {
   return new Promise((resolve, reject) => {
+    method = method.toUpperCase();
+
     const request = new XMLHttpRequest();
 
     const hasContentType = Object.keys(headers)
         .filter(x => x.toLowerCase() === 'content-type')
         .length > 0;
 
-    request.open(method.toUpperCase(), url, true);
+    request.open(method, url, true);
 
     // Automatically detect possible content-type header
     if (typeof body === 'object') {
@@ -45,29 +47,12 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
       }
     };
 
-    if (body) {
+    if (body && method !== 'GET') {
       request.send(body);
     } else {
       request.send();
     }
   });
-}
-
-/**
- * Makes a HTTP request and returns a promise. Promise will fail/reject if the
- * status code isn't 2XX.
- * @param {OAuthToken} token - OAuth token
- * @param {string} url - target url
- * @param {string} method - HTTP method
- * @param {string|object<string, string>} body - raw body content or object to be json encoded
- * @param {object<string, string>} headers - headers
- *
- * @returns {Promise} - resolves/rejects with XMLHttpRequest object. Rejects if status code != 2xx
- */
-export function makeAutenticatedRequest(token, url, method = 'GET', body = '', headers = {}) {
-  headers['Authorization'] = token.toString();
-
-  return makeRequest(url, method, body, headers);
 }
 
 /**
