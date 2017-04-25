@@ -3,50 +3,50 @@ module.exports = function (grunt) {
     browserify: {
       client: {
         src: [
-          'src/m4n.js'
+          'src/m4n.js',
         ],
         dest: 'dist/m4n.js',
         options: {
-          transform: ['babelify']
-        }
-      }
+          transform: ['babelify'],
+        },
+      },
     },
 
     watch: {
       javascript: {
         tasks: ['default'],
-        files: ['src/*.js', 'src/**/*.js']
+        files: ['src/*.js', 'src/**/*.js'],
       },
     },
 
     jshint: {
       beforeconcat: ['gruntfile.js', 'src/**.js'],
       options: {
-        esversion: 6
-      }
+        esversion: 6,
+      },
     },
 
     uglify: {
       options: {
-        report: 'gzip'
+        report: 'gzip',
       },
       default: {
         files: {
-          'dist/m4n.min.js': ['dist/m4n.js']
-        }
-      }
+          'dist/m4n.min.js': ['dist/m4n.js'],
+        },
+      },
     },
 
     clean: [
-      'dist/*'
+      'dist/*',
     ],
 
     env: {
       prod: {
-        NODE_ENV : 'production',
-        BABEL_ENV : 'production'
-      }
-    }
+        NODE_ENV: 'production',
+        BABEL_ENV: 'production',
+      },
+    },
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
