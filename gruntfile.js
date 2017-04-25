@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     browserify: {
       client: {
         src: [
-          'src/m4n.js'
+          'src/test.js'
         ],
         dest: 'dist/m4n.js',
         options: {

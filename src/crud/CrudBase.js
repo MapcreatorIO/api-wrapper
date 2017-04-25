@@ -13,13 +13,13 @@ export default class CrudBase {
     this.baseProperties = data;
     this.properties = {};
     this.apiBase = apiBase;
-    this.path = ''; // should be overwritten by child
+    this.path = '/'; // should be overwritten by child
 
     this._applyProperties();
   }
 
   _applyProperties() {
-    for (const key of Object.keys(this.properties)) {
+    for (const key of Object.keys(this.baseProperties)) {
       Object.defineProperty(this, snakeToCamelCase(key), {
         enumerable: true,
         configurable: true,
@@ -43,8 +43,8 @@ export default class CrudBase {
   get url() {
     let url = `${this.apiBase.host}/${this.path}`;
 
-    for (const key of Object.keys(this.properties)) {
-      url = url.replace(`{${key}}`, this.properties[key]);
+    for (const key of Object.keys(this.baseProperties)) {
+      url = url.replace(`{${key}}`, this[key]);
     }
 
     return url;

@@ -1,14 +1,26 @@
 import ImplicitFlow from './oauth/ImplicitFlow';
 import Maps4News from './Maps4News';
+import Color from "./crud/Color";
 
 const api = new Maps4News(new ImplicitFlow('1'));
 
 api.host = 'http://localhost:8000';
 
 api.authenticate().then(() => {
-  api.request('/users/me').then(data => {
-    const content = document.getElementById('content');
+  const content = document.getElementById('content');
 
-    content.innerHTML = JSON.stringify(data, null, 2);
+  content.innerHTML = '';
+
+  api.request('/users/me').then(data => {
+
+    content.innerHTML += JSON.stringify(data, null, 2);
+  });
+
+  api.request('/colors/1').then(data => {
+    const color = new Color(api, data);
+
+    window.colorExport = color;
+
+    content.innerHTML += JSON.stringify(color, null, 2);
   });
 });
