@@ -54,6 +54,23 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
 }
 
 /**
+ * Makes a HTTP request and returns a promise. Promise will fail/reject if the
+ * status code isn't 2XX.
+ * @param {OAuthToken} token - OAuth token
+ * @param {string} url - target url
+ * @param {string} method - HTTP method
+ * @param {string|object<string, string>} body - raw body content or object to be json encoded
+ * @param {object<string, string>} headers - headers
+ *
+ * @returns {Promise} - resolves/rejects with XMLHttpRequest object. Rejects if status code != 2xx
+ */
+export function makeAutenticatedRequest(token, url, method = 'GET', body = '', headers = {}) {
+  headers['Authorization'] = token.toString();
+
+  return makeRequest(url, method, body, headers);
+}
+
+/**
  * Encodes an object to a http query string
  * @param {object<string, string>} paramsObject - data to be encoded
  * @returns {string} - encoded http query string
