@@ -1,4 +1,3 @@
-import {makeAuthenticatedRequest} from '../util/requests';
 import {snakeToCamelCase} from '../util/caseConverter';
 import {AbstractClassError} from '../exceptions/AbstractError';
 
@@ -52,7 +51,7 @@ export default class CrudBase {
   }
 
   save() {
-    this.apiBase.request
+
   }
 
   delete() {
