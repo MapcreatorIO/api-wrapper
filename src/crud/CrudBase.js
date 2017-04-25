@@ -41,7 +41,7 @@ export default class CrudBase {
   }
 
   get url() {
-    let url = `${this.apiBase.host}/${this.path}`;
+    let url = `${this.apiBase.host}/${this.apiBase.version}${this.path}`;
 
     for (const key of Object.keys(this.baseProperties)) {
       url = url.replace(`{${key}}`, this[key]);
