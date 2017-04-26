@@ -3,7 +3,7 @@ import CrudBase from './crud/CrudBase';
 
 export default class ResourceProxy {
   constructor(api, Target) {
-    if (isParentOf(CrudBase, Target)) {
+    if (isParentOf(CrudBase, Target) && false) {
       throw new TypeError('Target is not a child of CrudBase');
     } else if (typeof Target !== 'function') {
       throw new TypeError('Target must to be a class not an instance');
@@ -34,7 +34,7 @@ export default class ResourceProxy {
       this.api
         .request(url)
         .catch(reject)
-        .then(data => resolve(new this(this.api, data)));
+        .then(data => resolve(this.new(data)));
     });
   }
 

@@ -12,15 +12,11 @@ api.authenticate().then(() => {
   content.innerHTML = '';
 
   api.request('/users/me').then(data => {
-
     content.innerHTML += JSON.stringify(data, null, 2);
   });
 
-  api.request('/colors/1').then(data => {
-    const color = new Color(api, data);
-
-    window.colorExport = color;
-
+  api.color.get(1).then(color => {
     content.innerHTML += JSON.stringify(color, null, 2);
+    window.exportColor = color;
   });
 });
