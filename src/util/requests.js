@@ -1,7 +1,7 @@
 /**
  * Makes a HTTP request and returns a promise. Promise will fail/reject if the
  * status code isn't 2XX.
- * @param {string} url - target url
+ * @param {string} url - Target url
  * @param {string} method - HTTP method
  * @param {string|object<string, string>} body - raw body content or object to be json encoded
  * @param {object<string, string>} headers - headers

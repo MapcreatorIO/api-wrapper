@@ -2,6 +2,8 @@ import {isParentOf} from './util/reflection';
 import OAuth from './oauth/OAuth';
 import {makeRequest} from './util/requests';
 import ApiError from './exceptions/ApiError';
+import ResourceProxy from './ResourceProxy';
+import Color from './crud/Color';
 
 export default class Maps4News {
 
@@ -72,5 +74,10 @@ export default class Maps4News {
   set host(value) {
     this._host = value;
     this.auth.host = value;
+  }
+
+  // resource bindings
+  get color() {
+    return new ResourceProxy(this, Color);
   }
 }

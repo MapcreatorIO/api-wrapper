@@ -72,23 +72,6 @@ export default class CrudBase {
     return `${this.api.host}/${this.api.version}${basePath}`;
   }
 
-  // Todo move to Maps4News.js
-  static list(api) {
-
-  }
-
-  // Todo move to Maps4News.js
-  static get(api, id) {
-    const url = `${api.host}/${api.version}${this.path}`;
-
-    return new Promise((resolve, reject) => {
-      api
-        .request(url)
-        .catch(reject)
-        .then(data => resolve(new this(api, data)));
-    });
-  }
-
   save() {
     const method = !this.id ? 'POST' : 'PATCH';
     const data = !this.id ? this._buildPostData() : this.properties;
