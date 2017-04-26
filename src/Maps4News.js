@@ -77,7 +77,7 @@ export default class Maps4News {
   }
 
   // resource bindings
-  get color() {
+  get colors() {
     return new ResourceProxy(this, Color);
   }
 }

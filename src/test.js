@@ -15,7 +15,7 @@ api.authenticate().then(() => {
     content.innerHTML += JSON.stringify(data, null, 2);
   });
 
-  api.color.get(1).then(color => {
+  api.colors.get(1).then(color => {
     content.innerHTML += JSON.stringify(color, null, 2);
     window.exportColor = color;
   });
