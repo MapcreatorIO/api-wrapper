@@ -11,12 +11,22 @@ api.authenticate().then(() => {
 
   content.innerHTML = '';
 
-  api.request('/users/me').then(data => {
-    content.innerHTML += JSON.stringify(data, null, 2);
-  });
-
   api.colors.get(1).then(color => {
     content.innerHTML += JSON.stringify(color, null, 2);
-    window.exportColor = color;
+
+    // Updates the record
+    color.name = 'something';
+    color.save();
+
+    // calling `delete resource.id` or setting it to
+    // null creates a new record when saving.
+    color.id = null;
+    color.save();
   });
+
+  const data = {name: 'fabulously pink', hex: '#ff81f3'};
+
+  // These two are the same
+  api.colors.new(data).save();
+  new Color(api, data).save();
 });

@@ -3,9 +3,11 @@ import CrudBase from './crud/CrudBase';
 
 export default class ResourceProxy {
   constructor(api, Target) {
-    if (isParentOf(CrudBase, Target) && false) {
+    if (!isParentOf(CrudBase, Target)) {
       throw new TypeError('Target is not a child of CrudBase');
-    } else if (typeof Target !== 'function') {
+    }
+
+    if (typeof Target !== 'function') {
       throw new TypeError('Target must to be a class not an instance');
     }
 
@@ -13,7 +15,7 @@ export default class ResourceProxy {
     this.Target = Target;
   }
 
-  get accesorName() {
+  get accessorName() {
     return this.Target.name.toLowerCase();
   }
 
