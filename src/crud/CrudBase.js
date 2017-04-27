@@ -1,45 +1,15 @@
-import {snakeToCamelCase} from '../util/caseConverter';
 import {AbstractClassError} from '../exceptions/AbstractError';
+import ResourceBase from './ResourceBase';
 
 /**
  * @abstract
  */
-export default class CrudBase {
+export default class CrudBase extends ResourceBase {
   constructor(api, data = {}) {
+    super(api, data);
+
     if (this.constructor === CrudBase) {
       throw new AbstractClassError();
-    }
-
-    this.baseProperties = data;
-    this.properties = {};
-    this.api = api;
-
-    this._applyProperties();
-  }
-
-  static get path() {
-    return '/';
-  }
-
-  _applyProperties() {
-    for (const key of Object.keys(this.baseProperties)) {
-      Object.defineProperty(this, snakeToCamelCase(key), {
-        enumerable: true,
-        configurable: true,
-
-        get: () => {
-          if (this.properties.hasOwnProperty(key)) {
-            return this.properties[key];
-          }
-
-          return this.baseProperties[key];
-        },
-
-        set: (val) => {
-          this.properties[key] = val;
-          return val;
-        },
-      });
     }
   }
 
@@ -54,22 +24,6 @@ export default class CrudBase {
 
     delete out.id;
     return out;
-  }
-
-  get url() {
-    let url = `${this.api.host}/${this.api.version}${this.path}`;
-
-    for (const key of Object.keys(this.baseProperties)) {
-      url = url.replace(`{${key}}`, this[key]);
-    }
-
-    return url;
-  }
-
-  get baseUrl() {
-    const basePath = this.path.match(/^(\/[^{]+\b)/)[1];
-
-    return `${this.api.host}/${this.api.version}${basePath}`;
   }
 
   save() {

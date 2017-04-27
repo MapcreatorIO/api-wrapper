@@ -1,9 +1,9 @@
 import {isParentOf} from './util/reflection';
-import CrudBase from './crud/CrudBase';
+import ResourceBase from "./crud/ResourceBase";
 
 export default class ResourceProxy {
   constructor(api, Target) {
-    if (!isParentOf(CrudBase, Target)) {
+    if (!isParentOf(ResourceBase, Target)) {
       throw new TypeError('Target is not a child of CrudBase');
     }
 

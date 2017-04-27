@@ -4,6 +4,17 @@ import {makeRequest} from './util/requests';
 import ApiError from './exceptions/ApiError';
 import ResourceProxy from './ResourceProxy';
 import Color from './crud/Color';
+import Choropleth from './crud/Choropleth';
+import Contract from './crud/Contract';
+import DimensionSet from './crud/DimensionSet';
+import Dimension from './crud/Dimension';
+import Faq from './crud/Faq';
+import Feature from './crud/Feature';
+import Group from './crud/Group';
+import FontFamily from './crud/FontFamily';
+import Font from './crud/Font';
+import Highlight from './crud/Highlight';
+import InsetMap from './crud/InsetMap';
 
 export default class Maps4News {
 
@@ -20,6 +31,15 @@ export default class Maps4News {
 
   get authenticated() {
     return this.auth.authenticated;
+  }
+
+  get host() {
+    return this._host;
+  }
+
+  set host(value) {
+    this._host = value;
+    this.auth.host = value;
   }
 
   authenticate() {
@@ -67,17 +87,52 @@ export default class Maps4News {
     });
   }
 
-  get host() {
-    return this._host;
-  }
-
-  set host(value) {
-    this._host = value;
-    this.auth.host = value;
-  }
-
   // resource bindings
+  get choropleths() {
+    return new ResourceProxy(this, Choropleth);
+  }
+
   get colors() {
     return new ResourceProxy(this, Color);
+  }
+
+  get contracts() {
+    return new ResourceProxy(this, Contract);
+  }
+
+  get dimensions() {
+    return new ResourceProxy(this, Dimension);
+  }
+
+  get dimensionSets() {
+    return new ResourceProxy(this, DimensionSet);
+  }
+
+  get Faqs() {
+    return new ResourceProxy(this, Faq);
+  }
+
+  get features() {
+    return new ResourceProxy(this, Feature);
+  }
+
+  get fonts() {
+    return new ResourceProxy(this, Font);
+  }
+
+  get fontFamilies() {
+    return new ResourceProxy(this, FontFamily);
+  }
+
+  get groups() {
+    return new ResourceProxy(this, Group);
+  }
+
+  get highlights() {
+    return new ResourceProxy(this, Highlight);
+  }
+
+  get insetMaps() {
+    return new ResourceProxy(this, InsetMap);
   }
 }
