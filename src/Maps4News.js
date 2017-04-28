@@ -1,6 +1,6 @@
-import {isParentOf} from './util/reflection';
+import {isParentOf} from './utils/reflection';
+import {makeRequest} from './utils/requests';
 import OAuth from './oauth/OAuth';
-import {makeRequest} from './util/requests';
 import ApiError from './exceptions/ApiError';
 import ResourceProxy from './ResourceProxy';
 import Color from './crud/Color';
@@ -19,13 +19,26 @@ import InsetMap from './crud/InsetMap';
 export default class Maps4News {
 
   constructor(auth, host = 'https://api.maps4news.com') {
-
     if (!isParentOf(OAuth, auth)) {
       throw new TypeError('auth must be an instance of OAuth');
     }
 
+    /**
+     * The OAuth flow
+     * @type OAuth
+     */
     this.auth = auth;
+
+    /**
+     * The base url of the host
+     * @type {string}
+     */
     this.host = host;
+
+    /**
+     * The version of the api (prefix)
+     * @type {string}
+     */
     this.version = 'v1';
   }
 
@@ -56,7 +69,7 @@ export default class Maps4News {
   request(url, method, data = {}, headers = {}) {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
-      url = url.replace(/(^\/+)/, () => '');
+      url = url.replace(/(^\/+)/, '');
       url = this._host + '/' + this.version + '/' + url;
     }
 

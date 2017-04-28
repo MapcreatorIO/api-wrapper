@@ -6,7 +6,6 @@ export class AbstractClassError extends AbstractError {
   }
 }
 
-
 export class AbstractMethodError extends AbstractError {
   constructor() {
     super('Can not call an abstract method');

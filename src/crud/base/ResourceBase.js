@@ -1,5 +1,5 @@
-import {snakeToCamelCase} from '../util/caseConverter';
-import {AbstractClassError} from '../exceptions/AbstractError';
+import {snakeToCamelCase} from '../../utils/caseConverter';
+import {AbstractClassError} from '../../exceptions/AbstractError';
 
 /**
  * @abstract

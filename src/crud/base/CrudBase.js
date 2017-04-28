@@ -1,4 +1,4 @@
-import {AbstractClassError} from '../exceptions/AbstractError';
+import {AbstractClassError} from '../../exceptions/AbstractError';
 import ResourceBase from './ResourceBase';
 
 /**

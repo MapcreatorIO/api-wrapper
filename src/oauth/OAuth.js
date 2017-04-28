@@ -1,10 +1,9 @@
-/**
- *
- * @abstract
- */
 import OAuthToken from './OAuthToken';
 import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractError';
 
+/**
+ * @abstract
+ */
 export default class OAuth {
   /**
    * OAuth base class
@@ -26,7 +25,7 @@ export default class OAuth {
 
   /**
    * If the current instance has a valid token
-   * @returns {boolean} - if a valid token is availble
+   * @returns {boolean} - if a valid token is available
    */
   get authenticated() {
     return this.token !== null && !this.token.expired;

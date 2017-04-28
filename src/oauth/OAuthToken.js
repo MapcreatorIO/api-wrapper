@@ -28,8 +28,8 @@ export default class OAuthToken {
   }
 
   /**
-   * String reprisentation of the token, useable in the Authorization header
-   * @returns {string} - String reprisentation
+   * String representation of the token, usable in the Authorization header
+   * @returns {string} - String representation
    */
   toString() {
     return `${this.type} ${this.token}`;
@@ -44,7 +44,7 @@ export default class OAuthToken {
       'access_token': this.token,
       'token_type': this.type.toLowerCase(),
       'expires_in': this.expires - Date.now(),
-      'scope': this.scopes,
+      'scopes': this.scopes,
     };
   }
 
