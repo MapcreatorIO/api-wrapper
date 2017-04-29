@@ -1,18 +1,18 @@
-import {isParentOf} from './util/reflection';
-import ResourceBase from "./crud/ResourceBase";
+import {isParentOf} from './utils/reflection';
+import ResourceBase from './crud/base/ResourceBase';
 
 export default class ResourceProxy {
-  constructor(api, Target) {
-    if (!isParentOf(ResourceBase, Target)) {
+  constructor(api, target) {
+    if (!isParentOf(ResourceBase, target)) {
       throw new TypeError('Target is not a child of CrudBase');
     }
 
-    if (typeof Target !== 'function') {
+    if (typeof target !== 'function') {
       throw new TypeError('Target must to be a class not an instance');
     }
 
     this.api = api;
-    this.Target = Target;
+    this.Target = target;
   }
 
   get accessorName() {

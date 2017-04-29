@@ -1,4 +1,4 @@
-import StaticClass from './StaticClass';
+import StaticClass from './staticClass';
 
 /**
  * UUID util class

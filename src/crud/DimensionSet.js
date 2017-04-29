@@ -1,4 +1,4 @@
-import CrudBase from './CrudBase';
+import CrudBase from './base/CrudBase';
 
 export default class DimensionSet extends CrudBase {
   constructor(api, data = {}) {

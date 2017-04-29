@@ -39,7 +39,7 @@ export default class OAuthError {
     if (this._message) {
       return `${error}: ${this._message}`;
     }
-    return error;
 
+    return error;
   }
 }

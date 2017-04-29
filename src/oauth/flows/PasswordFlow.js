@@ -1,11 +1,11 @@
+import OAuth from '../OAuth';
+import OAuthToken from '../OAuthToken';
+import {encodeQueryString, makeRequest} from '../../utils/requests';
+import OAuthError from '../../exceptions/OAuthError';
+
 /**
  * Password authentication flow
  */
-import OAuth from './OAuth';
-import OAuthToken from './OAuthToken';
-import {encodeQueryString, makeRequest} from '../util/requests';
-import OAuthError from './OAuthError';
-
 export default class PasswordFlow extends OAuth {
   /**
    * Password authentication flow

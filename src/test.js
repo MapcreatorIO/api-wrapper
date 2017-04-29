@@ -1,4 +1,4 @@
-import ImplicitFlow from './oauth/ImplicitFlow';
+import ImplicitFlow from './oauth/flows/ImplicitFlow';
 import Maps4News from './Maps4News';
 import Color from './crud/Color';
 

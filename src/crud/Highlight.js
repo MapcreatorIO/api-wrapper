@@ -1,4 +1,4 @@
-import ResourceBase from './ResourceBase';
+import ResourceBase from './base/ResourceBase';
 
 export default class Highlight extends ResourceBase {
   constructor(api, data = {}) {

@@ -1,4 +1,4 @@
-import ResourceBase from './ResourceBase';
+import ResourceBase from './base/ResourceBase';
 
 export default class InsetMap extends ResourceBase {
   constructor(api, data = {}) {

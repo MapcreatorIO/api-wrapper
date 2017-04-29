@@ -1,12 +1,12 @@
+import OAuth from '../OAuth';
+import OAuthToken from '../OAuthToken';
+import StateContainer from '../StateContainer';
+import {encodeQueryString} from '../../utils/requests';
+import OAuthError from '../../exceptions/OAuthError';
+
 /**
  * Implicit OAuth flow using redirection
  */
-import OAuth from './OAuth';
-import OAuthToken from './OAuthToken';
-import StateContainer from './StateContainer';
-import {encodeQueryString} from '../util/requests';
-import OAuthError from './OAuthError';
-
 export default class ImplicitFlow extends OAuth {
 
   /**

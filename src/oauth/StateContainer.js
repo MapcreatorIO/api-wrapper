@@ -1,10 +1,10 @@
+import StaticClass from '../utils/StaticClass';
+import Uuid from '../utils/uuid';
+
 /**
  * OAuth state container
  * @static
  */
-import StaticClass from '../util/StaticClass';
-import Uuid from '../util/uuid';
-
 export default class StateContainer extends StaticClass {
   /**
    * LocalStorage key prefix
@@ -24,6 +24,7 @@ export default class StateContainer extends StaticClass {
     const value = Uuid.uuid4();
 
     localStorage.setItem(key, value);
+
     return value;
   }
 

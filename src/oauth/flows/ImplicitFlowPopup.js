@@ -1,10 +1,10 @@
+import ImplicitFlow from './ImplicitFlow';
+import OAuthToken from '../OAuthToken';
+import OAuthError from '../../exceptions/OAuthError';
+
 /**
  * Implicit OAuth flow using a pop-up.
  */
-import ImplicitFlow from './ImplicitFlow';
-import OAuthToken from './OAuthToken';
-import OAuthError from './OAuthError';
-
 export default class ImplicitFlowPopup extends ImplicitFlow {
   /**
    * Implicit pop-up authentication flow
