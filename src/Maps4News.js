@@ -15,11 +15,11 @@ import FontFamily from './crud/FontFamily';
 import Font from './crud/Font';
 import Highlight from './crud/Highlight';
 import InsetMap from './crud/InsetMap';
+import User from './crud/User';
+import Notification from "./crud/Notification";
 
 export default class Maps4News {
-
   constructor(auth, host = 'https://api.maps4news.com') {
-
     if (!isParentOf(OAuth, auth)) {
       throw new TypeError('auth must be an instance of OAuth');
     }
@@ -134,5 +134,13 @@ export default class Maps4News {
 
   get insetMaps() {
     return new ResourceProxy(this, InsetMap);
+  }
+
+  get users() {
+    return new ResourceProxy(this, User);
+  }
+
+  get notifications() {
+    return new ResourceProxy(this, Notification);
   }
 }

@@ -40,6 +40,10 @@ export default class ResourceProxy {
     });
   }
 
+  select(id) {
+    return this.new({id: id});
+  }
+
   new(data = {}) {
     return new this.Target(this.api, data);
   }
