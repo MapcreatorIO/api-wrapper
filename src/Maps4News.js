@@ -150,12 +150,19 @@ export default class Maps4News {
   get users() {
     return new ResourceProxy(this, User);
   }
+  get mapstyles() {
+    return new ResourceProxy(this, Mapstyle);
+  }
+
+  get mapstylesSets() {
+    return new ResourceProxy(this, MapstyleSet);
+  }
 
   get notifications() {
     return new ResourceProxy(this, Notification);
   }
 
-  get mapstyles() {
-    return new ResourceProxy(this, Mapstyle);
+  get permissions() {
+    return new ResourceProxy(this, Permission);
   }
 }
