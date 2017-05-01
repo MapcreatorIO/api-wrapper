@@ -22,8 +22,4 @@ api.authenticate().then(() => {
   api.users.get('me').then(user => {
     content.innerHTML += JSON.stringify(user, null, 2);
   });
-
-  api.users.get(5)
-  api.users.select(5).refresh()
-  api.users.new({id: 5}).refresh()
 });
