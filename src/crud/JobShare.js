@@ -8,6 +8,6 @@ export default class JobShare extends CrudBase {
   }
 
   save() {
-    throw new Error('Unsupported method for JobShare');
+    throw new Error('Unsupported method JobShare::save');
   }
 }
