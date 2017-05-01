@@ -7,4 +7,8 @@ export default class SvgSetType extends CrudBase {
     this.resourceName = 'svg-set-types';
     this.path = '/svgs/sets/types/{id}';
   }
+
+  restore() {
+    throw new Error('Svg set types don\'t support soft deletes');
+  }
 }

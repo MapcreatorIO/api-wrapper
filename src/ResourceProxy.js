@@ -1,5 +1,5 @@
 import {isParentOf} from './utils/reflection';
-import ResourceBase from "./crud/base/ResourceBase";
+import ResourceBase from './crud/base/ResourceBase';
 
 export default class ResourceProxy {
   constructor(api, Target) {

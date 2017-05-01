@@ -11,4 +11,18 @@ export default class JobShare extends CrudBase {
   save() {
     throw new Error('Unsupported method JobShare::save');
   }
+
+  static get visibility() {
+    return JobShareVisibility;
+  }
+}
+
+class JobShareVisibility {
+  static get PRIVATE() {
+    return 'private';
+  }
+
+  static get ORGANISATION() {
+    return 'organisation';
+  }
 }

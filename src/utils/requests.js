@@ -24,7 +24,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
     request.open(method, url, true);
 
     // Automatically detect possible content-type header
-    if (typeof body === 'object' ) {
+    if (typeof body === 'object') {
       body = JSON.stringify(body);
 
       if (!hasContentType) {

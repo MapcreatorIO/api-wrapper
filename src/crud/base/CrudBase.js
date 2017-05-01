@@ -13,7 +13,7 @@ export default class CrudBase extends ResourceBase {
     }
   }
 
-  _buildPostData() {
+  _buildCreateData() {
     const out = this.properties;
 
     for (const key of Object.keys(this.baseProperties)) {
@@ -26,8 +26,10 @@ export default class CrudBase extends ResourceBase {
     return out;
   }
 
-  _listResource(Target) {
-    const url = `${this.url}/${new Target().resourceName}`;
+  _listResource(Target, url = null) {
+    if (!url) {
+      url = `${this.url}/${(new Target()).resourceName}`;
+    }
 
     return new Promise((resolve, reject) => {
       this.api.request(url)
@@ -39,17 +41,29 @@ export default class CrudBase extends ResourceBase {
   }
 
   save() {
-    const method = !this.id ? 'POST' : 'PATCH';
-    const data = !this.id ? this._buildPostData() : this.properties;
-    const url = !this.id ? this.baseUrl : this.url;
+    return !this.id ? this._create() : this._update();
+  }
 
+  _create() {
     return new Promise((resolve, reject) => {
-      // No data should be returned on success to the user since
-      // the object is already the same as the expected response.
       this.api
-        .request(url, method, data)
-        .then(() => resolve())
-        .catch(reject);
+        .request(this.baseUrl, 'POST', this._buildCreateData())
+        .catch(reject)
+        .then(data => {
+          this.properties = {};
+          this.baseProperties = data;
+
+          resolve(this);
+        });
+    });
+  }
+
+  _update() {
+    return new Promise((resolve, reject) => {
+      this.api
+        .request(this.url, 'PATCH', this.properties)
+        .catch(reject)
+        .then(() => resolve(this));
     });
   }
 

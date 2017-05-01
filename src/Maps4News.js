@@ -16,10 +16,12 @@ import Font from './crud/Font';
 import Highlight from './crud/Highlight';
 import InsetMap from './crud/InsetMap';
 import User from './crud/User';
-import Notification from "./crud/Notification";
-import Language from "./crud/Language";
-import Layer from "./crud/Layer";
-import Mapstyle from "./crud/Mapstyle";
+import Notification from './crud/Notification';
+import Language from './crud/Language';
+import Layer from './crud/Layer';
+import Mapstyle from './crud/Mapstyle';
+import Permission from './crud/Permission';
+import MapstyleSet from './crud/MapstyleSet';
 
 export default class Maps4News {
   constructor(auth, host = 'https://api.maps4news.com') {

@@ -14,8 +14,9 @@ api.authenticate().then(() => {
   api.users.get('me').then(user => {
     user.profession = 'Developer';
 
-    console.log('saving');
-    user.save().then(console.log).catch(console.log);
+    user.save()
+      .then(console.log)
+      .catch(console.log);
   });
 
   api.users.get('me').then(user => {
