@@ -25,6 +25,19 @@ export default class ResourceBase {
     this._applyProperties();
   }
 
+  refresh() {
+    return new Promise((resolve, reject) => {
+      this.api.request(this.url)
+        .catch(reject)
+        .then(data => {
+          this.properties = {};
+          this.baseProperties = data;
+
+          resolve(this);
+        });
+    });
+  }
+
   _applyProperties() {
     for (const key of Object.keys(this.baseProperties)) {
       Object.defineProperty(this, snakeToCamelCase(key), {

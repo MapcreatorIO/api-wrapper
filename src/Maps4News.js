@@ -22,6 +22,14 @@ import Layer from './crud/Layer';
 import Mapstyle from './crud/Mapstyle';
 import Permission from './crud/Permission';
 import MapstyleSet from './crud/MapstyleSet';
+import JobShare from './crud/JobShare';
+import Job from './crud/Job';
+import JobType from './crud/JobType';
+import Organisation from './crud/Organisation';
+import PlaceName from './crud/PlaceName';
+import Svg from './crud/Svg';
+import SvgSetType from './crud/SvgSetType';
+import SvgSet from "./crud/SvgSet";
 
 export default class Maps4News {
   constructor(auth, host = 'https://api.maps4news.com') {
@@ -141,6 +149,18 @@ export default class Maps4News {
     return new ResourceProxy(this, InsetMap);
   }
 
+  get jobs() {
+    return new ResourceProxy(this, Job);
+  }
+
+  get jobShares() {
+    return new ResourceProxy(this, JobShare);
+  }
+
+  get jobTypes() {
+    return new ResourceProxy(this, JobType);
+  }
+
   get languages() {
     return new ResourceProxy(this, Language);
   }
@@ -149,9 +169,6 @@ export default class Maps4News {
     return new ResourceProxy(this, Layer);
   }
 
-  get users() {
-    return new ResourceProxy(this, User);
-  }
   get mapstyles() {
     return new ResourceProxy(this, Mapstyle);
   }
@@ -164,7 +181,31 @@ export default class Maps4News {
     return new ResourceProxy(this, Notification);
   }
 
+  get organisations() {
+    return new ResourceProxy(this, Organisation);
+  }
+
   get permissions() {
     return new ResourceProxy(this, Permission);
+  }
+
+  get placeNames() {
+    return new ResourceProxy(this, PlaceName);
+  }
+
+  get svgs() {
+    return new ResourceProxy(this, Svg);
+  }
+
+  get svgSets() {
+    return new ResourceProxy(this, SvgSet);
+  }
+
+  get svgSetTypes() {
+    return new ResourceProxy(this, SvgSetType);
+  }
+
+  get users() {
+    return new ResourceProxy(this, User);
   }
 }

@@ -36,11 +36,6 @@ export default class User extends CrudBase {
     return this._listResource(Notification);
   }
 
-  // TODO
-  ssos() {
-    throw new Error('Not implemented');
-  }
-
   mapstyleSets() {
     return this._listResource(MapstyleSet);
   }
