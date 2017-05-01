@@ -4,6 +4,7 @@ export default class Job extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/jobs/{id}';
+    this.resourceName = 'jobs';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

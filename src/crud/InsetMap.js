@@ -4,6 +4,7 @@ export default class InsetMap extends ResourceBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/inset-maps/{id}';
+    this.resourceName = 'inset-maps';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

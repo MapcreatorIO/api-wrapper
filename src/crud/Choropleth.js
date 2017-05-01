@@ -4,6 +4,7 @@ export default class Choropleth extends ResourceBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/choropleths/{id}';
+    this.resourceName = 'choropleths';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

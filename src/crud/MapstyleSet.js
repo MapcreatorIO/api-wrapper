@@ -5,6 +5,8 @@ export default class MapstyleSet extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
+
+    this.resourceName = 'mapstyle-set';
     this.path = '/mapstyles/sets/{id}';
   }
 
@@ -18,5 +20,9 @@ export default class MapstyleSet extends CrudBase {
           return new Mapstyle(this.api, row);
         })));
     });
+  }
+
+  get ownable() {
+    return true;
   }
 }

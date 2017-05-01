@@ -1,11 +1,11 @@
-/**
- * @abstract
- */
 import {snakeToCamelCase} from '../../utils/caseConverter';
 import {AbstractClassError} from '../../exceptions/AbstractError';
 import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 
+/**
+ * @abstract
+ */
 export default class ResourceBase {
   constructor(api, data = {}) {
     if (this.constructor === ResourceBase) {
@@ -20,6 +20,7 @@ export default class ResourceBase {
     this.properties = {};
     this.api = api;
     this.path = '/';
+    this.resourceName = '';
 
     this._applyProperties();
   }
@@ -44,6 +45,10 @@ export default class ResourceBase {
         },
       });
     }
+  }
+
+  get ownable() {
+    return false;
   }
 
   get url() {

@@ -4,6 +4,7 @@ export default class Svg extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/svgs/{id}';
+    this.resourceName = 'svgs';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

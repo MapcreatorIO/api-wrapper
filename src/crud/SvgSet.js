@@ -5,6 +5,7 @@ export default class SvgSet extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
+    this.resourceName = 'svg-sets';
     this.path = '/svgs/sets/{id}';
   }
 
@@ -20,11 +21,7 @@ export default class SvgSet extends CrudBase {
     });
   }
 
-  getParent() {
-
-  }
-
-  selectParent() {
-
+  get ownable() {
+    return true;
   }
 }

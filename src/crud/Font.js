@@ -4,6 +4,7 @@ export default class Font extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/fonts/{id}';
+    this.resourceName = 'fonts';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

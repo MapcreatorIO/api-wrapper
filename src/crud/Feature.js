@@ -4,6 +4,11 @@ export default class Feature extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/features/{id}';
+    this.resourceName = 'features';
+    this.path = '/' + this.resourceName + '/{id}';
+  }
+
+  get ownable() {
+    return true;
   }
 }

@@ -4,6 +4,7 @@ export default class Permission extends ResourceBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/permissions/{id}';
+    this.resourceName = 'permissions';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

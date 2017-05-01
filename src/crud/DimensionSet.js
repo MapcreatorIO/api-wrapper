@@ -5,6 +5,7 @@ export default class DimensionSet extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
+    this.resourceName = 'dimension-sets';
     this.path = '/dimensions/sets/{id}';
   }
 
@@ -18,5 +19,9 @@ export default class DimensionSet extends CrudBase {
           return new Dimension(this.api, row);
         })));
     });
+  }
+
+  get ownable() {
+    return true;
   }
 }

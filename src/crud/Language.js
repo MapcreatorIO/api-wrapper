@@ -4,6 +4,7 @@ export default class Language extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/languages/{id}';
+    this.resourceName = 'languages';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

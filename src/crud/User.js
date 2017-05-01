@@ -7,12 +7,16 @@ import SvgSet from './SvgSet';
 import Color from './Color';
 import Feature from './Feature';
 import Layer from './Layer';
+import Job from './Job';
+import JobType from './JobType';
+import JobShare from './JobShare';
 
 export default class User extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/users/{id}';
+    this.resourceName = 'users';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 
   ips() {
@@ -27,21 +31,9 @@ export default class User extends CrudBase {
     });
   }
 
-  _listResource(path, Target) {
-    const url = `${this.url}/${path}`;
-
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(data.map(row => {
-          return new Target(this.api, row);
-        })));
-    });
-  }
-
   // Resource listing
   notifications() {
-    return this._listResource('notifications', Notification);
+    return this._listResource(Notification);
   }
 
   // TODO
@@ -50,42 +42,42 @@ export default class User extends CrudBase {
   }
 
   mapstyleSets() {
-    return this._listResource('mapstyle-sets', MapstyleSet);
+    return this._listResource(MapstyleSet);
   }
 
   dimensionSets() {
-    return this._listResource('dimension-sets', DimensionSet);
+    return this._listResource(DimensionSet);
   }
 
   fontFamilies() {
-    return this._listResource('font-families', FontFamily);
+    return this._listResource(FontFamily);
   }
 
   svgSets() {
-    return this._listResource('svg-sets', SvgSet);
+    return this._listResource(SvgSet);
   }
 
   colors() {
-    return this._listResource('colors', Color);
+    return this._listResource(Color);
   }
 
   jobs() {
-    return this._listResource('jobs', Job);
+    return this._listResource(Job);
   }
 
   features() {
-    return this._listResource('features', Feature);
+    return this._listResource(Feature);
   }
 
   layers() {
-    return this._listResource('layers', Layer);
+    return this._listResource(Layer);
   }
 
   jobTypes() {
-    return this._listResource('job/types', JobType);
+    return this._listResource(JobType);
   }
 
   jobShares() {
-    return this._listResource('job/shares', JobShare);
+    return this._listResource(JobShare);
   }
 }

@@ -4,6 +4,7 @@ export default class JobShare extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
+    this.resourceName = 'job-shares';
     this.path = '/jobs/shares/{id}';
   }
 

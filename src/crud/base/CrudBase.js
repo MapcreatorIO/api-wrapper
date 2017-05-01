@@ -26,6 +26,18 @@ export default class CrudBase extends ResourceBase {
     return out;
   }
 
+  _listResource(Target) {
+    const url = `${this.url}/${new Target().resourceName}`;
+
+    return new Promise((resolve, reject) => {
+      this.api.request(url)
+        .catch(reject)
+        .then(data => resolve(data.map(row => {
+          return new Target(this.api, row);
+        })));
+    });
+  }
+
   save() {
     const method = !this.id ? 'POST' : 'PATCH';
     const data = !this.id ? this._buildPostData() : this.properties;

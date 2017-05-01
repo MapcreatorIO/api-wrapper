@@ -4,6 +4,8 @@ export default class PlaceName extends ResourceBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/place-names/{id}';
+
+    this.resourceName = 'place-names';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

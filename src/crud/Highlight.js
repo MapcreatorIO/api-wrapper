@@ -4,6 +4,7 @@ export default class Highlight extends ResourceBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/highlights/{id}';
+    this.resourceName = 'highlights';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 }

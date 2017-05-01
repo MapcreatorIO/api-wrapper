@@ -5,7 +5,8 @@ export default class Mapstyle extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/mapstyles/{id}';
+    this.resourceName = 'mapstyles';
+    this.path = '/' + this.resourceName + '/{id}';
   }
 
   imageHandler() {
