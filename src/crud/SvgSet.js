@@ -1,11 +1,11 @@
 import CrudBase from './base/CrudBase';
-import Dimension from './Dimension';
+import Mapstyle from './Mapstyle';
 
-export default class DimensionSet extends CrudBase {
+export default class SvgSet extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/dimensions/sets/{id}';
+    this.path = '/svgs/sets/{id}';
   }
 
   items() {
@@ -15,8 +15,16 @@ export default class DimensionSet extends CrudBase {
       this.api.request(url)
         .catch(reject)
         .then(data => resolve(data.map(row => {
-          return new Dimension(this.api, row);
+          return new Mapstyle(this.api, row);
         })));
     });
+  }
+
+  getParent() {
+
+  }
+
+  selectParent() {
+
   }
 }

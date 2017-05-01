@@ -19,6 +19,7 @@ import User from './crud/User';
 import Notification from "./crud/Notification";
 import Language from "./crud/Language";
 import Layer from "./crud/Layer";
+import Mapstyle from "./crud/Mapstyle";
 
 export default class Maps4News {
   constructor(auth, host = 'https://api.maps4news.com') {
@@ -110,7 +111,7 @@ export default class Maps4News {
     return new ResourceProxy(this, DimensionSet);
   }
 
-  get Faqs() {
+  get faqs() {
     return new ResourceProxy(this, Faq);
   }
 
@@ -152,5 +153,9 @@ export default class Maps4News {
 
   get notifications() {
     return new ResourceProxy(this, Notification);
+  }
+
+  get mapstyles() {
+    return new ResourceProxy(this, Mapstyle);
   }
 }
