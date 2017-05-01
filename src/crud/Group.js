@@ -1,4 +1,4 @@
-import CrudBase from './CrudBase';
+import CrudBase from './base/CrudBase';
 
 export default class Group extends CrudBase {
   constructor(api, data = {}) {

@@ -1,6 +1,6 @@
-import {isParentOf} from './util/reflection';
+import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
-import {makeRequest} from './util/requests';
+import {makeRequest} from './utils/requests';
 import ApiError from './exceptions/ApiError';
 import ResourceProxy from './ResourceProxy';
 import Color from './crud/Color';
@@ -17,6 +17,8 @@ import Highlight from './crud/Highlight';
 import InsetMap from './crud/InsetMap';
 import User from './crud/User';
 import Notification from "./crud/Notification";
+import Language from "./crud/Language";
+import Layer from "./crud/Layer";
 
 export default class Maps4News {
   constructor(auth, host = 'https://api.maps4news.com') {
@@ -53,7 +55,7 @@ export default class Maps4News {
   }
 
   // Basic authenticated requests with error handling
-  request(url, method, data = {}, headers = {}) {
+  request(url, method = 'GET', data = {}, headers = {}, responseType = '') {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
       url = url.replace(/(^\/+)/, () => '');
@@ -63,7 +65,7 @@ export default class Maps4News {
     headers.Authorization = this.auth.token.toString();
 
     return new Promise((resolve, reject) => {
-      makeRequest(url, method, data, headers).then(request => {
+      makeRequest(url, method, data, headers, responseType).then(request => {
         if (request.getResponseHeader('Content-Type') !== 'application/json') {
           resolve(request.response);
         }
@@ -134,6 +136,14 @@ export default class Maps4News {
 
   get insetMaps() {
     return new ResourceProxy(this, InsetMap);
+  }
+
+  get languages() {
+    return new ResourceProxy(this, Language);
+  }
+
+  get layers() {
+    return new ResourceProxy(this, Layer);
   }
 
   get users() {

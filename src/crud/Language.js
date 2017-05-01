@@ -1,9 +1,9 @@
 import CrudBase from './base/CrudBase';
 
-export default class FontFamily extends CrudBase {
+export default class Language extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
-    this.path = '/fonts/families/{id}';
+    this.path = '/languages/{id}';
   }
 }

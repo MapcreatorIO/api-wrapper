@@ -4,7 +4,7 @@
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
-import {encodeQueryString} from '../util/requests';
+import {encodeQueryString} from '../utils/requests';
 import OAuthError from './OAuthError';
 
 export default class ImplicitFlow extends OAuth {

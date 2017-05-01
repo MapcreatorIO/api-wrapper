@@ -3,7 +3,7 @@
  */
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
-import {encodeQueryString, makeRequest} from '../util/requests';
+import {encodeQueryString, makeRequest} from '../utils/requests';
 import OAuthError from './OAuthError';
 
 export default class PasswordFlow extends OAuth {

@@ -1,13 +1,19 @@
-import {snakeToCamelCase} from '../util/caseConverter';
-import {AbstractClassError} from '../exceptions/AbstractError';
-
 /**
  * @abstract
  */
+import {snakeToCamelCase} from '../../utils/caseConverter';
+import {AbstractClassError} from '../../exceptions/AbstractError';
+import {isParentOf} from '../../utils/reflection';
+import Maps4News from '../../Maps4News';
+
 export default class ResourceBase {
   constructor(api, data = {}) {
     if (this.constructor === ResourceBase) {
       throw new AbstractClassError();
+    }
+
+    if (!isParentOf(Maps4News, api)) {
+      throw new TypeError('Expected api to be of type Maps4News');
     }
 
     this.baseProperties = data;

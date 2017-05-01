@@ -5,14 +5,17 @@
  * @param {string} method - HTTP method
  * @param {string|object<string, string>} body - raw body content or object to be json encoded
  * @param {object<string, string>} headers - headers
+ * @param {string} responseType - XMLHttpRequest response type
  *
  * @returns {Promise} - resolves/rejects with XMLHttpRequest object. Rejects if status code != 2xx
  */
-export function makeRequest(url, method = 'GET', body = '', headers = {}) {
+export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
   return new Promise((resolve, reject) => {
     method = method.toUpperCase();
 
     const request = new XMLHttpRequest();
+
+    request.responseType = responseType;
 
     const hasContentType = Object.keys(headers)
         .filter(x => x.toLowerCase() === 'content-type')
@@ -21,7 +24,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
     request.open(method, url, true);
 
     // Automatically detect possible content-type header
-    if (typeof body === 'object') {
+    if (typeof body === 'object' ) {
       body = JSON.stringify(body);
 
       if (!hasContentType) {
@@ -38,7 +41,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
 
     request.onreadystatechange = () => {
       // State 4 === Done
-      if (request.readyState === 4) {
+      if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status >= 200 && request.status < 300) {
           resolve(request);
         } else {

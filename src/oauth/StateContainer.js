@@ -2,8 +2,8 @@
  * OAuth state container
  * @static
  */
-import StaticClass from '../util/StaticClass';
-import Uuid from '../util/uuid';
+import StaticClass from '../utils/StaticClass';
+import Uuid from '../utils/uuid';
 
 export default class StateContainer extends StaticClass {
   /**

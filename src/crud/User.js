@@ -1,7 +1,7 @@
-import ResourceBase from './ResourceBase';
 import Notification from './Notification';
+import CrudBase from './base/CrudBase';
 
-export default class User extends ResourceBase {
+export default class User extends CrudBase {
   constructor(api, data = {}) {
     super(api, data);
 
