@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import ImplicitFlow from './oauth/ImplicitFlow';
 import Maps4News from './Maps4News';
 import Color from './crud/Color';

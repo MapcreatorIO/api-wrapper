@@ -29,7 +29,7 @@ import Organisation from './crud/Organisation';
 import PlaceName from './crud/PlaceName';
 import Svg from './crud/Svg';
 import SvgSetType from './crud/SvgSetType';
-import SvgSet from "./crud/SvgSet";
+import SvgSet from './crud/SvgSet';
 
 export default class Maps4News {
   constructor(auth, host = 'https://api.maps4news.com') {
