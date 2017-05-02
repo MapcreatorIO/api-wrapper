@@ -2,6 +2,7 @@ import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
 import {makeRequest} from './utils/requests';
 import ApiError from './exceptions/ApiError';
+import ValidationException from './exceptions/ValidationException';
 import ResourceProxy from './ResourceProxy';
 import Color from './crud/Color';
 import Choropleth from './crud/Choropleth';
@@ -86,7 +87,11 @@ export default class Maps4News {
         if (!response.success) {
           const err = response.error;
 
-          reject(new ApiError(err.type, err.message, request.status));
+          if (!err.validation_errors) {
+            reject(new ApiError(err.type, err.message, request.status));
+          } else {
+            reject(new ValidationException(err.type, err.message, request.status, err.validation_errors));
+          }
         } else {
           // Return an empty object if no data has been sent
           // instead of returning undefined.

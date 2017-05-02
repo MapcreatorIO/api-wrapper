@@ -1,6 +1,8 @@
 import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 import ResourceBase from './ResourceBase';
+import ApiError from "../../exceptions/ApiError";
+import ValidationException from "../../exceptions/ValidationException";
 
 export default class ImageHandler {
   constructor(api, target) {
@@ -40,7 +42,48 @@ export default class ImageHandler {
   }
 
   upload(image) {
-    // TODO: Implement uploading using XMLHttpRequest
-    throw new Error('Not implemented');
+    if (!isParentOf(File, image)) {
+      throw new TypeError('Expected image to be of type File');
+    }
+
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+
+      formData.append('image', image);
+
+      const request = new XMLHttpRequest();
+
+      request.open('POST', this.url, true);
+      request.setRequestHeader('Authorization', this.api.token.toString());
+      request.setRequestHeader('Accept', 'application/json');
+
+      request.onreadystatechange = () => {
+        if (request.readyState !== XMLHttpRequest.DONE) {
+          return;
+        }
+
+        try {
+          const response = JSON.parse(request.responseText);
+
+          if (!response.success) {
+            const err = response.error;
+
+            if (!err.validation_errors) {
+              reject(new ApiError(err.type, err.message, request.status));
+            } else {
+              reject(new ValidationException(err.type, err.message, request.status, err.validation_errors));
+            }
+          } else {
+            // Return an empty object if no data has been sent
+            // instead of returning undefined.
+            resolve(response.data || {});
+          }
+        } catch (ignore) {
+          reject(new ApiError('ResponseException', 'The server returned an invalid response', request.status));
+        }
+      };
+
+      request.send(formData);
+    });
   }
 }
