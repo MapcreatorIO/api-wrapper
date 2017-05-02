@@ -1,3 +1,6 @@
+// Polyfill for terrible browsers (looking at your IE)
+import 'babel-polyfill';
+
 import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
 import {makeRequest} from './utils/requests';

@@ -1,15 +1,30 @@
 @Library('deployment') _
 import org.mapcreator.Deploy
 
-node('npm && grunt') {
+node('npm') {
 	stage('checkout') {
 		checkout scm
 	}
 
+	stage('initialize') {
+		sh 'yarn --no-emoji --non-interactive --no-progress'
+	}
+
+	stage('linter') {
+	 	sh '$(yarn bin)/eslint --no-color --max-warnings 5 src'
+	}
+
 	stage('build') {
-		sh 'npm install'
-		sh '$(npm bin)/eslint --no-color --max-warnings 5 src gruntfile.js'
-		sh 'grunt production'
+		parallel buildDev: {
+			sh 'webpack'
+		}, buildProd: {
+			sh 'webpack -p --output-filename bundle.min.js'
+		}
+
+		archiveArtifacts artifacts: 'dist/*', fingerprint: true
+	}
+
+	stage('cleanup') {
 		sh 'rm -rf node_modules'
 	}
 }

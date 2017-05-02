@@ -1,10 +1,8 @@
 /* eslint-disable */
-
 import ImplicitFlow from './oauth/ImplicitFlow';
 import Maps4News from './Maps4News';
-import Color from './crud/Color';
 
-new Maps4News(new ImplicitFlow('1'));
+const api = new Maps4News(new ImplicitFlow('1'));
 
 api.host = 'http://localhost:8000';
 
