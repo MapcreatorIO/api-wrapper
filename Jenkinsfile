@@ -16,9 +16,9 @@ node('npm') {
 
 	stage('build') {
 		parallel buildDev: {
-			sh 'webpack'
+			sh '$(yarn bin)/webpack'
 		}, buildProd: {
-			sh 'webpack -p --output-filename bundle.min.js'
+			sh '$(yarn bin)/webpack -p --output-filename bundle.min.js'
 		}
 
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
