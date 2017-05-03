@@ -16,11 +16,7 @@ node('npm') {
 	}
 
 	stage('build') {
-		parallel buildDev: {
-			sh '$(yarn bin)/webpack'
-		}, buildProd: {
-			sh '$(yarn bin)/webpack -p --output-filename bundle.min.js'
-		}
+		sh '$(yarn bin)/webpack'
 	}
 
 	stage('archive') {
