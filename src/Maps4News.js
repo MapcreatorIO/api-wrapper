@@ -93,7 +93,7 @@ export default class Maps4News {
           if (!err.validation_errors) {
             reject(new ApiError(err.type, err.message, request.status));
           } else {
-            reject(new ValidationException(err.type, err.message, request.status, err.validation_errors));
+            reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
           }
         } else {
           // Return an empty object if no data has been sent

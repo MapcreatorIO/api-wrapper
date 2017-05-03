@@ -1,3 +1,5 @@
+import StaticClassError from '../exceptions/StaticClassError';
+
 /**
  * Disables the constructor
  */

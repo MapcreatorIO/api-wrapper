@@ -2,7 +2,7 @@ import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 import ResourceBase from './ResourceBase';
 import ApiError from '../../exceptions/ApiError';
-import ValidationError from "../../exceptions/ValidationError";
+import ValidationError from '../../exceptions/ValidationError';
 
 export default class ImageHandler {
   constructor(api, target) {
