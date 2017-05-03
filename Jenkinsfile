@@ -8,7 +8,7 @@ node('npm') {
 
 	stage('initialize') {
 		sh 'yarn --no-emoji --non-interactive --no-progress'
-		sh 'rm -r dist docs'
+		sh 'rm -r dist docs || true'
 	}
 
 	stage('linter') {
@@ -28,7 +28,7 @@ node('npm') {
 	}
 
 	stage('cleanup') {
-		sh 'rm -rf node_modules dist docs'
+		sh 'rm -rf node_modules dist docs || true'
 	}
 }
 
