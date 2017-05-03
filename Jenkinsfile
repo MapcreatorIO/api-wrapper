@@ -8,6 +8,7 @@ node('npm') {
 
 	stage('initialize') {
 		sh 'yarn --no-emoji --non-interactive --no-progress'
+		sh 'rm -r dist docs'
 	}
 
 	stage('linter') {
@@ -20,7 +21,9 @@ node('npm') {
 		}, buildProd: {
 			sh '$(yarn bin)/webpack -p --output-filename bundle.min.js'
 		}
+	}
 
+	stage('archive') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 

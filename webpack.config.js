@@ -5,10 +5,13 @@ const webpackMerge = require('webpack-merge');
 
 const defaultConfig = {
   target: 'node',
-  entry: './src/index.js',
+  entry: {
+    'bundle.node': './src/index.js',
+    'bundle.node.min': './src/index.js',
+  },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist/node'),
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist'),
 
     library: 'maps4news',
     libraryTarget: 'amd',
@@ -29,6 +32,10 @@ const defaultConfig = {
   },
   devtool: 'source-map',
   plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true,
+    }),
     new webpack.BannerPlugin(fs.readFileSync('LICENSE', 'ascii')),
   ],
 };
@@ -37,8 +44,11 @@ module.exports = [
   defaultConfig,
   webpackMerge(defaultConfig, {
     target: 'web',
+    entry: {
+      'bundle.web': './src/index.js',
+      'bundle.web.min': './src/index.js',
+    },
     output: {
-      path: path.resolve(__dirname, 'dist/web'),
       libraryTarget: 'window',
     },
   }),
