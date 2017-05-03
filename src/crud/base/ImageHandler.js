@@ -2,7 +2,7 @@ import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 import ResourceBase from './ResourceBase';
 import ApiError from '../../exceptions/ApiError';
-import ValidationException from '../../exceptions/ValidationException';
+import ValidationError from "../../exceptions/ValidationError";
 
 export default class ImageHandler {
   constructor(api, target) {
@@ -71,7 +71,7 @@ export default class ImageHandler {
             if (!err.validation_errors) {
               reject(new ApiError(err.type, err.message, request.status));
             } else {
-              reject(new ValidationException(err.type, err.message, request.status, err.validation_errors));
+              reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
             }
           } else {
             // Return an empty object if no data has been sent

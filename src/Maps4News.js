@@ -5,7 +5,7 @@ import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
 import {makeRequest} from './utils/requests';
 import ApiError from './exceptions/ApiError';
-import ValidationException from './exceptions/ValidationException';
+import ValidationError from './exceptions/ValidationError';
 import ResourceProxy from './ResourceProxy';
 import Color from './crud/Color';
 import Choropleth from './crud/Choropleth';

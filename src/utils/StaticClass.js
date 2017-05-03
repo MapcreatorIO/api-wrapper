@@ -6,9 +6,3 @@ export default class StaticClass {
     throw new StaticClassError();
   }
 }
-
-/**
- * Thrown upon invocation of a static class
- */
-export class StaticClassError extends Error {
-}
