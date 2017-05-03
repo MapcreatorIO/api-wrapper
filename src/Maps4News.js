@@ -1,4 +1,4 @@
-// Polyfill for terrible browsers (looking at your IE)
+// Polyfill for terrible browsers (looking at you IE)
 import 'babel-polyfill';
 
 import {isParentOf} from './utils/reflection';
