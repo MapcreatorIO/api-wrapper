@@ -1,10 +1,14 @@
 import ResourceBase from './base/ResourceBase';
 
+/**
+ * Choropleth resource
+ */
 export default class Choropleth extends ResourceBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'choropleths';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'choropleths';
   }
 }

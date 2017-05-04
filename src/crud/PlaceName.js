@@ -1,11 +1,11 @@
 import ResourceBase from './base/ResourceBase';
 
 export default class PlaceName extends ResourceBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-
-    this.resourceName = 'place-names';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'place-names';
   }
 }

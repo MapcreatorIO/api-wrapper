@@ -18,16 +18,80 @@ export default class PasswordFlow extends OAuth {
   constructor(clientId, secret, username, password, scopes = ['*']) {
     super(clientId, scopes);
 
-    this.secret = secret;
-    this.username = username;
-    this.password = password;
+    this._secret = secret;
+    this._username = username;
+    this._password = password;
 
-    this.path = '/oauth/token';
+    this._path = '/oauth/token';
 
-    // Because the client requires a secret HTTP is highly recommended
+    // Because the client requires a secret HTTPs is highly recommended
     if (!isNode() && window.location.protocol !== 'https:') {
       console.warn("Page was not loaded using https. You're probably leaking secrets right now");
     }
+  }
+
+  /**
+   * it's a secret :o (client secret)
+   * @returns {String} - secret
+   */
+  get secret() {
+    return this._secret;
+  }
+
+  /**
+   * Set client secret
+   * @param {String} value - secret
+   */
+  set secret(value) {
+    this._secret = value;
+  }
+
+  /**
+   * Get the username for authentication
+   * @returns {String} - Username (email)
+   */
+  get username() {
+    return this._username;
+  }
+
+  /**
+   * Get the username for authentication
+   * @param {String} value - Username (email)
+   */
+  set username(value) {
+    this._username = value;
+  }
+
+  /**
+   * Get the password
+   * @returns {String} - Password
+   */
+  get password() {
+    return this._password;
+  }
+
+  /**
+   * Set the password
+   * @param {String} value - password
+   */
+  set password(value) {
+    this._password = value;
+  }
+
+  /**
+   * OAuth path
+   * @returns {String} - OAuth path
+   */
+  get path() {
+    return this._path;
+  }
+
+  /**
+   * OAuth path
+   * @param {String} value - OAuth path
+   */
+  set path(value) {
+    this._path = value;
   }
 
   /**
@@ -35,13 +99,13 @@ export default class PasswordFlow extends OAuth {
    * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
    */
   authenticate() {
-    const url = this.host + this.path;
+    const url = this.host + this._path;
     const query = {
-      'grant_type': 'password',
+      'grant_type': '_password',
       'client_id': this.clientId,
-      'client_secret': this.secret,
-      'username': this.username,
-      'password': this.password,
+      'client_secret': this._secret,
+      'username': this._username,
+      'password': this._password,
       'scope': this.scopes.join(' '),
     };
 

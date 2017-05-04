@@ -22,9 +22,9 @@ export default class PaginatedResourceListing {
       throw new TypeError('Expected api to be of type Maps4News');
     }
 
-    this.api = api;
-    this.route = route;
-    this.Target = Target;
+    this._api = api;
+    this._route = route;
+    this._Target = Target;
 
     this._data = data;
     this._page = page;
@@ -39,6 +39,31 @@ export default class PaginatedResourceListing {
    */
   static get headerPrefix() {
     return 'X-Paginate-';
+  }
+
+  /**
+   * Get api instance
+   * @returns {Maps4News} - Api instance
+   */
+  get api() {
+    return this._api;
+  }
+
+  /**
+   * Target route
+   * @returns {String} - url
+   */
+  get route() {
+    return this._route;
+  }
+
+  /**
+   * Target to wrap results in
+   * @returns {ResourceBase} - Target constructor
+   * @constructor
+   */
+  get Target() {
+    return this._Target;
   }
 
   /**
@@ -111,9 +136,9 @@ export default class PaginatedResourceListing {
 
           const instance = new PaginatedResourceListing(
             this.api, this.route,
-            this.Target, page,
+            this._Target, page,
             totalPages, rowCount,
-            response.data.map(row => new this.Target(this.api, row))
+            response.data.map(row => new this._Target(this.api, row))
           );
 
           resolve(instance, request);

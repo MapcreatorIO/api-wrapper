@@ -1,11 +1,12 @@
 import CrudBase from './base/CrudBase';
 
 export default class JobType extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/jobs/types/{id}';
+  }
 
-    this.resourceName = 'job-types';
-    this.path = '/jobs/types/{id}';
+  get resourceName() {
+    return 'job-types';
   }
 
   get ownable() {

@@ -1,12 +1,12 @@
 import CrudBase from './base/CrudBase';
 
 export default class FontFamily extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/fonts/families/{id}';
+  }
 
-
-    this.resourceName = 'font-families';
-    this.path = '/fonts/families/{id}';
+  get resourceName() {
+    return 'font-families';
   }
 
   get ownable() {

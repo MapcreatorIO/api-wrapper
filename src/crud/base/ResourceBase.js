@@ -4,9 +4,14 @@ import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 
 /**
+ * Resource base
  * @abstract
  */
 export default class ResourceBase {
+  /**
+   * @param {Maps4News} api - Api instance
+   * @param {Object<String, *>} data - Item data
+   */
   constructor(api, data = {}) {
     if (this.constructor === ResourceBase) {
       throw new AbstractClassError();
@@ -16,71 +21,121 @@ export default class ResourceBase {
       throw new TypeError('Expected api to be of type Maps4News');
     }
 
-    this.baseProperties = data;
-    this.properties = {};
-    this.api = api;
-    this.path = '/';
-    this.resourceName = '';
+    this._baseProperties = data;
+    this._properties = {};
+    this._api = api;
 
     this._applyProperties();
   }
 
-  refresh() {
+  /**
+   * Get api instance
+   * @returns {Maps4News} - Api instance
+   */
+  get api() {
+    return this._api;
+  }
+
+  /**
+   * Resource path template
+   * @returns {String} - Path template
+   */
+  get path() {
+    return '/';
+  }
+
+  /**
+   * Resource name
+   * @returns {String} - Resource name
+   */
+  get resourceName() {
+    return '';
+  }
+
+  /**
+   * Refresh the resource by requesting it from the server again
+   * @param {Boolean} updateSelf - Update the current instance
+   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link OAuthError}
+   */
+  refresh(updateSelf = true) {
     return new Promise((resolve, reject) => {
-      this.api.request(this.url)
+      this._api.request(this.url)
         .catch(reject)
         .then(data => {
-          this.properties = {};
-          this.baseProperties = data;
+          if (updateSelf) {
+            this._properties = {};
+            this._baseProperties = data;
+          }
 
-          resolve(this);
+          resolve(new this(this._api, data));
         });
     });
   }
 
+  /**
+   * Creates proxies for the properties
+   * @returns {void}
+   * @private
+   */
   _applyProperties() {
-    for (const key of Object.keys(this.baseProperties)) {
+    for (const key of Object.keys(this._baseProperties)) {
       Object.defineProperty(this, snakeToCamelCase(key), {
         enumerable: true,
         configurable: true,
 
         get: () => {
-          if (this.properties.hasOwnProperty(key)) {
-            return this.properties[key];
+          if (this._properties.hasOwnProperty(key)) {
+            return this._properties[key];
           }
 
-          return this.baseProperties[key];
+          return this._baseProperties[key];
         },
 
         set: (val) => {
-          this.properties[key] = val;
+          this._properties[key] = val;
           return val;
         },
       });
     }
   }
 
+  /**
+   * If the resource can be owned by an organisation
+   * @returns {boolean} - Can be owned by an organisation
+   */
   get ownable() {
     return false;
   }
 
+  /**
+   * Auto generated resource url
+   * @returns {string} - Resource url
+   */
   get url() {
-    let url = `${this.api.host}/${this.api.version}${this.path}`;
+    let url = `${this._api.host}/${this._api.version}${this.path}`;
 
-    for (const key of Object.keys(this.baseProperties)) {
+    for (const key of Object.keys(this._baseProperties)) {
       url = url.replace(`{${key}}`, this[key]);
     }
 
     return url;
   }
 
+  /**
+   * Auto generated Resource base url
+   * @returns {string} - Resource base url
+   */
   get baseUrl() {
     const basePath = this.path.match(/^(\/[^{]+\b)/)[1];
 
-    return `${this.api.host}/${this.api.version}${basePath}`;
+    return `${this._api.host}/${this._api.version}${basePath}`;
   }
 
+  /**
+   * String representation of the resource, similar to Python's __repr__
+   * @returns {string} - Resource name and id
+   */
   toString() {
-    return `${this.constructor.name}(${this.id})`;
+    return `${this.constructor.name}(${this.id})`
   }
 }

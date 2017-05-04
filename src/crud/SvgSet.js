@@ -1,14 +1,11 @@
 import CrudBase from './base/CrudBase';
-import Mapstyle from './Mapstyle';
+import Svg from './Svg';
 
 export default class SvgSet extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
-
-    this.resourceName = 'svg-sets';
-    this.path = '/svgs/sets/{id}';
-  }
-
+  /**
+   * Get items associated with the set
+   * @returns {Promise} - Resolves with {@link Svg} instance and rejects with {@link OAuthError}
+   */
   items() {
     const url = this.url + '/items';
 
@@ -16,9 +13,17 @@ export default class SvgSet extends CrudBase {
       this.api.request(url)
         .catch(reject)
         .then(data => resolve(data.map(row => {
-          return new Mapstyle(this.api, row);
+          return new Svg(this.api, row);
         })));
     });
+  }
+
+  get path() {
+    return '/svgs/sets/{id}';
+  }
+
+  get resourceName() {
+    return 'svg-sets';
   }
 
   get ownable() {

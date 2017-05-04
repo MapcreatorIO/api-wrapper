@@ -1,10 +1,14 @@
 import CrudBase from './base/CrudBase';
 
+/**
+ * Contract resource
+ */
 export default class Contract extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'contracts';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'contracts';
   }
 }

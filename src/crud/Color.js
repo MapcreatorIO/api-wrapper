@@ -1,12 +1,15 @@
 import CrudBase from './base/CrudBase';
 
+/**
+ * Color resource
+ */
 export default class Color extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'colors';
-    this.path = '/' + this.resourceName + '/{id}';
-
+  get resourceName() {
+    return 'colors';
   }
 
   get ownable() {

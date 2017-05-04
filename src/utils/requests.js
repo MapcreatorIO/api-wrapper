@@ -8,6 +8,7 @@
  * @param {string} responseType - XMLHttpRequest response type
  *
  * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
+ * @private
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
   return new Promise((resolve, reject) => {
@@ -64,6 +65,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
  * @returns {string} - encoded http query string
  *
  * @see http://stackoverflow.com/a/39828481
+ * @private
  */
 export function encodeQueryString(paramsObject) {
   return Object

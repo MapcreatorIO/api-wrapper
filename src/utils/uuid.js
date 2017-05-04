@@ -3,6 +3,7 @@ import StaticClass from './StaticClass';
 /**
  * UUID util class
  * @static
+ * @protected
  */
 export default class Uuid extends StaticClass {
   /**

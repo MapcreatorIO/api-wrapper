@@ -1,10 +1,11 @@
 import CrudBase from './base/CrudBase';
 
 export default class Language extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'languages';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'languages';
   }
 }

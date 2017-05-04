@@ -1,10 +1,11 @@
 import CrudBase from './base/CrudBase';
 
 export default class Font extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'fonts';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'fonts';
   }
 }

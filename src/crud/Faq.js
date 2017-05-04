@@ -1,10 +1,14 @@
 import CrudBase from './base/CrudBase';
 
+/**
+ * Faq resource
+ */
 export default class Faq extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'faqs';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'faqs';
   }
 }

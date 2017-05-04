@@ -1,10 +1,11 @@
 import ResourceBase from './base/ResourceBase';
 
 export default class Highlight extends ResourceBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'highlights';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'highlights';
   }
 }

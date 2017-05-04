@@ -44,10 +44,6 @@ export default class Maps4News {
    * @param {string} host - Remote API host
    */
   constructor(auth, host = 'https://api.maps4news.com') {
-    if (!isParentOf(OAuth, auth)) {
-      throw new TypeError('auth must be an instance of OAuth');
-    }
-
     this.auth = auth;
     this.host = host;
   }
@@ -55,9 +51,30 @@ export default class Maps4News {
   /**
    * Get api version
    * @returns {string} - Api version
+   * @constant
    */
   get version() {
     return 'v1';
+  }
+
+  /**
+   * Get authentication provider instance
+   * @returns {OAuth} - OAuth instance
+   */
+  get auth() {
+    return this._auth;
+  }
+
+  /**
+   * Set authentication provider instance
+   * @param {OAuth} value -- OAuth instance
+   */
+  set auth(value) {
+    if (!isParentOf(OAuth, value)) {
+      throw new TypeError('auth must be an instance of OAuth');
+    }
+
+    this._auth = value;
   }
 
   /**
@@ -65,7 +82,7 @@ export default class Maps4News {
    * @returns {boolean} - If the client is authenticated with the api
    */
   get authenticated() {
-    return this.auth.authenticated;
+    return this._auth.authenticated;
   }
 
   /**
@@ -82,7 +99,7 @@ export default class Maps4News {
    */
   set host(value) {
     this._host = value;
-    this.auth.host = value;
+    this._auth.host = value;
   }
 
   /**
@@ -91,8 +108,8 @@ export default class Maps4News {
    */
   authenticate() {
     return new Promise((resolve, reject) => {
-      this.auth.authenticate().then(() => {
-        this.auth.token.save();
+      this._auth.authenticate().then(() => {
+        this._auth.token.save();
 
         resolve(this);
       }).catch(reject);
@@ -118,7 +135,7 @@ export default class Maps4News {
     }
 
     if (this.authenticated) {
-      headers.Authorization = this.auth.token.toString();
+      headers.Authorization = this._auth.token.toString();
     }
 
     return new Promise((resolve, reject) => {

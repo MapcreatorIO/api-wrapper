@@ -2,14 +2,10 @@ import CrudBase from './base/CrudBase';
 import Mapstyle from './Mapstyle';
 
 export default class MapstyleSet extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
-
-
-    this.resourceName = 'mapstyle-set';
-    this.path = '/mapstyles/sets/{id}';
-  }
-
+  /**
+   * Get items associated with the set
+   * @returns {Promise} - Resolves with {@link Mapstyle} instance and rejects with {@link OAuthError}
+   */
   items() {
     const url = this.url + '/items';
 
@@ -20,6 +16,14 @@ export default class MapstyleSet extends CrudBase {
           return new Mapstyle(this.api, row);
         })));
     });
+  }
+
+  get path() {
+    return '/mapstyles/sets/{id}';
+  }
+
+  get resourceName() {
+    return 'mapstyle-set';
   }
 
   get ownable() {

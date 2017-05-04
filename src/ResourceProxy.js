@@ -8,7 +8,6 @@ import PaginatedResourceListing from './PaginatedResourceListing';
  * @protected
  */
 export default class ResourceProxy {
-
   /**
    * @param {Maps4News} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
@@ -22,8 +21,25 @@ export default class ResourceProxy {
       throw new TypeError('Target must to be a class not an instance');
     }
 
-    this.api = api;
-    this.Target = Target;
+    this._api = api;
+    this._Target = Target;
+  }
+
+  /**
+   * Get api instance
+   * @returns {Maps4News} - Api instance
+   */
+  get api() {
+    return this._api;
+  }
+
+  /**
+   * Target to wrap results in
+   * @returns {ResourceBase} - Target constructor
+   * @constructor
+   */
+  get Target() {
+    return this._Target;
   }
 
   /**
@@ -42,7 +58,7 @@ export default class ResourceProxy {
    */
   list(page = 1, perPage = null) {
     const url = this.new().baseUrl;
-    const resolver = new PaginatedResourceListing(this.api, url, this.Target);
+    const resolver = new PaginatedResourceListing(this._api, url, this.Target);
 
     return resolver.getPage(page, perPage);
   }
@@ -56,7 +72,7 @@ export default class ResourceProxy {
     const url = this.new({id: id}).url;
 
     return new Promise((resolve, reject) => {
-      this.api
+      this._api
         .request(url)
         .catch(reject)
         .then(data => resolve(this.new(data)));
@@ -80,6 +96,6 @@ export default class ResourceProxy {
    * @returns {ResourceBase} - Resource with target data
    */
   new(data = {}) {
-    return new this.Target(this.api, data);
+    return new this.Target(this._api, data);
   }
 }

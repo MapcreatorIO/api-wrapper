@@ -1,17 +1,26 @@
 import CrudBase from './base/CrudBase';
 
 export default class JobResult extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
-
-    this.resourceName = 'job-result';
-    this.path = '/jobs/{job_id}/revisions/{job_revision_id}/result';
+  get path() {
+    return '/' + this.resourceName + '/{id}';
   }
 
+  get resourceName() {
+    return 'job-result';
+  }
+
+  /**
+   * Job result archive url
+   * @returns {string} - Archive url
+   */
   get archiveUrl() {
     return `${this.url}/archive`;
   }
 
+  /**
+   * Job result preview url, usable in an `<img>` tag
+   * @returns {string} - Preview url
+   */
   get previewUrl() {
     return `${this.url}/preview`;
   }

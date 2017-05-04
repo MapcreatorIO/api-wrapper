@@ -4,6 +4,7 @@ import Uuid from '../utils/uuid';
 /**
  * State container for keeping track of OAuth states (crsf tokens)
  * @static
+ * @private
  */
 export default class StateContainer extends StaticClass {
   /**

@@ -1,10 +1,14 @@
 import CrudBase from './base/CrudBase';
 
+/**
+ * Dimension resource
+ */
 export default class Dimension extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'dimensions';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'dimensions';
   }
 }

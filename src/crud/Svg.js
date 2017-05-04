@@ -1,10 +1,11 @@
 import CrudBase from './base/CrudBase';
 
 export default class Svg extends CrudBase {
-  constructor(api, data = {}) {
-    super(api, data);
+  get path() {
+    return '/' + this.resourceName + '/{id}';
+  }
 
-    this.resourceName = 'svgs';
-    this.path = '/' + this.resourceName + '/{id}';
+  get resourceName() {
+    return 'svgs';
   }
 }
