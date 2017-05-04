@@ -1,3 +1,5 @@
+import {isNode} from '../utils/node';
+
 /**
  * Oauth token container
  */
@@ -90,6 +92,11 @@ export default class OAuthToken {
    * @returns {void}
    */
   save(name = OAuthToken.storageName, forceLocalStorage = false) {
+    // TODO: Nodejs support
+    if (isNode()) {
+      return;
+    }
+
     const data = {
       token: this.token,
       type: this.type,
@@ -112,6 +119,11 @@ export default class OAuthToken {
    * @returns {OAuthToken|null} - null if none could be recovered
    */
   static recover(name = OAuthToken.storageName) {
+    // TODO: Nodejs support
+    if (isNode()) {
+      return null;
+    }
+
     // Cookie
     if (window.location.protocol === 'https:') {
       const cookies = `; ${document.cookie}`;

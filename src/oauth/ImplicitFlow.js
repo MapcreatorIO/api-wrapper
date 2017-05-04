@@ -6,6 +6,7 @@ import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
 import {encodeQueryString} from '../utils/requests';
 import OAuthError from './OAuthError';
+import {isNode} from '../utils/node';
 
 export default class ImplicitFlow extends OAuth {
 
@@ -21,6 +22,10 @@ export default class ImplicitFlow extends OAuth {
    */
   constructor(clientId, redirectUri = '', scopes = ['*'], useState = true) {
     super(clientId, scopes);
+
+    if (isNode()) {
+      throw new Error(`${this.constructor.name} can't be used under nodejs`);
+    }
 
     this.path = '/oauth/authorize';
 

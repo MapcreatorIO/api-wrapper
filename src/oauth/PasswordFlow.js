@@ -1,11 +1,12 @@
-/**
- * Password authentication flow
- */
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 import {encodeQueryString, makeRequest} from '../utils/requests';
 import OAuthError from './OAuthError';
+import {isNode} from '../utils/node';
 
+/**
+ * Password authentication flow
+ */
 export default class PasswordFlow extends OAuth {
   /**
    * Password authentication flow
@@ -26,7 +27,7 @@ export default class PasswordFlow extends OAuth {
     this.path = '/oauth/token';
 
     // Because the client requires a secret HTTP is highly recommended
-    if (window.location.protocol !== 'https:') {
+    if (!isNode() && window.location.protocol !== 'https:') {
       console.warn("Page was not loaded using https. You're probably leaking secrets right now");
     }
   }
