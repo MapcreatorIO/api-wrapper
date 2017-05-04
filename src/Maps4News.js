@@ -39,6 +39,11 @@ import SvgSet from './crud/SvgSet';
  * Base API class
  */
 export default class Maps4News {
+  /**
+   * Base API class
+   * @param {OAuth} auth - Authentication flow
+   * @param {string} host - Remote API host
+   */
   constructor(auth, host = 'https://api.maps4news.com') {
     if (!isParentOf(OAuth, auth)) {
       throw new TypeError('auth must be an instance of OAuth');
@@ -46,16 +51,27 @@ export default class Maps4News {
 
     this.auth = auth;
     this.host = host;
-    this.version = 'v1';
   }
 
+  /**
+   * Get api version
+   * @returns {string} - Api version
+   */
+  get version() {
+    return 'v1';
+  }
+
+  /**
+   * Test if the client is authenticated with the api and has a valid token
+   * @returns {boolean} - If the client is authenticated with the api
+   */
   get authenticated() {
     return this.auth.authenticated;
   }
 
   /**
    * The current host
-   * @returns {string} - the current host
+   * @returns {string} - The current host
    */
   get host() {
     return this._host;
@@ -72,7 +88,7 @@ export default class Maps4News {
 
   /**
    * Authenticate with the api using the authentication method provided.
-   * @returns {Promise} - resolves with {@link Maps4News} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link Maps4News} instance and rejects with {@link OAuthError}
    */
   authenticate() {
     return new Promise((resolve, reject) => {
@@ -93,7 +109,7 @@ export default class Maps4News {
    * @param {object} headers - Any headers that should be set for the request
    * @param {string} responseType - The XmlHttpRequest type
    * @param {boolean} raw - When set to true the promise will resolve with the request object
-   * @returns {Promise} - resolves with either an object or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
+   * @returns {Promise} - Resolves with either an object or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
    */
   request(url, method = 'GET', data = {}, headers = {}, responseType = '', raw = false) {
     if (!url.startsWith('http')) {
