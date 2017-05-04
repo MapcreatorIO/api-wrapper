@@ -1,7 +1,7 @@
 @Library('deployment') _
 import org.mapcreator.Deploy
 
-node('npm') {
+node('npm && yarn') {
 	stage('checkout') {
 		checkout scm
 	}
@@ -12,7 +12,8 @@ node('npm') {
 	}
 
 	stage('linter') {
-	 	sh '$(yarn bin)/eslint --no-color --max-warnings 5 src'
+	 	sh '$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src'
+	 	checkstyle pattern: 'build/checkstyle.xml'
 	}
 
 	stage('build') {
@@ -24,7 +25,7 @@ node('npm') {
 	}
 
 	stage('cleanup') {
-		sh 'rm -rf node_modules dist docs || true'
+		sh 'rm -rf node_modules dist docs build || true'
 	}
 }
 
