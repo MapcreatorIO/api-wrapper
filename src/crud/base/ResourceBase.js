@@ -79,4 +79,8 @@ export default class ResourceBase {
 
     return `${this.api.host}/${this.api.version}${basePath}`;
   }
+
+  toString() {
+    return `${this.constructor.name}(${this.id})`;
+  }
 }

@@ -1,3 +1,3 @@
 export function isNode() {
-  return typeof module !== 'undefined' && module.exports;
+  return typeof window === 'undefined' && typeof module !== 'undefined' && module.exports;
 }
