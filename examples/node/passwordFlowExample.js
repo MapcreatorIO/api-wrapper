@@ -10,9 +10,7 @@ var password = 'Password1!'; // password
 var auth = new m4n.PasswordFlow(clientId, secret, username, password);
 var api = new m4n.Maps4News(auth);
 
-// This will hijack the page if no authentication cache can
-// be found. Smartest thing to do is to just let it happen
-// and initialize any other code afterwards.
+// This will resolve with the calling instance of the api for easy chaining
 api.authenticate().then(function() {
   // Get the current user and dump the result to the console.
   api.users.get('me').then(console.dir);
