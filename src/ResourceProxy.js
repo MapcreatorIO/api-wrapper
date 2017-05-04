@@ -1,5 +1,6 @@
 import {isParentOf} from './utils/reflection';
 import ResourceBase from './crud/base/ResourceBase';
+import PaginatedResourceListing from './PaginatedResourceListing';
 
 export default class ResourceProxy {
   constructor(api, Target) {
@@ -19,14 +20,11 @@ export default class ResourceProxy {
     return this.Target.name.toLowerCase();
   }
 
-  list() {
+  list(page = 1, perPage = null) {
     const url = this.new().baseUrl;
+    const resolver = new PaginatedResourceListing(this.api, url, this.Target);
 
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(data.map(this.new)));
-    });
+    return resolver.getPage(page, perPage);
   }
 
   get(id) {

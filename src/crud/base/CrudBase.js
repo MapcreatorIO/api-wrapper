@@ -1,5 +1,6 @@
 import {AbstractClassError} from '../../exceptions/AbstractError';
 import ResourceBase from './ResourceBase';
+import PaginatedResourceListing from '../../PaginatedResourceListing';
 
 /**
  * @abstract
@@ -26,18 +27,14 @@ export default class CrudBase extends ResourceBase {
     return out;
   }
 
-  _listResource(Target, url = null) {
+  _listResource(Target, url = null, page = 1, perPage = null) {
     if (!url) {
-      url = `${this.url}/${(new Target()).resourceName}`;
+      url = `${this.url}/${(new Target(this.api)).resourceName}`;
     }
 
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(data.map(row => {
-          return new Target(this.api, row);
-        })));
-    });
+    const resolver = new PaginatedResourceListing(this.api, url, Target);
+
+    return resolver.getPage(page, perPage);
   }
 
   save() {

@@ -70,7 +70,7 @@ export default class Maps4News {
   }
 
   // Basic authenticated requests with error handling
-  request(url, method = 'GET', data = {}, headers = {}, responseType = '') {
+  request(url, method = 'GET', data = {}, headers = {}, responseType = '', raw = false) {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
       url = url.replace(/(^\/+)/, () => '');
@@ -82,23 +82,23 @@ export default class Maps4News {
     return new Promise((resolve, reject) => {
       makeRequest(url, method, data, headers, responseType).then(request => {
         if (request.getResponseHeader('Content-Type') !== 'application/json') {
-          resolve(request.response);
-        }
-
-        const response = JSON.parse(request.responseText);
-
-        if (!response.success) {
-          const err = response.error;
-
-          if (!err.validation_errors) {
-            reject(new ApiError(err.type, err.message, request.status));
-          } else {
-            reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
-          }
+          resolve(raw ? request : request.response);
         } else {
-          // Return an empty object if no data has been sent
-          // instead of returning undefined.
-          resolve(response.data || {});
+          const response = JSON.parse(request.responseText);
+
+          if (!response.success) {
+            const err = response.error;
+
+            if (!err.validation_errors) {
+              reject(new ApiError(err.type, err.message, request.status));
+            } else {
+              reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
+            }
+          } else {
+            // Return an empty object if no data has been sent
+            // instead of returning undefined.
+            resolve(raw ? request : (response.data || {}));
+          }
         }
       }).catch(request => {
         const err = JSON.parse(request.responseText).error;
