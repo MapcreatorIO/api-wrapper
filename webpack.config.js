@@ -14,7 +14,7 @@ const defaultConfig = {
     path: path.resolve(__dirname, 'dist'),
 
     library: 'maps4news',
-    libraryTarget: 'amd',
+    libraryTarget: 'umd',
   },
   module: {
     rules: [
