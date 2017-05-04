@@ -74,9 +74,9 @@ export default class Maps4News {
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      const prefix = key.slice(0, prefix.length);
+      const keyPrefix = key.slice(0, prefix.length);
 
-      if (prefix === prefix) {
+      if (keyPrefix === prefix) {
         localStorage.removeItem(key);
       }
     }
