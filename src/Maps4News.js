@@ -69,6 +69,21 @@ export default class Maps4News {
     });
   }
 
+  logout() {
+    const prefix = 'm4n_api_';
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const prefix = key.slice(0, prefix.length);
+
+      if (prefix === prefix) {
+        localStorage.removeItem(key);
+      }
+    }
+
+    this.auth.token = null;
+  }
+
   // Basic authenticated requests with error handling
   request(url, method = 'GET', data = {}, headers = {}, responseType = '', raw = false) {
     if (!url.startsWith('http')) {
@@ -97,7 +112,7 @@ export default class Maps4News {
           } else {
             // Return an empty object if no data has been sent
             // instead of returning undefined.
-            resolve(raw ? request : (response.data || {}));
+            resolve(raw ? request : response.data || {});
           }
         }
       }).catch(request => {

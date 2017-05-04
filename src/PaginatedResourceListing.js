@@ -22,7 +22,7 @@ export default class PaginatedResourceListing {
     return 'X-Paginate-';
   }
 
-  get currentPage() {
+  get page() {
     return this._page;
   }
 

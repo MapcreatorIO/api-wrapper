@@ -12,7 +12,7 @@ export default class StateContainer extends StaticClass {
    * @constant
    */
   static get prefix() {
-    return 'm4n_state_';
+    return 'm4n_api_state_';
   }
 
   /**
