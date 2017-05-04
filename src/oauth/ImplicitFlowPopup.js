@@ -14,12 +14,13 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    *                               url will be used.
    * @param {Array<string>} scopes - A list of required scopes
    * @param {boolean} useState - use state verification
+   * @param {string} windowOptions - optional window options for the pop-up window
    * @returns {void}
    */
-  constructor(clientId, redirectUri = '', scopes = ['*'], useState = false) {
+  constructor(clientId, redirectUri = '', scopes = ['*'], useState = false, windowOptions = 'width=800, height=600') {
     super(clientId, redirectUri, scopes, useState);
 
-    this.windowOptions = 'width=800, height=600';
+    this.windowOptions = windowOptions;
 
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       const data = this.token.toResponseObject() || this._getAnchorParams();
