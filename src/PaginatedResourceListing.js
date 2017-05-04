@@ -72,6 +72,14 @@ export default class PaginatedResourceListing {
     });
   }
 
+  hasNext() {
+    return this.page < this.pageCount;
+  }
+
+  hasPrevious() {
+    return this.page > 1;
+  }
+
   next() {
     return this.getPage(this.page + 1);
   }
