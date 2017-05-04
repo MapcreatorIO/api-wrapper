@@ -1,10 +1,10 @@
-/**
- * OAuth state container
- * @static
- */
 import StaticClass from '../utils/StaticClass';
 import Uuid from '../utils/uuid';
 
+/**
+ * State container for keeping track of OAuth states (crsf tokens)
+ * @static
+ */
 export default class StateContainer extends StaticClass {
   /**
    * LocalStorage key prefix

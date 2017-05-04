@@ -2,8 +2,21 @@ import {encodeQueryString} from './utils/requests';
 import {isParentOf} from './utils/reflection';
 import Maps4News from './Maps4News';
 
+/**
+ * Proxy for accessing paginated resources
+ */
 export default class PaginatedResourceListing {
-  constructor(api, route, Target, page = 1, pageCount = null, rowCount = 0, data = {}) {
+  /**
+   * @param {Maps4News} api - Instance of the api
+   * @param {String} route - Resource route
+   * @param {ResourceBase} Target - Wrapper target
+   * @param {Number} page - Page number
+   * @param {Number} pageCount - Resolved page count
+   * @param {Number} rowCount - Resolved rowCount
+   * @param {Array<ResourceBase>} data - Resolved data
+   * @private
+   */
+  constructor(api, route, Target, page = 1, perPage = 12, pageCount = null, rowCount = 0, data = []) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -14,31 +27,66 @@ export default class PaginatedResourceListing {
 
     this._data = data;
     this._page = page;
+    this._perPage = perPage;
     this._rows = rowCount;
     this._pageCount = pageCount;
   }
 
+  /**
+   * Pagination header prefix
+   * @returns {String} - Header prefix
+   */
   static get headerPrefix() {
     return 'X-Paginate-';
   }
 
+  /**
+   * Current page number
+   * @returns {Number} - Current page
+   */
   get page() {
     return this._page;
   }
 
+  /**
+   * Maximum amount of items per page
+   * @returns {Number} - Amount of items
+   */
+  get perPage() {
+    return this._perPage;
+  }
+
+  /**
+   * Amount of pages available
+   * @returns {Number} - Page count
+   */
   get pageCount() {
     return this._pageCount;
   }
 
+  /**
+   * Page data
+   * @returns {Array<ResourceBase>} - Wrapped data
+   */
   get data() {
     return this._data;
   }
 
+  /**
+   * Row count
+   * @returns {Number} - Row count
+   */
   get rows() {
     return this._rows;
   }
 
-  getPage(page, perPage = 12) {
+  /**
+   * Get target page
+   * @param {Number} page - Page number
+   * @param {Number} perPage - Amount of items per page
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   */
+  getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
 
     if (this.pageCount) {
@@ -72,18 +120,34 @@ export default class PaginatedResourceListing {
     });
   }
 
-  hasNext() {
+  /**
+   * Test if there is a next page
+   * @returns {boolean} - If there is a next page
+   */
+  get hasNext() {
     return this.page < this.pageCount;
   }
 
-  hasPrevious() {
+  /**
+   * Test if there is a previous page
+   * @returns {boolean} - If there is a previous page
+   */
+  get hasPrevious() {
     return this.page > 1;
   }
 
+  /**
+   * Get next page
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   */
   next() {
     return this.getPage(this.page + 1);
   }
 
+  /**
+   * Get previous page
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   */
   previous() {
     return this.getPage(this.page - 1);
   }

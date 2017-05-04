@@ -9,7 +9,6 @@ import {isNode} from '../utils/node';
  */
 export default class PasswordFlow extends OAuth {
   /**
-   * Password authentication flow
    * @param {string} clientId - OAuth client id
    * @param {string} secret - OAuth secret
    * @param {string} username - Valid username (email)

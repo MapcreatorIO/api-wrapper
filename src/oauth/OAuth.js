@@ -5,9 +5,12 @@
 import OAuthToken from './OAuthToken';
 import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractError';
 
+/**
+ * OAuth base class
+ * @abstract
+ */
 export default class OAuth {
   /**
-   * OAuth base class
    * @param {string} clientId - OAuth client id
    * @param {Array<string>} scopes - A list of required scopes
    * @returns {void}

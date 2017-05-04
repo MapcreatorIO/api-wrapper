@@ -2,7 +2,17 @@ import {isParentOf} from './utils/reflection';
 import ResourceBase from './crud/base/ResourceBase';
 import PaginatedResourceListing from './PaginatedResourceListing';
 
+/**
+ * Proxy for accessing resource. This will make sure that they
+ * are properly wrapped before the promise resolves.
+ * @protected
+ */
 export default class ResourceProxy {
+
+  /**
+   * @param {Maps4News} api - Instance of the api
+   * @param {ResourceBase} Target - Target to wrap
+   */
   constructor(api, Target) {
     if (!isParentOf(ResourceBase, Target)) {
       throw new TypeError('Target is not a child of CrudBase');
@@ -16,10 +26,20 @@ export default class ResourceProxy {
     this.Target = Target;
   }
 
+  /**
+   * The name of the target
+   * @returns {String} - Target name
+   */
   get accessorName() {
     return this.Target.name.toLowerCase();
   }
 
+  /**
+   * Lists target resource
+   * @param {Number} page - The page to be requested
+   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   */
   list(page = 1, perPage = null) {
     const url = this.new().baseUrl;
     const resolver = new PaginatedResourceListing(this.api, url, this.Target);
@@ -27,6 +47,11 @@ export default class ResourceProxy {
     return resolver.getPage(page, perPage);
   }
 
+  /**
+   * Get target resource
+   * @param {Number|String} id - The resource id to be requested
+   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link OAuthError}
+   */
   get(id) {
     const url = this.new({id: id}).url;
 
@@ -38,10 +63,22 @@ export default class ResourceProxy {
     });
   }
 
+  /**
+   * Select target resource without obtaining data
+   * @param {Number|String} id - Resource id
+   * @returns {ResourceBase} - Empty target resource
+   * @example
+   * api.users.select('me').colors().then(doSomethingCool);
+   */
   select(id) {
     return this.new({id: id});
   }
 
+  /**
+   * Build a new isntance of the target
+   * @param {Object<String, *>} data - Data for the object to be populated with
+   * @returns {ResourceBase} - Resource with target data
+   */
   new(data = {}) {
     return new this.Target(this.api, data);
   }

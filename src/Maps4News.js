@@ -40,7 +40,6 @@ import SvgSet from './crud/SvgSet';
  */
 export default class Maps4News {
   /**
-   * Base API class
    * @param {OAuth} auth - Authentication flow
    * @param {string} host - Remote API host
    */
