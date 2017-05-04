@@ -7,7 +7,7 @@
  * @param {object<string, string>} headers - headers
  * @param {string} responseType - XMLHttpRequest response type
  *
- * @returns {Promise} - resolves/rejects with XMLHttpRequest object. Rejects if status code != 2xx
+ * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
   return new Promise((resolve, reject) => {

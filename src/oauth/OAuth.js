@@ -1,7 +1,3 @@
-/**
- *
- * @abstract
- */
 import OAuthToken from './OAuthToken';
 import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractError';
 
@@ -11,8 +7,8 @@ import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractErr
  */
 export default class OAuth {
   /**
-   * @param {string} clientId - OAuth client id
-   * @param {Array<string>} scopes - A list of required scopes
+   * @param {String} clientId - OAuth client id
+   * @param {Array<String>} scopes - A list of required scopes
    * @returns {void}
    */
   constructor(clientId, scopes = ['*']) {
@@ -29,7 +25,7 @@ export default class OAuth {
 
   /**
    * If the current instance has a valid token
-   * @returns {boolean} - if a valid token is availble
+   * @returns {Boolean} - if a valid token is availble
    */
   get authenticated() {
     return this.token !== null && !this.token.expired;

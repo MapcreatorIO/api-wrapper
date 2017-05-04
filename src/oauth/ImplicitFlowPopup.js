@@ -1,20 +1,20 @@
-/**
- * Implicit OAuth flow using a pop-up.
- */
 import ImplicitFlow from './ImplicitFlow';
 import OAuthToken from './OAuthToken';
 import OAuthError from './OAuthError';
 
+/**
+ * Implicit OAuth flow using a pop-up.
+ */
 export default class ImplicitFlowPopup extends ImplicitFlow {
   /**
    * Implicit pop-up authentication flow
-   * @param {string} clientId - OAuth client id
-   * @param {string} redirectUri - redirectUri for obtaining the token. This should be a
+   * @param {String} clientId - OAuth client id
+   * @param {String} redirectUri - redirectUri for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
-   * @param {Array<string>} scopes - A list of required scopes
-   * @param {boolean} useState - use state verification
-   * @param {string} windowOptions - optional window options for the pop-up window
+   * @param {Array<String>} scopes - A list of required scopes
+   * @param {Boolean} useState - use state verification
+   * @param {String} windowOptions - optional window options for the pop-up window
    * @returns {void}
    */
   constructor(clientId, redirectUri = '', scopes = ['*'], useState = false, windowOptions = 'width=800, height=600') {
@@ -33,7 +33,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * Popup window name
-   * @returns {string} - window.name of the created pop-up
+   * @returns {String} - window.name of the created pop-up
    * @constant
    */
   static get popupWindowName() {
@@ -42,7 +42,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * localStorage key name for temporarily storing the token
-   * @returns {string} - key name
+   * @returns {String} - key name
    * @constant
    */
   static get localStorageKey() {
@@ -51,7 +51,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
+   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
    */
   authenticate() {
     if (window.name === ImplicitFlowPopup.popupWindowName) {

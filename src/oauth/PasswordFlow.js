@@ -14,7 +14,6 @@ export default class PasswordFlow extends OAuth {
    * @param {string} username - Valid username (email)
    * @param {string} password - Valid password
    * @param {Array<string>} scopes - A list of required scopes
-   * @returns {void}
    */
   constructor(clientId, secret, username, password, scopes = ['*']) {
     super(clientId, scopes);
@@ -33,7 +32,7 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
+   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
    */
   authenticate() {
     const url = this.host + this.path;

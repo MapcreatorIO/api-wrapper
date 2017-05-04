@@ -11,6 +11,7 @@ export default class PaginatedResourceListing {
    * @param {String} route - Resource route
    * @param {ResourceBase} Target - Wrapper target
    * @param {Number} page - Page number
+   * @param {Number} perPage - Amount of items per page
    * @param {Number} pageCount - Resolved page count
    * @param {Number} rowCount - Resolved rowCount
    * @param {Array<ResourceBase>} data - Resolved data

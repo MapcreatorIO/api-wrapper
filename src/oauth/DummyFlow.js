@@ -2,14 +2,14 @@ import OAuthError from './OAuthError';
 import OAuth from './OAuth';
 
 /**
- * Dummy flow for when the token should be available in
- * the cache and no attempt at authentication should be made.
+ * Dummy flow for when the token should be available in the
+ * cache and no attempt at authentication should be made.
  */
 export default class DummyFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
+   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
    */
   authenticate() {
     return new Promise((resolve, reject) => {

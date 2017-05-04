@@ -5,12 +5,10 @@ import {isNode} from '../utils/node';
  */
 export default class OAuthToken {
   /**
-   * OAuth token store
-   * @param {string} token - OAuth token
-   * @param {string} type - token type
+   * @param {String} token - OAuth token
+   * @param {String} type - token type
    * @param {Date|Number} expires - expire time in seconds or Date
    * @param {Array<string>} scopes - Any scopes
-   * @returns {void}
    */
   constructor(token, type, expires, scopes = []) {
     this.scopes = scopes;
@@ -30,8 +28,8 @@ export default class OAuthToken {
   }
 
   /**
-   * String reprisentation of the token, useable in the Authorization header
-   * @returns {string} - String reprisentation
+   * String representation of the token, usable in the Authorization header
+   * @returns {string} - String representation
    */
   toString() {
     return `${this.type} ${this.token}`;
@@ -39,7 +37,7 @@ export default class OAuthToken {
 
   /**
    * Get equivalent OAuth response object
-   * @returns {{access_token: (string|*), token_type: string, expires_in: number, scope: (Array.<string>|Array|*)}} - Raw response object
+   * @returns {{access_token: (String|*), token_type: String, expires_in: Number, scope: (Array.<String>|Array|*)}} - Raw response object
    */
   toResponseObject() {
     return {
@@ -52,7 +50,7 @@ export default class OAuthToken {
 
   /**
    * If the token has expired
-   * @returns {boolean} - expired
+   * @returns {Boolean} - expired
    */
   get expired() {
     return new Date() > this.expires;
@@ -60,7 +58,7 @@ export default class OAuthToken {
 
   /**
    * Internal storage key name
-   * @returns {string} - storage name
+   * @returns {String} - storage name
    * @constant
    */
   static get storageName() {
@@ -69,7 +67,7 @@ export default class OAuthToken {
 
   /**
    * Build instance from response object
-   * @param {string|object} data - object or JSON string
+   * @param {String|Object} data - object or JSON string
    * @returns {OAuthToken} - New OAuthToken instance
    */
   static fromResponseObject(data) {
@@ -87,9 +85,10 @@ export default class OAuthToken {
 
   /**
    * Store the token for later recovery. Token will be stored in HTTPs cookie if possible.
-   * @param {string} name - db key name
-   * @param {boolean} forceLocalStorage - force the token to be stored in the localStorage
+   * @param {String} name - db key name
+   * @param {Boolean} forceLocalStorage - force the token to be stored in the localStorage
    * @returns {void}
+   * @see OAuthToken#recover
    */
   save(name = OAuthToken.storageName, forceLocalStorage = false) {
     // TODO: Nodejs support
@@ -114,9 +113,10 @@ export default class OAuthToken {
   }
 
   /**
-   * Recover a token
-   * @param {string} name - Storage key name
+   * Recover a token by looking through the HTTPs cookies and localStorage
+   * @param {String} name - Storage key name
    * @returns {OAuthToken|null} - null if none could be recovered
+   * @see OAuthToken#save
    */
   static recover(name = OAuthToken.storageName) {
     // TODO: Nodejs support

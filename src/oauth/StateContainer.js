@@ -8,7 +8,7 @@ import Uuid from '../utils/uuid';
 export default class StateContainer extends StaticClass {
   /**
    * LocalStorage key prefix
-   * @returns {string} - prefix
+   * @returns {String} - prefix
    * @constant
    */
   static get prefix() {
@@ -29,9 +29,9 @@ export default class StateContainer extends StaticClass {
 
   /**
    * Validate a state
-   * @param {string} state - state to validate
-   * @param {boolean} purge - remove from state db after validation
-   * @returns {boolean} - if the state is valid
+   * @param {String} state - state to validate
+   * @param {Boolean} purge - remove from state db after validation
+   * @returns {Boolean} - if the state is valid
    */
   static validate(state, purge = true) {
     for (let i = 0; i < localStorage.length; i++) {
@@ -66,7 +66,7 @@ export default class StateContainer extends StaticClass {
 
   /**
    * Get states with their corresponding state db key
-   * @returns {object<string, string>} - List of stored states
+   * @returns {Object<String, String>} - List of stored states
    */
   static list() {
     const out = {};
