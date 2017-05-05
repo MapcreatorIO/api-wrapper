@@ -19,12 +19,16 @@ api.colors(1).then(color => {
 });
 
 // Listing resources with pagination. First page with 5 items per page
-api.colors.list(1, 5).then(page => {
+api.colors.list(1, 20).then(page => {
   console.log('Got resources:');
 
   for (var i = 0; i < page.data.length; i++) {
     console.log(page.data[i].toString());
   }
+
+  page.next().then(page => {
+
+  })
 });
 
 // Select current user but do not fetch any info to make fetching resources easier

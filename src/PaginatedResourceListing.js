@@ -109,11 +109,12 @@ export default class PaginatedResourceListing {
   /**
    * Get target page
    * @param {Number} page - Page number
-   * @param {Number} perPage - Amount of items per page
+   * @param {Number} perPage - Amount of items per page (max 50)
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
    */
   getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
+    page = Math.min(50, page);
 
     if (this.pageCount) {
       page = Math.min(this.pageCount, page);
@@ -136,7 +137,7 @@ export default class PaginatedResourceListing {
 
           const instance = new PaginatedResourceListing(
             this.api, this.route,
-            this._Target, page,
+            this._Target, page, perPage,
             totalPages, rowCount,
             response.data.map(row => new this._Target(this.api, row))
           );
