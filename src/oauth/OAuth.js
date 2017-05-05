@@ -16,7 +16,7 @@ export default class OAuth {
       throw new AbstractClassError();
     }
 
-    this.clientId = clientId;
+    this.clientId = String(clientId);
     this.scopes = scopes;
     this.token = OAuthToken.recover();
     this.host = 'https://api.Maps4News.com';
