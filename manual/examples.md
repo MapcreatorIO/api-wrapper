@@ -5,6 +5,7 @@ See the node and web authentication examples for more information on authenticat
 
 ### Create a new resource
 Create a new color and dump the new resource to the console after saving
+
 ```js
 var data = {name: 'Smurf', hex: '88CCFF'};
 api.colors.new(data).save().then(console.dir);
@@ -12,6 +13,7 @@ api.colors.new(data).save().then(console.dir);
 
 ### Modify a resource
 Change profession of the current user and save it.
+
 ```js
 api.users.get('me').then(me => {
   me.profession = 'Developer';
@@ -21,6 +23,7 @@ api.users.get('me').then(me => {
 
 ### Clone a resource
 Setting the id to null forces the creation of a new object upon saving. 
+
 ```js
 api.colors(1).then(color => {
   color.id = null;
@@ -30,6 +33,7 @@ api.colors(1).then(color => {
 
 ### Pagination
 Listing resources with pagination. First page with 5 items per page
+
 ```js
 api.colors.list(1, 20).then(page => {
   console.log('Got resources:');
@@ -39,7 +43,9 @@ api.colors.list(1, 20).then(page => {
   }
 });
 ``` 
+
 Loop over every page and print the result to the console.
+
 ```js
 function parsePages() {
   for (var i = 0; i < page.data.length; i++) {
@@ -56,6 +62,7 @@ api.colors.list(1, 50).then(parsePages);
 ```
 
 Select current user but do not fetch any info to make fetching resources easier.
+
 ```js
 api.users.select('me').colors().then(page => {
   console.dir(page.data);

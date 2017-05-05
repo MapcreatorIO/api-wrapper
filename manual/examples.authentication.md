@@ -61,12 +61,14 @@ api.authenticate().then(function() {
   api.users.get('me').then(console.dir);
 });
 ```
+
 ### Implicit flow pop-up (advanced)
 Due to the nature of the implicit flow pop-up (referred to as IFP from now on)
 method the callback page can be set to a blank page that just grabs the token 
 and then closes. This can be done in the following way.
 
 **index.html:**
+
 ```js
 var clientId = 1;
 var callbackUrl = 'https://example.com/callback.html';
@@ -82,6 +84,7 @@ api.authenticate().then(function() {
 ```
 
 **callback.html:**
+
 ```js
 var clientId = 1;
 
