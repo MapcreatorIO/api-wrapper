@@ -17,7 +17,11 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		sh '$(yarn bin)/webpack'
+		parallel webpack: {
+			sh '$(yarn bin)/webpack'
+		}, esdoc: {
+			sh '$(yarn bin)/esdoc'
+		}, failFast: false
 	}
 
 	stage('archive') {

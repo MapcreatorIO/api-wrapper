@@ -1,6 +1,7 @@
 # Ignore dist and build folders
 /dist/
 /build/
+/docs/
 
 # Ignore test html
 /*.html
