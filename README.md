@@ -17,6 +17,14 @@ yarn install
 ./node_modules/.bin/webpack --progress
 ```
 
+## Building docs
+The docs can be built using [esdoc] after which they can be found in the `/docs` folder.
+```sh
+yarn install
+./node_modules/.bin/esdoc
+```
+
+
 ## Authenticating
 Authentication can be done using OAuth. Examples of how to use authentication can be found in the examples directory: 
  - [ImplicitFlow](examples/web/implicitFlowExample.js) (recommended)
@@ -71,7 +79,8 @@ See the [LICENSE] file for license information. This project is licensed under a
 [build-node]: /path/to/build
 [build-node-minified]: /path/to/build
 
+[esdoc]: https://esdoc.org
 [example-basics]: examples/basics.js
-[yarn]: https://yarnpkg.com/
-[webpack]: https://webpack.js.org/
+[yarn]: https://yarnpkg.com
+[webpack]: https://webpack.js.org
 [LICENSE]: LICENSE
