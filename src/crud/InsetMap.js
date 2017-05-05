@@ -1,10 +1,6 @@
 import ResourceBase from './base/ResourceBase';
 
 export default class InsetMap extends ResourceBase {
-  get path() {
-    return '/' + this.resourceName + '/{id}';
-  }
-
   get resourceName() {
     return 'inset-maps';
   }

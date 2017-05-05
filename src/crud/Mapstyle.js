@@ -10,10 +10,6 @@ export default class Mapstyle extends CrudBase {
     return new ImageHandler(this.api, this);
   }
 
-  get path() {
-    return '/' + this.resourceName + '/{id}';
-  }
-
   get resourceName() {
     return 'mapstyles';
   }

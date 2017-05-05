@@ -53,6 +53,7 @@ export default class Uuid extends StaticClass {
 
     // Replace 'xx' with a two width base 16 number
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/xx/g, () => {
+      // Prepend 00 for padding and grab the last two characters
       return ('00' + data.pop().toString(16)).slice(-2);
     });
   }

@@ -12,10 +12,6 @@ import JobType from './JobType';
 import JobShare from './JobShare';
 
 export default class User extends CrudBase {
-  get path() {
-    return '/' + this.resourceName + '/{id}';
-  }
-
   get resourceName() {
     return 'users';
   }

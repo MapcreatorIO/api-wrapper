@@ -18,7 +18,7 @@ export default class Organisation extends CrudBase {
    * @returns {Array<Promise>} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
    */
   sync(items) {
-    return this._syncOr_modifyResourceLinkAttach(items, 'PATCH');
+    return this._modifyResourceLink(items, 'PATCH');
   }
 
   /**
@@ -71,22 +71,20 @@ export default class Organisation extends CrudBase {
     const out = {};
 
     for (const row of items) {
-      if (row.ownable) {
-        const key = row.resourceName;
+      if (!row.ownable) {
+        continue;
+      }
 
-        if (!out[key]) {
-          out[key] = [row.id];
-        } else {
-          out[key].push(row.id);
-        }
+      const key = row.resourceName;
+
+      if (!out[key]) {
+        out[key] = [row.id];
+      } else {
+        out[key].push(row.id);
       }
     }
 
     return out;
-  }
-
-  get path() {
-    return '/' + this.resourceName + '/{id}';
   }
 
   get resourceName() {

@@ -10,15 +10,11 @@ export default class Layer extends CrudBase {
     return new ImageHandler(this.api, this);
   }
 
-  get ownable() {
-    return true;
-  }
-
-  get path() {
-    return '/' + this.resourceName + '/{id}';
-  }
-
   get resourceName() {
     return 'layers';
+  }
+
+  get ownable() {
+    return true;
   }
 }

@@ -5,7 +5,7 @@ import JobResult from './JobResult';
 
 export default class JobRevision extends CrudBase {
   get baseUrl() {
-    return '/jobs/{job_id}/revisions'.replace('job_id', this['job_id']);
+    return `/jobs/${this['job_id']}/revisions`;
   }
 
   get path() {

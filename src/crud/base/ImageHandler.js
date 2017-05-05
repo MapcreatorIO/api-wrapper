@@ -39,7 +39,7 @@ export default class ImageHandler {
    * @returns {string} - Resource url
    */
   get url() {
-    return this._target.url + '/image';
+    return `${this._target.url}/image`;
   }
 
   /**

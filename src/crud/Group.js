@@ -19,10 +19,6 @@ export default class Group extends CrudBase {
     return this._listResource(Permission);
   }
 
-  get path() {
-    return '/' + this.resourceName + '/{id}';
-  }
-
   get resourceName() {
     return 'groups';
   }

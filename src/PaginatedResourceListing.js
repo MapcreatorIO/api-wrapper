@@ -38,7 +38,7 @@ export default class PaginatedResourceListing {
    * @returns {String} - Header prefix
    */
   static get headerPrefix() {
-    return 'X-Paginate-';
+    return 'X-Paginate';
   }
 
   /**
@@ -132,8 +132,8 @@ export default class PaginatedResourceListing {
       this.api.request(url, 'GET', {}, {}, '', true)
         .then(request => {
           const response = JSON.parse(request.responseText);
-          const rowCount = Number(request.getResponseHeader(PaginatedResourceListing.headerPrefix + 'Total'));
-          const totalPages = Number(request.getResponseHeader(PaginatedResourceListing.headerPrefix + 'Pages'));
+          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`));
+          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`));
 
           const instance = new PaginatedResourceListing(
             this.api, this.route,

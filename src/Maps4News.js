@@ -131,7 +131,7 @@ export default class Maps4News {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
       url = url.replace(/(^\/+)/, () => '');
-      url = this._host + '/' + this.version + '/' + url;
+      url = `${this._host}/${this.version}/${url}`;
     }
 
     if (this.authenticated) {

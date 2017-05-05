@@ -1,10 +1,6 @@
 import CrudBase from './base/CrudBase';
 
 export default class JobResult extends CrudBase {
-  get path() {
-    return '/' + this.resourceName + '/{id}';
-  }
-
   get resourceName() {
     return 'job-result';
   }

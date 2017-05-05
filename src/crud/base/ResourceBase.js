@@ -41,7 +41,11 @@ export default class ResourceBase {
    * @returns {String} - Path template
    */
   get path() {
-    return '/';
+    if (this.resourceName) {
+      return `/${this.resourceName}/\{id}`;
+    } else {
+      return '/';
+    }
   }
 
   /**

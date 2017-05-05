@@ -8,7 +8,7 @@ export default class Job extends CrudBase {
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobResult} instances and rejects with {@link OAuthError}
    */
   results() {
-    return this._listResource(JobResult, this.url + '/results');
+    return this._listResource(JobResult, `${this.url}/results`);
   }
 
   /**
@@ -16,11 +16,7 @@ export default class Job extends CrudBase {
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobRevision} instances and rejects with {@link OAuthError}
    */
   revisions() {
-    return this._listResource(JobRevision, this.url + '/revisions');
-  }
-
-  get path() {
-    return '/' + this.resourceName + '/{id}';
+    return this._listResource(JobRevision, `${this.url}/revisions`);
   }
 
   get resourceName() {

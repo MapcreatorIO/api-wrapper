@@ -7,7 +7,7 @@ export default class SvgSet extends CrudBase {
    * @returns {Promise} - Resolves with {@link Svg} instance and rejects with {@link OAuthError}
    */
   items() {
-    const url = this.url + '/items';
+    const url = `${this.url}/items`;
 
     return new Promise((resolve, reject) => {
       this.api.request(url)
