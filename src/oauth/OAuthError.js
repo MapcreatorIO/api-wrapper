@@ -1,17 +1,21 @@
-export default class OAuthError {
+/**
+ * OAuth error
+ */
+export default class OAuthError extends Error {
   /**
    * OAuth error response
-   * @param {string} error - OAuth error key
-   * @param {string} message - OAuth error message
+   * @param {String} error - OAuth error key
+   * @param {String} message - OAuth error message
    */
   constructor(error, message = '') {
+    super();
     this._error = String(error);
     this._message = String(message);
   }
 
   /**
    * OAuth error message
-   * @returns {string} - message
+   * @returns {String} - message
    */
   get message() {
     return this._message;
@@ -19,7 +23,7 @@ export default class OAuthError {
 
   /**
    * OAuth error code
-   * @returns {string} - error
+   * @returns {String} - error
    */
   get error() {
     return this._error;
@@ -27,7 +31,7 @@ export default class OAuthError {
 
   /**
    * Displayable error string
-   * @returns {string} - error
+   * @returns {String} - error
    */
   toString() {
     let error = this._error;

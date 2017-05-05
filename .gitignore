@@ -1,5 +1,10 @@
-# Ignore dist folder
+# Ignore dist and build folders
 /dist/
+/build/
+/docs/
+
+# Ignore test html
+/*.html
 
 ### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm

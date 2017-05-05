@@ -1,22 +1,28 @@
 /**
  * Makes a HTTP request and returns a promise. Promise will fail/reject if the
  * status code isn't 2XX.
- * @param {string} url - target url
+ * @param {string} url - Target url
  * @param {string} method - HTTP method
  * @param {string|object<string, string>} body - raw body content or object to be json encoded
  * @param {object<string, string>} headers - headers
+ * @param {string} responseType - XMLHttpRequest response type
  *
- * @returns {Promise} - resolves/rejects with XMLHttpRequest object. Rejects if status code != 2xx
+ * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
+ * @private
  */
-export function makeRequest(url, method = 'GET', body = '', headers = {}) {
+export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
   return new Promise((resolve, reject) => {
+    method = method.toUpperCase();
+
     const request = new XMLHttpRequest();
+
+    request.responseType = responseType;
 
     const hasContentType = Object.keys(headers)
         .filter(x => x.toLowerCase() === 'content-type')
         .length > 0;
 
-    request.open(method.toUpperCase(), url, true);
+    request.open(method, url, true);
 
     // Automatically detect possible content-type header
     if (typeof body === 'object') {
@@ -36,7 +42,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
 
     request.onreadystatechange = () => {
       // State 4 === Done
-      if (request.readyState === 4) {
+      if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status >= 200 && request.status < 300) {
           resolve(request);
         } else {
@@ -45,7 +51,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
       }
     };
 
-    if (body) {
+    if (body && method !== 'GET') {
       request.send(body);
     } else {
       request.send();
@@ -59,6 +65,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}) {
  * @returns {string} - encoded http query string
  *
  * @see http://stackoverflow.com/a/39828481
+ * @private
  */
 export function encodeQueryString(paramsObject) {
   return Object

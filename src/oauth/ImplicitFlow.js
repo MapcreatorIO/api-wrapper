@@ -1,35 +1,40 @@
-/**
- * Implicit OAuth flow using redirection
- */
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
-import {encodeQueryString} from '../util/requests';
+import {encodeQueryString} from '../utils/requests';
 import OAuthError from './OAuthError';
+import {isNode} from '../utils/node';
 
+/**
+ * Implicit OAuth flow using redirection
+ */
 export default class ImplicitFlow extends OAuth {
 
   /**
    * Implicit authentication flow
-   * @param {string} clientId - OAuth client id
-   * @param {string} redirectUri - redirectUri for obtaining the token. This should be a
+   * @param {String} clientId - OAuth client id
+   * @param {String} callbackUrl - callbackUrl for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
-   * @param {Array<string>} scopes - A list of required scopes
-   * @param {boolean} useState - use state verification
+   * @param {Array<String>} scopes - A list of required scopes
+   * @param {Boolean} useState - use state verification
    * @returns {void}
    */
-  constructor(clientId, redirectUri = '', scopes = ['*'], useState = true) {
+  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = true) {
     super(clientId, scopes);
+
+    if (isNode()) {
+      throw new Error(`${this.constructor.name} can't be used under nodejs`);
+    }
 
     this.path = '/oauth/authorize';
 
-    this.redirectUri = redirectUri;
+    this.callbackUrl = callbackUrl;
     this.useState = useState;
 
-    if (!this.redirectUri) {
+    if (!this.callbackUrl) {
       // Drop the anchor (if any)
-      this.redirectUri = window.location.toString().split('#')[0];
+      this.callbackUrl = window.location.toString().split('#')[0];
     }
 
     this._anchorParams = [
@@ -55,7 +60,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
+   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
    */
   authenticate() {
     return new Promise((resolve, reject) => {
@@ -63,6 +68,7 @@ export default class ImplicitFlow extends OAuth {
         resolve(this.token);
       } else if (this._anchorContainsError()) {
         const err = this._getError();
+
         this._cleanAnchorParams();
 
         reject(err);
@@ -74,13 +80,13 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Builds the url for redirection
-   * @returns {string} - Redirect url
+   * @returns {String} - Redirect url
    * @protected
    */
   _buildRedirectUrl() {
     const queryParams = {
       'client_id': this.clientId,
-      'redirect_uri': this.redirectUri,
+      'redirect_uri': this.callbackUrl,
       'response_type': 'token',
       'scope': this.scopes.join(' '),
     };
@@ -92,10 +98,9 @@ export default class ImplicitFlow extends OAuth {
     return `${this.host + this.path}?${encodeQueryString(queryParams)}`;
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Builds an object containing all the anchor parameters
-   * @returns {object<string, string>} - Anchor paramenters
+   * @returns {Object<String, String>} - Anchor paramenters
    * @protected
    */
   _getAnchorParams() {
@@ -113,8 +118,8 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Fetch OAuth anchor params
-   * @param {string|undefined} query - Optional override for the query to analyse, defaults to this._getAunchorParams
-   * @returns {object<string, string>} - List of OAuth anchor parameters
+   * @param {Object<String, String>} query - Optional override for the query to analyse, defaults to {@link ImplicitFlow#_getAnchorParams}
+   * @returns {Object<String, String>} - List of OAuth anchor parameters
    * @protected
    */
   _getOAuthAnchorParams(query = this._getAnchorParams()) {
@@ -148,7 +153,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Test if the anchor contains an OAuth response
-   * @returns {boolean} - if anchor tested positive for containing an OAuth response
+   * @returns {Boolean} - if anchor tested positive for containing an OAuth response
    * @protected
    */
   _anchorContainsOAuthResponse() {
@@ -162,7 +167,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Test if the anchor contains an OAuth error
-   * @returns {boolean} - if anchor tested positive for containing an OAuth error
+   * @returns {Boolean} - if anchor tested positive for containing an OAuth error
    * @protected
    */
   _anchorContainsError() {

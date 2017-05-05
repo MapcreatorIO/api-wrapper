@@ -3,7 +3,7 @@
  * @param {function|object} parent - Instance or Class
  * @param {function|object} child - Instance or Class
  * @returns {boolean} - is parent a parent of child
- *
+ * @private
  * @example
  * class A {}
  * class B extends A {}

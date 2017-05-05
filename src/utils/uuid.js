@@ -3,11 +3,12 @@ import StaticClass from './StaticClass';
 /**
  * UUID util class
  * @static
+ * @protected
  */
 export default class Uuid extends StaticClass {
   /**
    * Generate a UUID4 string
-   * @returns {string} - uuid
+   * @returns {string} - Uuid
    */
   static uuid4() {
     // Use the secure method if possible
@@ -16,9 +17,9 @@ export default class Uuid extends StaticClass {
 
   /**
    * Unsafe UUID4 generation using Math.random
-   * @returns {string} - uuid
+   * @returns {string} - Uuid
    *
-   * @see // http://stackoverflow.com/a/8809472
+   * @see http://stackoverflow.com/a/8809472
    * @license MIT|Public Domain
    * @private
    */
@@ -39,8 +40,7 @@ export default class Uuid extends StaticClass {
 
   /**
    * Safe UUID4 generation using the crypto api
-   * @returns {string} - uuid
-   *
+   * @returns {String} - Uuid
    * @private
    */
   static _uuid4Safe() {
@@ -53,10 +53,15 @@ export default class Uuid extends StaticClass {
 
     // Replace 'xx' with a two width base 16 number
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/xx/g, () => {
+      // Prepend 00 for padding and grab the last two characters
       return ('00' + data.pop().toString(16)).slice(-2);
     });
   }
 
+  /**
+   * Empty uuid as per spec
+   * @returns {string} - Uuid
+   */
   static nil() {
     return '0000000-0000-0000-0000-000000000000';
   }
