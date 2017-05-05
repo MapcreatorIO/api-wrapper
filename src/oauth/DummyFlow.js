@@ -6,6 +6,9 @@ import OAuth from './OAuth';
  * cache and no attempt at authentication should be made.
  */
 export default class DummyFlow extends OAuth {
+  constructor() {
+    super('', []);
+  }
 
   /**
    * Authenticate

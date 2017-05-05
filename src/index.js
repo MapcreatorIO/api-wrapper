@@ -5,6 +5,7 @@ export {default as Maps4News} from './Maps4News';
 export {default as ImplicitFlow} from './oauth/ImplicitFlow';
 export {default as ImplicitFlowPopup} from './oauth/ImplicitFlowPopup';
 export {default as PasswordFlow} from './oauth/PasswordFlow';
+export {default as DummyFlow} from './oauth/DummyFlow';
 
 // Exceptions
 export {default as ApiError} from './exceptions/ApiError';
