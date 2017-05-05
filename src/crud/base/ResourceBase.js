@@ -41,19 +41,16 @@ export default class ResourceBase {
    * @returns {String} - Path template
    */
   get path() {
-    if (this.resourceName) {
-      return `/${this.resourceName}/\{id}`;
-    } else {
-      return '/';
-    }
+    return `/${this.resourceName}/\{id}`;
   }
 
   /**
    * Resource name
    * @returns {String} - Resource name
+   * @abstract
    */
   get resourceName() {
-    return '';
+    throw new AbstractError();
   }
 
   /**

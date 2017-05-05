@@ -114,7 +114,6 @@ api.authenticate().then(function() {
   // Get the current user and dump the result to the console.
   api.users.get('me').then(console.dir);
 });
-
 ```
 
 ### Dummy flow
@@ -160,7 +159,6 @@ api.authenticate().then(function() {
   // Get the current user and dump the result to the console.
   api.users.get('me').then(console.dir);
 });
-
 ```
 
 ### Dummy flow
