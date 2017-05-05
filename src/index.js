@@ -2,6 +2,7 @@
 export {default as Maps4News} from './Maps4News';
 
 // Flows
+export {default as OAuth} from './oauth/OAuth';
 export {default as ImplicitFlow} from './oauth/ImplicitFlow';
 export {default as ImplicitFlowPopup} from './oauth/ImplicitFlowPopup';
 export {default as PasswordFlow} from './oauth/PasswordFlow';
