@@ -3,6 +3,9 @@
   "destination": "./docs",
   "name": "maps4news",
   "manual": {
-    "example": ["./manual/examples.md"]
+    "example": [
+      "./manual/examples.md",
+      "./manual/examples.authentication.md"
+    ]
   }
 }
