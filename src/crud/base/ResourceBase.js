@@ -1,5 +1,5 @@
 import {snakeToCamelCase} from '../../utils/caseConverter';
-import {AbstractClassError} from '../../exceptions/AbstractError';
+import {AbstractClassError, AbstractError} from '../../exceptions/AbstractError';
 import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 

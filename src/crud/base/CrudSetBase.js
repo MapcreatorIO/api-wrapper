@@ -1,4 +1,5 @@
 import CrudBase from './CrudBase';
+import {AbstractError} from '../../exceptions/AbstractError';
 
 /**
  * Crud base for resource sets
