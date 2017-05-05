@@ -17,7 +17,7 @@ export default class ValidationError extends ApiError {
 
   /**
    * Any validation errors
-   * @returns {Object.<String, Array.<String>>}
+   * @returns {Object.<String, Array.<String>>} - Object containing arrays of validation errors where the field is stored in the key
    */
   get validationErrors() {
     return this._validationErrors;
