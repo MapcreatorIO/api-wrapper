@@ -1,6 +1,3 @@
-/**
- * Implicit OAuth flow using redirection
- */
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
@@ -8,19 +5,22 @@ import {encodeQueryString} from '../utils/requests';
 import OAuthError from './OAuthError';
 import {isNode} from '../utils/node';
 
+/**
+ * Implicit OAuth flow using redirection
+ */
 export default class ImplicitFlow extends OAuth {
 
   /**
    * Implicit authentication flow
    * @param {String} clientId - OAuth client id
-   * @param {String} redirectUri - redirectUri for obtaining the token. This should be a
+   * @param {String} callbackUrl - callbackUrl for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {Array<String>} scopes - A list of required scopes
    * @param {Boolean} useState - use state verification
    * @returns {void}
    */
-  constructor(clientId, redirectUri = '', scopes = ['*'], useState = true) {
+  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = true) {
     super(clientId, scopes);
 
     if (isNode()) {
@@ -29,12 +29,12 @@ export default class ImplicitFlow extends OAuth {
 
     this.path = '/oauth/authorize';
 
-    this.redirectUri = redirectUri;
+    this.callbackUrl = callbackUrl;
     this.useState = useState;
 
-    if (!this.redirectUri) {
+    if (!this.callbackUrl) {
       // Drop the anchor (if any)
-      this.redirectUri = window.location.toString().split('#')[0];
+      this.callbackUrl = window.location.toString().split('#')[0];
     }
 
     this._anchorParams = [
@@ -86,7 +86,7 @@ export default class ImplicitFlow extends OAuth {
   _buildRedirectUrl() {
     const queryParams = {
       'client_id': this.clientId,
-      'redirect_uri': this.redirectUri,
+      'redirect_uri': this.callbackUrl,
       'response_type': 'token',
       'scope': this.scopes.join(' '),
     };

@@ -9,7 +9,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
   /**
    * Implicit pop-up authentication flow
    * @param {String} clientId - OAuth client id
-   * @param {String} redirectUri - redirectUri for obtaining the token. This should be a
+   * @param {String} callbackUrl - callbackUrl for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {Array<String>} scopes - A list of required scopes
@@ -17,8 +17,8 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @param {String} windowOptions - optional window options for the pop-up window
    * @returns {void}
    */
-  constructor(clientId, redirectUri = '', scopes = ['*'], useState = false, windowOptions = 'width=800, height=600') {
-    super(clientId, redirectUri, scopes, useState);
+  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = 'width=800, height=600') {
+    super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
 
