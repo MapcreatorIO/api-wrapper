@@ -7,8 +7,8 @@ If one can be found the `api.authenticate()` method will instantly resolve witho
 any side-effects. The variable `api.authenticated` will be set to true if a token
 has been found and is still valid. 
 
-Tokens are stored in HTTPs cookies if possible and using `localStorage` when the
-browser is not using a HTTPs connection. No storage mechanism has been implemented
+Tokens are stored in HTTPS cookies if possible and using `localStorage` when the
+browser is not using a HTTPS connection. No storage mechanism has been implemented
 for [nodejs] applications yet.
 
 ## Web
@@ -92,7 +92,7 @@ new maps4news.ImplicitFlowPopup(clientId);
 ### Password flow (dangerous)
 The password flow is **NOT** intended to be used in the browser. If you do 
 decide to use the password flow then it is recommended to make sure that 
-the site is **NOT** public facing and using HTTPs. Leaking the [secret] is
+the site is **NOT** public facing and using HTTPS. Leaking the [secret] is
 a very bad idea.
 
 ```js

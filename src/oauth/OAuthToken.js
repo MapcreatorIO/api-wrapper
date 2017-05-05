@@ -84,7 +84,7 @@ export default class OAuthToken {
   }
 
   /**
-   * Store the token for later recovery. Token will be stored in HTTPs cookie if possible.
+   * Store the token for later recovery. Token will be stored in HTTPS cookie if possible.
    * @param {String} name - db key name
    * @param {Boolean} forceLocalStorage - force the token to be stored in the localStorage
    * @returns {void}
@@ -113,7 +113,7 @@ export default class OAuthToken {
   }
 
   /**
-   * Recover a token by looking through the HTTPs cookies and localStorage
+   * Recover a token by looking through the HTTPS cookies and localStorage
    * @param {String} name - Storage key name
    * @returns {OAuthToken|null} - null if none could be recovered
    * @see OAuthToken#save
