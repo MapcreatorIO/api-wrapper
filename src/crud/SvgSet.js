@@ -1,7 +1,7 @@
-import CrudBase from './base/CrudBase';
+import CrudSetBase from './base/CrudSetBase';
 import Svg from './Svg';
 
-export default class SvgSet extends CrudBase {
+export default class SvgSet extends CrudSetBase {
   get path() {
     return '/svgs/sets/{id}';
   }

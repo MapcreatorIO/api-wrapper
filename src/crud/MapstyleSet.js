@@ -1,7 +1,7 @@
-import CrudBase from './base/CrudBase';
+import CrudBaCrudSetBasese from './base/CrudSetBase';
 import Mapstyle from './Mapstyle';
 
-export default class MapstyleSet extends CrudBase {
+export default class MapstyleSet extends CrudSetBase {
   get path() {
     return '/mapstyles/sets/{id}';
   }

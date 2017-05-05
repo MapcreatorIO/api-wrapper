@@ -1,10 +1,10 @@
-import CrudBase from './base/CrudBase';
+import CrudSetBase from './base/CrudSetBase';
 import Dimension from './Dimension';
 
 /**
  * Dimension sets
  */
-export default class DimensionSet extends CrudBase {
+export default class DimensionSet extends CrudSetBase {
   get path() {
     return '/dimensions/sets/{id}';
   }
