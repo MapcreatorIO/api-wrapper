@@ -26,15 +26,6 @@ node('npm && yarn') {
 
 	stage('archive') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
-
-		publishHTML([
-			allowMissing: false,
-			alwaysLinkToLastBuild: true,
-			keepAll: false,
-			reportDir: 'docs',
-			reportFiles: 'index.html',
-			reportName: 'Docs',
-			reportTitles: ''])
 	}
 
 	stage('cleanup') {
