@@ -27,10 +27,10 @@ yarn install
 ## Authenticating
 Authentication can be done using OAuth. Examples of how to use authentication can be found in the documentation. The 
 following authentication methods are supported: 
- - [ImplicitFlow](docs/) (recommended)
- - [ImplicitPopupFlow](examples/web/implicitFlowPopupExample.js)
- - [PasswordFlow](examples/web/passwordFlowExample.js)
- - [PasswordFlow](examples/node/passwordFlowExample.js) (node)
+ - ImplicitFlow 
+ - ImplicitPopupFlow
+ - PasswordFlow
+ - DummyFlow
 
 ## Examples
 Examples can be found in the documentation under the "Manual" section.
