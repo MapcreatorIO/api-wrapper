@@ -50,7 +50,7 @@ node('npm && yarn') {
 
 			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
 				sh 'git commit -m "Update auto generated docs"'
-				sh 'git push -u https://origin gh-pages'
+				sh 'git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@origin gh-pages'
 			}
 		}
 	}
