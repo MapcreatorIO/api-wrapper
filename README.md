@@ -3,7 +3,7 @@ Maps4News Javascript API
 
 The Maps4News API is a powerful mapping service built for our front-end applications. This library is released to 
 provide a painless way of talking to the api using Javascript. See the [LICENSE] file for licensing information. Api 
-tokens can be granted through support requests. 
+tokens can be granted through support requests. The docs can be found [here][docs]
 
 
 ## Download
@@ -45,11 +45,12 @@ Examples can be found in the documentation under the "Manual" section.
 ## License
 See the [LICENSE] file for license information. This project is licensed under a [BSD-3-Clause] license.
 
-[build-web]: /path/to/build
-[build-web-minified]: /path/to/build
-[build-node]: /path/to/build
-[build-node-minified]: /path/to/build
+[build-web]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.web.js
+[build-web-minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.web.min.js
+[build-node]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.js
+[build-node-minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.min.js
 
+[docs]: https://mapcreatoreu.github.io/m4n-api/
 [GitHub repo]: https://github.com/MapCreatorEU/m4n-api
 [esdoc]: https://esdoc.org
 [example-basics]: examples/basics.js
