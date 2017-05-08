@@ -6,6 +6,9 @@
     "example": [
       "./manual/examples.md",
       "./manual/examples.authentication.md"
+    ],
+    "installation": [
+      "./manual/installation.md"
     ]
   }
 }
