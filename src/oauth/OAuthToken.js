@@ -66,10 +66,21 @@ export default class OAuthToken {
     return 'm4n_api_token';
   }
 
+  /**
+   * Filename for nodejs token storage
+   * @returns {string} - filename
+   * @constant
+   */
   static get nodeTokenFilename() {
     return '.m4n_token';
   }
 
+  /**
+   * Gets the default name for the name parameter on save and restore
+   * @returns {string} - name
+   * @private
+   * @static
+   */
   static get _defaultName() {
     return isNode() ? OAuthToken.nodeTokenFilename : OAuthToken.storageName;
   }
