@@ -1,8 +1,9 @@
-import {isNode} from '../utils/node';
-
 /**
  * Oauth token container
  */
+import {isNode} from '../utils/node';
+import NodeError from '../exceptions/NodeError';
+
 export default class OAuthToken {
   /**
    * @param {String} token - OAuth token
@@ -65,6 +66,14 @@ export default class OAuthToken {
     return 'm4n_api_token';
   }
 
+  static get nodeTokenFilename() {
+    return '.m4n_token';
+  }
+
+  static get _defaultName() {
+    return isNode() ? OAuthToken.nodeTokenFilename : OAuthToken.storageName;
+  }
+
   /**
    * Build instance from response object
    * @param {String|Object} data - object or JSON string
@@ -90,19 +99,21 @@ export default class OAuthToken {
    * @returns {void}
    * @see OAuthToken#recover
    */
-  save(name = OAuthToken.storageName, forceLocalStorage = false) {
-    // TODO: Nodejs support
-    if (isNode()) {
-      return;
-    }
-
+  save(name = OAuthToken._defaultName, forceLocalStorage = false) {
     const data = {
       token: this.token,
       type: this.type,
       expires: this.expires.toUTCString(),
     };
 
-    if (window.location.protocol === 'https:' && !forceLocalStorage) {
+    if (isNode() && forceLocalStorage) {
+      throw new NodeError('Can not force localStorage usage when running under node');
+    } else if (isNode()) {
+      const fs = require('fs');
+      const json = JSON.stringify(data, null, 2);
+
+      fs.writeFileSync(name, json);
+    } else if (window.location.protocol === 'https:' && !forceLocalStorage) {
 
       const dataEncoded = encodeURIComponent(JSON.stringify(data));
 
@@ -118,10 +129,13 @@ export default class OAuthToken {
    * @returns {OAuthToken|null} - null if none could be recovered
    * @see OAuthToken#save
    */
-  static recover(name = OAuthToken.storageName) {
-    // TODO: Nodejs support
+  static recover(name = OAuthToken._defaultName) {
     if (isNode()) {
-      return null;
+      const fs = require('fs');
+      const raw = fs.readFileSync(name, json);
+      const data = JSON.parse(raw);
+
+      return new OAuthToken(data.token, data.type, new Date(data.expires));
     }
 
     // Cookie
