@@ -2,6 +2,31 @@
 These examples assume that an instance of the api exists and is authenticated. 
 See the node and web authentication examples for more information on authenticating.
 
+### Getting a resource
+Resources are bound to the base api class by default. Resources can be fetched in 
+two ways; by selecting them (`.select`) or by fetching them (`.get`). Selecting them will only set the
+object's id to it's properties. Fetching a resource
+
+Fetch resource and all it's properties:
+
+```js 
+api.colors.get(1).then(function(color) {
+    console.log(color.id + " " + color.name + ": " + color.hex);
+})
+```
+
+Select the current user to quickly obtain related mapstyle sets:
+
+```js
+api.users.select('me').mapstyleSets().then(function(sets) {
+    for(var i = 0; i < sets.data.length; i++) {
+        console.log(sets.data[i].name);
+    }
+});
+```
+
+Selection is only usefull as a stepping stone to related resources that can be easily obtained 
+using the id of the parent. Please refer to the [api documentation] for further reference.
 
 ### Create a new resource
 Create a new color and dump the new resource to the console after saving
@@ -68,3 +93,5 @@ api.users.select('me').colors().then(page => {
   console.dir(page.data);
 });
 ```
+
+[api documentation]: https://api.beta.maps4news.com/docs/
