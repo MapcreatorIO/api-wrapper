@@ -42,19 +42,18 @@ node('npm && yarn') {
 
 	if (BRANCH_NAME in ['master', 'develop']) {
 		stage('tag') {
-			SHOULD_TAG = sh('git describe --exact-match --tag HEAD', returnStatus: true) != 0
+			SHOULD_TAG = sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
 			if (SHOULD_TAG) {
 				if (BRANCH_NAME == 'master') {
-					sh 'npm version minor -m "Auto upgrade to minor %s"'
+					sh 'npm version minor -m "Auto upgrade to minor %s" || true'
 				}
 
 				if (BRANCH_NAME == 'develop') {
-					sh 'npm version patch -m "Auto upgrade to patch %s"'
+					sh 'npm version patch -m "Auto upgrade to patch %s" || true'
 				}
 
-				git_push BRANCH_NAME
-				git_push_tags BRANCH_NAME
+				git_push_tags "HEAD:${BRANCH_NAME}"
 			}
 		}
 
