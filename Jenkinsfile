@@ -40,20 +40,24 @@ node('npm && yarn') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
-  if (BRANCH_NAME in ['master', 'develop']) {
-    stage('tag') {
-      if (BRANCH_NAME == 'master') {
-        sh 'npm version minor -m "Auto upgrade to minor %s"'
-      }
+	if (BRANCH_NAME in ['master', 'develop']) {
+		stage('tag') {
+			SHOULD_TAG = sh('git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
-      if (BRANCH_NAME == 'develop') {
-        sh 'npm version patch -m "Auto upgrade to patch %s"'
-      }
+			if (SHOULD_TAG) {
+				if (BRANCH_NAME == 'master') {
+					sh 'npm version minor -m "Auto upgrade to minor %s"'
+				}
 
-      git_push BRANCH_NAME
-      git_push_tags BRANCH_NAME
-    }
-  }
+				if (BRANCH_NAME == 'develop') {
+					sh 'npm version patch -m "Auto upgrade to patch %s"'
+				}
+
+				git_push BRANCH_NAME
+				git_push_tags BRANCH_NAME
+			}
+		}
+	}
 
 	if (BRANCH_NAME in ['master']) {
 		stage('docs') {
