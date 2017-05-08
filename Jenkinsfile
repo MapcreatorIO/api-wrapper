@@ -37,17 +37,17 @@ node('npm && yarn') {
 	if (BRANCH_NAME in ['master']) {
 		stage('tag') {
 			PACKAGE_VERSION = sh('node -pe "JSON.parse(process.argv[1]).version" "$(cat package.json)"')
-      SET_TAG = sh("git rev-parse ${PACKAGE_VERSION}",  returnStatus: true) != 0
+			SET_TAG = sh("git rev-parse ${PACKAGE_VERSION}",	returnStatus: true) != 0
 
-      if (SET_TAG) {
-        echo "Setting tag ${PACKAGE_VERSION}"
+			if (SET_TAG) {
+				echo "Setting tag ${PACKAGE_VERSION}"
 
-        CHANGELOG = sh('git log --oneline --decorate --no-color $(git tag --sort version:refname | tail -n 1)...HEAD || echo master')
+				CHANGELOG = sh('git log --oneline --decorate --no-color $(git tag --sort version:refname | tail -n 1)...HEAD || echo master')
 
-        sh "git tag -a '${PACKAGE_VERSION}' -m 'Bumping version to ${PACKAGE_VERSION}\nChangelog:\n${CHANGELOG}'"
+				sh "git tag -a '${PACKAGE_VERSION}' -m 'Bumping version to ${PACKAGE_VERSION}\nChangelog:\n${CHANGELOG}'"
 
-        gh_push 'master'
-      }
+				gh_push 'master'
+			}
 		}
 
 		stage('docs') {
