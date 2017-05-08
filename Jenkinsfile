@@ -57,6 +57,16 @@ node('npm && yarn') {
 				git_push_tags BRANCH_NAME
 			}
 		}
+
+		stage('publish') {
+			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
+				sh 'cp ${FILE} .npmrc'
+
+				sh 'npm publish --access=public || echo "Failed upload, skipping..."'
+
+				sh 'rm -v .npmrc'
+			}
+		}
 	}
 
 	if (BRANCH_NAME in ['master']) {
