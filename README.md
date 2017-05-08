@@ -3,8 +3,12 @@ Maps4News Javascript API
 
 The Maps4News API is a powerful mapping service built for our front-end applications. This library is released to 
 provide a painless way of talking to the api using Javascript. See the [LICENSE] file for licensing information. Api 
-tokens can be granted through support requests. The docs can be found [here][docs]. Please refer to the 
-[api documentation] for resource information.
+tokens can be granted through support requests.
+
+## Documentation
+
+The documentation can be found [here][docs]. Please refer to the [api documentation] for resource information. Job 
+structure documentation will be released soon. 
 
 
 ## Download
@@ -35,10 +39,10 @@ yarn install
 ## Authenticating
 Authentication can be done using OAuth. Examples of how to use authentication can be found [in the documentation][docs-auth]. The 
 following authentication methods are supported: 
- - ImplicitFlow 
- - ImplicitPopupFlow
- - PasswordFlow
- - DummyFlow
+ - [ImplicitFlow]
+ - [ImplicitPopupFlow]
+ - [PasswordFlow] ([web][PasswordFlow-web])
+ - [DummyFlow]
 
 ## Examples
 Examples can be found in the documentation under the "[Manual]" section.
@@ -61,3 +65,10 @@ See the [LICENSE] file for license information. This project is licensed under a
 [yarn]: https://yarnpkg.com
 [webpack]: https://webpack.js.org
 [LICENSE]: https://github.com/MapCreatorEU/m4n-api/blob/master/LICENSE
+[BSD-3-Clause]: https://tldrlegal.com/license/bsd-3-clause-license-(revised)
+
+[ImplicitFlow]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html#implicit-flow
+[ImplicitPopupFlow]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html#implicit-flow-pop-up
+[PasswordFlow]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html#password-flow
+[PasswordFlow-web]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html#password-flow-dangerous-
+[DummyFlow]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html#dummy-flow
