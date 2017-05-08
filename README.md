@@ -6,10 +6,10 @@ provide a painless way of talking to the api using Javascript. See the [LICENSE]
 tokens can be granted through support requests.
 
 ## Documentation
+The documentation can be found [here][docs]. Please refer to the [api documentation] for resource information. Job structure documentation will be released soon. 
 
-The documentation can be found [here][docs]. Please refer to the [api documentation] for resource information. Job 
-structure documentation will be released soon. 
-
+## Installation
+Please refer to the installation docs [here][installation].
 
 ## Download
 The library is built to be ran in either the browser or using nodejs. 
@@ -55,6 +55,7 @@ See the [LICENSE] file for license information. This project is licensed under a
 [build-node]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.js
 [build-node-minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.min.js
 
+[installation]: https://mapcreatoreu.github.io/m4n-api/manual/installation/installation.html
 [api documentation]: https://api.beta.maps4news.com/docs/
 [docs]: https://mapcreatoreu.github.io/m4n-api/
 [docs-auth]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html
