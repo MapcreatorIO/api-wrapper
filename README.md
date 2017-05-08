@@ -3,7 +3,8 @@ Maps4News Javascript API
 
 The Maps4News API is a powerful mapping service built for our front-end applications. This library is released to 
 provide a painless way of talking to the api using Javascript. See the [LICENSE] file for licensing information. Api 
-tokens can be granted through support requests. The docs can be found [here][docs]
+tokens can be granted through support requests. The docs can be found [here][docs]. Please refer to the 
+[api documentation] for resource information.
 
 
 ## Download
@@ -32,7 +33,7 @@ yarn install
 ```
 
 ## Authenticating
-Authentication can be done using OAuth. Examples of how to use authentication can be found in the documentation. The 
+Authentication can be done using OAuth. Examples of how to use authentication can be found [in the documentation][docs-auth]. The 
 following authentication methods are supported: 
  - ImplicitFlow 
  - ImplicitPopupFlow
@@ -40,7 +41,7 @@ following authentication methods are supported:
  - DummyFlow
 
 ## Examples
-Examples can be found in the documentation under the "Manual" section.
+Examples can be found in the documentation under the "[Manual]" section.
 
 ## License
 See the [LICENSE] file for license information. This project is licensed under a [BSD-3-Clause] license.
@@ -50,7 +51,10 @@ See the [LICENSE] file for license information. This project is licensed under a
 [build-node]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.js
 [build-node-minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.min.js
 
+[api documentation]: https://api.beta.maps4news.com/docs/
 [docs]: https://mapcreatoreu.github.io/m4n-api/
+[docs-auth]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html
+[manual]: https://mapcreatoreu.github.io/m4n-api/manual/index.html
 [GitHub repo]: https://github.com/MapCreatorEU/m4n-api
 [esdoc]: https://esdoc.org
 [example-basics]: examples/basics.js
