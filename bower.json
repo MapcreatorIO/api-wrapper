@@ -1,0 +1,20 @@
+{
+  "name": "maps4news",
+  "description": "Maps4News JavaScript Api",
+  "main": "dist/bundle.web.js",
+  "authors": [
+    "Bas Bieling <b.bieling@mapcreator.eu>"
+  ],
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "mapping"
+  ],
+  "homepage": "https://mapcreatoreu.github.io/m4n-api",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

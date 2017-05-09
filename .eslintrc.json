@@ -7,7 +7,7 @@
   "parserOptions": {
       "sourceType": "module"
   },
-    "rules": {
+  "rules": {
     "comma-dangle": [1,"always-multiline"],
     "no-cond-assign": [1,"always"],
     "no-console": [1, {"allow": ["warn", "error"]}],

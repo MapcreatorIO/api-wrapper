@@ -1,6 +1,18 @@
 @Library('deployment') _
 import org.mapcreator.Deploy
 
+def git_push(branch) {
+	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch}"
+	}
+}
+
+def git_push_tags(branch) {
+	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch} --tags"
+	}
+}
+
 node('npm && yarn') {
 	if (!isUnix()) {
 		error 'Only compatible with UNIX systems.'
@@ -21,19 +33,45 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		parallel webpack: {
-			sh '$(yarn bin)/webpack'
-		}, esdoc: {
-			sh '$(yarn bin)/esdoc'
-		}, failFast: false
+		sh '$(yarn bin)/webpack'
 	}
 
 	stage('archive') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
-	if (BRANCH_NAME in ['master']) {
+	if (BRANCH_NAME in ['master', 'develop']) {
+		stage('tag') {
+			SHOULD_TAG = sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
+
+			if (SHOULD_TAG) {
+				if (BRANCH_NAME == 'master') {
+					sh 'npm version minor -m "Auto upgrade to minor %s" || true'
+				}
+
+				if (BRANCH_NAME == 'develop') {
+					sh 'npm version patch -m "Auto upgrade to patch %s" || true'
+				}
+
+				git_push_tags "HEAD:${BRANCH_NAME}"
+			}
+		}
+
 		stage('publish') {
+			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
+				sh 'cp ${FILE} .npmrc'
+
+				sh 'npm publish --access=public || echo "Failed upload, skipping..."'
+
+				sh 'rm -v .npmrc'
+			}
+		}
+	}
+
+	if (BRANCH_NAME in ['master']) {
+		stage('docs') {
+			sh '$(yarn bin)/esdoc'
+
 			sh 'mv -v dist docs/'
 			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
 
@@ -48,10 +86,9 @@ node('npm && yarn') {
 			sh 'git add .'
 			sh 'git status'
 
-			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-				sh 'git commit -m "Update auto generated docs"'
-				sh 'git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git gh-pages'
-			}
+			sh 'git commit -m "Update auto generated docs"'
+
+			git_push 'gh-pages'
 		}
 	}
 

@@ -1,20 +1,34 @@
 {
-  "name": "maps4news",
-  "version": "0.1.0",
+  "name": "@mapcreator/maps4news",
+  "version": "0.1.11",
   "description": "Maps4News JavaScript Api",
-  "main": "src/Maps4News.js",
+  "main": "dist/bundle.js",
   "repository": "git@github.com:MapCreatorEU/m4n-api.git",
   "author": "Bas Bieling <b.bieling@mapcreator.eu>",
   "license": "BSD-3-Clause",
+  "files": [
+    "dist/bundle.js"
+  ],
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
+    "bower": "^1.8.0",
     "esdoc": "^0.5.2",
     "eslint": "^3.19.0",
     "webpack": "^2.4.1",
     "webpack-merge": "^4.1.0"
+  },
+  "scripts": {
+    "build": "$(npm bin)/webpack --progress",
+    "docs": "$(npm bin)/esdoc"
+  },
+  "contributors": [
+    "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
+  ],
+  "dependencies": {
+    "fs": "^0.0.1-security"
   }
 }

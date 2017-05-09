@@ -1,4 +1,5 @@
 import CrudBase from './base/CrudBase';
+import UnsupportedCrudError from '../exceptions/UnsupportedCrudError';
 
 export default class SvgSetType extends CrudBase {
   /**
@@ -8,7 +9,7 @@ export default class SvgSetType extends CrudBase {
    * @private
    */
   restore() {
-    throw new Error('Svg set types don\'t support soft deletes');
+    throw new UnsupportedCrudError('Svg set types don\'t support soft deletes');
   }
 
   get path() {
