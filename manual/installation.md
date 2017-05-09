@@ -19,5 +19,15 @@ var auth = new m4n.ImplicitFlow(1);
 var api = new m4n.Maps4News(auth);
 ```
 
+or using ES6 import statements:
+ 
+```js
+import {Maps4News, DummyFlow} from '@mapcreator/maps4news';
+
+// Do stuff
+var auth = new DummyFlow();
+var api = new Maps4News(auth);
+```
+
 [npm]: https://npmjs.com
 [yarn]: https://yarnpkg.com

@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
-  target: 'node', // output is fine for web usage
+  target: 'web', // output is fine for nodejs usage
   entry: {
     'bundle': './src/index.js',
     'bundle.min': './src/index.js',
