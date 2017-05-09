@@ -2,6 +2,13 @@
   "source": "./src",
   "destination": "./docs",
   "name": "maps4news",
+  "scripts": [
+    "./dist/bundle.js",
+    "./manual/js/sandbox.js"
+  ],
+  "styles": [
+    "./manual/css/sidebar_fix.css"
+  ],
   "manual": {
     "example": [
       "./manual/examples.md",
