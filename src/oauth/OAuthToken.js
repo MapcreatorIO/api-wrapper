@@ -117,15 +117,16 @@ export default class OAuthToken {
       expires: this.expires.toUTCString(),
     };
 
-    if (isNode() && forceLocalStorage) {
-      throw new NodeError('Can not force localStorage usage when running under node');
-    } else if (isNode()) {
+    if (isNode()) {
+      if (forceLocalStorage) {
+        throw new NodeError('Can not force localStorage usage when running under node');
+      }
+
       const fs = require('fs');
       const json = JSON.stringify(data, null, 2);
 
       fs.writeFileSync(name, json);
     } else if (window.location.protocol === 'https:' && !forceLocalStorage) {
-
       const dataEncoded = encodeURIComponent(JSON.stringify(data));
 
       document.cookie = `${name}=${dataEncoded}; expires=${data.expires}`;
