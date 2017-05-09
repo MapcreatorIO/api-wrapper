@@ -122,7 +122,9 @@ export default class OAuthToken {
         throw new NodeError('Can not force localStorage usage when running under node');
       }
 
-      const fs = require('fs');
+      // We're using eval to require fs to make sure that it isn't added to the bundle
+      // eslint-disable-next-line no-eval
+      const fs = eval('require("fs")');
       const json = JSON.stringify(data, null, 2);
 
       fs.writeFileSync(name, json);
@@ -143,7 +145,9 @@ export default class OAuthToken {
    */
   static recover(name = OAuthToken._defaultName) {
     if (isNode()) {
-      const fs = require('fs');
+      // We're using eval to require fs to make sure that it isn't added to the bundle
+      // eslint-disable-next-line no-eval
+      const fs = eval('require("fs")');
       const raw = fs.readFileSync(name, json);
       const data = JSON.parse(raw);
 
