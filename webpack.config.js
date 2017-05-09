@@ -1,13 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
-const webpackMerge = require('webpack-merge');
 
-const defaultConfig = {
-  target: 'node',
+module.exports = {
+  target: 'node', // output is fine for web usage
   entry: {
-    'bundle.node': './src/index.js',
-    'bundle.node.min': './src/index.js',
+    'bundle': './src/index.js',
+    'bundle.min': './src/index.js',
   },
   output: {
     filename: '[name].js',
@@ -39,17 +38,3 @@ const defaultConfig = {
     new webpack.BannerPlugin(fs.readFileSync('LICENSE', 'ascii')),
   ],
 };
-
-module.exports = [
-  defaultConfig,
-  webpackMerge(defaultConfig, {
-    target: 'web',
-    entry: {
-      'bundle.web': './src/index.js',
-      'bundle.web.min': './src/index.js',
-    },
-    output: {
-      libraryTarget: 'window',
-    },
-  }),
-];
