@@ -1,9 +1,9 @@
-/**
- * Oauth token container
- */
 import {isNode} from '../utils/node';
 import NodeError from '../exceptions/NodeError';
 
+/**
+ * Oauth token container
+ */
 export default class OAuthToken {
   /**
    * @param {String} token - OAuth token
