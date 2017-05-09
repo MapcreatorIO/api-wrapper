@@ -27,5 +27,8 @@
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
-  ]
+  ],
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
 }
