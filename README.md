@@ -14,8 +14,8 @@ Please refer to the installation docs [here][installation].
 ## Download
 The library is built to be ran in either the browser or using nodejs. 
 
-- [web][build-web] ([minified][build-web-minified])
-- [nodejs][build-node] ([minified][build-node-minified])
+- [download library]
+- [minified]
 
 The source code can be found on the [GitHub repo]. The `master` branch is stable and the `develop` branch is unstable. 
 
@@ -50,10 +50,8 @@ Examples can be found in the documentation under the "[Manual]" section.
 ## License
 See the [LICENSE] file for license information. This project is licensed under a [BSD-3-Clause] license.
 
-[build-web]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.web.js
-[build-web-minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.web.min.js
-[build-node]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.js
-[build-node-minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.node.min.js
+[download library]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.js
+[minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.min.js
 
 [installation]: https://mapcreatoreu.github.io/m4n-api/manual/installation/installation.html
 [api documentation]: https://api.beta.maps4news.com/docs/
