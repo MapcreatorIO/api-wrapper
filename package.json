@@ -6,10 +6,7 @@
   "repository": "git@github.com:MapCreatorEU/m4n-api.git",
   "author": "Bas Bieling <b.bieling@mapcreator.eu>",
   "license": "BSD-3-Clause",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
