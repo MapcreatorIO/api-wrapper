@@ -34,6 +34,7 @@ import PlaceName from './crud/PlaceName';
 import Svg from './crud/Svg';
 import SvgSetType from './crud/SvgSetType';
 import SvgSet from './crud/SvgSet';
+import DummyFlow from './oauth/DummyFlow';
 
 /**
  * Base API class
@@ -43,7 +44,7 @@ export default class Maps4News {
    * @param {OAuth} auth - Authentication flow
    * @param {string} host - Remote API host
    */
-  constructor(auth, host = 'https://api.maps4news.com') {
+  constructor(auth = new DummyFlow(), host = 'https://api.maps4news.com') {
     this.auth = auth;
     this.host = host;
   }
