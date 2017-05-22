@@ -137,9 +137,9 @@ export default class PaginatedResourceListing {
 
       if (Array.isArray(value[key])) {
         if (value[key].length > 0) {
-          for(const query of value[key]) {
+          for (const query of value[key]) {
             if (typeof query !== 'string') {
-              throw new TypeError(`Expected query for "${key}" to be of type "string" got "${typeof key}"`)
+              throw new TypeError(`Expected query for "${key}" to be of type "string" got "${typeof key}"`);
             }
           }
         } else {
@@ -190,7 +190,7 @@ export default class PaginatedResourceListing {
             this.api, this.route,
             this._Target, page, perPage,
             totalPages, rowCount,
-            response.data.map(row => new this._Target(this.api, row)),
+            response.data.map(row => new this._Target(this.api, row))
           );
 
           resolve(instance, request);
