@@ -13,3 +13,7 @@ export {default as ApiError} from './exceptions/ApiError';
 export {AbstractError, AbstractClassError, AbstractMethodError} from './exceptions/AbstractError';
 export {default as ValidationError} from './exceptions/ValidationError';
 export {default as StaticClassError} from './exceptions/StaticClassError';
+
+// Resources
+import * as _resources from './crud/index';
+export const resources = _resources;

@@ -3,6 +3,7 @@ import 'babel-polyfill';
 
 import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
+import DummyFlow from './oauth/DummyFlow';
 import {makeRequest} from './utils/requests';
 import ApiError from './exceptions/ApiError';
 import ValidationError from './exceptions/ValidationError';
@@ -34,7 +35,6 @@ import PlaceName from './crud/PlaceName';
 import Svg from './crud/Svg';
 import SvgSetType from './crud/SvgSetType';
 import SvgSet from './crud/SvgSet';
-import DummyFlow from './oauth/DummyFlow';
 
 /**
  * Base API class
