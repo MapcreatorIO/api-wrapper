@@ -66,9 +66,7 @@ node('npm && yarn') {
 				sh 'rm -v .npmrc'
 			}
 		}
-	}
 
-	if (BRANCH_NAME in ['master']) {
 		stage('docs') {
 			sh '$(yarn bin)/esdoc'
 
