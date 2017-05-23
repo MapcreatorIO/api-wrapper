@@ -148,7 +148,7 @@ export default class OAuthToken {
       // We're using eval to require fs to make sure that it isn't added to the bundle
       // eslint-disable-next-line no-eval
       const fs = eval('require("fs")');
-      const raw = fs.readFileSync(name, json);
+      const raw = fs.readFileSync(name);
       const data = JSON.parse(raw);
 
       return new OAuthToken(data.token, data.type, new Date(data.expires));
