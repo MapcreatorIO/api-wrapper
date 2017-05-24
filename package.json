@@ -45,11 +45,13 @@
       "./manual/css/hide_import.css"
     ],
     "manual": {
+      "badge": false,
       "example": [
         "./manual/examples.md",
         "./manual/examples.authentication.md"
       ],
       "installation": [
+        "./manual/building.md",
         "./manual/installation.md"
       ]
     }
