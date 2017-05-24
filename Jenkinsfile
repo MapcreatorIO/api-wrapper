@@ -80,7 +80,7 @@ node('npm && yarn') {
 			sh 'mv docs/* ./'
 			sh 'rm -r docs'
 
-			sh 'touch .nojekyll'
+			sash 'touch .nojekyll'
 
 			sh 'git config --global user.email "noreply@mapcreator.eu"'
 			sh 'git config --global user.name Jenkins'
