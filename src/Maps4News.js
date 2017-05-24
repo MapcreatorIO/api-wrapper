@@ -1,5 +1,7 @@
 // Polyfill for terrible browsers (looking at you IE)
-import 'babel-polyfill';
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
 
 import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
