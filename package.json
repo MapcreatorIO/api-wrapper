@@ -14,7 +14,6 @@
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
-    "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
     "bower": "^1.8.0",
     "esdoc": "^0.5.2",
@@ -30,6 +29,6 @@
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
   ],
   "dependencies": {
-    "fs": "^0.0.1-security"
+    "babel-polyfill": "^6.23.0"
   }
 }
