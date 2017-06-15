@@ -94,4 +94,18 @@ api.users.select('me').colors().then(page => {
 });
 ```
 
-[api documentation]: https://api.beta.maps4news.com/docs/
+### Searching
+Resource lists can be queried to search for specific records as follows:
+
+```js
+var query = {
+  name: '^:test',
+  scale_min: ['>:1', '<:10'],
+}
+api.layers.search(query).then(console.dir);
+```
+
+The `search` method is an extension of `list`. This means that `.search({})` is the same as 
+`list()`. More information about search query formatting can be found in the [api documentation].
+ 
+[api documepntation]: https://api.beta.maps4news.com/docs/
