@@ -1,4 +1,4 @@
-Maps4News Javascript API
+Maps4News Javascript API [![npm version](https://img.shields.io/npm/v/@mapcreator/maps4news.svg)](https://www.npmjs.com/package/@mapcreator/maps4news)
 -------------------------
 
 The Maps4News API is a powerful mapping service built for our front-end applications. This library is released to 
