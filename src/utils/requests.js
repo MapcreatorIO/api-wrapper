@@ -8,7 +8,7 @@
  * @param {string} responseType - XMLHttpRequest response type
  *
  * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
- * @private
+ * @protected
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
   return new Promise((resolve, reject) => {
@@ -60,17 +60,45 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
 }
 
 /**
- * Encodes an object to a http query string
- * @param {object<string, string>} paramsObject - data to be encoded
+ * Encodes an object to a http query string with support for recursion
+ * @param {object<string, *>} paramsObject - data to be encoded
+ * @returns {string} - encoded http query string
+ *
+ * @protected
+ */
+export function encodeQueryString(paramsObject) {
+  return _encodeQueryString(paramsObject);
+}
+
+/**
+ * Encodes an object to a http query string with support for recursion
+ * @param {Object<string, *>} paramsObject - data to be encoded
+ * @param {Array<string>} _basePrefix - Used internally for tracking recursion
  * @returns {string} - encoded http query string
  *
  * @see http://stackoverflow.com/a/39828481
  * @private
  */
-export function encodeQueryString(paramsObject) {
+function _encodeQueryString(paramsObject, _basePrefix = []) {
   return Object
     .keys(paramsObject)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(paramsObject[key])}`)
-    .join('&');
-}
+    .map(key => {
+      const prefix = _basePrefix.slice(0);
 
+      if (typeof paramsObject[key] === 'object') {
+        prefix.push(key);
+
+        return _encodeQueryString(paramsObject[key], prefix);
+      }
+
+      prefix.push(key);
+
+      let out = '';
+
+      out += encodeURIComponent(prefix.shift()); // main key
+      out += prefix.map(item => `[${encodeURIComponent(item)}]`).join(''); // optional array keys
+      out += '=' + encodeURIComponent(paramsObject[key]); // value
+
+      return out;
+    }).join('&');
+}

@@ -2,7 +2,7 @@ import CrudBase from './base/CrudBase';
 import Layer from './Layer';
 import JobShare from './JobShare';
 import JobResult from './JobResult';
-import {isParentOf} from "../utils/reflection";
+import {isParentOf} from '../utils/reflection';
 
 export default class JobRevision extends CrudBase {
   get baseUrl() {

@@ -1,8 +1,11 @@
 // Polyfill for terrible browsers (looking at you IE)
-import 'babel-polyfill';
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
 
 import {isParentOf} from './utils/reflection';
 import OAuth from './oauth/OAuth';
+import DummyFlow from './oauth/DummyFlow';
 import {makeRequest} from './utils/requests';
 import ApiError from './exceptions/ApiError';
 import ValidationError from './exceptions/ValidationError';
@@ -43,7 +46,7 @@ export default class Maps4News {
    * @param {OAuth} auth - Authentication flow
    * @param {string} host - Remote API host
    */
-  constructor(auth, host = 'https://api.maps4news.com') {
+  constructor(auth = new DummyFlow(), host = 'https://api.maps4news.com') {
     this.auth = auth;
     this.host = host;
   }

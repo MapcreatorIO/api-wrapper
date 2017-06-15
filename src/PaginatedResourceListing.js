@@ -1,6 +1,6 @@
-import {encodeQueryString} from './utils/requests';
-import {isParentOf} from './utils/reflection';
 import Maps4News from './Maps4News';
+import {isParentOf} from './utils/reflection';
+import {encodeQueryString} from './utils/requests';
 
 /**
  * Proxy for accessing paginated resources
@@ -10,6 +10,7 @@ export default class PaginatedResourceListing {
    * @param {Maps4News} api - Instance of the api
    * @param {String} route - Resource route
    * @param {ResourceBase} Target - Wrapper target
+   * @param {Object|{}} query - Search query
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page
    * @param {Number} pageCount - Resolved page count
@@ -17,7 +18,7 @@ export default class PaginatedResourceListing {
    * @param {Array<ResourceBase>} data - Resolved data
    * @private
    */
-  constructor(api, route, Target, page = 1, perPage = 12, pageCount = null, rowCount = 0, data = []) {
+  constructor(api, route, Target, query = {}, page = 1, perPage = 12, pageCount = null, rowCount = 0, data = []) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -25,6 +26,7 @@ export default class PaginatedResourceListing {
     this._api = api;
     this._route = route;
     this._Target = Target;
+    this._query = query;
 
     this._data = data;
     this._page = page;
@@ -107,6 +109,52 @@ export default class PaginatedResourceListing {
   }
 
   /**
+   * Optional search query
+   * @default {}
+   * @return {Object<String, String|Array<String>>} - Query
+   */
+  get query() {
+    return this._query;
+  }
+
+  /**
+   * Optional search query
+   * @param {Object<String, String|Array<String>>} value - Query
+   * @throws TypeError
+   * @default {}
+   * @see ResourceProxy#search
+   */
+  set query(value) {
+    // Verify query structure
+    if (typeof value !== 'object') {
+      throw new TypeError(`Expected value to be of type "object" got "${typeof value}"`);
+    }
+
+    for (const key of Object.keys(value)) {
+      if (typeof key !== 'string') {
+        throw new TypeError(`Expected key to be of type "string" got "${typeof key}"`);
+      }
+
+      if (Array.isArray(value[key])) {
+        if (value[key].length > 0) {
+          for (const query of value[key]) {
+            if (typeof query !== 'string') {
+              throw new TypeError(`Expected query for "${key}" to be of type "string" got "${typeof key}"`);
+            }
+          }
+        } else {
+          // Drop empty nodes
+          delete value[key];
+        }
+      } else if (typeof value[key] !== 'string') {
+        throw new TypeError(`Expected query value to be of type "string" or "array" got "${typeof key}"`);
+      }
+    }
+
+    this._query = value;
+  }
+
+  /**
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
@@ -122,6 +170,11 @@ export default class PaginatedResourceListing {
 
     if (perPage) {
       query['per_page'] = Math.max(1, perPage);
+    }
+
+    // Add search query (if any)
+    if (Object.keys(this.query).length > 0) {
+      query['search'] = this.query;
     }
 
     const url = `${this.route}?${encodeQueryString(query)}`;
