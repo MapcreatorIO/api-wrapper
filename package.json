@@ -1,6 +1,6 @@
 {
   "name": "@mapcreator/maps4news",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Maps4News JavaScript Api",
   "main": "dist/bundle.js",
   "repository": "git@github.com:MapCreatorEU/m4n-api.git",
@@ -35,7 +35,10 @@
     "source": "./src",
     "destination": "./docs",
     "name": "maps4news",
-    "access": ["public", "protected"],
+    "access": [
+      "public",
+      "protected"
+    ],
     "scripts": [
       "./dist/bundle.js",
       "./manual/js/sandbox.js"
