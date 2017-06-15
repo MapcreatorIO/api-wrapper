@@ -1,6 +1,7 @@
-import CrudBase from './base/CrudBase';
+import CrudSetBase from './base/CrudSetBase';
+import Font from './Font';
 
-export default class FontFamily extends CrudBase {
+export default class FontFamily extends CrudSetBase {
   get path() {
     return '/fonts/families/{id}';
   }
@@ -11,5 +12,9 @@ export default class FontFamily extends CrudBase {
 
   get ownable() {
     return true;
+  }
+
+  get _Child() {
+    return Font;
   }
 }
