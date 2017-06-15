@@ -40,9 +40,10 @@ node('npm && yarn') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
-	if (BRANCH_NAME in ['master', 'develop']) {
+	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
+
+	if (SHOULD_TAG) {
 		stage('tag') {
-			SHOULD_TAG = sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
 			if (SHOULD_TAG) {
 				if (BRANCH_NAME == 'master') {
@@ -79,7 +80,7 @@ node('npm && yarn') {
 			sh 'mv docs/* ./'
 			sh 'rm -r docs'
 
-      sh 'touch .nojekyll'
+			sh 'touch .nojekyll'
 
 			sh 'git config --global user.email "noreply@mapcreator.eu"'
 			sh 'git config --global user.name Jenkins'

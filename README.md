@@ -1,4 +1,4 @@
-Maps4News Javascript API
+Maps4News Javascript API [![npm version](https://img.shields.io/npm/v/@mapcreator/maps4news.svg)](https://www.npmjs.com/package/@mapcreator/maps4news)
 -------------------------
 
 The Maps4News API is a powerful mapping service built for our front-end applications. This library is released to 
@@ -20,21 +20,7 @@ The library is built to be ran in either the browser or using nodejs.
 The source code can be found on the [GitHub repo]. The `master` branch is stable and the `develop` branch is unstable. 
 
 ## Building
-Building the api can be done using [yarn] and [webpack]. The result will be placed in the `/dist` folder. Both the web 
-and nodejs releases are built this way.
-
-```sh
-yarn install
-./node_modules/.bin/webpack --progress
-```
-
-## Building docs
-The docs can be built using [esdoc] after which they can be found in the `/docs` folder.
-
-```sh
-yarn install
-./node_modules/.bin/esdoc
-```
+Please refer to the build docs [here][building]
 
 ## Authenticating
 Authentication can be done using OAuth. Examples of how to use authentication can be found [in the documentation][docs-auth]. The 
@@ -54,6 +40,7 @@ See the [LICENSE] file for license information. This project is licensed under a
 [minified]: https://mapcreatoreu.github.io/m4n-api/dist/bundle.min.js
 
 [installation]: https://mapcreatoreu.github.io/m4n-api/manual/installation/installation.html
+[building]: https://mapcreatoreu.github.io/m4n-api/manual/installation/building.html
 [api documentation]: https://api.beta.maps4news.com/docs/
 [docs]: https://mapcreatoreu.github.io/m4n-api/
 [docs-auth]: https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html
