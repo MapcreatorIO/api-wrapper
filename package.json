@@ -30,5 +30,29 @@
   ],
   "dependencies": {
     "babel-polyfill": "^6.23.0"
+  },
+  "esdoc": {
+    "source": "./src",
+    "destination": "./docs",
+    "name": "maps4news",
+    "access": ["public", "protected"],
+    "scripts": [
+      "./dist/bundle.js",
+      "./manual/js/sandbox.js"
+    ],
+    "styles": [
+      "./manual/css/sidebar_fix.css",
+      "./manual/css/hide_import.css"
+    ],
+    "manual": {
+      "example": [
+        "./manual/examples.md",
+        "./manual/examples.authentication.md"
+      ],
+      "installation": [
+        "./manual/building.md",
+        "./manual/installation.md"
+      ]
+    }
   }
 }

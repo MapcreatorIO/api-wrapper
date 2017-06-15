@@ -16,4 +16,11 @@ export {default as StaticClassError} from './exceptions/StaticClassError';
 
 // Resources
 import * as _resources from './crud/index';
+
+/**
+ * Resource export. Set to private in jsdoc to make sure
+ * it doesn't show up as a useless doc page in the docs.
+ * @type {object<string, ResourceBase>} resources
+ * @private
+ */
 export const resources = _resources;
