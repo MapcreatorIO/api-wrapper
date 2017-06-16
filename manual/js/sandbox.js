@@ -4,19 +4,26 @@
   }
 })();
 
-function easyAuth() {
-  var m4n = window.maps4news;
+(function() {
+  var docsUrl = 'https://mapcreatoreu.github.io/m4n-api/';
 
-  var clientId = 3;
-  var callback = 'https://mapcreatoreu.github.io/m4n-api/';
-  var auth = new m4n.ImplicitFlowPopup(clientId, callback);
-  var api = new m4n.Maps4News(auth);
+  if(window.location.toString().startsWith(docsUrl)) {
+    function easyAuth() {
+      var m4n = window.maps4news;
 
-  api.host = 'https://api.beta.maps4news.com/';
+      var clientId = 3;
+      var auth = new m4n.ImplicitFlowPopup(clientId, docsUrl);
+      var api = new m4n.Maps4News(auth);
 
-  return api.authenticate();
-}
+      api.host = 'https://api.beta.maps4news.com/';
 
-console.log('You can play around with the api in here, the library is bound to window.maps4news. Authentication can easily be done by running the command easyAuth()');
-console.log('window.maps4news =', window.maps4news);
-console.log('Example: easyAuth().then(api => window.api = api);');
+      return api.authenticate();
+    }
+
+    console.log('You can play around with the api in here, the library is bound to window.maps4news. Authentication ');
+    console.log('can easily be done by running the command easyAuth(). See the docs for more information here: ');
+    console.log('https://mapcreatoreu.github.io/m4n-api/manual/example/examples.authentication.html');
+    console.log('\nwindow.maps4news =', window.maps4news);
+    console.log('Example: easyAuth().then(api => window.api = api);');
+  }
+})();
