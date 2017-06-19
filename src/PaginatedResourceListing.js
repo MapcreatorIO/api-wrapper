@@ -158,7 +158,7 @@ export default class PaginatedResourceListing {
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
   getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
@@ -215,7 +215,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Get next page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
   next() {
     return this.getPage(this.page + 1);
@@ -223,7 +223,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Get previous page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
   previous() {
     return this.getPage(this.page - 1);

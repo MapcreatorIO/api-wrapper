@@ -43,7 +43,7 @@ export default class CrudBase extends ResourceBase {
    * @param {String} url - Target url, if not set it will guess
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    * @protected
    */
   _listResource(Target, url = null, page = 1, perPage = null) {
@@ -60,7 +60,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Save item. This will create a new item if `id` is unset
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    */
   save() {
     return !this.id ? this._create() : this._update();
@@ -68,7 +68,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Store new item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    * @private
    */
   _create() {
@@ -87,7 +87,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Update existing item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    * @private
    */
   _update() {
@@ -101,7 +101,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Delete item
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    */
   delete() {
     return this.api.request(this.url, 'DELETE');
@@ -109,7 +109,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Restore item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    */
   restore() {
     return new Promise((resolve, reject) => {

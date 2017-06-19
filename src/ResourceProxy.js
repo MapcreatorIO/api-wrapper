@@ -55,7 +55,7 @@ export default class ResourceProxy {
    * @param {Object<String, String|Array<String>>} query - Query
    * @param {Number} page - The page to be requested
    * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    *
    * @example
    * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
@@ -78,7 +78,7 @@ export default class ResourceProxy {
    * Lists target resource
    * @param {Number} page - The page to be requested
    * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
   list(page = 1, perPage = null) {
     return this.search({}, page, perPage);
@@ -87,7 +87,7 @@ export default class ResourceProxy {
   /**
    * Get target resource
    * @param {Number|String} id - The resource id to be requested
-   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   get(id) {
     const url = this.new({id: id}).url;

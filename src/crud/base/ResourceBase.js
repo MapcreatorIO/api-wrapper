@@ -56,7 +56,7 @@ export default class ResourceBase {
   /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
-   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   refresh(updateSelf = true) {
     return new Promise((resolve, reject) => {

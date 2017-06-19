@@ -44,7 +44,7 @@ export default class ImageHandler {
 
   /**
    * Delete image
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    */
   delete() {
     return this._api.request(this.url, 'DELETE');
@@ -52,7 +52,7 @@ export default class ImageHandler {
 
   /**
    * Get image base64 representation
-   * @returns {Promise} - Resolves with a {@link String} containing a base64 representation of the image and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with a {@link String} containing a base64 representation of the image and rejects with {@link ApiError}
    */
   download() {
     return new Promise((resolve, reject) => {
@@ -72,7 +72,7 @@ export default class ImageHandler {
   /**
    * Upload new image
    * @param {File} image - Image file
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    * @todo refactor
    */
   upload(image) {

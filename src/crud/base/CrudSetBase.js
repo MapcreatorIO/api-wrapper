@@ -9,7 +9,7 @@ export default class CrudSetBase extends CrudBase {
 
   /**
    * Get items associated with the set
-   * @returns {Promise} - Resolves with {@link Dimension} instance and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link Dimension} instance and rejects with {@link ApiError}
    */
   items() {
     const url = `${this.url}/items`;

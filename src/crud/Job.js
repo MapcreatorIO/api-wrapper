@@ -5,7 +5,7 @@ import JobRevision from './JobRevision';
 export default class Job extends CrudBase {
   /**
    * Get the list of associated job results
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobResult} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobResult} instances and rejects with {@link ApiError}
    */
   results() {
     return this._listResource(JobResult, `${this.url}/results`);
@@ -13,7 +13,7 @@ export default class Job extends CrudBase {
 
   /**
    * Get the list job revisions
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobRevision} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobRevision} instances and rejects with {@link ApiError}
    */
   revisions() {
     return this._listResource(JobRevision, `${this.url}/revisions`);
@@ -22,7 +22,7 @@ export default class Job extends CrudBase {
   /**
    * Get revision by id
    * @param {string} id - Revision id
-   * @returns {Promise} -  Resolves with {@link JobRevision} instance and rejects with {@link OAuthError}
+   * @returns {Promise} -  Resolves with {@link JobRevision} instance and rejects with {@link ApiError}
    */
   getRevision(id = 'last') {
     return new Promise((resolve, reject) => {

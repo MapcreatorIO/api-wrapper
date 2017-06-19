@@ -51,7 +51,7 @@ export default class User extends CrudBase {
   // region Resource listing
   /**
    * Get the list notifications linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link ApiError}
    */
   notifications() {
     return this._listResource(Notification);
@@ -59,7 +59,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list mapstyle sets linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link MapstyleSet} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link MapstyleSet} instances and rejects with {@link ApiError}
    */
   mapstyleSets() {
     return this._listResource(MapstyleSet);
@@ -67,7 +67,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list dimension sets linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link DimensionSet} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link DimensionSet} instances and rejects with {@link ApiError}
    */
   dimensionSets() {
     return this._listResource(DimensionSet);
@@ -75,7 +75,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list font families linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link FontFamily} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link FontFamily} instances and rejects with {@link ApiError}
    */
   fontFamilies() {
     return this._listResource(FontFamily);
@@ -83,7 +83,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list svg sets linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link SvgSet} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link SvgSet} instances and rejects with {@link ApiError}
    */
   svgSets() {
     return this._listResource(SvgSet);
@@ -91,7 +91,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list colors linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Color} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Color} instances and rejects with {@link ApiError}
    */
   colors() {
     return this._listResource(Color);
@@ -99,7 +99,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list jobs linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Job} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Job} instances and rejects with {@link ApiError}
    */
   jobs() {
     return this._listResource(Job);
@@ -107,7 +107,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list features linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Feature} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Feature} instances and rejects with {@link ApiError}
    */
   features() {
     return this._listResource(Feature);
@@ -115,7 +115,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list layers linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Layer} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Layer} instances and rejects with {@link ApiError}
    */
   layers() {
     return this._listResource(Layer);
@@ -123,7 +123,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list job types linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobType} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobType} instances and rejects with {@link ApiError}
    */
   jobTypes() {
     return this._listResource(JobType);
@@ -131,7 +131,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list job shares linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobShare} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobShare} instances and rejects with {@link ApiError}
    */
   jobShares() {
     return this._listResource(JobShare);
@@ -139,7 +139,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the list job shares linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Permission} instances and rejects with {@link OAuthError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Permission} instances and rejects with {@link ApiError}
    */
   permissions() {
     return this._listResource(Permission);
