@@ -25,8 +25,12 @@ export default class PasswordFlow extends OAuth {
     this._path = '/oauth/token';
 
     // Because the client requires a secret HTTPS is highly recommended
-    if (!isNode() && window.location.protocol !== 'https:') {
-      console.warn("Page was not loaded using https. You're probably leaking secrets right now");
+    if (!isNode()) {
+      console.warn('Using PasswordFlow in the browser is unrecommended. More information: https://nnmm.nl/?MXF');
+
+      if (window.location.protocol !== 'https:') {
+        console.warn('Page was not loaded using https. You\'re most likely leaking secrets right now');
+      }
     }
   }
 
