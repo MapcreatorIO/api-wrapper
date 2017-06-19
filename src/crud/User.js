@@ -45,7 +45,7 @@ export default class User extends CrudBase {
    * @returns {Promise} - Resolves with {@link Language} instance and rejects with {@link ApiError}
    */
   language() {
-    return (new ResourceProxy(this.api, Language)).get(this.organisationId);
+    return (new ResourceProxy(this.api, Language)).get(this.languageCode);
   }
 
   // region Resource listing
