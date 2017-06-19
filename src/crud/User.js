@@ -10,6 +10,7 @@ import Layer from './Layer';
 import Job from './Job';
 import JobType from './JobType';
 import JobShare from './JobShare';
+import Permission from './Permission';
 
 export default class User extends CrudBase {
   get resourceName() {
@@ -115,5 +116,13 @@ export default class User extends CrudBase {
    */
   jobShares() {
     return this._listResource(JobShare);
+  }
+
+  /**
+   * Get the list job shares linked to the user
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Permission} instances and rejects with {@link OAuthError}
+   */
+  permissions() {
+    return this._listResource(Permission);
   }
 }

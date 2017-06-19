@@ -1,14 +1,14 @@
 import CrudBase from './base/CrudBase';
-import MapstyleSet from './MapstyleSet';
-import DimensionSet from './DimensionSet';
-import FontFamily from './FontFamily';
-import SvgSet from './SvgSet';
 import Color from './Color';
-import Feature from './Feature';
-import Layer from './Layer';
-import JobType from './JobType';
-import JobShare from './JobShare';
 import Contract from './Contract';
+import DimensionSet from './DimensionSet';
+import Feature from './Feature';
+import FontFamily from './FontFamily';
+import JobShare from './JobShare';
+import JobType from './JobType';
+import Layer from './Layer';
+import MapstyleSet from './MapstyleSet';
+import SvgSet from './SvgSet';
 import User from './User';
 
 export default class Organisation extends CrudBase {
@@ -24,7 +24,7 @@ export default class Organisation extends CrudBase {
   /**
    * Attach items to the organisation
    * @param {Array<ResourceBase>} items - List of items to attach
-   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
+   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    */
   attach(items) {
     return this._modifyResourceLink(items, 'POST');
@@ -33,7 +33,7 @@ export default class Organisation extends CrudBase {
   /**
    * Unlink items from the organisation
    * @param {Array<ResourceBase>} items - List of items to unlink
-   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
+   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    */
   unlink(items) {
     return this._modifyResourceLink(items, 'DELETE');
@@ -43,11 +43,11 @@ export default class Organisation extends CrudBase {
    * Sync, attach or unlink resources
    * @param {Array<ResourceBase>} items - List of items to sync or attach
    * @param {String} method - Http method to use
-   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
+   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @private
    */
   _modifyResourceLink(items, method) {
-    const collections = this._reduceOwnable(items);
+    const collections  = this._reduceOwnable(items);
     const out = [];
 
     for (const key of Object.keys(collections)) {
