@@ -34,9 +34,6 @@ node('npm && yarn') {
 
 	stage('build') {
 		sh '$(yarn bin)/webpack'
-	}
-
-	stage('archive') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
