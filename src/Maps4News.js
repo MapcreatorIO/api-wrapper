@@ -100,6 +100,7 @@ export default class Maps4News {
    * @param {string} value - A valid url
    */
   set host(value) {
+    value = value.replace(/\/+$/, '');
     this._host = value;
     this._auth.host = value;
   }
@@ -401,5 +402,17 @@ export default class Maps4News {
    */
   get users() {
     return new ResourceProxy(this, User);
+  }
+
+  /**
+   * Test if XHR requests can be made
+   * @returns {Promise} - resolves/rejects with the HTTP response status code. Rejects if status code != 2xx
+   */
+  testXhr() {
+    return new Promise((reject, resolve) => {
+      makeRequest(`${this.host}/favicon.ico`)
+        .then(x=>resolve(x.status))
+        .catch(x=>reject(x.status));
+    });
   }
 }
