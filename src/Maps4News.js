@@ -17,7 +17,6 @@ import DimensionSet from './crud/DimensionSet';
 import Dimension from './crud/Dimension';
 import Faq from './crud/Faq';
 import Feature from './crud/Feature';
-import Group from './crud/Group';
 import FontFamily from './crud/FontFamily';
 import Font from './crud/Font';
 import Highlight from './crud/Highlight';
@@ -249,15 +248,6 @@ export default class Maps4News {
    */
   get fontFamilies() {
     return new ResourceProxy(this, FontFamily);
-  }
-
-  /**
-   * Group accessor
-   * @see {@link Group}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get groups() {
-    return new ResourceProxy(this, Group);
   }
 
   /**

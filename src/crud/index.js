@@ -7,7 +7,6 @@ export {default as Faq} from './Faq';
 export {default as Feature} from './Feature';
 export {default as Font} from './Font';
 export {default as FontFamily} from './FontFamily';
-export {default as Group} from './Group';
 export {default as Highlight} from './Highlight';
 export {default as InsetMap} from './InsetMap';
 export {default as Job} from './Job';
