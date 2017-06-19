@@ -11,6 +11,9 @@ import Job from './Job';
 import JobType from './JobType';
 import JobShare from './JobShare';
 import Permission from './Permission';
+import Organisation from './Organisation';
+import ResourceProxy from '../ResourceProxy';
+import Language from './Language';
 
 export default class User extends CrudBase {
   get resourceName() {
@@ -29,7 +32,23 @@ export default class User extends CrudBase {
     });
   }
 
-  // Resource listing
+  /**
+   * Get the user's organisation
+   * @returns {Promise} - Resolves with {@link Organisation} instance and rejects with {@link ApiError}
+   */
+  organisation() {
+    return (new ResourceProxy(this.api, Organisation)).get(this.organisationId);
+  }
+
+  /**
+   * Get the user's language
+   * @returns {Promise} - Resolves with {@link Language} instance and rejects with {@link ApiError}
+   */
+  language() {
+    return (new ResourceProxy(this.api, Language)).get(this.organisationId);
+  }
+
+  // region Resource listing
   /**
    * Get the list notifications linked to the user
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link OAuthError}
@@ -125,4 +144,6 @@ export default class User extends CrudBase {
   permissions() {
     return this._listResource(Permission);
   }
+
+  // endregion
 }

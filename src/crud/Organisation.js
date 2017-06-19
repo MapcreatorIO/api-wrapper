@@ -47,7 +47,7 @@ export default class Organisation extends CrudBase {
    * @private
    */
   _modifyResourceLink(items, method) {
-    const collections  = this._reduceOwnable(items);
+    const collections = this._reduceOwnable(items);
     const out = [];
 
     for (const key of Object.keys(collections)) {
