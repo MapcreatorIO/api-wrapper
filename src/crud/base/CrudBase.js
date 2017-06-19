@@ -48,7 +48,7 @@ export default class CrudBase extends ResourceBase {
    */
   _listResource(Target, url = null, page = 1, perPage = null) {
     if (!url) {
-      url = `${this.url}/${(new Target(this.api)).resourceName}s`;
+      url = `${this.url}/${(new Target(this.api)).resourceName.replace(/s+$/, '')}s`;
     }
 
     const resolver = new PaginatedResourceListing(this.api, url, Target);
