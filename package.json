@@ -23,6 +23,7 @@
   },
   "scripts": {
     "build": "$(npm bin)/webpack --progress",
+    "watch": "$(npm bin)/webpack --progress --watch",
     "docs": "$(npm bin)/esdoc"
   },
   "contributors": [
