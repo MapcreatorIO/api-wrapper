@@ -328,7 +328,7 @@ export default class Maps4News {
    * @see {@link MapstyleSet}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get mapstylesSets() {
+  get mapstyleSets() {
     return new ResourceProxy(this, MapstyleSet);
   }
 
