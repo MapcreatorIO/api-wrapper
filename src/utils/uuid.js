@@ -12,7 +12,7 @@ export default class Uuid extends StaticClass {
    */
   static uuid4() {
     // Use the secure method if possible
-    return typeof crypto !== 'undefined' ? Uuid._uuid4Safe() : Uuid._uuid4Unsafe();
+    return typeof crypto !== 'undefined' && crypto.getRandomValues ? Uuid._uuid4Safe() : Uuid._uuid4Unsafe();
   }
 
   /**
