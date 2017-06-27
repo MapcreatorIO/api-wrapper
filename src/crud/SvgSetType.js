@@ -12,7 +12,7 @@ export default class SvgSetType extends CrudBase {
     throw new UnsupportedCrudError('Svg set types don\'t support soft deletes');
   }
 
-  get path() {
+  get resourcePath() {
     return '/svgs/sets/types/{id}';
   }
 

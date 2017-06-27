@@ -2,7 +2,7 @@ import CrudSetBase from './base/CrudSetBase';
 import Font from './Font';
 
 export default class FontFamily extends CrudSetBase {
-  get path() {
+  get resourcePath() {
     return '/fonts/families/{id}';
   }
 

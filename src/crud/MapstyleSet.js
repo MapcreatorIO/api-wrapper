@@ -2,7 +2,7 @@ import CrudSetBase from './base/CrudSetBase';
 import Mapstyle from './Mapstyle';
 
 export default class MapstyleSet extends CrudSetBase {
-  get path() {
+  get resourcePath() {
     return '/mapstyles/sets/{id}';
   }
 

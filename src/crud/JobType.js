@@ -1,7 +1,7 @@
 import CrudBase from './base/CrudBase';
 
 export default class JobType extends CrudBase {
-  get path() {
+  get resourcePath() {
     return '/jobs/types/{id}';
   }
 

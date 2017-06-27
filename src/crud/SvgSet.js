@@ -2,7 +2,7 @@ import CrudSetBase from './base/CrudSetBase';
 import Svg from './Svg';
 
 export default class SvgSet extends CrudSetBase {
-  get path() {
+  get resourcePath() {
     return '/svgs/sets/{id}';
   }
 

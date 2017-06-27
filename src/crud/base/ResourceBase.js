@@ -40,7 +40,7 @@ export default class ResourceBase {
    * Resource path template
    * @returns {String} - Path template
    */
-  get path() {
+  get resourcePath() {
     return `/${this.resourceName}/\{id}`;
   }
 
@@ -113,7 +113,7 @@ export default class ResourceBase {
    * @returns {string} - Resource url
    */
   get url() {
-    let url = `${this._api.host}/${this._api.version}${this.path}`;
+    let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
 
     for (const key of Object.keys(this._baseProperties)) {
       url = url.replace(`{${key}}`, this[key]);
@@ -127,7 +127,7 @@ export default class ResourceBase {
    * @returns {string} - Resource base url
    */
   get baseUrl() {
-    const basePath = this.path.match(/^(\/[^{]+\b)/)[1];
+    const basePath = this.resourcePath.match(/^(\/[^{]+\b)/)[1];
 
     return `${this._api.host}/${this._api.version}${basePath}`;
   }

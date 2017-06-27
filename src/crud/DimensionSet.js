@@ -5,7 +5,7 @@ import Dimension from './Dimension';
  * Dimension sets
  */
 export default class DimensionSet extends CrudSetBase {
-  get path() {
+  get resourcePath() {
     return '/dimensions/sets/{id}';
   }
 
