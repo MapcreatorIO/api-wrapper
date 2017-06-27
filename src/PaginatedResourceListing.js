@@ -1,10 +1,10 @@
-import Maps4News from './Maps4News';
-import {isParentOf} from './utils/reflection';
-import {encodeQueryString} from './utils/requests';
-
 /**
  * Proxy for accessing paginated resources
  */
+import Maps4News from './Maps4News';
+import {getTypeName, isParentOf} from './utils/reflection';
+import {encodeQueryString} from './utils/requests';
+
 export default class PaginatedResourceListing {
   /**
    * @param {Maps4News} api - Instance of the api
@@ -127,19 +127,19 @@ export default class PaginatedResourceListing {
   set query(value) {
     // Verify query structure
     if (typeof value !== 'object') {
-      throw new TypeError(`Expected value to be of type "object" got "${typeof value}"`);
+      throw new TypeError(`Expected value to be of type "Object" got "${getTypeName(value)}"`);
     }
 
     for (const key of Object.keys(value)) {
       if (typeof key !== 'string') {
-        throw new TypeError(`Expected key to be of type "string" got "${typeof key}"`);
+        throw new TypeError(`Expected key to be of type "String" got "${getTypeName(key)}"`);
       }
 
       if (Array.isArray(value[key])) {
         if (value[key].length > 0) {
           for (const query of value[key]) {
             if (typeof query !== 'string') {
-              throw new TypeError(`Expected query for "${key}" to be of type "string" got "${typeof key}"`);
+              throw new TypeError(`Expected query for "${key}" to be of type "String" got "${getTypeName(query)}"`);
             }
           }
         } else {
@@ -147,7 +147,7 @@ export default class PaginatedResourceListing {
           delete value[key];
         }
       } else if (typeof value[key] !== 'string') {
-        throw new TypeError(`Expected query value to be of type "string" or "array" got "${typeof key}"`);
+        throw new TypeError(`Expected query value to be of type "string" or "Array" got "${getTypeName(key)}"`);
       }
     }
 

@@ -28,3 +28,9 @@ export function isParentOf(parent, child) {
 
   return false;
 }
+
+export function getTypeName(value) {
+  value = typeof value === 'function' ? value : value.constructor;
+
+  return value.name;
+}
