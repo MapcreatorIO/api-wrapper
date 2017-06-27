@@ -18,9 +18,11 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
 
     request.responseType = responseType;
 
-    const hasContentType = Object.keys(headers)
-        .filter(x => x.toLowerCase() === 'content-type')
-        .length > 0;
+    function hasHeader(h) {
+      return Object.keys(headers)
+          .filter(x => x.toLowerCase() === h.toLowerCase())
+          .length > 0;
+    }
 
     request.open(method, url, true);
 
@@ -28,11 +30,15 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
     if (typeof body === 'object') {
       body = JSON.stringify(body);
 
-      if (!hasContentType) {
+      if (!hasHeader('Content-Type')) {
         headers['Content-Type'] = 'application/json';
       }
-    } else if (body && !hasContentType) {
+    } else if (body && !hasHeader('Content-Type')) {
       headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
+
+    if (!hasHeader('Accept')) {
+      headers['Accept'] = 'application/json';
     }
 
     // Apply headers
