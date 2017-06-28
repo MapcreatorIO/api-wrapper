@@ -1,7 +1,7 @@
-import {snakeToCamelCase} from '../../utils/caseConverter';
 import {AbstractClassError, AbstractError} from '../../exceptions/AbstractError';
-import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
+import {snakeToCamelCase} from '../../utils/caseConverter';
+import {isParentOf} from '../../utils/reflection';
 
 /**
  * Resource base
@@ -79,8 +79,11 @@ export default class ResourceBase {
    * @private
    */
   _applyProperties() {
-    for (const key of Object.keys(this._baseProperties)) {
-      Object.defineProperty(this, snakeToCamelCase(key), {
+    const protectedFields = ['id', 'created_at', 'updated_at', 'deleted_at'];
+    const fields = Object.keys(this._baseProperties);
+
+    for (const key of fields) {
+      const desc = {
         enumerable: true,
         configurable: true,
 
@@ -91,10 +94,24 @@ export default class ResourceBase {
 
           return this._baseProperties[key];
         },
+      };
 
-        set: (val) => {
-          this._properties[key] = val;
-          return val;
+      if (!protectedFields.includes(key)) {
+        // eslint-disable-next-line no-return-assign
+        desc.set = val => this._properties[key] = val;
+      }
+
+      Object.defineProperty(this, snakeToCamelCase(key), desc);
+    }
+
+    // Add deleted field if possible
+    if (fields.includes('deleted_at')) {
+      Object.defineProperty(this, 'deleted', {
+        enumerable: true,
+        configurable: true,
+
+        get: () => {
+          return Boolean(this.deletedAt);
         },
       });
     }
