@@ -3,6 +3,10 @@ import {OwnableResource} from '../traits/OwnableResource';
 import CrudBase from './base/CrudBase';
 import ImageHandler from './base/ImageHandler';
 
+/**
+ * Layer
+ * @extends CrudBase
+ */
 export default class Layer extends mix(CrudBase).with(OwnableResource) {
   /**
    * Handler for item image management

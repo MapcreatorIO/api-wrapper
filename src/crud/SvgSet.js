@@ -3,6 +3,11 @@ import {OwnableResource} from '../traits/OwnableResource';
 import CrudSetBase from './base/CrudSetBase';
 import Svg from './Svg';
 
+/**
+ * Svg set
+ * @extends {CrudSetBase}
+ * @mixes {OwnableResource}
+ */
 export default class SvgSet extends mix(CrudSetBase).with(OwnableResource) {
   get resourcePath() {
     return '/svgs/sets/{id}';
