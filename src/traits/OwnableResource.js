@@ -1,10 +1,9 @@
-/**
- * @public
- * @mixin
- */
 import {isParentOf, Trait} from '../utils/reflection';
 
-
+/**
+ * Provides a {@link ResourceBase} with functions for dealing with being ownable by an organisation
+ * @mixin
+ */
 export default class OwnableResource extends Trait {
   /**
    *
