@@ -39,23 +39,23 @@ node('npm && yarn') {
 
 	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
-	if (SHOULD_TAG) {
-		stage('tag') {
 
-			if (SHOULD_TAG) {
-				if (BRANCH_NAME == 'master') {
-					sh 'npm version minor -m "Auto upgrade to minor %s" || true'
-				}
+  stage('tag') {
+    if (SHOULD_TAG) {
+      if (BRANCH_NAME == 'master') {
+        sh 'npm version minor -m "Auto upgrade to minor %s" || true'
+      }
 
-				if (BRANCH_NAME == 'develop') {
-					sh 'npm version patch -m "Auto upgrade to patch %s" || true'
-				}
+      if (BRANCH_NAME == 'develop') {
+        sh 'npm version patch -m "Auto upgrade to patch %s" || true'
+      }
 
-				git_push_tags "HEAD:${BRANCH_NAME}"
-			}
-		}
+      git_push_tags "HEAD:${BRANCH_NAME}"
+    }
+  }
 
-		stage('publish') {
+  stage('publish') {
+		if (SHOULD_TAG) {
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
 
@@ -63,30 +63,33 @@ node('npm && yarn') {
 
 				sh 'rm -v .npmrc'
 			}
-		}
+    }
+  }
 
-		stage('docs') {
+  stage('docs') {
 			sh '$(yarn bin)/esdoc'
 
-			sh 'mv -v dist docs/'
-			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
+			if (SHOULD_TAG) {
+        sh 'mv -v dist docs/'
+        sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
 
-			sh 'git checkout gh-pages'
+        sh 'git checkout gh-pages'
 
-			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
-			sh 'mv docs/* ./'
-			sh 'rm -r docs'
+        sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
+        sh 'mv docs/* ./'
+        sh 'rm -r docs'
 
-			sh 'touch .nojekyll'
+        sh 'touch .nojekyll'
 
-			sh 'git config --global user.email "noreply@mapcreator.eu"'
-			sh 'git config --global user.name Jenkins'
-			sh 'git add .'
-			sh 'git status'
+        sh 'git config --global user.email "noreply@mapcreator.eu"'
+        sh 'git config --global user.name Jenkins'
+        sh 'git add .'
+        sh 'git status'
 
-			sh 'git commit -m "Update auto generated docs"'
+        sh 'git commit -m "Update auto generated docs"'
 
-			git_push 'gh-pages'
+        git_push 'gh-pages'
+			}
 		}
 	}
 
