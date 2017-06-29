@@ -1,15 +1,8 @@
 import CrudBase from './base/CrudBase';
-import ImageHandler from './base/ImageHandler';
+import HandlesImages from '../traits/HandlesImages';
+import {mix} from '../utils/reflection';
 
-export default class Mapstyle extends CrudBase {
-  /**
-   * Handler for item image management
-   * @returns {ImageHandler} - Image handler
-   */
-  get imageHandler() {
-    return new ImageHandler(this.api, this);
-  }
-
+export default class Mapstyle extends mix(CrudBase, HandlesImages) {
   get resourceName() {
     return 'mapstyles';
   }
