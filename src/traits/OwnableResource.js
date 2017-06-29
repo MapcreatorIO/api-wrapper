@@ -1,17 +1,19 @@
-import Organisation from '../crud/Organisation';
-import {isParentOf} from '../utils/reflection';
-
-
 /**
  * @public
  * @mixin
  */
-export default class OwnableResource {
+import {isParentOf, Trait} from '../utils/reflection';
+
+
+export default class OwnableResource extends Trait {
   /**
    *
    * @returns {Promise} - Promise will resolve with {@link Array<Organisation>} and reject with an {@link ApiError} instance.
    */
   organisations() {
+    // This is a hack to fix a circular dependency issue
+    const Organisation = require('../crud/Organisation').default;
+
     return this._listResource(Organisation, `${this.url}/organisations`);
   }
 
@@ -50,6 +52,8 @@ export default class OwnableResource {
    * @private
    */
   _modifyOrganisationLink(items, method) {
+    // This is a hack to fix a circular dependency issue
+    const Organisation = require('../crud/Organisation').default;
     const isValid = items.filter(x => !isParentOf(Organisation, x)).length === 0;
 
     if (!isValid) {

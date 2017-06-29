@@ -47,18 +47,24 @@ export function mix(baseClass, ...mixins) {
     constructor(...args) {
       super(...args);
       mixins.forEach((mixin) => {
-        mixin.prototype.initializer.call(this);
+        if (mixin.prototype.initializer) {
+          mixin.prototype.initializer.call(this);
+        }
       });
     }
   };
 
 
-  mixins.forEach((mixin) => {
+  for (const mixin of mixins) {
+    if (!isParentOf(Trait, mixin)) {
+      throw new TypeError(`Expected mixin to implement Trait for ${mixin.name}`);
+    }
+
     copyProps(cocktail.prototype, mixin.prototype);
     copyProps(cocktail, mixin);
-  });
+  }
 
-  cocktail.prototype.__mixins = mixins;
+  cocktail.__mixins = mixins;
 
   return cocktail;
 }
@@ -73,3 +79,9 @@ function copyProps(target, source) {
       }
     });
 }
+
+/**
+ * Trait interface
+ * @interface
+ */
+export class Trait {}
