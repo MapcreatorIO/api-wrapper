@@ -41,3 +41,35 @@ export function getTypeName(value) {
 
   return value.name;
 }
+
+export function mix(baseClass, ...mixins) {
+  const cocktail = class _Cocktail extends baseClass {
+    constructor(...args) {
+      super(...args);
+      mixins.forEach((mixin) => {
+        mixin.prototype.initializer.call(this);
+      });
+    }
+  };
+
+
+  mixins.forEach((mixin) => {
+    copyProps(cocktail.prototype, mixin.prototype);
+    copyProps(cocktail, mixin);
+  });
+
+  cocktail.prototype.__mixins = mixins;
+
+  return cocktail;
+}
+
+function copyProps(target, source) {
+  Object
+    .getOwnPropertyNames(source)
+    .concat(Object.getOwnPropertySymbols(source))
+    .forEach((prop) => {
+      if (!prop.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
+        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
+      }
+    });
+}

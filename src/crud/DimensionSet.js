@@ -1,13 +1,15 @@
 import CrudSetBase from './base/CrudSetBase';
 import Dimension from './Dimension';
-import {mix} from 'mixwith/src/mixwith';
-import {OwnableResource} from '../traits/OwnableResource';
+import OwnableResource from '../traits/OwnableResource';
+import {mix} from '../utils/reflection';
+
 
 /**
  * Dimension sets
- * @extends CrudBase
+ * @extends {CrudSetBase}
+ * @extends {OwnableResource}
  */
-export default class DimensionSet extends mix(CrudSetBase).with(OwnableResource) {
+export default class DimensionSet extends mix(CrudSetBase, OwnableResource) {
   get resourcePath() {
     return '/dimensions/sets/{id}';
   }

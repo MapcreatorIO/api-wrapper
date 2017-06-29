@@ -1,12 +1,13 @@
 import CrudBase from './base/CrudBase';
-import {OwnableResource} from '../traits/OwnableResource';
-import {mix} from 'mixwith/src/mixwith';
+import OwnableResource from '../traits/OwnableResource';
+import {mix} from '../utils/reflection';
 
 /**
  * Color resource
- * @extends CrudBase
+ * @extends {CrudBase}
+ * @extends {OwnableResource}
  */
-export default class Color extends mix(CrudBase).with(OwnableResource) {
+export default class Color extends mix(CrudBase, OwnableResource) {
   get resourceName() {
     return 'colors';
   }

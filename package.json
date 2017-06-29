@@ -31,8 +31,7 @@
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
   ],
   "dependencies": {
-    "babel-polyfill": "^6.23.0",
-    "mixwith": "^0.1.1"
+    "babel-polyfill": "^6.23.0"
   },
   "esdoc": {
     "source": "./src",

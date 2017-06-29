@@ -1,9 +1,17 @@
 {
-  "presets": ["env"],
+  "presets": [["env",{
+    "targets": {
+      "browsers": [
+        "> 1%"
+      ]
+    }
+  }]],
   "sourceMap": true,
   "env": {
     "production": {
-      "presets": ["babili"]
+      "presets": [
+        "babili"
+      ]
     }
   }
 }

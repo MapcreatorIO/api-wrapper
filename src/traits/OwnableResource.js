@@ -1,23 +1,15 @@
-import ResourceBase from '../crud/base/ResourceBase';
 import Organisation from '../crud/Organisation';
 import {isParentOf} from '../utils/reflection';
 
-export const OwnableResource = superclass =>
-  /**
-   * @mixin
-   */
-  class OwnableResource extends superclass {
-  constructor(...args) {
-    super(...args);
 
-    if (!isParentOf(ResourceBase, this)) {
-      throw new TypeError(`Trait ${this.constructor.name} requires class to be child of ResourceBase`);
-    }
-  }
-
+/**
+ * @public
+ * @mixin
+ */
+export default class OwnableResource {
   /**
    *
-   * @returns {Promise}
+   * @returns {Promise} - Promise will resolve with {@link Array<Organisation>} and reject with an {@link ApiError} instance.
    */
   organisations() {
     return this._listResource(Organisation, `${this.url}/organisations`);
@@ -76,4 +68,4 @@ export const OwnableResource = superclass =>
   get ownable() {
     return true;
   }
-};
+}

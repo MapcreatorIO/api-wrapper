@@ -1,13 +1,15 @@
 import CrudSetBase from './base/CrudSetBase';
 import Mapstyle from './Mapstyle';
-import {mix} from 'mixwith/src/mixwith';
-import {OwnableResource} from '../traits/OwnableResource';
+import OwnableResource from '../traits/OwnableResource';
+import {mix} from '../utils/reflection';
+
 
 /**
  * Mapstyle set
- * @extends CrudBase
+ * @extends {CrudSetBase}
+ * @extends {OwnableResource}
  */
-export default class MapstyleSet extends mix(CrudSetBase).with(OwnableResource) {
+export default class MapstyleSet extends mix(CrudSetBase, OwnableResource) {
   get resourcePath() {
     return '/mapstyles/sets/{id}';
   }

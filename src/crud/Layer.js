@@ -1,13 +1,14 @@
-import {mix} from 'mixwith/src/mixwith';
-import {OwnableResource} from '../traits/OwnableResource';
+import OwnableResource from '../traits/OwnableResource';
 import CrudBase from './base/CrudBase';
 import ImageHandler from './base/ImageHandler';
+import {mix} from '../utils/reflection';
 
 /**
  * Layer
- * @extends CrudBase
+ * @extends {CrudBase}
+ * @extends {OwnableResource}
  */
-export default class Layer extends mix(CrudBase).with(OwnableResource) {
+export default class Layer extends mix(CrudBase, OwnableResource) {
   /**
    * Handler for item image management
    * @returns {ImageHandler} - Image handler

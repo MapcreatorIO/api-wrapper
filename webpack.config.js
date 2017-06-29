@@ -19,8 +19,8 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules(?!\/mixwith)|bower_components)/,
-        include: /(src|node_modules\/mixwith)/,
+        exclude: /(node_modules|bower_components)/,
+        include: /(src)/,
         use: {
           loader: 'babel-loader',
           options: {
