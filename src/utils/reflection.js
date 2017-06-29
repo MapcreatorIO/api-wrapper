@@ -41,3 +41,47 @@ export function getTypeName(value) {
 
   return value.name;
 }
+
+export function mix(baseClass, ...mixins) {
+  const cocktail = class _Cocktail extends baseClass {
+    constructor(...args) {
+      super(...args);
+      mixins.forEach((mixin) => {
+        if (mixin.prototype.initializer) {
+          mixin.prototype.initializer.call(this);
+        }
+      });
+    }
+  };
+
+
+  for (const mixin of mixins) {
+    if (!isParentOf(Trait, mixin)) {
+      throw new TypeError(`Expected mixin to implement Trait for ${mixin.name}`);
+    }
+
+    copyProps(cocktail.prototype, mixin.prototype);
+    copyProps(cocktail, mixin);
+  }
+
+  cocktail.__mixins = mixins;
+
+  return cocktail;
+}
+
+function copyProps(target, source) {
+  Object
+    .getOwnPropertyNames(source)
+    .concat(Object.getOwnPropertySymbols(source))
+    .forEach((prop) => {
+      if (!prop.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
+        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
+      }
+    });
+}
+
+/**
+ * Trait interface
+ * @interface
+ */
+export class Trait {}

@@ -1,17 +1,20 @@
+import OwnableResource from '../traits/OwnableResource';
+import {mix} from '../utils/reflection';
 import CrudSetBase from './base/CrudSetBase';
 import Font from './Font';
 
-export default class FontFamily extends CrudSetBase {
+/**
+ * Font family
+ * @extends {CrudSetBase}
+ * @extends {OwnableResource}
+ */
+export default class FontFamily extends mix(CrudSetBase, OwnableResource) {
   get resourcePath() {
     return '/fonts/families/{id}';
   }
 
   get resourceName() {
     return 'font-families';
-  }
-
-  get ownable() {
-    return true;
   }
 
   get _Child() {

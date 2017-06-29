@@ -11,6 +11,7 @@ import MapstyleSet from './MapstyleSet';
 import SvgSet from './SvgSet';
 import User from './User';
 
+
 export default class Organisation extends CrudBase {
   /**
    * Sync items to the organisation
