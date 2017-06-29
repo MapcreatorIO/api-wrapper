@@ -42,6 +42,12 @@ export function getTypeName(value) {
   return value.name;
 }
 
+/**
+ * Mix traits into the target class
+ * @param {Constructor} baseClass - Target base class for the traits to be applied to
+ * @param {Constructor} mixins - Traits to be applied
+ * @returns {Constructor} - Constructor with any traits applied
+ */
 export function mix(baseClass, ...mixins) {
   const cocktail = class _Cocktail extends baseClass {
     constructor(...args) {
@@ -69,6 +75,12 @@ export function mix(baseClass, ...mixins) {
   return cocktail;
 }
 
+/**
+ * Copy properties from target to source
+ * @param {object} target - Object for the properties to be copied to
+ * @param {object} source - Object containing properties to be copied
+ * @returns {object} - Resulting object with properties from both parameters
+ */
 function copyProps(target, source) {
   Object
     .getOwnPropertyNames(source)
