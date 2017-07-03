@@ -33,6 +33,7 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
+		sh 'yarn run authors'
 		sh '$(yarn bin)/webpack'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
@@ -42,6 +43,8 @@ node('npm && yarn') {
 
   stage('tag') {
     if (SHOULD_TAG) {
+      sh 'git add AUTHORS.md'
+
       if (BRANCH_NAME == 'master') {
         sh 'npm version minor -m "Auto upgrade to minor %s" || true'
       }
