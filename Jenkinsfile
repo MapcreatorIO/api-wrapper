@@ -44,7 +44,7 @@ node('npm && yarn') {
     if (SHOULD_TAG) {
 		  sh 'yarn run authors'
       sh 'git add AUTHORS.md'
-      sh 'git commit -m "Update AUTHORS.md"'
+      sh 'git commit -m "Update AUTHORS.md" || true'
 
       if (BRANCH_NAME == 'master') {
         sh 'npm version minor -m "Auto upgrade to minor %s" || true'
