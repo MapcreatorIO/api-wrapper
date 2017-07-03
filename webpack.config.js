@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const exec = require('child_process').execSync;
 
 module.exports = {
   target: 'web', // output is fine for nodejs usage
@@ -36,6 +37,11 @@ module.exports = {
       include: /\.min\.js$/,
       minimize: true,
     }),
+
+    new webpack.BannerPlugin(
+      'hash:[hash], chunkhash:[chunkhash], name:[name]' +
+      '\n\nThis budle contains the following packages:\n' + exec('$(npm bin)/licensecheck'),
+    ),
     new webpack.BannerPlugin(fs.readFileSync('LICENSE', 'ascii')),
   ],
 };
