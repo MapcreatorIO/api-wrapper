@@ -91,7 +91,7 @@ node('npm && yarn') {
 
 			sh 'git commit -m "Update auto generated docs"'
 
-			it_push 'gh-pages'
+			git_push 'gh-pages'
 		}
 	}
 
