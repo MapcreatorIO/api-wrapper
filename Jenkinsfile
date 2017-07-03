@@ -70,7 +70,7 @@ node('npm && yarn') {
 		sh '$(yarn bin)/esdoc'
 
 		if (SHOULD_TAG) {
-			sh 'mv -v dist docs/'\s(?!=\w)'
+			sh 'mv -v dist docs'
 			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
 
 			sh 'git checkout gh-pages'
