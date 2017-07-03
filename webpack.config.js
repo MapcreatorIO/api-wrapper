@@ -40,7 +40,7 @@ module.exports = {
 
     new webpack.BannerPlugin(
       'hash:[hash], chunkhash:[chunkhash], name:[name]' +
-      '\n\nThis budle contains the following packages:\n' + exec('$(npm bin)/licensecheck'),
+      '\n\nThis budle contains the following packages:\n' + exec('$(npm bin)/licensecheck')
     ),
     new webpack.BannerPlugin(fs.readFileSync('LICENSE', 'ascii')),
   ],
