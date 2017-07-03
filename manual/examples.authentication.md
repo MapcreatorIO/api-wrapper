@@ -8,8 +8,7 @@ any side-effects. The variable `api.authenticated` will be set to true if a toke
 has been found and is still valid. 
 
 Tokens are stored in HTTPS cookies if possible and using `localStorage` when the
-browser is not using a HTTPS connection. No storage mechanism has been implemented
-for [nodejs] applications yet.
+browser is not using a HTTPS connection. [Nodejs] uses a file named `.m4n_token` to store the token.
 
 ## Web
 Multiple flows are supported for web browsers. All the web examples assume the web
