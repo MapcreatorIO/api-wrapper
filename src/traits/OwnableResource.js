@@ -53,7 +53,8 @@ export default class OwnableResource extends Trait {
   _modifyOrganisationLink(items, method) {
     // This is a hack to fix a circular dependency issue
     const Organisation = require('../crud/Organisation').default;
-    const isValid = items.filter(x => !isParentOf(Organisation, x)).length === 0;
+    const filter = x => !isParentOf(Organisation, x) && !isParentOf(Number, x);
+    const isValid = items.filter(filter).length === 0;
 
     if (!isValid) {
       throw new TypeError('Array must contain either Numbers (organisationId) or Organisations.');
