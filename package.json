@@ -27,7 +27,7 @@
     "build": "$(npm bin)/webpack --progress",
     "watch": "$(npm bin)/webpack --progress --watch",
     "docs": "$(npm bin)/esdoc",
-    "authors": "$(npm bin)/contributors | grep -v -e '^- [A-Za-z]' > AUTHORS.md"
+    "authors": "$(npm bin)/contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
