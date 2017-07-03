@@ -66,30 +66,28 @@ node('npm && yarn') {
     }
   }
 
-  stage('docs') {
-			sh '$(yarn bin)/esdoc'
+	stage('docs') {
+		sh '$(yarn bin)/esdoc'
 
-			if (SHOULD_TAG) {
-        sh 'mv -v dist docs/'
-        sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
+		if (SHOULD_TAG) {
+			sh 'mv -v dist docs/'\s(?!=\w)
+			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
 
-        sh 'git checkout gh-pages'
+			sh 'git checkout gh-pages'
+			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
+			sh 'mv docs/* ./'
+			sh 'rm -r docs'
 
-        sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
-        sh 'mv docs/* ./'
-        sh 'rm -r docs'
+			sh 'touch .nojekyll'
 
-        sh 'touch .nojekyll'
+			sh 'git config --global user.email "noreply@mapcreator.eu"'
+			sh 'git config --global user.name Jenkins'
+			sh 'git add .'
+			sh 'git status'
 
-        sh 'git config --global user.email "noreply@mapcreator.eu"'
-        sh 'git config --global user.name Jenkins'
-        sh 'git add .'
-        sh 'git status'
+			sh 'git commit -m "Update auto generated docs"'
 
-        sh 'git commit -m "Update auto generated docs"'
-
-        git_push 'gh-pages'
-			}
+			it_push 'gh-pages'
 		}
 	}
 
