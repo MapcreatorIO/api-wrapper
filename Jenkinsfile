@@ -33,7 +33,6 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		sh 'yarn run authors'
 		sh '$(yarn bin)/webpack'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
@@ -43,6 +42,7 @@ node('npm && yarn') {
 
   stage('tag') {
     if (SHOULD_TAG) {
+		  sh 'yarn run authors'
       sh 'git add AUTHORS.md'
 
       if (BRANCH_NAME == 'master') {
