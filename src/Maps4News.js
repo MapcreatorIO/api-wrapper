@@ -3,39 +3,39 @@ if (!global._babelPolyfill) {
   require('babel-polyfill');
 }
 
-import {isParentOf} from './utils/reflection';
-import OAuth from './oauth/OAuth';
-import DummyFlow from './oauth/DummyFlow';
-import {makeRequest} from './utils/requests';
-import ApiError from './exceptions/ApiError';
-import ValidationError from './exceptions/ValidationError';
-import ResourceProxy from './ResourceProxy';
-import Color from './crud/Color';
 import Choropleth from './crud/Choropleth';
+import Color from './crud/Color';
 import Contract from './crud/Contract';
-import DimensionSet from './crud/DimensionSet';
 import Dimension from './crud/Dimension';
+import DimensionSet from './crud/DimensionSet';
 import Faq from './crud/Faq';
 import Feature from './crud/Feature';
-import FontFamily from './crud/FontFamily';
 import Font from './crud/Font';
+import FontFamily from './crud/FontFamily';
 import Highlight from './crud/Highlight';
 import InsetMap from './crud/InsetMap';
-import User from './crud/User';
-import Notification from './crud/Notification';
+import Job from './crud/Job';
+import JobShare from './crud/JobShare';
+import JobType from './crud/JobType';
 import Language from './crud/Language';
 import Layer from './crud/Layer';
 import Mapstyle from './crud/Mapstyle';
-import Permission from './crud/Permission';
 import MapstyleSet from './crud/MapstyleSet';
-import JobShare from './crud/JobShare';
-import Job from './crud/Job';
-import JobType from './crud/JobType';
+import Notification from './crud/Notification';
 import Organisation from './crud/Organisation';
+import Permission from './crud/Permission';
 import PlaceName from './crud/PlaceName';
 import Svg from './crud/Svg';
-import SvgSetType from './crud/SvgSetType';
 import SvgSet from './crud/SvgSet';
+import SvgSetType from './crud/SvgSetType';
+import User from './crud/User';
+import ApiError from './exceptions/ApiError';
+import ValidationError from './exceptions/ValidationError';
+import DummyFlow from './oauth/DummyFlow';
+import OAuth from './oauth/OAuth';
+import ResourceProxy from './ResourceProxy';
+import {isParentOf} from './utils/reflection';
+import {makeRequest} from './utils/requests';
 
 /**
  * Base API class
@@ -411,8 +411,18 @@ export default class Maps4News {
   testXhr() {
     return new Promise((reject, resolve) => {
       makeRequest(`${this.host}/favicon.ico`)
-        .then(x=>resolve(x.status))
-        .catch(x=>reject(x.status));
+        .then(x => resolve(x.status))
+        .catch(x => reject(x.status));
     });
+  }
+
+  /**
+   * Forget the current session
+   * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored in
+   * cookies or localStorage.
+   * @returns {void}
+   */
+  logout() {
+    this.auth.forget();
   }
 }

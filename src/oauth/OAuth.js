@@ -1,5 +1,7 @@
-import OAuthToken from './OAuthToken';
 import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractError';
+import OAuthToken from './OAuthToken';
+import StateContainer from './StateContainer';
+import {isNode} from '../utils/node';
 
 /**
  * OAuth base class
@@ -38,5 +40,21 @@ export default class OAuth {
    */
   authenticate() {
     throw new AbstractMethodError();
+  }
+
+  /**
+   * Forget the current session
+   * @returns {void}
+   */
+  forget() {
+    if (isNode()) {
+      // eslint-disable-next-line no-eval
+      eval('require("fs")').unlink(OAuthToken.nodeTokenFilename);
+    } else {
+      StateContainer.clean();
+      localStorage.removeItem(OAuthToken.storageName);
+    }
+
+    this.token = null;
   }
 }
