@@ -1,4 +1,3 @@
-import HandlesImages from '../traits/HandlesImages';
 import OwnableResource from '../traits/OwnableResource';
 import {mix} from '../utils/reflection';
 import CrudSetBase from './base/CrudSetBase';
