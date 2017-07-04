@@ -89,6 +89,7 @@ api.colors
 ```
 
 Loop over all pages and return the data in a promise
+
 ```js
 function parsePages(page) {
   var data = [];
