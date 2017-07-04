@@ -13,5 +13,6 @@
         "babili"
       ]
     }
-  }
+  },
+  "plugins": ["transform-export-extensions"]
 }
