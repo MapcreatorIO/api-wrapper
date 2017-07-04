@@ -12,6 +12,7 @@
     "global": false,
     "require": false,
     "module": true,
+    "process": false,
 
     "VERSION": false
   },
