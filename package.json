@@ -26,7 +26,7 @@
     "webpack-merge": "^4.1.0"
   },
   "scripts": {
-    "generate": "cd src/crud && rows=$(find . -type f -depth 1 -exec basename '{}' \\; | sed s/\\.js//) && for i in $rows; do echo \"export $i from './$i.js';\"; done > index.js",
+    "generate": "cd src/crud && rm index.js && rows=$(find . -type f -depth 1 -exec basename '{}' \\; | sed s/\\.js//) && for i in $rows; do echo \"export $i from './$i.js';\"; done > index.js",
     "build": "npm run generate && $(npm bin)/webpack --progress",
     "watch": "$(npm bin)/webpack --progress --watch",
     "docs": "$(npm bin)/esdoc",
