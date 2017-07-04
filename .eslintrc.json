@@ -11,7 +11,9 @@
   "globals": {
     "global": false,
     "require": false,
-    "module": true
+    "module": true,
+
+    "VERSION": false
   },
   "rules": {
     "comma-dangle": [1,"always-multiline"],

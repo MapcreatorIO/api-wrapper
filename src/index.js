@@ -16,3 +16,5 @@ export {default as StaticClassError} from './exceptions/StaticClassError';
 
 // Resources
 export * as resources from './crud';
+
+export const version = VERSION;

@@ -28,8 +28,26 @@ node('npm && yarn') {
 	}
 
 	stage('linter') {
-	 	sh '$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src'
-	 	checkstyle pattern: 'build/checkstyle.xml'
+		sh '$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src'
+		checkstyle pattern: 'build/checkstyle.xml'
+	}
+
+	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
+
+	stage('tag') {
+		if (SHOULD_TAG) {
+			sh 'yarn run authors'
+			sh 'git add AUTHORS.md'
+			sh 'git commit -m "Update AUTHORS.md" || true'
+
+			if (BRANCH_NAME == 'master') {
+			sh 'npm version minor -m "Auto upgrade to minor %s" || true'
+			}
+
+			if (BRANCH_NAME == 'develop') {
+			sh 'npm version patch -m "Auto upgrade to patch %s" || true'
+			}
+		}
 	}
 
 	stage('build') {
@@ -37,29 +55,10 @@ node('npm && yarn') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
-	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
-
-
-  stage('tag') {
-    if (SHOULD_TAG) {
-		  sh 'yarn run authors'
-      sh 'git add AUTHORS.md'
-      sh 'git commit -m "Update AUTHORS.md" || true'
-
-      if (BRANCH_NAME == 'master') {
-        sh 'npm version minor -m "Auto upgrade to minor %s" || true'
-      }
-
-      if (BRANCH_NAME == 'develop') {
-        sh 'npm version patch -m "Auto upgrade to patch %s" || true'
-      }
-
-      git_push_tags "HEAD:${BRANCH_NAME}"
-    }
-  }
-
-  stage('publish') {
+	stage('publish') {
 		if (SHOULD_TAG) {
+			git_push_tags "HEAD:${BRANCH_NAME}"
+
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
 
@@ -67,8 +66,8 @@ node('npm && yarn') {
 
 				sh 'rm -v .npmrc'
 			}
-    }
-  }
+		}
+	}
 
 	stage('docs') {
 		sh '$(yarn bin)/esdoc'
