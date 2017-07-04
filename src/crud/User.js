@@ -20,6 +20,12 @@ export default class User extends CrudBase {
     return 'users';
   }
 
+  isAdmin() {
+    return this.permissions().then(permissions => {
+
+    });
+  }
+
   ips() {
     const url = `${this.url}/ips`;
 
