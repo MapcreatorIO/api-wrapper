@@ -10,6 +10,9 @@
     "dist",
     "src"
   ],
+  "dependencies": {
+    "babel-polyfill": "^6.23.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
@@ -35,9 +38,6 @@
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
   ],
-  "dependencies": {
-    "babel-polyfill": "^6.23.0"
-  },
   "esdoc": {
     "source": "./src",
     "destination": "./docs",
