@@ -1,31 +1,39 @@
-import Notification from './Notification';
-import CrudBase from './base/CrudBase';
-import MapstyleSet from './MapstyleSet';
-import DimensionSet from './DimensionSet';
-import FontFamily from './FontFamily';
-import SvgSet from './SvgSet';
-import Color from './Color';
-import Feature from './Feature';
-import Layer from './Layer';
-import Job from './Job';
-import JobType from './JobType';
-import JobShare from './JobShare';
-import Permission from './Permission';
-import Organisation from './Organisation';
 import ResourceProxy from '../ResourceProxy';
+import CrudBase from './base/CrudBase';
+import Color from './Color';
+import DimensionSet from './DimensionSet';
+import Feature from './Feature';
+import FontFamily from './FontFamily';
+import Job from './Job';
+import JobShare from './JobShare';
+import JobType from './JobType';
 import Language from './Language';
+import Layer from './Layer';
+import MapstyleSet from './MapstyleSet';
+import Notification from './Notification';
+import Organisation from './Organisation';
+import Permission from './Permission';
+import SvgSet from './SvgSet';
 
 export default class User extends CrudBase {
   get resourceName() {
     return 'users';
   }
 
+  /**
+   * Check if user is an administrator
+   * @returns {Promise} - Resolves with a {@link Boolean} and rejects with {@link ApiError}
+   */
   isAdmin() {
     return this.permissions().then(permissions => {
-
+      return Boolean(permissions.find(p => p.name === 'is:admin'));
     });
   }
 
+  /**
+   * Get all known ips
+   * @returns {Promise} - Resolves with {@link array<string>} instance and rejects with {@link ApiError}
+   */
   ips() {
     const url = `${this.url}/ips`;
 
@@ -33,7 +41,7 @@ export default class User extends CrudBase {
       this.api.request(url)
         .catch(reject)
         .then(data => resolve(
-          data.map(row => row['ip_address'])
+          data.map(row => row['ip_address']),
         ));
     });
   }
