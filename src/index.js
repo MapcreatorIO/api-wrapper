@@ -17,4 +17,8 @@ export StaticClassError from './exceptions/StaticClassError';
 // Resources
 export * as resources from './crud';
 
+/**
+ * Package version
+ * @private
+ */
 export const version = VERSION;

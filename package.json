@@ -46,6 +46,9 @@
       "public",
       "protected"
     ],
+    "experimentalProposal": {
+      "exportExtensions": true
+    },
     "scripts": [
       "./dist/bundle.js",
       "./manual/js/sandbox.js"
