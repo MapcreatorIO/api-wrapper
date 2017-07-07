@@ -163,8 +163,8 @@ export default class PaginatedResourceListing {
   getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
 
-    perPage = Math.min(1, perPage);
-    perPage = Math.max(50, perPage);
+    perPage = Math.max(1, perPage);
+    perPage = Math.min(50, perPage);
 
     const query = {page};
 
