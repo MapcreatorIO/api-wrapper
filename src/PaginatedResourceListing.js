@@ -1,10 +1,10 @@
-/**
- * Proxy for accessing paginated resources
- */
 import Maps4News from './Maps4News';
 import {getTypeName, isParentOf} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
 
+/**
+ * Proxy for accessing paginated resources
+ */
 export default class PaginatedResourceListing {
   /**
    * @param {Maps4News} api - Instance of the api
