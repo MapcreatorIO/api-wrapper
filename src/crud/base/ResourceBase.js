@@ -1,6 +1,6 @@
 import {AbstractClassError, AbstractError} from '../../exceptions/AbstractError';
 import Maps4News from '../../Maps4News';
-import {snakeToCamelCase} from '../../utils/caseConverter';
+import {camelToSnakeCase, snakeToCamelCase} from '../../utils/caseConverter';
 import {isParentOf} from '../../utils/reflection';
 
 /**
@@ -20,6 +20,14 @@ export default class ResourceBase {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
+
+    // Normalize keys to snake_case
+    Object.keys(data).map(key => {
+      if (camelToSnakeCase(key) !== key) {
+        data[camelToSnakeCase(key)] = data[key];
+        delete data[key];
+      }
+    });
 
     this._baseProperties = data;
     this._properties = {};
