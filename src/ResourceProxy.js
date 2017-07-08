@@ -77,10 +77,10 @@ export default class ResourceProxy {
   /**
    * Lists target resource
    * @param {Number} page - The page to be requested
-   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
+   * @param {Number|undefined} perPage - Amount of items per page. This is silently capped by the API
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
-  list(page = 1, perPage = null) {
+  list(page = 1, perPage) {
     return this.search({}, page, perPage);
   }
 
