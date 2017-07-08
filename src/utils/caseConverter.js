@@ -17,3 +17,7 @@ export function snakeToCamelCase(str) {
 export function camelToSnakeCase(str) {
   return str.replace(/([A-Z])/g, x => '_' + x.toLowerCase());
 }
+
+export function pascalToCamelCase(str) {
+  return str.replace(/^([A-Z])/g, x => x.toLowerCase());
+}
