@@ -1,6 +1,6 @@
 import {AbstractClassError, AbstractError} from '../../exceptions/AbstractError';
 import Maps4News from '../../Maps4News';
-import {camelToSnakeCase, snakeToCamelCase} from '../../utils/caseConverter';
+import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
 import {isParentOf} from '../../utils/reflection';
 
 /**
@@ -23,8 +23,10 @@ export default class ResourceBase {
 
     // Normalize keys to snake_case
     Object.keys(data).map(key => {
-      if (camelToSnakeCase(key) !== key) {
-        data[camelToSnakeCase(key)] = data[key];
+      const newKey = camelToSnakeCase(pascalToCamelCase(key));
+
+      if (newKey !== key) {
+        data[newKey] = data[key];
         delete data[key];
       }
     });
