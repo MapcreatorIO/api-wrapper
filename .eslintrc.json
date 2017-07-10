@@ -64,7 +64,7 @@
     "no-native-reassign": 1,
     "no-new-wrappers": 1,
     "no-octal-escape": 1,
-    "no-process-env": 2,
+    "no-process-env": 0,
     "no-proto": 1,
     "no-redeclare": 1,
     "no-return-assign": [2,"except-parens"],

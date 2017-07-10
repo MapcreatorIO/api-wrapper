@@ -20,8 +20,8 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
 
     function hasHeader(h) {
       return Object.keys(headers)
-          .filter(x => x.toLowerCase() === h.toLowerCase())
-          .length > 0;
+        .filter(x => x.toLowerCase() === h.toLowerCase())
+        .length > 0;
     }
 
     request.open(method, url, true);
