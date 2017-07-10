@@ -17,7 +17,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @param {String} windowOptions - optional window options for the pop-up window
    * @returns {void}
    */
-  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = 'width=800, height=600') {
+  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
     super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
