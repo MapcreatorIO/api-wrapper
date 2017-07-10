@@ -51,7 +51,7 @@ export default class Maps4News {
 
     /**
      * Defaults
-     * @type {{perPage: *}}
+     * @type {{perPage: Number}}
      */
     this.defaults = {
       perPage: Number(process.env.PER_PAGE),
