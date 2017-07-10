@@ -45,9 +45,18 @@ export default class Maps4News {
    * @param {OAuth} auth - Authentication flow
    * @param {string} host - Remote API host
    */
-  constructor(auth = new DummyFlow(), host = 'https://api.maps4news.com') {
+  constructor(auth = new DummyFlow(), host = process.env.HOST) {
     this.auth = auth;
     this.host = host;
+
+    /**
+     * Defaults
+     * @type {{perPage: Number}}
+     */
+    this.defaults = {
+      perPage: Number(process.env.PER_PAGE),
+
+    };
   }
 
   /**

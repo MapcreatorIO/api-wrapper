@@ -18,7 +18,7 @@ export default class PaginatedResourceListing {
    * @param {Array<ResourceBase>} data - Resolved data
    * @private
    */
-  constructor(api, route, Target, query = {}, page = 1, perPage = 12, pageCount = null, rowCount = 0, data = []) {
+  constructor(api, route, Target, query = {}, page = 1, perPage = api.defaults.perPage, pageCount = null, rowCount = 0, data = []) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }

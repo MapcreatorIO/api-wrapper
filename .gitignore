@@ -4,6 +4,9 @@
 /docs/
 !/src/
 
+# Environment file
+/.env
+
 # Ignore test html
 /*.html
 

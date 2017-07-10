@@ -21,7 +21,7 @@ export default class OAuth {
     this.clientId = String(clientId);
     this.scopes = scopes;
     this.token = OAuthToken.recover();
-    this.host = 'https://api.Maps4News.com';
+    this.host = process.env.HOST;
     this.path = '/';
   }
 

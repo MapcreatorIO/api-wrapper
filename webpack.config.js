@@ -1,9 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const exec = require('child_process').execSync;
+const Dotenv = require('dotenv-webpack');
 
 const version = exec('git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').toString().trim();
+
+if (!fs.existsSync('.env')) {
+  fs.copySync('.env.example', '.env');
+  console.log('Copied .env.example => .env');
+}
+
 
 module.exports = {
   target: 'web', // output is fine for nodejs usage
@@ -35,6 +42,11 @@ module.exports = {
   },
   devtool: 'source-map',
   plugins: [
+    new Dotenv({
+      safe: true,
+      systemvars: true,
+    }),
+
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(version),
     }),
