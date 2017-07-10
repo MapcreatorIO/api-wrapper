@@ -1,6 +1,7 @@
 import Maps4News from './Maps4News';
 import {getTypeName, isParentOf} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
+import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 
 /**
  * Proxy for accessing paginated resources
@@ -227,5 +228,12 @@ export default class PaginatedResourceListing {
    */
   previous() {
     return this.getPage(this.page - 1);
+  }
+
+  /**
+   *
+   */
+  wrap() {
+    return new PaginatedResourceWrapper(this);
   }
 }

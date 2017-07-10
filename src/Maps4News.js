@@ -51,11 +51,12 @@ export default class Maps4News {
 
     /**
      * Defaults
-     * @type {{perPage: Number}}
+     * @type {{perPage: number, cacheEnabled: boolean, cacheSeconds: number}}
      */
     this.defaults = {
       perPage: Number(process.env.PER_PAGE),
-
+      cacheEnabled: process.env.CACHE_ENABLED.toLowerCase() === 'true',
+      cacheSeconds: Number(process.env.CACHE_SECONDS),
     };
   }
 
