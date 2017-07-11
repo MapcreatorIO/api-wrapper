@@ -4,7 +4,7 @@ and nodejs releases are built this way.
 
 ```sh
 yarn install
-./node_modules/.bin/webpack --progress
+yarn run build
 ```
 
 ## Building docs
@@ -12,7 +12,7 @@ The docs can be built using [esdoc] after which they can be found in the `/docs`
 
 ```sh
 yarn install
-./node_modules/.bin/esdoc
+yarn run docs
 ```
 
 Development docs can be built by adding `"private"` to the `esdoc.access` variable in `package.json` before building the
