@@ -58,10 +58,10 @@ export default class OwnableResource extends Trait {
     const isValid = items.filter(filter).length === 0;
 
     if (!isValid) {
-      throw new TypeError('Array must contain either Numbers (organisationId) or Organisations.');
+      throw new TypeError('Array must contain either Numbers (organisation id) or Organisations.');
     }
 
-    const keys = items.map(x => typeof x === 'number' ? x : x.organisationId);
+    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
 
     return this.api.request(`${this.url}/organisations`, method, {keys});
   }
