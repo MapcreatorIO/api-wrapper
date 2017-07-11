@@ -1,4 +1,3 @@
-import mitt from 'mitt';
 import {encodeQueryString} from './utils/requests';
 
 function _timestamp() {
@@ -10,8 +9,6 @@ export default class ResourceCache {
     this._api = api;
     this.cacheTime = cacheTime;
 
-    this.emitter = mitt();
-
     // page.route => page.query stringified =>
     // Array<{page: PaginatedResourceListing, timeout: revalidateTimeout}>
     this.clear();
@@ -19,6 +16,8 @@ export default class ResourceCache {
     // cache invalidation should fire an event for rebuilding data
     // this should only be done once after revalidate()
     // push should send an event for rebuilding
+
+    console.log('cache done with init');
   }
 
   /**
@@ -26,10 +25,6 @@ export default class ResourceCache {
    * @param page
    */
   push(page) {
-    /**
-     *
-     * @type {{page: *, timeout: number, validThrough: *}}
-     */
     const data = {
       page: page,
       timeout: setTimeout(
@@ -40,24 +35,15 @@ export default class ResourceCache {
     };
 
     const cacheToken = encodeQueryString({query: page.query}).toLowerCase();
+    const storage = this._storage[page.url] || (this._storage[page.url] = {});
 
-    if (!this._storage[page.url]) {
-      this._storage[page.url] = {};
-    }
-
-    if (!this._storage[page.url][cacheToken]) {
-      this._storage[page.url][cacheToken] = [];
-    }
-
-    this._storage[page.url][cacheToken].push(data);
+    (storage[cacheToken] || (storage[cacheToken] = [])).push(data);
   }
 
   revalidate(resourceUrl = null) {
     if (!resourceUrl) {
       Object.keys(this._storage).map(this.revalidate);
     } else if (this._storage[resourceUrl]) {
-      this.emitter.emit('pre-revalidate', {url: resourceUrl});
-
       const storage = this._storage[resourceUrl];
 
       // Remove old data from the cache and stop old timeouts
@@ -77,7 +63,6 @@ export default class ResourceCache {
       if (Object.keys(storage).length === 0) {
         delete this._storage[resourceUrl];
       }
-
     }
   }
 
@@ -111,7 +96,8 @@ export default class ResourceCache {
         out[row.id] = row;
       }
 
-      // Grab list of applicable ids and delete offending keys that no longer exist in the newer dataset
+      // Grab list of applicable ids and delete offending
+      // keys that no longer exist in the newer data set
       Object
         .keys(out)
         .filter(key => startId <= key && key <= endId)
