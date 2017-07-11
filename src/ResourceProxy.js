@@ -67,7 +67,7 @@ export default class ResourceProxy {
    *
    * api.layers.search(query).then(console.dir);
    */
-  search(query, page = 1, perPage = null) {
+  search(query, page = 1, perPage = this.api.defaults.perPage) {
     const url = this.new().baseUrl;
     const resolver = new PaginatedResourceListing(this._api, url, this.Target, query);
 
@@ -80,7 +80,7 @@ export default class ResourceProxy {
    * @param {Number|undefined} perPage - Amount of items per page. This is silently capped by the API
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
-  list(page = 1, perPage) {
+  list(page = 1, perPage = this.api.defaults.perPage) {
     return this.search({}, page, perPage);
   }
 
