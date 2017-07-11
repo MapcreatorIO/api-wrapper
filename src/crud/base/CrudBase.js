@@ -46,7 +46,7 @@ export default class CrudBase extends ResourceBase {
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    * @protected
    */
-  _listResource(Target, url = null, page = 1, perPage = null) {
+  _listResource(Target, url = null, page = 1, perPage = this.api.defaults.perPage) {
     if (!url) {
       const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
 
