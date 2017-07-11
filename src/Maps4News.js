@@ -33,6 +33,7 @@ import ApiError from './exceptions/ApiError';
 import ValidationError from './exceptions/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
+import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {isParentOf} from './utils/reflection';
 import {makeRequest} from './utils/requests';
@@ -58,6 +59,8 @@ export default class Maps4News {
       cacheEnabled: process.env.CACHE_ENABLED.toLowerCase() === 'true',
       cacheSeconds: Number(process.env.CACHE_SECONDS),
     };
+
+    this._cache = new ResourceCache(this);
   }
 
   /**

@@ -11,7 +11,7 @@ export default class PaginatedResourceWrapper {
    * @param {Number} cacheTime - Amount of seconds to store a value in cache
    */
   constructor(listing, api = listing.api, cacheEnabled = api.defaults.cacheEnabled, cacheTime = api.defaults.cacheSeconds) {
-    this.api = api;
+    this._api = api;
     this._history = [listing];
 
     this.cacheEnabled = cacheEnabled;
@@ -27,5 +27,9 @@ export default class PaginatedResourceWrapper {
 
   get history() {
     return this._history;
+  }
+
+  get api() {
+    return this._api;
   }
 }

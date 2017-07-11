@@ -164,13 +164,13 @@ export default class PaginatedResourceListing {
   getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
 
-    perPage = Math.max(1, perPage);
-    perPage = Math.min(50, perPage);
-
     const query = {page};
 
     if (perPage) {
-      query['per_page'] = Math.max(1, perPage);
+      perPage = Math.max(1, perPage);
+      perPage = Math.min(50, perPage);
+
+      query['per_page'] = perPage;
     }
 
     // Add search query (if any)
@@ -231,9 +231,11 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   *
+   * wrap
+   * @todo docs
+   * @returns {PaginatedResourceWrapper} - Wrapped resource listing
    */
-  wrap() {
+  toListing() {
     return new PaginatedResourceWrapper(this);
   }
 }

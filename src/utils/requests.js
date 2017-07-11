@@ -88,6 +88,7 @@ export function encodeQueryString(paramsObject) {
 function _encodeQueryString(paramsObject, _basePrefix = []) {
   return Object
     .keys(paramsObject)
+    .sort()
     .map(key => {
       const prefix = _basePrefix.slice(0);
 
