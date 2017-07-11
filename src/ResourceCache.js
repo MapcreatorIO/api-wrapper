@@ -29,7 +29,7 @@ export default class ResourceCache {
       page: page,
       timeout: setTimeout(
         () => this.revalidate(page.url),
-        this.cacheTime,
+        this.cacheTime * 1000,
       ),
       validThrough: _timestamp() + this.cacheTime,
     };
