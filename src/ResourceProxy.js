@@ -1,7 +1,6 @@
 import {isParentOf} from './utils/reflection';
 import ResourceBase from './crud/base/ResourceBase';
 import PaginatedResourceListing from './PaginatedResourceListing';
-import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 
 /**
  * Proxy for accessing resource. This will make sure that they

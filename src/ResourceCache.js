@@ -23,6 +23,7 @@ export default class ResourceCache {
   /**
    * Push a page into the cache
    * @param {PaginatedResourceListing} page - Data to be cached
+   * @returns {void}
    */
   push(page) {
     const validThrough = this._timestamp() + this.cacheTime;
