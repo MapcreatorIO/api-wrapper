@@ -214,6 +214,10 @@ export default class PaginatedResourceListing {
     return this.page > 1;
   }
 
+  get cacheToken() {
+    return encodeQueryString({query: this.query}).toLowerCase();
+  }
+
   /**
    * Get next page
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}

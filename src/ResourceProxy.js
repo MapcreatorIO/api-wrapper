@@ -1,6 +1,7 @@
 import {isParentOf} from './utils/reflection';
 import ResourceBase from './crud/base/ResourceBase';
 import PaginatedResourceListing from './PaginatedResourceListing';
+import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -82,6 +83,14 @@ export default class ResourceProxy {
    */
   list(page = 1, perPage = this.api.defaults.perPage) {
     return this.search({}, page, perPage);
+  }
+
+  /**
+   *
+   * @todo rename
+   */
+  getListWrapper() {
+    return new PaginatedResourceWrapper(this);
   }
 
   /**

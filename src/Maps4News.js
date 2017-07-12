@@ -50,14 +50,13 @@ export default class Maps4News {
     this.auth = auth;
     this.host = host;
 
-    /**
-     * Defaults
-     * @type {{perPage: number, cacheEnabled: boolean, cacheSeconds: number}}
-     */
+    const _Boolean = (val) => val.toLowerCase() === 'true';
+
     this.defaults = {
       perPage: Number(process.env.PER_PAGE),
-      cacheEnabled: process.env.CACHE_ENABLED.toLowerCase() === 'true',
+      cacheEnabled: _Boolean(process.env.CACHE_ENABLED),
       cacheSeconds: Number(process.env.CACHE_SECONDS),
+      shareCache: _Boolean(process.env.CACHE_SHARED),
     };
 
     this._cache = new ResourceCache(this);
@@ -70,6 +69,14 @@ export default class Maps4News {
    */
   get version() {
     return 'v1';
+  }
+
+  /**
+   * Get the shared cache instance
+   * @returns {ResourceCache} - Shared cache instance
+   */
+  get cache() {
+    return this._cache;
   }
 
   /**

@@ -1,13 +1,10 @@
-import {encodeQueryString} from './utils/requests';
-
-function _timestamp() {
-  return Math.floor(Date.now() / 1000);
-}
+import mitt from 'mitt';
 
 export default class ResourceCache {
   constructor(api, cacheTime = api.defaults.cacheSeconds) {
     this._api = api;
     this.cacheTime = cacheTime;
+    this.emitter = mitt();
 
     // page.route => page.query stringified =>
     // Array<{page: PaginatedResourceListing, timeout: revalidateTimeout}>
@@ -16,14 +13,8 @@ export default class ResourceCache {
     // cache invalidation should fire an event for rebuilding data
     // this should only be done once after revalidate()
     // push should send an event for rebuilding
-
-    console.log('cache done with init');
   }
 
-  /**
-   *
-   * @param page
-   */
   push(page) {
     const data = {
       page: page,
@@ -31,13 +22,12 @@ export default class ResourceCache {
         () => this.revalidate(page.url),
         this.cacheTime * 1000,
       ),
-      validThrough: _timestamp() + this.cacheTime,
+      validThrough: this._timestamp() + this.cacheTime,
     };
 
-    const cacheToken = encodeQueryString({query: page.query}).toLowerCase();
     const storage = this._storage[page.url] || (this._storage[page.url] = {});
 
-    (storage[cacheToken] || (storage[cacheToken] = [])).push(data);
+    (storage[page.cacheToken] || (storage[page.cacheToken] = [])).push(data);
   }
 
   revalidate(resourceUrl = null) {
@@ -49,10 +39,10 @@ export default class ResourceCache {
       // Remove old data from the cache and stop old timeouts
       Object.keys(storage).forEach(key => {
         storage[key]
-          .filter(row => row.validThrough < _timestamp())
+          .filter(row => row.validThrough < this._timestamp())
           .forEach(row => clearTimeout(row.timeout));
 
-        storage[key] = storage[key].filter(row => row.validThrough >= _timestamp());
+        storage[key] = storage[key].filter(row => row.validThrough >= this._timestamp());
       });
 
       // Delete empty
@@ -66,7 +56,7 @@ export default class ResourceCache {
     }
   }
 
-  _collect(resourceUrl, cacheToken = '') {
+  collectPages(resourceUrl, cacheToken = '') {
     const storage = this._storage[resourceUrl] || {};
 
     return [].concat(
@@ -77,14 +67,18 @@ export default class ResourceCache {
       .sort((a, b) => a.validThrough - b.validThrough);
   }
 
-  clear() {
-    this._storage = {};
+  clear(url = '') {
+    if (!url) {
+      this._storage = {};
+    } else {
+      this._storage[url] = {};
+    }
   }
 
   resolve(url, token = '') {
     token = token.toLowerCase();
 
-    const data = this._collect(url, token);
+    const data = this.collectPages(url, token);
     const out = [];
 
     for (const page of data) {
@@ -106,5 +100,9 @@ export default class ResourceCache {
     }
 
     return out;
+  }
+
+  _timestamp() {
+    return Math.floor(Date.now() / 1000);
   }
 }
