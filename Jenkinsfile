@@ -95,7 +95,7 @@ node('npm && yarn') {
 	}
 
 	stage('cleanup') {
-		sh 'rm -rf node_modules dist docs build || true'
+		sh 'rm -rf node_modules dist docs build .env || true'
 	}
 }
 
