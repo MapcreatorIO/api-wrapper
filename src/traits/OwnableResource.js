@@ -1,4 +1,5 @@
-import {isParentOf, Trait} from '../utils/reflection';
+import {isParentOf} from '../utils/reflection';
+import {Trait} from './Trait';
 
 /**
  * Provides a {@link ResourceBase} with functions for dealing with being ownable by an organisation

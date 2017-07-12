@@ -1,4 +1,4 @@
-import {Trait} from '../utils/reflection';
+import {Trait} from './Trait';
 import ImageHandler from '../crud/base/ImageHandler';
 
 

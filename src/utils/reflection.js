@@ -1,3 +1,5 @@
+import {Trait} from '../traits/Trait';
+
 /**
  * Tests if the parent is a parent of child
  * @param {function|object} parent - Instance or Class
@@ -91,9 +93,3 @@ function copyProps(target, source) {
       }
     });
 }
-
-/**
- * Trait interface
- * @interface
- */
-export class Trait {}
