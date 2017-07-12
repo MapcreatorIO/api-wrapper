@@ -18,7 +18,7 @@ export default class PaginatedResourceWrapper {
     this._api = api;
 
     if (listing instanceof Promise) {
-      listing.then(this._promiseCallback);
+      listing.then(this._promiseCallback).catch(console.dir);
     } else if (listing instanceof PaginatedResourceListing) {
       this._promiseCallback(listing);
     }
@@ -33,19 +33,18 @@ export default class PaginatedResourceWrapper {
     // Don't grab it through a proxy to the last list
     // This can introduce race conditions
     this._currentPage = 1;
-
-    // Build data
-    this.rebuild();
   }
 
-  _promiseCallback(result) {
-    this._currentPage = result.page;
-    this.cache.push(result);
+  get _promiseCallback() {
+    return result => {
+      this._currentPage = result.page;
 
-    this._last = result;
-    delete this._last.data; // Save some memory
+      this.cache.push(result);
 
-    this.rebuild();
+      this._last = result;
+
+      this.rebuild();
+    };
   }
 
   get(id) {

@@ -86,11 +86,13 @@ export default class ResourceProxy {
   }
 
   /**
-   *
-   * @todo rename
+   * Lists target resource
+   * @param {Number} page - The page to be requested
+   * @param {Number|undefined} perPage - Amount of items per page. This is silently capped by the API
+   * @returns {PaginatedResourceWrapper}
    */
-  getListWrapper() {
-    return new PaginatedResourceWrapper(this);
+  listAndWrap(page = 1, perPage = this.api.defaults.perPage) {
+    return new PaginatedResourceWrapper(this.list(page, perPage), this.api);
   }
 
   /**

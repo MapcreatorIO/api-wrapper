@@ -50,13 +50,11 @@ export default class Maps4News {
     this.auth = auth;
     this.host = host;
 
-    const _Boolean = (val) => val.toLowerCase() === 'true';
-
     this.defaults = {
       perPage: Number(process.env.PER_PAGE),
-      cacheEnabled: _Boolean(process.env.CACHE_ENABLED),
+      cacheEnabled: process.env.CACHE_ENABLED.toLowerCase() === 'true',
       cacheSeconds: Number(process.env.CACHE_SECONDS),
-      shareCache: _Boolean(process.env.CACHE_SHARED),
+      shareCache: process.env.CACHE_SHARED.toLowerCase() === 'true',
     };
 
     this._cache = new ResourceCache(this);

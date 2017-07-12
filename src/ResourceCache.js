@@ -64,7 +64,8 @@ export default class ResourceCache {
         .keys(storage)
         .filter(x => !cacheToken || x === cacheToken)
         .map(key => storage[key]))
-      .sort((a, b) => a.validThrough - b.validThrough);
+      .sort((a, b) => a.validThrough - b.validThrough)
+      .map(x => x.page);
   }
 
   clear(url = '') {
@@ -94,6 +95,7 @@ export default class ResourceCache {
       // keys that no longer exist in the newer data set
       Object
         .keys(out)
+        .map(Number)
         .filter(key => startId <= key && key <= endId)
         .filter(key => !ids.includes(key))
         .forEach(key => delete out[key]);
