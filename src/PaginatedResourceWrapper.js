@@ -1,6 +1,7 @@
+import PaginatedResourceListing from './PaginatedResourceListing';
 /* eslint-disable no-trailing-spaces */
 import ResourceCache from './ResourceCache';
-import PaginatedResourceListing from './PaginatedResourceListing';
+import ResourceBase from './crud/base/ResourceBase';
 
 /**
  * Used for wrapping {@link PaginatedResourceListing} to make it spa friendly
@@ -8,40 +9,45 @@ import PaginatedResourceListing from './PaginatedResourceListing';
 export default class PaginatedResourceWrapper {
   /**
    *
-   * @param {PaginatedResourceListing|Promise<PaginatedResourceListing>} listing - Listing result
+   * @param {PaginatedResourceListing} listing - Listing result
    * @param {Maps4News} api - Instance of the api
    * @param {Boolean} cacheEnabled - If the pagination cache should be used
    * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    */
   constructor(listing, api = listing.api, cacheEnabled = api.defaults.cacheEnabled, cacheTime = api.defaults.cacheSeconds, shareCache = api.defaults._shareCache) {
+
+    // Fields
     this._api = api;
-
-    if (listing instanceof Promise) {
-      listing.then(this._promiseCallback).catch(console.dir);
-    } else if (listing instanceof PaginatedResourceListing) {
-      this._promiseCallback(listing);
-    }
-
     this.cacheEnabled = cacheEnabled;
     this.cacheTime = cacheTime;
     this._shareCache = shareCache;
+    this._currentPage = 1;
 
+    // Internal
     this._localCache = new ResourceCache(api, cacheTime);
     this._cache = this._shareCache ? this.api.cache : this._localCache;
+    this._inflight = [];
 
-    // Don't grab it through a proxy to the last list
-    // This can introduce race conditions
-    this._currentPage = 1;
+    this._promiseCallback(listing);
   }
 
   get _promiseCallback() {
     return result => {
       this._currentPage = result.page;
 
-      this.cache.push(result);
+      const query = this.query;
 
       this._last = result;
+      this._query = query;
+
+      this.cache.push(result);
+
+      const inflightId = this.inflight.findIndex(x => x === result.page);
+
+      if (inflightId >= 0) {
+        this._inflight.splice(inflightId, 1);
+      }
 
       this.rebuild();
     };
@@ -51,6 +57,7 @@ export default class PaginatedResourceWrapper {
     if (id instanceof Array) {
       id.map(this.get);
     } else {
+      this._inflight.push(id);
       this._last.getPage(id).then(this._promiseCallback);
     }
   }
@@ -66,6 +73,16 @@ export default class PaginatedResourceWrapper {
   rebuild() {
     this.data = this.cache.resolve(this.path, this._last.cacheToken);
     this.dataFiltered = this.data.filter(value => typeof value !== 'undefined');
+  }
+
+  refresh(flush = false) {
+    if (flush) {
+      this.cache.clear(this.path);
+    }
+
+    this.cache
+      .collectPages(this.path, this._last.cacheToken)
+      .map(page => this.get(page.page));
   }
 
   get currentPage() {
@@ -90,6 +107,7 @@ export default class PaginatedResourceWrapper {
 
   set query(value) {
     this._last.query = value;
+    this.rebuild();
   }
 
   get api() {
@@ -108,5 +126,17 @@ export default class PaginatedResourceWrapper {
     this._shareCache = Boolean(value);
 
     this._cache = this._shareCache ? this.api.cache : this._localCache;
+  }
+
+  get hasNext() {
+    return this.inflight === 0 ? this._last.hasNext : this.currentPage < this.pageCount;
+  }
+
+  get hasPrevious() {
+    return this._last.hasPrevious;
+  }
+
+  get inflight() {
+    return this._inflight;
   }
 }
