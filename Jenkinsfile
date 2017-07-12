@@ -28,7 +28,7 @@ node('npm && yarn') {
 	}
 
 	stage('linter') {
-		sh '$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src'
+		sh 'yarn run lint'
 		checkstyle pattern: 'build/checkstyle.xml'
 	}
 
@@ -51,7 +51,7 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		sh '$(yarn bin)/webpack'
+		sh 'yarn run build'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
@@ -70,7 +70,7 @@ node('npm && yarn') {
 	}
 
 	stage('docs') {
-		sh '$(yarn bin)/esdoc'
+		sh 'yarn run docs'
 
 		if (SHOULD_TAG) {
 			sh 'mv -v dist docs'
