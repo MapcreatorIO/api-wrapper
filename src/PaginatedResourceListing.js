@@ -123,7 +123,7 @@ export default class PaginatedResourceListing {
    * @param {Object<String, String|Array<String>>} value - Query
    * @throws TypeError
    * @default {}
-   * @see ResourceProxy#search
+   * @see {@link ResourceProxy#search}
    */
   set query(value) {
     // Verify query structure
@@ -199,7 +199,7 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Test if there is a next page
+   * If there is a next page
    * @returns {boolean} - If there is a next page
    */
   get hasNext() {
@@ -207,13 +207,19 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Test if there is a previous page
+   * If there is a previous page
    * @returns {boolean} - If there is a previous page
    */
   get hasPrevious() {
     return this.page > 1;
   }
 
+  /**
+   * Used for caching pages internally
+   * @returns {string} - Cache token
+   * @see {@link PaginatedResourceWrapper}
+   * @see {@link ResourceCache}
+   */
   get cacheToken() {
     return encodeQueryString({query: this.query}).toLowerCase();
   }
@@ -235,11 +241,10 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * wrap
-   * @todo docs
+   * Wrap {@link PaginatedResourceWrapper} around the page
    * @returns {PaginatedResourceWrapper} - Wrapped resource listing
    */
-  toListing() {
+  wrap() {
     return new PaginatedResourceWrapper(this);
   }
 }

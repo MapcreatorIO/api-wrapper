@@ -86,16 +86,6 @@ export default class ResourceProxy {
   }
 
   /**
-   * Lists target resource
-   * @param {Number} page - The page to be requested
-   * @param {Number|undefined} perPage - Amount of items per page. This is silently capped by the API
-   * @returns {PaginatedResourceWrapper}
-   */
-  listAndWrap(page = 1, perPage = this.api.defaults.perPage) {
-    return new PaginatedResourceWrapper(this.list(page, perPage), this.api);
-  }
-
-  /**
    * Get target resource
    * @param {Number|String} id - The resource id to be requested
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
