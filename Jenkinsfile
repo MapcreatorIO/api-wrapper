@@ -1,15 +1,9 @@
 @Library('deployment') _
 import org.mapcreator.Deploy
 
-def git_push(branch) {
+def git_push(branch, args) {
 	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch}"
-	}
-}
-
-def git_push_tags(branch) {
-	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch} --tags"
+		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch} ${args}"
 	}
 }
 
@@ -57,7 +51,7 @@ node('npm && yarn') {
 
 	stage('publish') {
 		if (SHOULD_TAG) {
-			git_push_tags "HEAD:${BRANCH_NAME}"
+			git_push_tags "HEAD:${BRANCH_NAME}" '--tags'
 
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
@@ -90,7 +84,7 @@ node('npm && yarn') {
 
 			sh 'git commit -m "Update auto generated docs"'
 
-			git_push 'gh-pages'
+			git_push 'gh-pages' '--force'
 		}
 	}
 
