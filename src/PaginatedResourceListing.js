@@ -1,7 +1,7 @@
 import Maps4News from './Maps4News';
+import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 import {getTypeName, isParentOf} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 
 /**
  * Proxy for accessing paginated resources
@@ -190,7 +190,7 @@ export default class PaginatedResourceListing {
           const instance = new PaginatedResourceListing(
             this.api, this.route, this._Target, this.query,
             page, perPage, totalPages, rowCount,
-            response.data.map(row => new this._Target(this.api, row))
+            response.data.map(row => new this._Target(this.api, row)),
           );
 
           resolve(instance, request);
@@ -241,10 +241,13 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Wrap {@link PaginatedResourceWrapper} around the page
+   * Wraps {@link PaginatedResourceWrapper} around the page
+   * @param {Boolean} cacheEnabled - If the pagination cache should be used
+   * @param {Number} cacheTime - Amount of seconds to store a value in cache
+   * @param {Boolean} shareCache - Share cache across instances
    * @returns {PaginatedResourceWrapper} - Wrapped resource listing
    */
-  wrap() {
-    return new PaginatedResourceWrapper(this);
+  wrap(cacheEnabled = this.api.defaults.cacheEnabled, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+    return new PaginatedResourceWrapper(this, this.api, cacheEnabled, cacheTime, shareCache);
   }
 }
