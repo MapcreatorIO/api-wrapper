@@ -94,6 +94,8 @@ export default class PaginatedResourceWrapper {
     this.data = this.cache
       .resolve(this.path, this._last.cacheToken)
       .filter(value => typeof value !== 'undefined');
+
+    this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.url});
   }
 
   /**

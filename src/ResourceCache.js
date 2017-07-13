@@ -33,7 +33,7 @@ export default class ResourceCache {
 
     (storage[page.cacheToken] || (storage[page.cacheToken] = [])).push(data);
 
-    this.emitter.emit('push', {page, validThrough});
+    this.emitter.emit('push', {page, validThrough, resourceUrl: page.url});
     this.emitter.emit('invalidate', {resourceUrl: page.url});
   }
 
