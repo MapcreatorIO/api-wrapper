@@ -11,13 +11,7 @@ export default class ResourceCache {
     this.cacheTime = cacheTime;
     this.emitter = mitt();
 
-    // page.route => page.query stringified =>
-    // Array<{page: PaginatedResourceListing, timeout: revalidateTimeout}>
-    this.clear();
-
-    // cache invalidation should fire an event for rebuilding data
-    // this should only be done once after revalidate()
-    // push should send an event for rebuilding
+    this._storage = {};
   }
 
   /**
