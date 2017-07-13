@@ -51,7 +51,7 @@ node('npm && yarn') {
 
 	stage('publish') {
 		if (SHOULD_TAG) {
-			git_push_tags "HEAD:${BRANCH_NAME}" '--tags'
+			git_push "HEAD:${BRANCH_NAME}" '--tags'
 
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
