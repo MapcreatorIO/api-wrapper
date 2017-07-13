@@ -22,7 +22,7 @@ node('npm && yarn') {
 	}
 
 	stage('linter') {
-		sh '$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src'
+		sh 'yarn run lint'
 		checkstyle pattern: 'build/checkstyle.xml'
 	}
 
@@ -45,13 +45,13 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		sh '$(yarn bin)/webpack'
+		sh 'yarn run build'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
 	stage('publish') {
 		if (SHOULD_TAG) {
-			git_push_tags "HEAD:${BRANCH_NAME}" '--tags'
+			git_push "HEAD:${BRANCH_NAME}" '--tags'
 
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
@@ -64,7 +64,7 @@ node('npm && yarn') {
 	}
 
 	stage('docs') {
-		sh '$(yarn bin)/esdoc'
+		sh 'yarn run docs'
 
 		if (SHOULD_TAG) {
 			sh 'mv -v dist docs'
@@ -89,7 +89,7 @@ node('npm && yarn') {
 	}
 
 	stage('cleanup') {
-		sh 'rm -rf node_modules dist docs build || true'
+		sh 'rm -rf node_modules dist docs build .env || true'
 	}
 }
 

@@ -1,3 +1,5 @@
+import {Trait} from '../traits/Trait';
+
 /**
  * Tests if the parent is a parent of child
  * @param {function|object} parent - Instance or Class
@@ -52,7 +54,7 @@ export function mix(baseClass, ...mixins) {
   const cocktail = class _Cocktail extends baseClass {
     constructor(...args) {
       super(...args);
-      mixins.forEach((mixin) => {
+      mixins.forEach(mixin => {
         if (mixin.prototype.initializer) {
           mixin.prototype.initializer.call(this);
         }
@@ -91,9 +93,3 @@ function copyProps(target, source) {
       }
     });
 }
-
-/**
- * Trait interface
- * @interface
- */
-export class Trait {}

@@ -33,6 +33,7 @@ import ApiError from './exceptions/ApiError';
 import ValidationError from './exceptions/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
+import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {isParentOf} from './utils/reflection';
 import {makeRequest} from './utils/requests';
@@ -49,14 +50,14 @@ export default class Maps4News {
     this.auth = auth;
     this.host = host;
 
-    /**
-     * Defaults
-     * @type {{perPage: Number}}
-     */
     this.defaults = {
       perPage: Number(process.env.PER_PAGE),
-
+      cacheEnabled: process.env.CACHE_ENABLED.toLowerCase() === 'true',
+      cacheSeconds: Number(process.env.CACHE_SECONDS),
+      shareCache: process.env.CACHE_SHARED.toLowerCase() === 'true',
     };
+
+    this._cache = new ResourceCache(this);
   }
 
   /**
@@ -66,6 +67,14 @@ export default class Maps4News {
    */
   get version() {
     return 'v1';
+  }
+
+  /**
+   * Get the shared cache instance
+   * @returns {ResourceCache} - Shared cache instance
+   */
+  get cache() {
+    return this._cache;
   }
 
   /**

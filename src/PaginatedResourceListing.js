@@ -1,6 +1,7 @@
 import Maps4News from './Maps4News';
 import {getTypeName, isParentOf} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
+import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 
 /**
  * Proxy for accessing paginated resources
@@ -122,7 +123,7 @@ export default class PaginatedResourceListing {
    * @param {Object<String, String|Array<String>>} value - Query
    * @throws TypeError
    * @default {}
-   * @see ResourceProxy#search
+   * @see {@link ResourceProxy#search}
    */
   set query(value) {
     // Verify query structure
@@ -163,13 +164,13 @@ export default class PaginatedResourceListing {
   getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
 
-    perPage = Math.max(1, perPage);
-    perPage = Math.min(50, perPage);
-
     const query = {page};
 
     if (perPage) {
-      query['per_page'] = Math.max(1, perPage);
+      perPage = Math.max(1, perPage);
+      perPage = Math.min(50, perPage);
+
+      query['per_page'] = perPage;
     }
 
     // Add search query (if any)
@@ -198,7 +199,7 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Test if there is a next page
+   * If there is a next page
    * @returns {boolean} - If there is a next page
    */
   get hasNext() {
@@ -206,11 +207,21 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Test if there is a previous page
+   * If there is a previous page
    * @returns {boolean} - If there is a previous page
    */
   get hasPrevious() {
     return this.page > 1;
+  }
+
+  /**
+   * Used for caching pages internally
+   * @returns {string} - Cache token
+   * @see {@link PaginatedResourceWrapper}
+   * @see {@link ResourceCache}
+   */
+  get cacheToken() {
+    return encodeQueryString({query: this.query}).toLowerCase();
   }
 
   /**
@@ -227,5 +238,13 @@ export default class PaginatedResourceListing {
    */
   previous() {
     return this.getPage(this.page - 1);
+  }
+
+  /**
+   * Wrap {@link PaginatedResourceWrapper} around the page
+   * @returns {PaginatedResourceWrapper} - Wrapped resource listing
+   */
+  wrap() {
+    return new PaginatedResourceWrapper(this);
   }
 }
