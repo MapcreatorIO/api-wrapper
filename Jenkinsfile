@@ -51,7 +51,7 @@ node('npm && yarn') {
 
 	stage('publish') {
 		if (SHOULD_TAG) {
-			git_push "HEAD:${BRANCH_NAME}" '--tags'
+			git_push("HEAD:${BRANCH_NAME}", '--tags')
 
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
@@ -84,7 +84,7 @@ node('npm && yarn') {
 
 			sh 'git commit -m "Update auto generated docs"'
 
-			git_push 'gh-pages' '--force'
+			git_push('gh-pages', '--force')
 		}
 	}
 
