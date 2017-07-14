@@ -85,6 +85,50 @@ export default class ResourceProxy {
   }
 
   /**
+   * Lists target resource
+   * @param {Number} page - The page to be requested
+   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
+   * @param {Boolean} cacheEnabled - If the pagination cache should be used
+   * @param {Number} cacheTime - Amount of seconds to store a value in cache
+   * @param {Boolean} shareCache - Share cache across instances
+   * @returns {PaginatedResourceWrapper} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   *
+   */
+  listAndWrap(page = 1, perPage = this.api.defaults.perPage, cacheEnabled = this.api.defaults.cacheEnabled, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+    return this.searchAndWrap({}, page, perPage, cacheEnabled, cacheTime, shareCache);
+  }
+
+  /**
+   * Lists target resource
+   * @param {Object<String, String|Array<String>>} query - Query
+   * @param {Number} page - The page to be requested
+   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
+   * @param {Boolean} cacheEnabled - If the pagination cache should be used
+   * @param {Number} cacheTime - Amount of seconds to store a value in cache
+   * @param {Boolean} shareCache - Share cache across instances
+   * @returns {PaginatedResourceWrapper} - Wrapped {@link PaginatedResourceListing} instance
+   *
+   * @example
+   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
+   * // See Api documentation for search query syntax
+   * var query = {
+   *   name: '^:test',
+   *   scale_min: ['>:1', '<:10'],
+   * }
+   *
+   * api.layers.searchAndWrap(query)
+   */
+  searchAndWrap(query, page = 1, perPage = this.api.defaults.perPage, cacheEnabled = this.api.defaults.cacheEnabled, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+    const url = this.new().baseUrl;
+    const resolver = new PaginatedResourceListing(this._api, url, this.Target, query, page, perPage);
+    const wrapped = resolver.wrap(cacheEnabled, cacheTime, shareCache);
+
+    wrapped.get(page);
+
+    return wrapped;
+  }
+
+  /**
    * Get target resource
    * @param {Number|String} id - The resource id to be requested
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
