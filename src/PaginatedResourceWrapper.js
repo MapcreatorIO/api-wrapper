@@ -1,4 +1,3 @@
-/* eslint-disable no-trailing-spaces */
 import ResourceCache from './ResourceCache';
 
 /**
@@ -30,7 +29,6 @@ export default class PaginatedResourceWrapper {
 
     // Internal
     this._localCache = new ResourceCache(api, cacheTime);
-    this._cache = this._shareCache ? this.api.cache : this._localCache;
     this._inflight = [];
     this._last = listing;
 
@@ -181,7 +179,7 @@ export default class PaginatedResourceWrapper {
    * @returns {ResourceCache} - Cache instance
    */
   get cache() {
-    return this._cache;
+    return this.shareCache ? this.api.cache : this._localCache;
   }
 
   /**
@@ -198,8 +196,6 @@ export default class PaginatedResourceWrapper {
    */
   set shareCache(value) {
     this._shareCache = Boolean(value);
-
-    this._cache = this._shareCache ? this.api.cache : this._localCache;
   }
 
   /**
@@ -207,7 +203,7 @@ export default class PaginatedResourceWrapper {
    * @returns {boolean} - If there is a next page
    */
   get hasNext() {
-    return this.inflight === 0 ? this._last.hasNext : this.currentPage < this.pageCount;
+    return this.inflight.length === 0 ? this._last.hasNext : this.currentPage < this.pageCount;
   }
 
   /**
@@ -224,5 +220,27 @@ export default class PaginatedResourceWrapper {
    */
   get inflight() {
     return this._inflight;
+  }
+
+  /**
+   * Register an event handler for the given type.
+   *
+   * @param {string} type Type of event to listen for, or `"*"` for all events.
+   * @param {function(event: any): void} handler Function to call in response to the given event.
+   * @returns {void}
+   */
+  on(type, handler) {
+    this.cache.emitter.on(type, handler);
+  }
+
+  /**
+   * Function to call in response to the given event
+   *
+   * @param {string} type Type of event to unregister `handler` from, or `"*"`
+   * @param {function(event: any): void} handler Handler function to remove.
+   * @returns {void}
+   */
+  off(type, handler) {
+    this.cache.emitter.off(type, handler);
   }
 }
