@@ -60,6 +60,10 @@ node('npm && yarn') {
 
 				sh 'rm -v .npmrc'
 			}
+
+			PACKAGE_VERSION = sh(returnStdout: true, script: 'git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').trim()
+
+			slackSend(color: 'success', message: "@mapcreator/maps4news version ${PACKAGE_VERSION} was just published", channel: '#api')
 		}
 	}
 
