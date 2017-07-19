@@ -89,7 +89,7 @@
     "comma-spacing": 1,
     "comma-style": 1,
     "eol-last": 2,
-    "indent": [1,2],
+    "indent": [1, 2, {"SwitchCase": 1}],
     "key-spacing": [2,{"afterColon":true}],
     "linebreak-style": [1,"unix"],
     "new-cap": [2,{"newIsCap":true,"capIsNew":true}],

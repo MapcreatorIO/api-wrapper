@@ -22,11 +22,12 @@ export default class ResourceBase {
     }
 
     // Normalize keys to snake_case
+    // Fix data types
     Object.keys(data).map(key => {
       const newKey = camelToSnakeCase(pascalToCamelCase(key));
 
       if (newKey !== key) {
-        data[newKey] = data[key];
+        data[newKey] = ResourceBase._guessType(newKey, data[key]);
         delete data[key];
       }
     });
@@ -108,7 +109,7 @@ export default class ResourceBase {
 
       if (!protectedFields.includes(key)) {
         // eslint-disable-next-line no-return-assign
-        desc.set = val => this._properties[key] = val;
+        desc.set = val => this._properties[key] = ResourceBase._guessType(key, val);
       }
 
       Object.defineProperty(this, snakeToCamelCase(key), desc);
@@ -124,6 +125,35 @@ export default class ResourceBase {
           return Boolean(this.deletedAt);
         },
       });
+    }
+  }
+
+  /**
+   * Guess type based on property name
+   * @param {string} name - Field name
+   * @param {*} value - Field Value
+   * @private
+   * @returns {*} - Original or converted value
+   * @todo find a reasonable way to cast boolean types
+   */
+  static _guessType(name, value) {
+    const regexp = /(?:^|_)([^_$]+)$/g;
+    const match = regexp.exec(name);
+
+    if (match === null || typeof value !== 'string') {
+      return value;
+    }
+
+    switch (match[1]) {
+      case 'end':
+      case 'start':
+      case 'at':
+        return new Date(value);
+      case 'id':
+        return Number(value);
+
+      default:
+        return value;
     }
   }
 
