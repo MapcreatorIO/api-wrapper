@@ -1,5 +1,5 @@
-import {isNode} from '../utils/node';
 import NodeError from '../exceptions/NodeError';
+import {isNode} from '../utils/node';
 
 /**
  * Oauth token container
@@ -99,7 +99,7 @@ export default class OAuthToken {
       data['access_token'],
       data['token_type'],
       Number(data['expires_in']),
-      data['scope'] || []
+      data['scope'] || [],
     );
   }
 
@@ -148,10 +148,15 @@ export default class OAuthToken {
       // We're using eval to require fs to make sure that it isn't added to the bundle
       // eslint-disable-next-line no-eval
       const fs = eval('require("fs")');
-      const raw = fs.readFileSync(name);
-      const data = JSON.parse(raw);
 
-      return new OAuthToken(data.token, data.type, new Date(data.expires));
+      if (fs.existsSync(name)) {
+        const raw = fs.readFileSync(name);
+        const data = JSON.parse(raw);
+
+        return new OAuthToken(data.token, data.type, new Date(data.expires));
+      } else {
+        return null;
+      }
     }
 
     // Cookie

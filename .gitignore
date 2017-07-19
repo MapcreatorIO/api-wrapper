@@ -4,6 +4,9 @@
 /docs/
 !/src/
 
+# Config
+.m4n_token
+
 # Environment file
 /.env
 

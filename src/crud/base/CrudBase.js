@@ -1,6 +1,6 @@
 import {AbstractClassError} from '../../exceptions/AbstractError';
-import ResourceBase from './ResourceBase';
 import PaginatedResourceListing from '../../PaginatedResourceListing';
+import ResourceBase from './ResourceBase';
 
 /**
  * Base of all resource items that support Crud operations
@@ -25,12 +25,14 @@ export default class CrudBase extends ResourceBase {
    * @protected
    */
   _buildCreateData() {
-    const out = this._properties;
+    const out = {};
+    const keys = [].concat(
+      Object.keys(this._properties),
+      Object.keys(this._baseProperties),
+    ).filter((item, pos, self) => self.indexOf(item) === pos);
 
-    for (const key of Object.keys(this._baseProperties)) {
-      if (this[key] !== null) {
-        out[key] = this[key];
-      }
+    for (const key of keys) {
+      out[key] = this._properties[key] || this._baseProperties[key];
     }
 
     delete out.id;

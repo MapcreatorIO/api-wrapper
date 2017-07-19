@@ -29,6 +29,8 @@ export default class ResourceBase {
       if (newKey !== key) {
         data[newKey] = ResourceBase._guessType(newKey, data[key]);
         delete data[key];
+      } else {
+        data[key] = ResourceBase._guessType(newKey, data[key]);
       }
     });
 
@@ -108,8 +110,9 @@ export default class ResourceBase {
       };
 
       if (!protectedFields.includes(key)) {
-        // eslint-disable-next-line no-return-assign
-        desc.set = val => this._properties[key] = ResourceBase._guessType(key, val);
+        desc.set = (val) => {
+          this._properties[key] = ResourceBase._guessType(key, val);
+        };
       }
 
       Object.defineProperty(this, snakeToCamelCase(key), desc);
