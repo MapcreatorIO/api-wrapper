@@ -142,6 +142,7 @@ export default class ResourceBase {
   static _guessType(name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
     const match = regexp.exec(name);
+    const idMacros = ['last', 'me'];
 
     if (match === null || typeof value !== 'string') {
       return value;
@@ -153,8 +154,12 @@ export default class ResourceBase {
       case 'at':
         return new Date(value);
       case 'id':
-        return Number(value);
+        // Test if the value is in fact a macro
+        if (idMacros.includes(String(value).toLowerCase())) {
+          return value;
+        }
 
+        return Number(value);
       default:
         return value;
     }
