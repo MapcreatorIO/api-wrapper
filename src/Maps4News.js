@@ -427,7 +427,7 @@ export default class Maps4News {
    * @returns {Promise} - resolves/rejects with the HTTP response status code. Rejects if status code != 2xx
    */
   testXhr() {
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       makeRequest(`${this.host}/favicon.ico`)
         .then(x => resolve(x.status))
         .catch(x => reject(x.status));
