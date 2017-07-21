@@ -16,6 +16,14 @@ import Permission from './Permission';
 import SvgSet from './SvgSet';
 
 export default class User extends CrudBase {
+  constructor(api, data = {}) {
+    super(api, data);
+
+    if (String(data.id).toLowerCase() === 'me') {
+      this._baseProperties.id = 'me';
+    }
+  }
+
   get resourceName() {
     return 'users';
   }
