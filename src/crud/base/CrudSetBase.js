@@ -9,18 +9,12 @@ export default class CrudSetBase extends CrudBase {
 
   /**
    * Get items associated with the set
-   * @returns {Promise} - Resolves with {@link Dimension} instance and rejects with {@link ApiError}
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link ApiError}
    */
   items() {
     const url = `${this.url}/items`;
 
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(data.map(row => {
-          return new this._Child(this.api, row);
-        })));
-    });
+    return this._listResource(this._Child, url);
   }
 
   /**
