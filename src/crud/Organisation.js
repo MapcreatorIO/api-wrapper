@@ -15,8 +15,8 @@ import User from './User';
 export default class Organisation extends CrudBase {
   /**
    * Sync items to the organisation
-   * @param {Array<ResourceBase>} items - List of items to sync
-   * @returns {Array<Promise>} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
+   * @param {Array<ResourceBase>|ResourceBase} items - List of items to sync
+   * @returns {Array<Promise>|Promise} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
    * @see http://es6-features.org/#PromiseCombination
    */
   sync(items) {
@@ -25,8 +25,8 @@ export default class Organisation extends CrudBase {
 
   /**
    * Attach items to the organisation
-   * @param {Array<ResourceBase>} items - List of items to attach
-   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @param {Array<ResourceBase>|ResourceBase} items - List of items to attach
+   * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @see http://es6-features.org/#PromiseCombination
    */
   attach(items) {
@@ -35,8 +35,8 @@ export default class Organisation extends CrudBase {
 
   /**
    * Unlink items from the organisation
-   * @param {Array<ResourceBase>} items - List of items to unlink
-   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @param {Array<ResourceBase>|ResourceBase} items - List of items to unlink
+   * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @see http://es6-features.org/#PromiseCombination
    */
   unlink(items) {
@@ -45,13 +45,14 @@ export default class Organisation extends CrudBase {
 
   /**
    * Sync, attach or unlink resources
-   * @param {Array<ResourceBase>} items - List of items to sync or attach
+   * @param {Array<ResourceBase>|ResourceBase} items - List of items to sync or attach
    * @param {String} method - Http method to use
-   * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @private
    */
   _modifyResourceLink(items, method) {
-    const collections = this._reduceOwnable(items);
+    const isCollection = items instanceof Array;
+    const collections = this._reduceOwnable(isCollection ? items : [items]);
     const out = [];
 
     for (const key of Object.keys(collections)) {
@@ -62,7 +63,7 @@ export default class Organisation extends CrudBase {
       out.push(promise);
     }
 
-    return out;
+    return isCollection ? out : out[0];
   }
 
   /**
