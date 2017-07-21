@@ -22,4 +22,14 @@ export default class ValidationError extends ApiError {
   get validationErrors() {
     return this._validationErrors;
   }
+
+  toString() {
+    const errors = [].concat(
+      ...Object
+        .keys(this.validationErrors)
+        .map(x => this.validationErrors[x])
+    );
+
+    return `There were some validation errors: ${errors.join(' ')}`;
+  }
 }
