@@ -17,6 +17,7 @@ export default class Organisation extends CrudBase {
    * Sync items to the organisation
    * @param {Array<ResourceBase>} items - List of items to sync
    * @returns {Array<Promise>} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
+   * @see http://es6-features.org/#PromiseCombination
    */
   sync(items) {
     return this._modifyResourceLink(items, 'PATCH');
@@ -26,6 +27,7 @@ export default class Organisation extends CrudBase {
    * Attach items to the organisation
    * @param {Array<ResourceBase>} items - List of items to attach
    * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @see http://es6-features.org/#PromiseCombination
    */
   attach(items) {
     return this._modifyResourceLink(items, 'POST');
@@ -35,6 +37,7 @@ export default class Organisation extends CrudBase {
    * Unlink items from the organisation
    * @param {Array<ResourceBase>} items - List of items to unlink
    * @returns {Array<Promise>} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @see http://es6-features.org/#PromiseCombination
    */
   unlink(items) {
     return this._modifyResourceLink(items, 'DELETE');
