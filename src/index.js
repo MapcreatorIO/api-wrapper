@@ -17,6 +17,9 @@ export StaticClassError from './exceptions/StaticClassError';
 // Resources
 export * as resources from './crud';
 
+// Helpers
+export * as helpers from './utils/helpers';
+
 /**
  * Package version
  * @private
