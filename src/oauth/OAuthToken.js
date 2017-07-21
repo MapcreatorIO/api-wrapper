@@ -154,9 +154,9 @@ export default class OAuthToken {
         const data = JSON.parse(raw);
 
         return new OAuthToken(data.token, data.type, new Date(data.expires));
-      } else {
-        return null;
       }
+
+      return null;
     }
 
     // Cookie
