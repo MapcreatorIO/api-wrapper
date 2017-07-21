@@ -14,7 +14,7 @@ export default class MapstyleSet extends mix(CrudSetBase, OwnableResource) {
   }
 
   get resourceName() {
-    return 'mapstyle-set';
+    return 'mapstyle-sets';
   }
 
   get _Child() {
