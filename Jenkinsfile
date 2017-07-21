@@ -14,6 +14,7 @@ node('npm && yarn') {
 
 	stage('checkout') {
 		checkout scm
+		sh 'git fetch --tags'
 	}
 
 	stage('initialize') {
@@ -62,6 +63,7 @@ node('npm && yarn') {
 			}
 
 			PACKAGE_VERSION = sh(returnStdout: true, script: 'git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').trim()
+			println "Published package version ${PACKAGE_VERSION}"
 
 			slackSend(color: 'good', message: "@mapcreator/maps4news version ${PACKAGE_VERSION} was just published, please run `npm upgrade @mapcreator/maps4news`.", channel: '#api')
 		}
