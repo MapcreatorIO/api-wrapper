@@ -59,7 +59,7 @@ export default class Job extends CrudBase {
   getRevision(id = 'last') {
     return new Promise((resolve, reject) => {
       this._api
-        .request(`${this.resourcePath}/revisions/${id}`)
+        .request(`${this.url}/revisions/${id}`)
         .catch(reject)
         .then(data => resolve(new JobRevision(this._api, data)));
     });
@@ -74,7 +74,7 @@ export default class Job extends CrudBase {
    * @returns {string} - Last preview url
    */
   get lastPreviewUrl() {
-    return `${this.resourcePath}/revisions/last/result/preview`;
+    return `${this.url}/revisions/last/result/preview`;
   }
 
   /**
@@ -82,6 +82,6 @@ export default class Job extends CrudBase {
    * @returns {string} - Last archive url
    */
   get lastArchiveUrl() {
-    return `${this.resourcePath}/revisions/last/result/archive`;
+    return `${this.url}/revisions/last/result/archive`;
   }
 }
