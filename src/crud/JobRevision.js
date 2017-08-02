@@ -38,7 +38,7 @@ import {isParentOf} from '../utils/reflection';
 
 export default class JobRevision extends CrudBase {
   get baseUrl() {
-    return `/jobs/${this['job_id']}/revisions`;
+    return `/jobs/${this.jobId}/revisions`;
   }
 
   get resourcePath() {
