@@ -69,9 +69,7 @@ export function getPaginatedRange(page, start = 1, stop) {
 
     // Resolve
     Promise.all(promises).then(rows => {
-      rows.map(x => x.data).forEach(out.push);
-
-      resolve(out);
+      resolve(out.concat(...rows.map(x => x.data)));
     }, reject);
   });
 }
