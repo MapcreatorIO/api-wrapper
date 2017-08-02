@@ -57,3 +57,9 @@ export * as helpers from './utils/helpers';
  * @private
  */
 export const version = VERSION;
+
+/**
+ * Package license
+ * @private
+ */
+export const license = LICENSE;

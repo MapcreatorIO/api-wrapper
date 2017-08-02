@@ -14,7 +14,8 @@
     "module": true,
     "process": false,
 
-    "VERSION": false
+    "VERSION": false,
+    "LICENSE": false
   },
   "rules": {
     "comma-dangle": [1,"always-multiline"],
