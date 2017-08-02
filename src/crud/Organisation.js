@@ -49,6 +49,7 @@ export default class Organisation extends CrudBase {
    * Sync items to the organisation
    * @param {Array<ResourceBase>|ResourceBase} items - List of items to sync
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
+   * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
    */
   sync(items) {
@@ -59,6 +60,7 @@ export default class Organisation extends CrudBase {
    * Attach items to the organisation
    * @param {Array<ResourceBase>|ResourceBase} items - List of items to attach
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
    */
   attach(items) {
@@ -69,6 +71,7 @@ export default class Organisation extends CrudBase {
    * Unlink items from the organisation
    * @param {Array<ResourceBase>|ResourceBase} items - List of items to unlink
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
    */
   unlink(items) {
@@ -80,6 +83,7 @@ export default class Organisation extends CrudBase {
    * @param {Array<ResourceBase>|ResourceBase} items - List of items to sync or attach
    * @param {String} method - Http method to use
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws {TypeError} If the provided items contain anything that is not ownable
    * @private
    */
   _modifyResourceLink(items, method) {
@@ -102,6 +106,7 @@ export default class Organisation extends CrudBase {
    * Reduce the items to a more usable list
    * @param {Array<ResourceBase>} items - List of items to reduce
    * @returns {Object<String, Array<Number>>} - Object keys are resource names and the value is an array containing ids to sync/attach
+   * @throws {TypeError} If the provided items contain anything that is not ownable
    * @private
    */
   _reduceOwnable(items) {
@@ -109,7 +114,7 @@ export default class Organisation extends CrudBase {
 
     for (const row of items) {
       if (!row.ownable) {
-        continue;
+        throw new TypeError(`${row.constructor.name}::ownable is false. Is it ownable?\nSee: https://mapcreatoreu.github.io/m4n-api/class/src/traits/OwnableResource.js~OwnableResource.html`);
       }
 
       const key = row.resourceName;
