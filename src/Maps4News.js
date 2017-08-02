@@ -102,7 +102,7 @@ export default class Maps4News {
    * @returns {boolean} - If the client is authenticated with the api
    */
   get authenticated() {
-    return this._auth.authenticated;
+    return this.auth.authenticated;
   }
 
   /**
@@ -120,7 +120,7 @@ export default class Maps4News {
   set host(value) {
     value = value.replace(/\/+$/, '');
     this._host = value;
-    this._auth.host = value;
+    this.auth.host = value;
   }
 
   /**
@@ -129,8 +129,8 @@ export default class Maps4News {
    */
   authenticate() {
     return new Promise((resolve, reject) => {
-      this._auth.authenticate().then(() => {
-        this._auth.token.save();
+      this.auth.authenticate().then(() => {
+        this.auth.token.save();
 
         resolve(this);
       }).catch(reject);
@@ -156,7 +156,7 @@ export default class Maps4News {
     }
 
     if (this.authenticated) {
-      headers.Authorization = this._auth.token.toString();
+      headers.Authorization = this.auth.token.toString();
     }
 
     return new Promise((resolve, reject) => {
