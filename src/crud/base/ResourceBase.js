@@ -144,6 +144,7 @@ export default class ResourceBase {
       if (!protectedFields.includes(key)) {
         desc.set = (val) => {
           this._properties[key] = ResourceBase._guessType(key, val);
+          delete this._url; // Clears url cache
         };
       }
 
@@ -210,13 +211,17 @@ export default class ResourceBase {
    * @returns {string} - Resource url
    */
   get url() {
-    let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
+    if (!this._url) {
+      let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
 
-    for (const key of Object.keys(this._baseProperties)) {
-      url = url.replace(`{${key}}`, this[key]);
+      for (const key of Object.keys(this._baseProperties)) {
+        url = url.replace(`{${key}}`, this[key]);
+      }
+
+      this._url = url;
     }
 
-    return url;
+    return this._url;
   }
 
   /**
