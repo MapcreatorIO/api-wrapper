@@ -88,7 +88,7 @@ export default class ImageHandler {
       const request = new XMLHttpRequest();
 
       request.open('POST', this.url, true);
-      request.setRequestHeader('Authorization', this._api.token.toString());
+      request.setRequestHeader('Authorization', this.api.auth.token.toString());
       request.setRequestHeader('Accept', 'application/json');
 
       request.onreadystatechange = () => {
