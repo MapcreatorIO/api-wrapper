@@ -1,2 +1,1 @@
 - [Bas](https://github.com/Mechazawa)
-- [Kevin Richter](https://github.com/beschoenen)
