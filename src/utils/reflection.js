@@ -78,9 +78,10 @@ export function getTypeName(value) {
 
 /**
  * Mix traits into the target class
- * @param {Constructor} baseClass - Target base class for the traits to be applied to
- * @param {Constructor} mixins - Traits to be applied
- * @returns {Constructor} - Constructor with any traits applied
+ * @param {Function} baseClass - Target base class for the traits to be applied to
+ * @param {Function} mixins - Traits to be applied
+ * @returns {Function} - Constructor with any traits applied
+ * @private
  */
 export function mix(baseClass, ...mixins) {
   const cocktail = class _Cocktail extends baseClass {
