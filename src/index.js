@@ -41,10 +41,10 @@ export PasswordFlow from './oauth/PasswordFlow';
 export DummyFlow from './oauth/DummyFlow';
 
 // Exceptions
-export ApiError from './exceptions/ApiError';
-export * from './exceptions/AbstractError';
-export ValidationError from './exceptions/ValidationError';
-export StaticClassError from './exceptions/StaticClassError';
+export ApiError from './errors/ApiError';
+export * from './errors/AbstractError';
+export ValidationError from './errors/ValidationError';
+export StaticClassError from './errors/StaticClassError';
 
 // Resources
 export * as resources from './crud';

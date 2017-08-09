@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractClassError} from '../../exceptions/AbstractError';
+import {AbstractClassError} from '../../errors/AbstractError';
 import PaginatedResourceListing from '../../PaginatedResourceListing';
 import ResourceBase from './ResourceBase';
 

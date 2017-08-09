@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractClassError, AbstractMethodError} from '../exceptions/AbstractError';
+import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
 import {isNode} from '../utils/node';

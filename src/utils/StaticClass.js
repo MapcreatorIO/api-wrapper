@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import StaticClassError from '../exceptions/StaticClassError';
+import StaticClassError from '../errors/StaticClassError';
 
 /**
  * Disables the constructor and throws a {@link StaticClassError} when an instance is created.

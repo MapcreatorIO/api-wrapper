@@ -31,7 +31,7 @@
  */
 
 import CrudBase from './base/CrudBase';
-import UnsupportedCrudError from '../exceptions/UnsupportedCrudError';
+import UnsupportedCrudError from '../errors/UnsupportedCrudError';
 
 export default class SvgSetType extends CrudBase {
   /**

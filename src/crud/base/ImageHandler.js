@@ -33,8 +33,8 @@
 import {isParentOf} from '../../utils/reflection';
 import Maps4News from '../../Maps4News';
 import ResourceBase from './ResourceBase';
-import ApiError from '../../exceptions/ApiError';
-import ValidationError from '../../exceptions/ValidationError';
+import ApiError from '../../errors/ApiError';
+import ValidationError from '../../errors/ValidationError';
 
 /**
  * Image resource handler

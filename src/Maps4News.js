@@ -64,8 +64,8 @@ import {
   User,
 } from './crud';
 
-import ApiError from './exceptions/ApiError';
-import ValidationError from './exceptions/ValidationError';
+import ApiError from './errors/ApiError';
+import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
 import ResourceCache from './ResourceCache';
