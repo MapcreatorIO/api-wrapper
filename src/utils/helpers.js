@@ -37,9 +37,11 @@
  * @param {?Number} [stop] - Stop page
  * @returns {Promise<Array<ResourceBase>>} - Resolves with an {@link Array} containing {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
  * @example
+ * import { helpers } from "@mapcreator/maps4news";
+ *
  * const promise = api.users.list(1, 50); // 50 per page is more efficient
  *
- * getPaginatedRange(promise).then(data => {
+ * helpers.getPaginatedRange(promise).then(data => {
  *    data.map(row => `[${row.id}] ${row.name}`) // We just want the names
  *        .forEach(console.log) // Log the names and ids of every user
  * })
