@@ -35,32 +35,35 @@ if (!global._babelPolyfill) {
   require('babel-polyfill');
 }
 
-import Choropleth from './crud/Choropleth';
-import Color from './crud/Color';
-import Contract from './crud/Contract';
-import Dimension from './crud/Dimension';
-import DimensionSet from './crud/DimensionSet';
-import Faq from './crud/Faq';
-import Feature from './crud/Feature';
-import Font from './crud/Font';
-import FontFamily from './crud/FontFamily';
-import Highlight from './crud/Highlight';
-import InsetMap from './crud/InsetMap';
-import Job from './crud/Job';
-import JobShare from './crud/JobShare';
-import JobType from './crud/JobType';
-import Language from './crud/Language';
-import Layer from './crud/Layer';
-import Mapstyle from './crud/Mapstyle';
-import MapstyleSet from './crud/MapstyleSet';
-import Notification from './crud/Notification';
-import Organisation from './crud/Organisation';
-import Permission from './crud/Permission';
-import PlaceName from './crud/PlaceName';
-import Svg from './crud/Svg';
-import SvgSet from './crud/SvgSet';
-import SvgSetType from './crud/SvgSetType';
-import User from './crud/User';
+import {
+  Choropleth,
+  Color,
+  Contract,
+  Dimension,
+  DimensionSet,
+  Faq,
+  Feature,
+  Font,
+  FontFamily,
+  Highlight,
+  InsetMap,
+  Job,
+  JobShare,
+  JobType,
+  Language,
+  Layer,
+  Mapstyle,
+  MapstyleSet,
+  Notification,
+  Organisation,
+  Permission,
+  PlaceName,
+  Svg,
+  SvgSet,
+  SvgSetType,
+  User,
+} from './crud';
+
 import ApiError from './exceptions/ApiError';
 import ValidationError from './exceptions/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
