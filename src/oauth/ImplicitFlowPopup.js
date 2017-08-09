@@ -32,7 +32,7 @@
 
 import ImplicitFlow from './ImplicitFlow';
 import OAuthToken from './OAuthToken';
-import OAuthError from './OAuthError';
+import OAuthError from '../errors/OAuthError';
 
 /**
  * Implicit OAuth flow using a pop-up.

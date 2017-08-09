@@ -34,7 +34,7 @@ import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
 import {encodeQueryString} from '../utils/requests';
-import OAuthError from './OAuthError';
+import OAuthError from '../errors/OAuthError';
 import {isNode} from '../utils/node';
 
 /**
