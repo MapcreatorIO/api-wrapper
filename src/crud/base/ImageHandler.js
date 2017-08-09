@@ -85,6 +85,7 @@ export default class ImageHandler {
   /**
    * Get image base64 representation
    * @returns {Promise} - Resolves with a {@link String} containing a base64 representation of the image and rejects with {@link ApiError}
+   * @todo nodejs compatibility
    */
   download() {
     return new Promise((resolve, reject) => {
