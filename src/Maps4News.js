@@ -270,7 +270,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get choropleths() {
-    return new ResourceProxy(this, Choropleth);
+    return this.static(Choropleth);
   }
 
   /**
@@ -279,7 +279,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get colors() {
-    return new ResourceProxy(this, Color);
+    return this.static(Color);
   }
 
   /**
@@ -288,7 +288,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get contracts() {
-    return new ResourceProxy(this, Contract);
+    return this.static(Contract);
   }
 
   /**
@@ -297,7 +297,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get dimensions() {
-    return new ResourceProxy(this, Dimension);
+    return this.static(Dimension);
   }
 
   /**
@@ -306,7 +306,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets() {
-    return new ResourceProxy(this, DimensionSet);
+    return this.static(DimensionSet);
   }
 
   /**
@@ -315,7 +315,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get faqs() {
-    return new ResourceProxy(this, Faq);
+    return this.static(Faq);
   }
 
   /**
@@ -324,7 +324,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get features() {
-    return new ResourceProxy(this, Feature);
+    return this.static(Feature);
   }
 
   /**
@@ -333,7 +333,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get fonts() {
-    return new ResourceProxy(this, Font);
+    return this.static(Font);
   }
 
   /**
@@ -342,7 +342,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get fontFamilies() {
-    return new ResourceProxy(this, FontFamily);
+    return this.static(FontFamily);
   }
 
   /**
@@ -351,7 +351,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get highlights() {
-    return new ResourceProxy(this, Highlight);
+    return this.static(Highlight);
   }
 
   /**
@@ -360,7 +360,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get insetMaps() {
-    return new ResourceProxy(this, InsetMap);
+    return this.static(InsetMap);
   }
 
   /**
@@ -369,7 +369,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get jobs() {
-    return new ResourceProxy(this, Job);
+    return this.static(Job);
   }
 
   /**
@@ -378,7 +378,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get jobShares() {
-    return new ResourceProxy(this, JobShare);
+    return this.static(JobShare);
   }
 
   /**
@@ -387,7 +387,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get jobTypes() {
-    return new ResourceProxy(this, JobType);
+    return this.static(JobType);
   }
 
   /**
@@ -396,7 +396,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get languages() {
-    return new ResourceProxy(this, Language);
+    return this.static(Language);
   }
 
   /**
@@ -405,7 +405,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get layers() {
-    return new ResourceProxy(this, Layer);
+    return this.static(Layer);
   }
 
   /**
@@ -414,7 +414,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get mapstyles() {
-    return new ResourceProxy(this, Mapstyle);
+    return this.static(Mapstyle);
   }
 
   /**
@@ -423,7 +423,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get mapstyleSets() {
-    return new ResourceProxy(this, MapstyleSet);
+    return this.static(MapstyleSet);
   }
 
   /**
@@ -432,7 +432,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get notifications() {
-    return new ResourceProxy(this, Notification);
+    return this.static(Notification);
   }
 
   /**
@@ -441,7 +441,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get organisations() {
-    return new ResourceProxy(this, Organisation);
+    return this.static(Organisation);
   }
 
   /**
@@ -450,7 +450,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get permissions() {
-    return new ResourceProxy(this, Permission);
+    return this.static(Permission);
   }
 
   /**
@@ -459,7 +459,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get placeNames() {
-    return new ResourceProxy(this, PlaceName);
+    return this.static(PlaceName);
   }
 
   /**
@@ -468,7 +468,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get svgs() {
-    return new ResourceProxy(this, Svg);
+    return this.static(Svg);
   }
 
   /**
@@ -477,7 +477,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get svgSets() {
-    return new ResourceProxy(this, SvgSet);
+    return this.static(SvgSet);
   }
 
   /**
@@ -486,7 +486,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get svgSetTypes() {
-    return new ResourceProxy(this, SvgSetType);
+    return this.static(SvgSetType);
   }
 
   /**
@@ -495,7 +495,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get users() {
-    return new ResourceProxy(this, User);
+    return this.static(User);
   }
 
   /**
