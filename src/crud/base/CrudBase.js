@@ -33,7 +33,6 @@
 import {AbstractClassError} from '../../errors/AbstractError';
 import PaginatedResourceListing from '../../PaginatedResourceListing';
 import ResourceBase from './ResourceBase';
-import {paginateResource} from '../../utils/helpers';
 
 /**
  * Base of all resource items that support Crud operations

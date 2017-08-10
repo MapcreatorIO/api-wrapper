@@ -30,11 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import OwnableResource from '../traits/OwnableResource';
-import CrudBase from './base/CrudBase';
-import ImageHandler from '../ImageHandler';
-import {mix} from '../utils/reflection';
 import HandlesImages from '../traits/HandlesImages';
+import OwnableResource from '../traits/OwnableResource';
+import {mix} from '../utils/reflection';
+import CrudBase from './base/CrudBase';
 
 /**
  * Layer

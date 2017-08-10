@@ -71,10 +71,9 @@ import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
 import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
+import {fnv32a} from './utils/hash';
 import {isParentOf} from './utils/reflection';
 import {makeRequest} from './utils/requests';
-import Uuid from './utils/uuid';
-import {fnv32a} from './utils/hash';
 
 /**
  * Base API class
@@ -259,7 +258,7 @@ export default class Maps4News {
       }
     };
 
-    Object.defineProperty(Constructor, 'name', { value: `AnonymousResource_${fnv32a(String(Target))}`})
+    Object.defineProperty(Constructor, 'name', {value: `AnonymousResource_${fnv32a(String(Target))}`});
 
     return this.static(Constructor);
   }
