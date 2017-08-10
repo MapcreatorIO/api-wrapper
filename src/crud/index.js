@@ -63,6 +63,9 @@ import CrudBase from './base/CrudBase';
 import CrudSetBase from './base/CrudSetBase';
 import ResourceBase from './base/ResourceBase';
 
+/**
+ * @private
+ */
 export const base = {
   CrudBase, CrudSetBase, ResourceBase,
 };
