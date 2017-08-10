@@ -126,7 +126,6 @@ export default class PaginatedResourceWrapper {
    * @returns {void}
    */
   rebuild() {
-    console.log(`rebuild ${this._last.route} ${this._last.cacheToken}`);
     this.data = this.cache
       .resolve(this.route, this._last.cacheToken)
       .filter(value => typeof value !== 'undefined');
