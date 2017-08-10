@@ -30,11 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isParentOf} from '../../utils/reflection';
-import Maps4News from '../../Maps4News';
-import ResourceBase from './ResourceBase';
-import ApiError from '../../errors/ApiError';
-import ValidationError from '../../errors/ValidationError';
+import {isParentOf} from './utils/reflection';
+import Maps4News from './Maps4News';
+import ResourceBase from './crud/base/ResourceBase';
+import ApiError from './errors/ApiError';
+import ValidationError from './errors/ValidationError';
 
 /**
  * Image resource handler

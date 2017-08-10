@@ -31,7 +31,7 @@
  */
 
 import {Trait} from './Trait';
-import ImageHandler from '../crud/base/ImageHandler';
+import ImageHandler from '../ImageHandler';
 
 
 /**
