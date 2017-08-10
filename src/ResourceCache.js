@@ -56,17 +56,17 @@ export default class ResourceCache {
     const data = {
       page, validThrough,
       timeout: setTimeout(
-        () => this.revalidate(page.url),
+        () => this.revalidate(page.route),
         this.cacheTime * 1000,
       ),
     };
 
-    const storage = this._storage[page.url] || (this._storage[page.url] = {});
+    const storage = this._storage[page.route] || (this._storage[page.route] = {});
 
     (storage[page.cacheToken] || (storage[page.cacheToken] = [])).push(data);
 
-    this.emitter.emit('push', {page, validThrough, resourceUrl: page.url});
-    this.emitter.emit('invalidate', {resourceUrl: page.url});
+    this.emitter.emit('push', {page, validThrough, resourceUrl: page.route});
+    this.emitter.emit('invalidate', {resourceUrl: page.route});
   }
 
   /**
