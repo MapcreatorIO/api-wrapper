@@ -50,6 +50,12 @@ export function camelToSnakeCase(str) {
   return str.replace(/([A-Z])/g, x => '_' + x.toLowerCase());
 }
 
+/**
+ * Converts PascalCase strings to camelCase
+ * @param {String} str - a PascalCase string
+ * @returns {String} - Converted camelCase string
+ * @private
+ */
 export function pascalToCamelCase(str) {
   return str.replace(/^([A-Z])/g, x => x.toLowerCase());
 }
