@@ -81,7 +81,7 @@ export function getPaginatedRange(page, start = 1, stop) {
 }
 
 /**
- * Manually a paginated resource
+ * Manually paginate a resource
  * @param {Maps4News} api - Api instance
  * @param {?String} url - Target url, if null it will guess
  * @param {Number} [page=1] - Page number

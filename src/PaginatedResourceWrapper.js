@@ -63,6 +63,7 @@ export default class PaginatedResourceWrapper {
     this._localCache = new ResourceCache(api, cacheTime);
     this._inflight = [];
     this._last = listing;
+    this._waiting = false;
 
     this._promiseCallback(listing);
   }
@@ -82,6 +83,8 @@ export default class PaginatedResourceWrapper {
         this._inflight.splice(inflightId, 1);
       }
 
+      this._waiting = this.inflight.length > 0;
+
       this.rebuild();
     };
   }
@@ -95,6 +98,8 @@ export default class PaginatedResourceWrapper {
     if (pageId instanceof Array) {
       pageId.map(this.get);
     } else {
+      this._waiting = true;
+
       this._inflight.push(pageId);
       this._last.getPage(pageId).then(this._promiseCallback);
     }
@@ -252,6 +257,14 @@ export default class PaginatedResourceWrapper {
    */
   get inflight() {
     return this._inflight;
+  }
+
+  /**
+   * Returns if there are still requests mid-flight
+   * @returns {boolean} - Returns if the wrapper is waiting for requests to finish
+   */
+  get waiting() {
+    return this._waiting;
   }
 
   /**
