@@ -126,8 +126,9 @@ export default class PaginatedResourceWrapper {
    * @returns {void}
    */
   rebuild() {
+    console.log(`rebuild ${this._last.route} ${this._last.cacheToken}`);
     this.data = this.cache
-      .resolve(this.path, this._last.cacheToken)
+      .resolve(this.route, this._last.cacheToken)
       .filter(value => typeof value !== 'undefined');
 
     this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.url});
@@ -135,16 +136,16 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Updates the cached pages.
-   * @param {Boolean} flush - Clear the cached path data
+   * @param {Boolean} flush - Clear the cached route data
    * @returns {void}
    */
   refresh(flush = false) {
     if (flush) {
-      this.cache.clear(this.path);
+      this.cache.clear(this.route);
     }
 
     this.cache
-      .collectPages(this.path, this._last.cacheToken)
+      .collectPages(this.route, this._last.cacheToken)
       .map(page => this.get(page.page));
   }
 
@@ -167,11 +168,11 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
-   * Get the path of the resource
-   * @returns {String} - path
+   * Get the route of the resource
+   * @returns {String} - route
    */
-  get path() {
-    return this._last.path;
+  get route() {
+    return this._last.route;
   }
 
   /**
