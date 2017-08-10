@@ -32,23 +32,17 @@
 
 import OwnableResource from '../traits/OwnableResource';
 import CrudBase from './base/CrudBase';
-import ImageHandler from './base/ImageHandler';
+import ImageHandler from '../ImageHandler';
 import {mix} from '../utils/reflection';
+import HandlesImages from '../traits/HandlesImages';
 
 /**
  * Layer
  * @extends {CrudBase}
  * @extends {OwnableResource}
+ * @extends {HandlesImages}
  */
-export default class Layer extends mix(CrudBase, OwnableResource) {
-  /**
-   * Handler for item image management
-   * @returns {ImageHandler} - Image handler
-   */
-  get imageHandler() {
-    return new ImageHandler(this.api, this);
-  }
-
+export default class Layer extends mix(CrudBase, OwnableResource, HandlesImages) {
   get resourceName() {
     return 'layers';
   }
