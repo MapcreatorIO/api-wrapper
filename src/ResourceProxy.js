@@ -30,9 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isParentOf} from './utils/reflection';
 import ResourceBase from './crud/base/ResourceBase';
 import PaginatedResourceListing from './PaginatedResourceListing';
+import {isParentOf} from './utils/reflection';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -162,11 +162,12 @@ export default class ResourceProxy {
 
   /**
    * Get target resource
-   * @param {Number|String} id - The resource id to be requested
+   * @param {Number|String} [id=] - The resource id to be requested
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   get(id) {
-    const url = this.new({id: id}).url;
+    const data = typeof id === 'undefined' ? {} : {id};
+    const url = this.new(data).url;
 
     return new Promise((resolve, reject) => {
       this._api
@@ -178,13 +179,15 @@ export default class ResourceProxy {
 
   /**
    * Select target resource without obtaining data
-   * @param {Number|String} id - Resource id
+   * @param {Number|String} [id=] - Resource id
    * @returns {ResourceBase} - Empty target resource
    * @example
    * api.users.select('me').colors().then(doSomethingCool);
    */
   select(id) {
-    return this.new({id: id});
+    const data = typeof id === 'undefined' ? {} : {id};
+
+    return this.new(data);
   }
 
   /**
