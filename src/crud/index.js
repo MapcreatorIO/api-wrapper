@@ -58,3 +58,11 @@ export Svg from './Svg.js';
 export SvgSet from './SvgSet.js';
 export SvgSetType from './SvgSetType.js';
 export User from './User.js';
+
+import CrudBase from './base/CrudBase';
+import CrudSetBase from './base/CrudSetBase';
+import ResourceBase from './base/ResourceBase';
+
+export const base = {
+  CrudBase, CrudSetBase, ResourceBase,
+};
