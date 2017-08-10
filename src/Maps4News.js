@@ -73,6 +73,8 @@ import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {isParentOf} from './utils/reflection';
 import {makeRequest} from './utils/requests';
+import Uuid from './utils/uuid';
+import {fnv32a} from './utils/hash';
 
 /**
  * Base API class
@@ -247,7 +249,7 @@ export default class Maps4News {
       return new ResourceProxy(this, Target);
     }
 
-    const Constructor = class extends ResourceBase {
+    const Constructor = class AnonymousResource extends ResourceBase {
       get resourceName() {
         return 'anonymous';
       }
@@ -256,6 +258,8 @@ export default class Maps4News {
         return String(Target);
       }
     };
+
+    Object.defineProperty(Constructor, 'name', { value: `AnonymousResource_${fnv32a(String(Target))}`})
 
     return this.static(Constructor);
   }
