@@ -33,6 +33,7 @@
 import {AbstractClassError} from '../../errors/AbstractError';
 import PaginatedResourceListing from '../../PaginatedResourceListing';
 import ResourceBase from './ResourceBase';
+import {paginateResource} from '../../utils/helpers';
 
 /**
  * Base of all resource items that support Crud operations
@@ -81,15 +82,7 @@ export default class CrudBase extends ResourceBase {
    * @protected
    */
   _listResource(Target, url = null, page = 1, perPage = this.api.defaults.perPage) {
-    if (!url) {
-      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
-
-      url = `${this.url}/${resource}s`;
-    }
-
-    const resolver = new PaginatedResourceListing(this.api, url, Target);
-
-    return resolver.getPage(page, perPage);
+    return paginateResource(this.api, url, page, perPage, Target);
   }
 
   /**
