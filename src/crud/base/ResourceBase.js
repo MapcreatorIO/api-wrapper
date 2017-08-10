@@ -214,9 +214,8 @@ export default class ResourceBase {
     if (!this._url) {
       let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
 
-      for (const key of Object.keys(this._baseProperties)) {
-        url = url.replace(`{${key}}`, this[key]);
-      }
+      // Find and replace any keys
+      url = url.replace(/{(\w+)}/g, (match, key) => this[snakeToCamelCase(key)]);
 
       this._url = url;
     }
