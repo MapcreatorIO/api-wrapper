@@ -63,6 +63,7 @@ import {
   SvgSetType,
   User,
 } from './crud';
+import ResourceBase from './crud/base/ResourceBase';
 
 import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
@@ -221,6 +222,42 @@ export default class Maps4News {
         reject(new ApiError(err.type, err.message, request.status));
       });
     });
+  }
+
+  /**
+   * Static proxy generation
+   * @param {string|function} Target - Constructor or url
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   * @example
+   * api.static('/custom/resource/path/{id}/').get(123);
+   *
+   * @example
+   * class FooBar extends ResourceBase {
+   *    get resourceName() {
+   *      return 'custom';
+   *    }
+   * }
+   *
+   * api.static(FooBar)
+   *   .get(1)
+   *   .then(console.log);
+   */
+  static(Target) {
+    if (isParentOf(ResourceBase, Target)) {
+      return new ResourceProxy(this, Target);
+    }
+
+    const Constructor = class extends ResourceBase {
+      get resourceName() {
+        return 'anonymous';
+      }
+
+      get resourcePath() {
+        return String(Target);
+      }
+    };
+
+    return this.static(Constructor);
   }
 
   /**

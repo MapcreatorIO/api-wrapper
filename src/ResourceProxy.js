@@ -46,7 +46,7 @@ export default class ResourceProxy {
    */
   constructor(api, Target) {
     if (!isParentOf(ResourceBase, Target)) {
-      throw new TypeError('Target is not a child of CrudBase');
+      throw new TypeError('Target is not a child of ResourceBase');
     }
 
     if (typeof Target !== 'function') {
