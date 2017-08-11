@@ -122,15 +122,13 @@ export default class ResourceCache {
    * @returns {Array<PaginatedResourceListing>} - Relevant cached pages
    */
   collectPages(resourceUrl, cacheToken = '') {
-    const storage = this._storage[resourceUrl] || {};
+    cacheToken = cacheToken.toLowerCase();
 
-    return [].concat(
-      ...Object
-        .keys(storage)
-        .filter(x => !cacheToken || x === cacheToken)
-        .map(key => storage[key]))
-      .sort((a, b) => a.validThrough - b.validThrough)
-      .map(x => x.page);
+    // Storage array or []
+    const storage = (this._storage[resourceUrl] || {})[cacheToken] || [];
+
+    // Sort by validThrough and extract pages
+    return storage.sort((a, b) => a.validThrough - b.validThrough).map(x => x.page);
   }
 
   /**
@@ -158,6 +156,7 @@ export default class ResourceCache {
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array} - Indexed relevant data
    * @todo Get missing keys between pages and remove them if needed. Diff last and first between pages.
+   * @todo add page numbers or range as optional parameter
    */
   resolve(resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
