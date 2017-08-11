@@ -32,9 +32,9 @@
 
 import Maps4News from './Maps4News';
 import PaginatedResourceWrapper from './PaginatedResourceWrapper';
+import {hashObject} from './utils/hash';
 import {getTypeName, isParentOf} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import {fnv32a} from './utils/hash';
 
 /**
  * Proxy for accessing paginated resources
@@ -254,9 +254,7 @@ export default class PaginatedResourceListing {
    * @see {@link ResourceCache}
    */
   get cacheToken() {
-    const query = encodeQueryString({query: this.query});
-
-    return fnv32a(`${this.route}?${query}`);
+    return hashObject({query: this.query});
   }
 
   /**
