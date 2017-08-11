@@ -162,18 +162,23 @@ export default class ResourceProxy {
 
   /**
    * Get target resource
-   * @param {Number|String} [id=] - The resource id to be requested
+   * @param {Number|String|Object} [id=] - The resource id to be requested
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   get(id) {
-    const data = typeof id === 'undefined' ? {} : {id};
+    const data = {
+      number: {id},
+      string: {id},
+      object: id,
+    }[typeof id] || {};
+
     const url = this.new(data).url;
 
     return new Promise((resolve, reject) => {
       this._api
         .request(url)
         .catch(reject)
-        .then(data => resolve(this.new(data)));
+        .then(result => resolve(this.new(result)));
     });
   }
 
