@@ -47,6 +47,7 @@ node('npm && yarn') {
 
 	stage('build') {
 		sh 'yarn run build'
+		sh 'gzip dist/bundle.min.js -9k'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
