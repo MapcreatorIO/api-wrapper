@@ -30,7 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import PaginatedResourceListing from './PaginatedResourceListing';
 import ResourceCache from './ResourceCache';
+import {hashObject} from './utils/hash';
 
 /**
  * Used for wrapping {@link PaginatedResourceListing} to make it spa friendly
@@ -52,6 +54,7 @@ export default class PaginatedResourceWrapper {
     this.cacheTime = cacheTime;
     this._shareCache = shareCache;
     this._currentPage = 1;
+    this._context = [];
 
     /**
      * Available data assembled from the cache
@@ -70,7 +73,7 @@ export default class PaginatedResourceWrapper {
 
   get _promiseCallback() {
     return result => {
-      const query = this.query;
+      const query = this.query();
 
       this._last = result;
       this._query = query;
@@ -130,7 +133,7 @@ export default class PaginatedResourceWrapper {
       .resolve(this.route, this._last.cacheToken)
       .filter(value => typeof value !== 'undefined');
 
-    this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.url});
+    this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.route});
   }
 
   /**
@@ -183,24 +186,33 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
-   * Optional search query
-   * @default {}
-   * @return {Object<String, String|Array<String>>} - Query
-   */
-  get query() {
-    return this._last.query;
-  }
-
-  /**
-   * Optional search query
-   * @param {Object<String, String|Array<String>>} value - Query
+   * Set the search query and search
+   * @param {?Object<String, String|Array<String>>} [value=null] - Query
    * @throws TypeError
    * @default {}
    * @see {@link ResourceProxy#search}
+   * @returns {Object<String, String|Array<String>>} - query
    */
-  set query(value) {
-    this._last.query = value;
+  query(value = null) {
+    if (!value || value === this.query()) {
+      return this._last.query;
+    }
+
+    this._context[this._last.cacheToken] = this._last;
+
+    const token = hashObject(value);
+
+    if (this._context[token]) {
+      this._last = this._context[token];
+    } else {
+      this._last = new PaginatedResourceListing(this.api, this._last.route, this._last.Target, value, 1, this._last.perPage);
+      this.get(1);
+      this.currentPage = 1;
+    }
+
     this.rebuild();
+
+    return this.query();
   }
 
   /**
