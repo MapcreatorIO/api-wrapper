@@ -30,8 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {encodeQueryString} from './requests';
+
 const FNV1_32A_INIT = 0x811c9dc5;
 
+/**
+ * Fast hash function for non-cryptographic use
+ * @param {string} str - Input to be hashed
+ * @returns {string} - String representation of the hash
+ * @private
+ */
 export function fnv32a(str) {
   const hash = str
     .split('')
@@ -42,4 +50,14 @@ export function fnv32a(str) {
     }, FNV1_32A_INIT);
 
   return ('0000000' + (hash >>> 0).toString(16)).substr(-8);
+}
+
+/**
+ * Fast object hashing for non-cryptographic use
+ * @param {object} data - input data
+ * @returns {string} - String reprisentation of the hash
+ * @private
+ */
+export function hashObject(data) {
+  return fnv32a(encodeQueryString(data));
 }
