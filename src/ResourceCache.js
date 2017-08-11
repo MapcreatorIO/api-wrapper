@@ -34,7 +34,7 @@ import mitt from 'mitt';
 
 
 /**
- * Used for caching resources
+ * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
  */
 export default class ResourceCache {
@@ -52,6 +52,17 @@ export default class ResourceCache {
    * @returns {void}
    */
   push(page) {
+    if (page.rows === 0) {
+      return; // Don't insert empty pages
+    }
+
+    // Test if this is data we can actually work with by testing if there are any non-numeric ids (undefined etc)
+    const invalidData = page.data.map(row => row.id).filter(x => typeof x !== 'number').length > 0;
+
+    if (invalidData) {
+      throw new TypeError('Missing or invalid row.id for page.data. Data rows must to contain a numeric "id" field.');
+    }
+
     const validThrough = this._timestamp() + this.cacheTime;
     const data = {
       page, validThrough,
@@ -146,6 +157,7 @@ export default class ResourceCache {
    * @param {String} cacheToken - Cache token
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array} - Indexed relevant data
+   * @todo Get missing keys between pages and remove them if needed. Diff last and first between pages.
    */
   resolve(resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
@@ -154,6 +166,11 @@ export default class ResourceCache {
     const out = [];
 
     for (const page of data) {
+      if (page.rows === 0) {
+        // We can't do anything if we don't have any data
+        continue;
+      }
+
       const ids = page.data.map(row => row.id);
       const startId = Math.min(...ids);
       const endId = Math.max(...ids);
