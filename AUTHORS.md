@@ -1,1 +1,0 @@
-- [Bas](https://github.com/Mechazawa)
