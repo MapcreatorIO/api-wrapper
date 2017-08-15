@@ -55,16 +55,15 @@ export default class ResourceBase {
 
     // Normalize keys to snake_case
     // Fix data types
-    Object.keys(data).map(key => {
+    for (const key of Object.keys(data)) {
       const newKey = camelToSnakeCase(pascalToCamelCase(key));
 
+      data[newKey] = ResourceBase._guessType(newKey, data[key]);
+
       if (newKey !== key) {
-        data[newKey] = ResourceBase._guessType(newKey, data[key]);
         delete data[key];
-      } else {
-        data[key] = ResourceBase._guessType(newKey, data[key]);
       }
-    });
+    }
 
     this._baseProperties = data;
     this._properties = {};
