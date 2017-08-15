@@ -30,9 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
+import ResourceBase from './base/ResourceBase';
 
-export default class JobResult extends CrudBase {
+export default class JobResult extends ResourceBase {
+  get resourcePath() {
+    return '/jobs/{job_id}/revisions/{job_revision_id}/result';
+  }
+
   get resourceName() {
     return 'job-result';
   }
