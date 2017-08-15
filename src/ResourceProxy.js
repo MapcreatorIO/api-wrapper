@@ -77,9 +77,12 @@ export default class ResourceProxy {
   /**
    * The name of the target
    * @returns {String} - Target name
+   * @example
+   * api.colors.accessorName === 'Color'
+   * api.fontFamilies.accessorName = 'Font Families'
    */
   get accessorName() {
-    return this.Target.name.toLowerCase();
+    return this.Target.name.replace(/([A-Z])/g, x => ' ' + x).trim();
   }
 
   /**
