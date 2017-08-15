@@ -175,7 +175,7 @@ export default class ResourceBase {
   static _guessType(name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
     const match = regexp.exec(name);
-    const idMacros = ['last', 'me'];
+    const idMacros = ['last', 'me', 'mine'];
 
     if (match === null || typeof value !== 'string') {
       return value;
