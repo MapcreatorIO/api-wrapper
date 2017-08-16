@@ -53,16 +53,6 @@ export default class User extends CrudBase {
   }
 
   /**
-   * Check if user is an administrator
-   * @returns {Promise} - Resolves with a {@link Boolean} and rejects with {@link ApiError}
-   */
-  isAdmin() {
-    return this.permissions().then(permissions => {
-      return Boolean(permissions.find(p => p.name === 'is:admin'));
-    });
-  }
-
-  /**
    * Get all known ips
    * @returns {Promise} - Resolves with {@link array<string>} instance and rejects with {@link ApiError}
    */
