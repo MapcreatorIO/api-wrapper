@@ -56,6 +56,7 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin({
       include: /\.min\.js$/,
       minimize: true,
+      sourceMap: false, // Useless because it's based on the bundle
     }),
 
     new webpack.BannerPlugin(

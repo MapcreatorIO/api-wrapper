@@ -24,10 +24,11 @@
     "babel-preset-env": "^1.5.2",
     "contributors": "^0.5.1",
     "dotenv-webpack": "^1.5.2",
-    "esdoc": "^1.x.x",
+    "esdoc": "^0.5.2",
     "eslint": "^4.2.0",
     "fs-extra": "^4.0.1",
     "licensecheck": "^1.3.0",
+    "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.1.0",
     "webpack-merge": "^4.1.0"
   },
@@ -38,7 +39,7 @@
     "docs": "$(npm bin)/esdoc",
     "lint": "$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
     "authors": "$(npm bin)/contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
-    "clean": "rm -r dist docs"
+    "clean": "rm -r dist docs || true"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"

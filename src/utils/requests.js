@@ -41,6 +41,7 @@
  *
  * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
  * @protected
+ * @todo Better nodejs compatibility, maybe a requests library
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
   return new Promise((resolve, reject) => {

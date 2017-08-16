@@ -34,6 +34,7 @@ import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
 import {isParentOf} from '../../utils/reflection';
+import SimpleResourceProxy from '../../SimpleResourceProxy';
 
 /**
  * Resource base
@@ -55,16 +56,15 @@ export default class ResourceBase {
 
     // Normalize keys to snake_case
     // Fix data types
-    Object.keys(data).map(key => {
+    for (const key of Object.keys(data)) {
       const newKey = camelToSnakeCase(pascalToCamelCase(key));
 
+      data[newKey] = ResourceBase._guessType(newKey, data[key]);
+
       if (newKey !== key) {
-        data[newKey] = ResourceBase._guessType(newKey, data[key]);
         delete data[key];
-      } else {
-        data[key] = ResourceBase._guessType(newKey, data[key]);
       }
-    });
+    }
 
     this._baseProperties = data;
     this._properties = {};
@@ -175,7 +175,7 @@ export default class ResourceBase {
   static _guessType(name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
     const match = regexp.exec(name);
-    const idMacros = ['last', 'me'];
+    const idMacros = ['last', 'me', 'mine'];
 
     if (match === null || typeof value !== 'string') {
       return value;
@@ -249,5 +249,23 @@ export default class ResourceBase {
    */
   toString() {
     return `${this.constructor.name}(${this.id})`;
+  }
+
+  /**
+   * Macro for resource listing
+   * @param {ResourceBase} Target - Target object
+   * @param {?String} url - Target url, if null it will guess
+   * @param {object} seedData - Internal use, used for seeding SimpleResourceProxy::new
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @protected
+   */
+  _proxyResourceList(Target, url = null, seedData = {}) {
+    if (!url) {
+      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
+
+      url = `${this.url}/${resource}s`;
+    }
+
+    return new SimpleResourceProxy(this.api, Target, url, seedData);
   }
 }

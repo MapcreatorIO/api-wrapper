@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './CrudBase';
 import {AbstractError} from '../../errors/AbstractError';
+import {pascalToCamelCase} from '../../utils/caseConverter';
+import CrudBase from './CrudBase';
 
 /**
  * Crud base for resource sets
@@ -41,14 +42,16 @@ export default class CrudSetBase extends CrudBase {
 
   /**
    * Get items associated with the set
-   * @param {Number} page - Page number
-   * @param {Number} perPage - Amount of items per page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  items(page = 1, perPage = this.api.defaults.perPage) {
+  get items() {
     const url = `${this.url}/items`;
 
-    return this._listResource(this._Child, url, page, perPage);
+    const data = {};
+
+    data[this.foreignKeyName] = this.id;
+
+    return this._proxyResourceList(this._Child, url, data);
   }
 
   /**
@@ -60,5 +63,23 @@ export default class CrudSetBase extends CrudBase {
    */
   get _Child() {
     throw new AbstractError();
+  }
+
+  /**
+   * Get the foreign key name
+   * @returns {string} - Foreign key name
+   * @example
+   * api.fontFamilies.select(1).foreignKeyName === 'fontFamilyId'
+   */
+  get foreignKeyName() {
+    if (!this._fk) {
+      let key = this.constructor.name; // ex: FontFamily
+
+      key = pascalToCamelCase(key); // ex: fontFamily
+
+      this._fk = `${key}Id`;
+    }
+
+    return this._fk;
   }
 }
