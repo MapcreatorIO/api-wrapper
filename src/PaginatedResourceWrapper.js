@@ -1,4 +1,38 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import PaginatedResourceListing from './PaginatedResourceListing';
 import ResourceCache from './ResourceCache';
+import {hashObject} from './utils/hash';
 
 /**
  * Used for wrapping {@link PaginatedResourceListing} to make it spa friendly
@@ -12,7 +46,7 @@ export default class PaginatedResourceWrapper {
    * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    */
-  constructor(listing, api = listing.api, cacheEnabled = api.defaults.cacheEnabled, cacheTime = api.defaults.cacheSeconds, shareCache = api.defaults._shareCache) {
+  constructor(listing, api = listing.api, cacheEnabled = api.defaults.cacheEnabled, cacheTime = api.defaults.cacheSeconds, shareCache = api.defaults.shareCache) {
 
     // Fields
     this._api = api;
@@ -20,6 +54,7 @@ export default class PaginatedResourceWrapper {
     this.cacheTime = cacheTime;
     this._shareCache = shareCache;
     this._currentPage = 1;
+    this._context = [];
 
     /**
      * Available data assembled from the cache
@@ -31,13 +66,14 @@ export default class PaginatedResourceWrapper {
     this._localCache = new ResourceCache(api, cacheTime);
     this._inflight = [];
     this._last = listing;
+    this._waiting = false;
 
     this._promiseCallback(listing);
   }
 
   get _promiseCallback() {
     return result => {
-      const query = this.query;
+      const query = this.query();
 
       this._last = result;
       this._query = query;
@@ -49,6 +85,8 @@ export default class PaginatedResourceWrapper {
       if (inflightId >= 0) {
         this._inflight.splice(inflightId, 1);
       }
+
+      this._waiting = this.inflight.length > 0;
 
       this.rebuild();
     };
@@ -63,6 +101,8 @@ export default class PaginatedResourceWrapper {
     if (pageId instanceof Array) {
       pageId.map(this.get);
     } else {
+      this._waiting = true;
+
       this._inflight.push(pageId);
       this._last.getPage(pageId).then(this._promiseCallback);
     }
@@ -90,24 +130,24 @@ export default class PaginatedResourceWrapper {
    */
   rebuild() {
     this.data = this.cache
-      .resolve(this.path, this._last.cacheToken)
+      .resolve(this.route, this._last.cacheToken)
       .filter(value => typeof value !== 'undefined');
 
-    this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.url});
+    this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.route});
   }
 
   /**
    * Updates the cached pages.
-   * @param {Boolean} flush - Clear the cached path data
+   * @param {Boolean} flush - Clear the cached route data
    * @returns {void}
    */
   refresh(flush = false) {
     if (flush) {
-      this.cache.clear(this.path);
+      this.cache.clear(this.route);
     }
 
     this.cache
-      .collectPages(this.path, this._last.cacheToken)
+      .collectPages(this.route, this._last.cacheToken)
       .map(page => this.get(page.page));
   }
 
@@ -130,11 +170,11 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
-   * Get the path of the resource
-   * @returns {String} - path
+   * Get the route of the resource
+   * @returns {String} - route
    */
-  get path() {
-    return this._last.path;
+  get route() {
+    return this._last.route;
   }
 
   /**
@@ -146,24 +186,33 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
-   * Optional search query
-   * @default {}
-   * @return {Object<String, String|Array<String>>} - Query
-   */
-  get query() {
-    return this._last.query;
-  }
-
-  /**
-   * Optional search query
-   * @param {Object<String, String|Array<String>>} value - Query
+   * Set the search query and search
+   * @param {?Object<String, String|Array<String>>} [value=null] - Query
    * @throws TypeError
    * @default {}
    * @see {@link ResourceProxy#search}
+   * @returns {Object<String, String|Array<String>>} - query
    */
-  set query(value) {
-    this._last.query = value;
+  query(value = null) {
+    if (!value || value === this.query()) {
+      return this._last.query;
+    }
+
+    this._context[this._last.cacheToken] = this._last;
+
+    const token = hashObject(value);
+
+    if (this._context[token]) {
+      this._last = this._context[token];
+    } else {
+      this._last = new PaginatedResourceListing(this.api, this._last.route, this._last.Target, value, 1, this._last.perPage);
+      this.get(1);
+      this.currentPage = 1;
+    }
+
     this.rebuild();
+
+    return this.query();
   }
 
   /**
@@ -220,6 +269,14 @@ export default class PaginatedResourceWrapper {
    */
   get inflight() {
     return this._inflight;
+  }
+
+  /**
+   * Returns if there are still requests mid-flight
+   * @returns {boolean} - Returns if the wrapper is waiting for requests to finish
+   */
+  get waiting() {
+    return this._waiting;
   }
 
   /**

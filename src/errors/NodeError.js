@@ -30,13 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
-
 /**
- * Choropleth resource
+ * Invoked upon nodejs specific errors
  */
-export default class Choropleth extends ResourceBase {
-  get resourceName() {
-    return 'choropleths';
-  }
-}
+export default class NodeError extends Error { }

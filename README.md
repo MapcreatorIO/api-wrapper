@@ -17,7 +17,7 @@ The library is built to be ran in either the browser or using nodejs.
 - [download library]
 - [minified]
 
-The source code can be found on the [GitHub repo]. The `master` branch is stable and the `develop` branch is unstable. 
+The source code can be found on the [GitHub repo]. The `master` branch is used minor versions and the `develop` branch is patches. 
 
 ## Building
 Please refer to the build docs [here][building]

@@ -30,13 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
+import {encodeQueryString} from './requests';
+
+const FNV1_32A_INIT = 0x811c9dc5;
 
 /**
- * Choropleth resource
+ * Fast hash function for non-cryptographic use
+ * @param {string} str - Input to be hashed
+ * @returns {string} - String representation of the hash
+ * @private
  */
-export default class Choropleth extends ResourceBase {
-  get resourceName() {
-    return 'choropleths';
-  }
+export function fnv32a(str) {
+  const hash = str
+    .split('')
+    .map(x => x.charCodeAt(0))
+    .reduce((sum, val) => {
+      sum ^= val;
+      return sum + (sum << 1) + (sum << 4) + (sum << 7) + (sum << 8) + (sum << 24);
+    }, FNV1_32A_INIT);
+
+  return ('0000000' + (hash >>> 0).toString(16)).substr(-8);
+}
+
+/**
+ * Fast object hashing for non-cryptographic use
+ * @param {object} data - input data
+ * @returns {string} - String reprisentation of the hash
+ * @private
+ */
+export function hashObject(data) {
+  return fnv32a(encodeQueryString(data));
 }

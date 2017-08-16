@@ -30,13 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
+import ApiError from './ApiError';
 
 /**
- * Choropleth resource
+ * Extension of {@link ApiError} containing an extra field for validation errors
  */
-export default class Choropleth extends ResourceBase {
-  get resourceName() {
-    return 'choropleths';
+export default class ValidationError extends ApiError {
+  /**
+   * @param {String} type - Error type
+   * @param {String} message - Error message
+   * @param {Number} code - Http error code
+   * @param {Object<String, Array<String>>} validationErrors - Any validation errors
+   */
+  constructor(type, message, code, validationErrors) {
+    super(type, message, code);
+    this._validationErrors = validationErrors;
+  }
+
+  /**
+   * Any validation errors
+   * @returns {Object.<String, Array.<String>>} - Object containing arrays of validation errors where the field is stored in the key
+   */
+  get validationErrors() {
+    return this._validationErrors;
+  }
+
+  toString() {
+    const errors = [].concat(
+      ...Object
+        .keys(this.validationErrors)
+        .map(x => this.validationErrors[x])
+    );
+
+    return `There were some validation errors: ${errors.join(' ')}`;
   }
 }

@@ -30,13 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
-
 /**
- * Choropleth resource
+ * Thrown upon invocation of a static class
+ * @see StaticClass
  */
-export default class Choropleth extends ResourceBase {
-  get resourceName() {
-    return 'choropleths';
-  }
-}
+export default class StaticClassError extends Error {}

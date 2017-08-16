@@ -30,13 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
+/**
+ * Thrown by abstract methods and classes
+ */
+export class AbstractError extends Error {}
 
 /**
- * Choropleth resource
+ * Thrown upon invocation of an abstract class
  */
-export default class Choropleth extends ResourceBase {
-  get resourceName() {
-    return 'choropleths';
+export class AbstractClassError extends AbstractError {
+  constructor() {
+    super('Can not make an instance of an abstract class');
+  }
+}
+
+/**
+ * Thrown upon invocation of an abstract method
+ */
+export class AbstractMethodError extends AbstractError {
+  constructor() {
+    super('Can not call an abstract method');
   }
 }

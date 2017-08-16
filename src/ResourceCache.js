@@ -1,8 +1,40 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import mitt from 'mitt';
 
 
 /**
- * Used for caching resources
+ * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
  */
 export default class ResourceCache {
@@ -20,21 +52,32 @@ export default class ResourceCache {
    * @returns {void}
    */
   push(page) {
+    if (page.rows === 0) {
+      return; // Don't insert empty pages
+    }
+
+    // Test if this is data we can actually work with by testing if there are any non-numeric ids (undefined etc)
+    const invalidData = page.data.map(row => row.id).filter(x => typeof x !== 'number').length > 0;
+
+    if (invalidData) {
+      throw new TypeError('Missing or invalid row.id for page.data. Data rows must to contain a numeric "id" field.');
+    }
+
     const validThrough = this._timestamp() + this.cacheTime;
     const data = {
       page, validThrough,
       timeout: setTimeout(
-        () => this.revalidate(page.url),
+        () => this.revalidate(page.route),
         this.cacheTime * 1000,
       ),
     };
 
-    const storage = this._storage[page.url] || (this._storage[page.url] = {});
+    const storage = this._storage[page.route] || (this._storage[page.route] = {});
 
     (storage[page.cacheToken] || (storage[page.cacheToken] = [])).push(data);
 
-    this.emitter.emit('push', {page, validThrough, resourceUrl: page.url});
-    this.emitter.emit('invalidate', {resourceUrl: page.url});
+    this.emitter.emit('push', {page, validThrough, resourceUrl: page.route});
+    this.emitter.emit('invalidate', {resourceUrl: page.route});
   }
 
   /**
@@ -79,15 +122,13 @@ export default class ResourceCache {
    * @returns {Array<PaginatedResourceListing>} - Relevant cached pages
    */
   collectPages(resourceUrl, cacheToken = '') {
-    const storage = this._storage[resourceUrl] || {};
+    cacheToken = cacheToken.toLowerCase();
 
-    return [].concat(
-      ...Object
-        .keys(storage)
-        .filter(x => !cacheToken || x === cacheToken)
-        .map(key => storage[key]))
-      .sort((a, b) => a.validThrough - b.validThrough)
-      .map(x => x.page);
+    // Storage array or []
+    const storage = (this._storage[resourceUrl] || {})[cacheToken] || [];
+
+    // Sort by validThrough and extract pages
+    return storage.sort((a, b) => a.validThrough - b.validThrough).map(x => x.page);
   }
 
   /**
@@ -114,6 +155,8 @@ export default class ResourceCache {
    * @param {String} cacheToken - Cache token
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array} - Indexed relevant data
+   * @todo Get missing keys between pages and remove them if needed. Diff last and first between pages.
+   * @todo add page numbers or range as optional parameter
    */
   resolve(resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
@@ -122,6 +165,11 @@ export default class ResourceCache {
     const out = [];
 
     for (const page of data) {
+      if (page.rows === 0) {
+        // We can't do anything if we don't have any data
+        continue;
+      }
+
       const ids = page.data.map(row => row.id);
       const startId = Math.min(...ids);
       const endId = Math.max(...ids);

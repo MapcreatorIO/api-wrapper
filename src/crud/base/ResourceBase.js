@@ -1,7 +1,40 @@
-import {AbstractClassError, AbstractError} from '../../exceptions/AbstractError';
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
 import {isParentOf} from '../../utils/reflection';
+import SimpleResourceProxy from '../../SimpleResourceProxy';
 
 /**
  * Resource base
@@ -23,16 +56,15 @@ export default class ResourceBase {
 
     // Normalize keys to snake_case
     // Fix data types
-    Object.keys(data).map(key => {
+    for (const key of Object.keys(data)) {
       const newKey = camelToSnakeCase(pascalToCamelCase(key));
 
+      data[newKey] = ResourceBase._guessType(newKey, data[key]);
+
       if (newKey !== key) {
-        data[newKey] = ResourceBase._guessType(newKey, data[key]);
         delete data[key];
-      } else {
-        data[key] = ResourceBase._guessType(newKey, data[key]);
       }
-    });
+    }
 
     this._baseProperties = data;
     this._properties = {};
@@ -112,6 +144,7 @@ export default class ResourceBase {
       if (!protectedFields.includes(key)) {
         desc.set = (val) => {
           this._properties[key] = ResourceBase._guessType(key, val);
+          delete this._url; // Clears url cache
         };
       }
 
@@ -142,6 +175,7 @@ export default class ResourceBase {
   static _guessType(name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
     const match = regexp.exec(name);
+    const idMacros = ['last', 'me', 'mine'];
 
     if (match === null || typeof value !== 'string') {
       return value;
@@ -151,10 +185,14 @@ export default class ResourceBase {
       case 'end':
       case 'start':
       case 'at':
-        return new Date(value);
+        return new Date(value.replace(' ', 'T'));
       case 'id':
-        return Number(value);
+        // Test if the value is in fact a macro
+        if (idMacros.includes(String(value).toLowerCase())) {
+          return value;
+        }
 
+        return Number(value);
       default:
         return value;
     }
@@ -173,13 +211,16 @@ export default class ResourceBase {
    * @returns {string} - Resource url
    */
   get url() {
-    let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
+    if (!this._url) {
+      let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
 
-    for (const key of Object.keys(this._baseProperties)) {
-      url = url.replace(`{${key}}`, this[key]);
+      // Find and replace any keys
+      url = url.replace(/{(\w+)}/g, (match, key) => this[snakeToCamelCase(key)]);
+
+      this._url = url;
     }
 
-    return url;
+    return this._url;
   }
 
   /**
@@ -208,5 +249,23 @@ export default class ResourceBase {
    */
   toString() {
     return `${this.constructor.name}(${this.id})`;
+  }
+
+  /**
+   * Macro for resource listing
+   * @param {ResourceBase} Target - Target object
+   * @param {?String} url - Target url, if null it will guess
+   * @param {object} seedData - Internal use, used for seeding SimpleResourceProxy::new
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @protected
+   */
+  _proxyResourceList(Target, url = null, seedData = {}) {
+    if (!url) {
+      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
+
+      url = `${this.url}/${resource}s`;
+    }
+
+    return new SimpleResourceProxy(this.api, Target, url, seedData);
   }
 }
