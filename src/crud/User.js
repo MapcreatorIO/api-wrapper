@@ -87,98 +87,98 @@ export default class User extends CrudBase {
   // region Resource listing
   /**
    * Get the list notifications linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  notifications() {
-    return this._listResource(Notification);
+  get notifications() {
+    return this._proxyResourceList(Notification);
   }
 
   /**
    * Get the list mapstyle sets linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link MapstyleSet} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  mapstyleSets() {
-    return this._listResource(MapstyleSet);
+  get mapstyleSets() {
+    return this._proxyResourceList(MapstyleSet);
   }
 
   /**
    * Get the list dimension sets linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link DimensionSet} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  dimensionSets() {
-    return this._listResource(DimensionSet);
+  get dimensionSets() {
+    return this._proxyResourceList(DimensionSet);
   }
 
   /**
    * Get the list font families linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link FontFamily} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  fontFamilies() {
-    return this._listResource(FontFamily);
+  get fontFamilies() {
+    return this._proxyResourceList(FontFamily);
   }
 
   /**
    * Get the list svg sets linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link SvgSet} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  svgSets() {
-    return this._listResource(SvgSet);
+  get svgSets() {
+    return this._proxyResourceList(SvgSet);
   }
 
   /**
    * Get the list colors linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Color} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  colors() {
-    return this._listResource(Color);
+  get colors() {
+    return this._proxyResourceList(Color);
   }
 
   /**
    * Get the list jobs linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Job} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  jobs() {
-    return this._listResource(Job);
+  get jobs() {
+    return this._proxyResourceList(Job);
   }
 
   /**
    * Get the list features linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Feature} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  features() {
-    return this._listResource(Feature);
+  get features() {
+    return this._proxyResourceList(Feature);
   }
 
   /**
    * Get the list layers linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Layer} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  layers() {
-    return this._listResource(Layer);
+  get layers() {
+    return this._proxyResourceList(Layer);
   }
 
   /**
    * Get the list job types linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobType} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  jobTypes() {
-    return this._listResource(JobType);
+  get jobTypes() {
+    return this._proxyResourceList(JobType);
   }
 
   /**
    * Get the list job shares linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobShare} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  jobShares() {
-    return this._listResource(JobShare);
+  get jobShares() {
+    return this._proxyResourceList(JobShare);
   }
 
   /**
    * Get the list job shares linked to the user
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Permission} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  permissions() {
-    return this._listResource(Permission);
+  get permissions() {
+    return this._proxyResourceList(Permission);
   }
 
   // endregion

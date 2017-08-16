@@ -34,6 +34,7 @@ import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
 import {isParentOf} from '../../utils/reflection';
+import SimpleResourceProxy from '../../SimpleResourceProxy';
 
 /**
  * Resource base
@@ -248,5 +249,15 @@ export default class ResourceBase {
    */
   toString() {
     return `${this.constructor.name}(${this.id})`;
+  }
+
+  _proxyResourceList(Target, url = null) {
+    if (!url) {
+      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
+
+      url = `${this.url}/${resource}s`;
+    }
+
+    return new SimpleResourceProxy(this.api, Target, url);
   }
 }

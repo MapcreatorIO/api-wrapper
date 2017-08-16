@@ -170,7 +170,7 @@ export default class SimpleResourceProxy {
     const url = this._baseUrl;
     const resolver = new PaginatedResourceListing(this._api, url, this.Target, query, page, perPage);
     const wrapped = resolver.wrap(cacheEnabled, cacheTime, shareCache);
-
+ma
     wrapped.get(page);
 
     return wrapped;
@@ -180,6 +180,7 @@ export default class SimpleResourceProxy {
    * Build a new isntance of the target
    * @param {Object<String, *>} data - Data for the object to be populated with
    * @returns {ResourceBase} - Resource with target data
+   * @todo When going from parent to child in an ownable relationship the parent id should be automatically added. Such as `api.fontFamilies.select(fontFamilyId).fonts.new().fontFamilyId === fontFamilyId`
    */
   new(data = {}) {
     return new this.Target(this._api, data);
