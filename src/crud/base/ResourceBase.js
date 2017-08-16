@@ -251,13 +251,13 @@ export default class ResourceBase {
     return `${this.constructor.name}(${this.id})`;
   }
 
-  _proxyResourceList(Target, url = null) {
+  _proxyResourceList(Target, url = null, seedData = {}) {
     if (!url) {
       const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
 
       url = `${this.url}/${resource}s`;
     }
 
-    return new SimpleResourceProxy(this.api, Target, url);
+    return new SimpleResourceProxy(this.api, Target, url, seedData);
   }
 }

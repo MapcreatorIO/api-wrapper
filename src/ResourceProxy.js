@@ -41,10 +41,11 @@ export default class ResourceProxy extends SimpleResourceProxy {
   /**
    * @param {Maps4News} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
-   * @param {?string} [altUrl=null] - Optional alternative url for more complex routing
+   * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
+   * @param {object} seedData - Internal use, used for seeding ::new
    */
-  constructor(api, Target, altUrl = null) {
-    super(api, Target, altUrl);
+  constructor(api, Target, altUrl = null, seedData = {}) {
+    super(api, Target, altUrl, seedData);
   }
 
   /**
@@ -53,11 +54,13 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   get(id) {
-    const data = {
+    let data = {
       number: {id},
       string: {id},
       object: id,
     }[typeof id] || {};
+
+    data = Object.assign(this._seedData, data);
 
     const url = this.new(data).url;
 
@@ -77,7 +80,9 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * api.users.select('me').colors().then(doSomethingCool);
    */
   select(id) {
-    const data = typeof id === 'undefined' ? {} : {id};
+    let data = typeof id === 'undefined' ? {} : {id};
+
+    data = Object.assign(this._seedData, data);
 
     return this.new(data);
   }

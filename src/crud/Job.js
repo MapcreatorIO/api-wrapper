@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import ResourceProxy from '../ResourceProxy';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobRevision from './JobRevision';
@@ -37,34 +38,22 @@ import JobRevision from './JobRevision';
 export default class Job extends CrudBase {
   /**
    * Get the list of associated job results
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobResult} instances and rejects with {@link ApiError}
-   * @todo multi-depth proxy
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  results() {
-    return this._listResource(JobResult, `${this.url}/results`);
+  get results() {
+    return this._proxyResourceList(JobResult, `${this.url}/results`);
   }
 
   /**
    * Get the list job revisions
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobRevision} instances and rejects with {@link ApiError}
-   * @todo mutli-depth proxy
+   * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  revisions() {
-    return this._listResource(JobRevision, `${this.url}/revisions`);
-  }
+  get revisions() {
+    const data = {
+      jobId: this.id,
+    };
 
-  /**
-   * Get revision by id
-   * @param {string} id - Revision id
-   * @returns {Promise} -  Resolves with {@link JobRevision} instance and rejects with {@link ApiError}
-   */
-  getRevision(id = 'last') {
-    return new Promise((resolve, reject) => {
-      this._api
-        .request(`${this.url}/revisions/${id}`)
-        .catch(reject)
-        .then(data => resolve(new JobRevision(this._api, data)));
-    });
+    return new ResourceProxy(this.api, JobRevision, null, data);
   }
 
   get resourceName() {

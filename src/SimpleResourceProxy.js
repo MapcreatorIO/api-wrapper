@@ -43,9 +43,10 @@ export default class SimpleResourceProxy {
   /**
    * @param {Maps4News} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
-   * @param {?string} [altUrl=null] - Optional alternative url for more complex routing
+   * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
+   * @param {object} seedData - Internal use, used for seeding ::new
    */
-  constructor(api, Target, altUrl = null) {
+  constructor(api, Target, altUrl = null, seedData = {}) {
     if (!isParentOf(ResourceBase, Target)) {
       throw new TypeError('Target is not a child of ResourceBase');
     }
@@ -56,6 +57,7 @@ export default class SimpleResourceProxy {
 
     this._api = api;
     this._Target = Target;
+    this._seedData = seedData;
 
     if (altUrl) {
       this.__baseUrl = altUrl;
@@ -180,9 +182,11 @@ export default class SimpleResourceProxy {
    * Build a new isntance of the target
    * @param {Object<String, *>} data - Data for the object to be populated with
    * @returns {ResourceBase} - Resource with target data
-   * @todo When going from parent to child in an ownable relationship the parent id should be automatically added. Such as `api.fontFamilies.select(fontFamilyId).fonts.new().fontFamilyId === fontFamilyId`
    */
   new(data = {}) {
+    // Merge but don't overwrite using seed data
+    data = Object.assign(this._seedData, data);
+
     return new this.Target(this._api, data);
   }
 }
