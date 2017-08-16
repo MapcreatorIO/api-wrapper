@@ -170,7 +170,7 @@ export default class SimpleResourceProxy {
     const url = this._baseUrl;
     const resolver = new PaginatedResourceListing(this._api, url, this.Target, query, page, perPage);
     const wrapped = resolver.wrap(cacheEnabled, cacheTime, shareCache);
-ma
+
     wrapped.get(page);
 
     return wrapped;
