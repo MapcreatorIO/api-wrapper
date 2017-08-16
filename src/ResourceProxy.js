@@ -39,6 +39,15 @@ import SimpleResourceProxy from './SimpleResourceProxy';
  */
 export default class ResourceProxy extends SimpleResourceProxy {
   /**
+   * @param {Maps4News} api - Instance of the api
+   * @param {ResourceBase} Target - Target to wrap
+   * @param {?string} [altUrl=null] - Optional alternative url for more complex routing
+   */
+  constructor(api, Target, altUrl = null) {
+    super(api, Target, altUrl);
+  }
+
+  /**
    * Get target resource
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}

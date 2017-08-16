@@ -43,8 +43,9 @@ export default class SimpleResourceProxy {
   /**
    * @param {Maps4News} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
+   * @param {?string} [altUrl=null] - Optional alternative url for more complex routing
    */
-  constructor(api, Target) {
+  constructor(api, Target, altUrl = null) {
     if (!isParentOf(ResourceBase, Target)) {
       throw new TypeError('Target is not a child of ResourceBase');
     }
@@ -55,6 +56,10 @@ export default class SimpleResourceProxy {
 
     this._api = api;
     this._Target = Target;
+
+    if (altUrl) {
+      this.__baseUrl = altUrl;
+    }
   }
 
   get _baseUrl() {
