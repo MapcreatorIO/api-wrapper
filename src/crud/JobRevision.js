@@ -30,11 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
-import Layer from './Layer';
-import JobShare from './JobShare';
-import JobResult from './JobResult';
 import {isParentOf} from '../utils/reflection';
+import CrudBase from './base/CrudBase';
+import JobResult from './JobResult';
+import JobShare from './JobShare';
+import Layer from './Layer';
 
 export default class JobRevision extends CrudBase {
   get baseUrl() {
@@ -49,6 +49,7 @@ export default class JobRevision extends CrudBase {
     return 'job-revisions';
   }
 
+  // noinspection JSCheckFunctionSignatures
   /**
    * Save updated job revision
    * @param {Object} object - Map object
@@ -119,7 +120,7 @@ export default class JobRevision extends CrudBase {
    * Get layers
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  layers() {
+  get layers() {
     return this._proxyResourceList(Layer);
   }
 
@@ -132,7 +133,7 @@ export default class JobRevision extends CrudBase {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
-        visibility !== JobShare.visibility.PRIVATE) {
+      visibility !== JobShare.visibility.PRIVATE) {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 

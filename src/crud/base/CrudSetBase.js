@@ -43,7 +43,7 @@ export default class CrudSetBase extends CrudBase {
    * Get items associated with the set
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  items() {
+  get items() {
     const url = `${this.url}/items`;
 
     return this._proxyResourceList(this._Child, url);

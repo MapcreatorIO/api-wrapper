@@ -42,7 +42,7 @@ export default class OwnableResource extends Trait {
    *
    * @returns {Promise} - Promise will resolve with {@link Array<Organisation>} and reject with an {@link ApiError} instance.
    */
-  organisations() {
+  get organisations() {
     // This is a hack to fix a circular dependency issue
     const Organisation = require('../crud/Organisation').default;
 
