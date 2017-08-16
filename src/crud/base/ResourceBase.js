@@ -251,6 +251,14 @@ export default class ResourceBase {
     return `${this.constructor.name}(${this.id})`;
   }
 
+  /**
+   * Macro for resource listing
+   * @param {ResourceBase} Target - Target object
+   * @param {?String} url - Target url, if null it will guess
+   * @param {object} seedData - Internal use, used for seeding SimpleResourceProxy::new
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @protected
+   */
   _proxyResourceList(Target, url = null, seedData = {}) {
     if (!url) {
       const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
