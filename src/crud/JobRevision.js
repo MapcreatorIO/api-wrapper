@@ -133,7 +133,7 @@ export default class JobRevision extends CrudBase {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
-      visibility !== JobShare.visibility.PRIVATE) {
+        visibility !== JobShare.visibility.PRIVATE) {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
