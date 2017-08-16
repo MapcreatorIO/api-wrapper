@@ -49,6 +49,42 @@ export default class JobRevision extends CrudBase {
     return 'job-revisions';
   }
 
+  /**
+   * Get layers
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get layers() {
+    return this._proxyResourceList(Layer);
+  }
+
+  /**
+   * Get the job result
+   * @returns {Promise} - Resolves with a {@link JobResult} instance and rejects with {@link ApiError}
+   */
+  result() {
+    const url = `${this.url}/result`;
+
+    return new Promise((resolve, reject) => {
+      this.api.request(url)
+        .catch(reject)
+        .then(data => resolve(new JobResult(this.api, data)));
+    });
+  }
+
+  /**
+   * Get a result proxy
+   *
+   * @returns {JobResult} - Empty job result used for
+   */
+  get resultProxy() {
+    const data = {
+      jobId: this.jobId,
+      jobRevisionId: this.id,
+    };
+
+    return new JobResult(this.api, data);
+  }
+
   // noinspection JSCheckFunctionSignatures
   /**
    * Save updated job revision
@@ -117,14 +153,6 @@ export default class JobRevision extends CrudBase {
   }
 
   /**
-   * Get layers
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
-   */
-  get layers() {
-    return this._proxyResourceList(Layer);
-  }
-
-  /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @returns {Promise} - Resolves with a {@link String} containing the share link and rejects with {@link ApiError}
@@ -133,26 +161,12 @@ export default class JobRevision extends CrudBase {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
-        visibility !== JobShare.visibility.PRIVATE) {
+      visibility !== JobShare.visibility.PRIVATE) {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
     const url = `${this.url}/share`;
 
     return this.api.request(url, 'POST', {visibility});
-  }
-
-  /**
-   * Get the job result
-   * @returns {Promise} - Resolves with a {@link JobResult} instance and rejects with {@link ApiError}
-   */
-  result() {
-    const url = `${this.url}/result`;
-
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(new JobResult(this.api, data)));
-    });
   }
 }
