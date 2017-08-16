@@ -117,10 +117,10 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get layers
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Layer} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   layers() {
-    return this._listResource(Layer);
+    return this._proxyResourceList(Layer);
   }
 
   /**

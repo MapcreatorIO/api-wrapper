@@ -41,14 +41,12 @@ export default class CrudSetBase extends CrudBase {
 
   /**
    * Get items associated with the set
-   * @param {Number} page - Page number
-   * @param {Number} perPage - Amount of items per page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Notification} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  items(page = 1, perPage = this.api.defaults.perPage) {
+  items() {
     const url = `${this.url}/items`;
 
-    return this._listResource(this._Child, url, page, perPage);
+    return this._proxyResourceList(this._Child, url);
   }
 
   /**

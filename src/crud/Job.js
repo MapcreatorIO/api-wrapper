@@ -38,6 +38,7 @@ export default class Job extends CrudBase {
   /**
    * Get the list of associated job results
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobResult} instances and rejects with {@link ApiError}
+   * @todo multi-depth proxy
    */
   results() {
     return this._listResource(JobResult, `${this.url}/results`);
@@ -46,6 +47,7 @@ export default class Job extends CrudBase {
   /**
    * Get the list job revisions
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link JobRevision} instances and rejects with {@link ApiError}
+   * @todo mutli-depth proxy
    */
   revisions() {
     return this._listResource(JobRevision, `${this.url}/revisions`);

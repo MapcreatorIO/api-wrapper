@@ -46,7 +46,7 @@ export default class OwnableResource extends Trait {
     // This is a hack to fix a circular dependency issue
     const Organisation = require('../crud/Organisation').default;
 
-    return this._listResource(Organisation, `${this.url}/organisations`);
+    return this._proxyResourceList(Organisation, `${this.url}/organisations`);
   }
 
   /**
