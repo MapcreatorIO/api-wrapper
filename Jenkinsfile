@@ -66,7 +66,7 @@ node('npm && yarn') {
 			PACKAGE_VERSION = sh(returnStdout: true, script: 'git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').trim()
 			println "Published package version ${PACKAGE_VERSION}"
 
-			slackSend(color: 'good', message: "@mapcreator/maps4news version ${PACKAGE_VERSION} was just published, please run `npm upgrade @mapcreator/maps4news${PACKAGE_VERSION.replace('v', '@')}`.", channel: '#api')
+			slackSend(color: 'good', message: "`@mapcreator/maps4news` version ${PACKAGE_VERSION} was just published, please run `npm install @mapcreator/maps4news${PACKAGE_VERSION.replace('v', '@')}`.", channel: '#api')
 		}
 	}
 
