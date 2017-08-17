@@ -66,7 +66,7 @@ export default class ResourceBase {
       }
     }
 
-    this._baseProperties = data;
+    this._baseProperties = data || {};
     this._properties = {};
     this._api = api;
 

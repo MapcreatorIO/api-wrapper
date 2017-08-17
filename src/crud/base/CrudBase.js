@@ -79,6 +79,7 @@ export default class CrudBase extends ResourceBase {
    * @param {Number} [perPage= this.api.defaults.perPage] - Amount of items per page
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    * @protected
+   * @deprecated
    */
   _listResource(Target, url = null, page = 1, perPage = this.api.defaults.perPage) {
     if (!url) {
