@@ -20,6 +20,7 @@ node('npm && yarn') {
 	stage('initialize') {
 		sh 'yarn --no-emoji --non-interactive --no-progress'
 		sh 'rm -r dist docs .env || true'
+    sh 'git checkout -- "*"'
 	}
 
 	stage('linter') {
