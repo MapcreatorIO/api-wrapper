@@ -50,7 +50,7 @@ api.users.get('me').then(me => {
 Setting the id to null forces the creation of a new object upon saving. 
 
 ```js
-api.colors(1).then(color => {
+api.colors.get(1).then(color => {
   color.id = null;
   color.save();
 });
@@ -117,7 +117,7 @@ api.colors
 Select current user but do not fetch any info to make fetching resources easier.
 
 ```js
-api.users.select('me').colors().then(page => {
+api.users.select('me').colors.list().then(page => {
   console.dir(page.data);
 });
 ```
