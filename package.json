@@ -34,7 +34,7 @@
   },
   "scripts": {
     "generate": "cd src/crud && rm index.js && rows=$(find . -type f -depth 1 -exec basename '{}' \\; | sed s/\\.js//) && for i in $rows; do echo \"export $i from './$i.js';\"; done > index.js",
-    "build": "$(npm bin)/webpack && gzip dist/bundle.min.js -9kf",
+    "build": "$(npm bin)/webpack && gzip dist/bundle.min.js -9kf && rm dist/bundle.min.js.map && sed -e '$ d' dist/bundle.min.js > dist/bundle.min.js~ && mv dist/bundle.min.js~ dist/bundle.min.js",
     "watch": "$(npm bin)/webpack --progress --watch",
     "docs": "$(npm bin)/esdoc",
     "lint": "$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
