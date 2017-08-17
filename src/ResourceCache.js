@@ -36,6 +36,8 @@ import mitt from 'mitt';
 /**
  * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
+ * @todo Add periodic data refreshing while idle, most likely implemented in cache
+ * @todo Hook into api network traffic to figure out if updates are needed
  */
 export default class ResourceCache {
   constructor(api, cacheTime = api.defaults.cacheSeconds) {
