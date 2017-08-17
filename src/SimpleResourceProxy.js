@@ -38,6 +38,7 @@ import {isParentOf} from './utils/reflection';
  * Proxy for accessing resource. This will make sure that they
  * are properly wrapped before the promise resolves.
  * @protected
+ * @todo remove ::search* in favor of an object containing function parameters
  */
 export default class SimpleResourceProxy {
   /**
@@ -116,6 +117,7 @@ export default class SimpleResourceProxy {
    * }
    *
    * api.layers.search(query).then(console.dir);
+   * @todo move page, perPage, etc. to an object and add other options
    */
   search(query, page = 1, perPage = this.api.defaults.perPage) {
     const url = this._baseUrl;
