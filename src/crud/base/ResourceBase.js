@@ -210,7 +210,6 @@ export default class ResourceBase {
    * @param {*} value - Field Value
    * @private
    * @returns {*} - Original or converted value
-   * @todo find a reasonable way to cast boolean types
    */
   static _guessType(name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
