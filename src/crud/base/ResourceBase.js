@@ -32,9 +32,9 @@
 
 import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
+import SimpleResourceProxy from '../../SimpleResourceProxy';
 import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
 import {isParentOf} from '../../utils/reflection';
-import SimpleResourceProxy from '../../SimpleResourceProxy';
 
 /**
  * Resource base
@@ -70,7 +70,30 @@ export default class ResourceBase {
     this._properties = {};
     this._api = api;
 
-    this._applyProperties();
+    const fields = Object.keys(this._baseProperties);
+
+    // Apply properties
+    for (const key of fields) {
+      this._applyProperty(key);
+    }
+
+    // Add deleted field if possible
+    if (fields.includes('deleted_at')) {
+      Object.defineProperty(this, 'deleted', {
+        enumerable: true,
+        configurable: true,
+
+        get: () => {
+          return Boolean(this.deletedAt);
+        },
+      });
+    }
+
+    /* We keep track of any new fields by recording the
+     * keys the object currently has. We don't need no
+     * fancy-pants observers, Proxies etc.
+     */
+    this._knownFields = Object.keys(this).filter(x => x[0] !== '_');
   }
 
   /**
@@ -99,6 +122,39 @@ export default class ResourceBase {
   }
 
   /**
+   * Protected read-only fields
+   * @returns {Array<string>} - Array containing the protected fields
+   * @protected
+   */
+  get _protectedFields() {
+    return ['id', 'created_at', 'updated_at', 'deleted_at'];
+  }
+
+  /**
+   * Moves new fields to this._properties and turns them into a getter/setter
+   * @returns {void}
+   * @protected
+   */
+  _updateProperties() {
+    // Build a list of new fields
+    const fields = Object.keys(this)
+      .filter(x => x[0] !== '_')
+      .filter(x => !this._knownFields.includes(x));
+
+    // Move the pointer from this to the properties object
+    for (const key of fields) {
+      const newKey = camelToSnakeCase(key);
+
+      this._properties[newKey] = this[key];
+      delete this[key];
+
+      this._knownFields.push(key);
+
+      this._applyProperty(newKey);
+    }
+  }
+
+  /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
@@ -119,49 +175,33 @@ export default class ResourceBase {
   }
 
   /**
-   * Creates proxies for the properties
+   * Create proxy for property
+   * @param {string} key - property key
    * @returns {void}
    * @private
    */
-  _applyProperties() {
-    const protectedFields = ['id', 'created_at', 'updated_at', 'deleted_at'];
-    const fields = Object.keys(this._baseProperties);
+  _applyProperty(key) {
+    const desc = {
+      enumerable: true,
+      configurable: true,
 
-    for (const key of fields) {
-      const desc = {
-        enumerable: true,
-        configurable: true,
+      get: () => {
+        if (this._properties.hasOwnProperty(key)) {
+          return this._properties[key];
+        }
 
-        get: () => {
-          if (this._properties.hasOwnProperty(key)) {
-            return this._properties[key];
-          }
+        return this._baseProperties[key];
+      },
+    };
 
-          return this._baseProperties[key];
-        },
+    if (!this._protectedFields.includes(key)) {
+      desc.set = (val) => {
+        this._properties[key] = ResourceBase._guessType(key, val);
+        delete this._url; // Clears url cache
       };
-
-      if (!protectedFields.includes(key)) {
-        desc.set = (val) => {
-          this._properties[key] = ResourceBase._guessType(key, val);
-          delete this._url; // Clears url cache
-        };
-      }
-
-      Object.defineProperty(this, snakeToCamelCase(key), desc);
     }
 
-    // Add deleted field if possible
-    if (fields.includes('deleted_at')) {
-      Object.defineProperty(this, 'deleted', {
-        enumerable: true,
-        configurable: true,
-
-        get: () => {
-          return Boolean(this.deletedAt);
-        },
-      });
-    }
+    Object.defineProperty(this, snakeToCamelCase(key), desc);
   }
 
   /**

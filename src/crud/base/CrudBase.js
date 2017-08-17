@@ -57,6 +57,8 @@ export default class CrudBase extends ResourceBase {
    * @protected
    */
   _buildCreateData() {
+    this._updateProperties();
+
     const out = {};
     const keys = [].concat(
       Object.keys(this._properties),
@@ -126,6 +128,8 @@ export default class CrudBase extends ResourceBase {
    * @private
    */
   _update() {
+    this._updateProperties();
+
     return new Promise((resolve, reject) => {
       this.api
         .request(this.url, 'PATCH', this._properties)
