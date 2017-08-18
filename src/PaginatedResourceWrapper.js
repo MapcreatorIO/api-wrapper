@@ -288,7 +288,11 @@ export default class PaginatedResourceWrapper {
    * @returns {void}
    */
   on(type, handler) {
-    this.cache.emitter.on(type, handler);
+    this.cache.emitter.on(type, e => {
+      if (e.resourceUrl === this.route) {
+        handler(e);
+      }
+    });
   }
 
   /**
