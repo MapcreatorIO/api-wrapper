@@ -76,6 +76,7 @@ export default class OAuth {
 
   /**
    * Forget the current session
+   * Empty the session token store and forget the api token
    * @returns {void}
    */
   forget() {
