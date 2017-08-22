@@ -36,6 +36,7 @@ import StateContainer from './StateContainer';
 import {encodeQueryString} from '../utils/requests';
 import OAuthError from '../errors/OAuthError';
 import {isNode} from '../utils/node';
+import Uuid from '../utils/uuid';
 
 /**
  * Implicit OAuth flow using redirection
@@ -45,7 +46,7 @@ export default class ImplicitFlow extends OAuth {
   /**
    * Implicit authentication flow
    * @param {String} clientId - OAuth client id
-   * @param {String} callbackUrl - callbackUrl for obtaining the token. This should be a
+   * @param {?String} callbackUrl - callbackUrl for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {Array<String>} scopes - A list of required scopes
