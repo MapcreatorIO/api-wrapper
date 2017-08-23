@@ -179,6 +179,14 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
+   * Override the resource route
+   * @param {String} value - route
+   */
+  set route(value) {
+    this._route = value;
+  }
+
+  /**
    * Get the number of pages available
    * @returns {Number} - Page count
    */

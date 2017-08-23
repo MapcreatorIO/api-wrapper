@@ -94,6 +94,14 @@ export default class PaginatedResourceListing {
   }
 
   /**
+   * Override the target route
+   * @param {String} value - route
+   */
+  set route(value) {
+    this._route = value;
+  }
+
+  /**
    * Target to wrap results in
    * @returns {ResourceBase} - Target constructor
    * @constructor
