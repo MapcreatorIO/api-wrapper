@@ -51,9 +51,11 @@ export default class ResourceCache {
   /**
    * Push a page into the cache
    * @param {PaginatedResourceListing} page - Data to be cached
+   * @param {boolean} [diff=false] - Differential result used for updating the cache. Cache entry won't be used to for key dropping.
    * @returns {void}
+   * @todo diff documentation
    */
-  push(page) {
+  push(page, diff = false) {
     if (page.rows === 0) {
       return; // Don't insert empty pages
     }
@@ -67,7 +69,7 @@ export default class ResourceCache {
 
     const validThrough = this._timestamp() + this.cacheTime;
     const data = {
-      page, validThrough,
+      page, validThrough, diff,
       timeout: setTimeout(
         () => this.revalidate(page.route),
         this.cacheTime * 1000,
@@ -130,7 +132,7 @@ export default class ResourceCache {
     const storage = (this._storage[resourceUrl] || {})[cacheToken] || [];
 
     // Sort by validThrough and extract pages
-    return storage.sort((a, b) => a.validThrough - b.validThrough).map(x => x.page);
+    return storage.sort((a, b) => a.validThrough - b.validThrough);
   }
 
   /**
@@ -166,7 +168,9 @@ export default class ResourceCache {
     const data = this.collectPages(resourceUrl, cacheToken);
     const out = [];
 
-    for (const page of data) {
+    for (const row of data) {
+      const page = row.page;
+
       if (page.rows === 0) {
         // We can't do anything if we don't have any data
         continue;
@@ -180,14 +184,16 @@ export default class ResourceCache {
         out[row.id] = row;
       }
 
-      // Grab list of applicable ids and delete offending
-      // keys that no longer exist in the newer data set
-      Object
-        .keys(out)
-        .map(Number)
-        .filter(key => startId <= key && key <= endId)
-        .filter(key => !ids.includes(key))
-        .forEach(key => delete out[key]);
+      if (!row.diff) {
+        // Grab list of applicable ids and delete offending
+        // keys that no longer exist in the newer data set
+        Object
+          .keys(out)
+          .map(Number)
+          .filter(key => startId <= key && key <= endId)
+          .filter(key => !ids.includes(key))
+          .forEach(key => delete out[key]);
+      }
     }
 
     return out;
