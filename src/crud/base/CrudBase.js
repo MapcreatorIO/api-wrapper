@@ -74,28 +74,6 @@ export default class CrudBase extends ResourceBase {
   }
 
   /**
-   * Macro for resource listing
-   * @param {ResourceBase} Target - Target object
-   * @param {?String} url - Target url, if null it will guess
-   * @param {Number} [page=1] - Page number
-   * @param {Number} [perPage= this.api.defaults.perPage] - Amount of items per page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
-   * @protected
-   * @deprecated
-   */
-  _listResource(Target, url = null, page = 1, perPage = this.api.defaults.perPage) {
-    if (!url) {
-      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
-
-      url = `${this.url}/${resource}s`;
-    }
-
-    const resolver = new PaginatedResourceListing(this.api, url, Target);
-
-    return resolver.getPage(page, perPage);
-  }
-
-  /**
    * Save item. This will create a new item if `id` is unset
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    */
