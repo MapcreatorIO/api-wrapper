@@ -79,32 +79,3 @@ export function getPaginatedRange(page, start = 1, stop) {
     }, reject);
   });
 }
-
-/**
- * Manually paginate a resource
- * @param {Maps4News} api - Api instance
- * @param {?String} url - Target url, if null it will guess
- * @param {Number} [page=1] - Page number
- * @param {Number} [perPage=api.defaults.perPage] - Amount of items per page
- * @param {ResourceBase} [Target=CrudBase] - Target class, should extend {@link ResourceBase}
- * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
- * @example
- * import { helpers } from "@mapcreator/maps4news";
- *
- * helpers.paginateResource(api, '/some/custom/endpoint')
- */
-export function paginateResource(api, url, page = 1, perPage = api.defaults.perPage, Target = CrudBase) {
-  if (!(api instanceof Maps4News)) {
-    throw new TypeError('Api must be an instance of Maps4news');
-  }
-
-  if (!url) {
-    const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
-
-    url = `${this.url}/${resource}s`;
-  }
-
-  const resolver = new PaginatedResourceListing(this.api, url, Target);
-
-  return resolver.getPage(page, perPage);
-}
