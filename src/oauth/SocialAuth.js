@@ -30,32 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import OAuth from './OAuth';
 import ImplicitFlow from './ImplicitFlow';
-import {isParentOf} from '../utils/reflection';
 
 /**
- * Get social authentication provider parameters
- * @param {string} provider - Social authentication provider
- * @param {string} clientId - Social auth client id
- * @param {constructor} flow - Flow provider, either a {@link ImplicitFlow} or a {@link ImplicitFlowPopup} constructor. Any class that extends {@link ImplicitFlow} is accepted.
- * @param redirectUri
- * @returns {{host: string, path: string, scope: Array<string>}} - Social auth provider parameters
+ * @todo documentation
+ * @todo document social auth flow
+ * @todo document available providers and how to get tokens etc
  */
-export function getSocialAuth(provider, clientId, flow = ImplicitFlow, redirectUri = null) {
-  if (!isParentOf(ImplicitFlow, flow)) {
-    throw new TypeError('parameter flow must extend ImplicitFlow or equal ImplicitFlow');
-  }
-
-  if ()
-
-  switch (provider) {
-    case 'google':
-      return {
-        host: 'https://accounts.google.com',
-        path: '/o/oauth2/v2/auth',
-        scope: ['openid', 'email'],
-      };
-    default:
-      throw new Error(`Unrecognized provider: ${provider}`);
+export default class SocialAuth extends OAuth {
+  /**
+   * @param {String} clientId - OAuth client id for the social provider
+   * @param {Array<String>} scopes - A list of required scopes
+   * @returns {void}
+   */
+  constructor(clientId, provider, callbackUrl = '', flow = ImplicitFlow, scopes = ['*']) {
+    super(clientId, scopes);
   }
 }

@@ -126,3 +126,23 @@ function copyProps(target, source) {
       }
     });
 }
+
+/**
+ *
+ * @param Target
+ * @returns {boolean}
+ */
+export function isConstructor(Target) {
+  if (typeof Target !== 'function') {
+    return false;
+  }
+
+  try {
+    new Target();
+  } catch (err) {
+    if (err.message.indexOf('is not a constructor')) {
+      return false;
+    }
+  }
+  return true;
+}
