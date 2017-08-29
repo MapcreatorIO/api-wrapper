@@ -233,7 +233,6 @@ export default class ResourceCache {
       end = start;
       start = _x;
     }
-    console.log(start, end);
 
     if (start === end || start - end === 1) {
       return [];
