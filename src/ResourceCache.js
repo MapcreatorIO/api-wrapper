@@ -193,7 +193,6 @@ export default class ResourceCache {
         badKeys.push(...this._diffRange(endId, lastStart));
       }
 
-
       lastStart = startId;
       lastEnd = endId;
 
@@ -211,6 +210,8 @@ export default class ResourceCache {
           .filter(key => !ids.includes(key))
           .forEach(key => badKeys.push(key));
       }
+
+      badKeys.forEach(key => delete out[key])
     }
 
     return out;
