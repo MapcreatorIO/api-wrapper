@@ -185,11 +185,11 @@ export default class ResourceCache {
 
       const badKeys = [];
 
-      if (page.page - 1 === lastPage || (page.page === lastPage) {
+      if (page.page - 1 === lastPage || page.page === lastPage) {
         badKeys.push(...this._diffRange(lastEnd, startId));
       }
 
-      if (page.page + 1 === lastPage || (page.page === lastPage) {
+      if (page.page + 1 === lastPage || page.page === lastPage) {
         badKeys.push(...this._diffRange(endId, lastStart));
       }
 
