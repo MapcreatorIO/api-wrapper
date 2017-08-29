@@ -159,7 +159,6 @@ export default class ResourceCache {
    * @param {String} cacheToken - Cache token
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array} - Indexed relevant data
-   * @todo Get missing keys between pages and remove them if needed. Diff last and first between pages.
    * @todo add page numbers or range as optional parameter
    */
   resolve(resourceUrl, cacheToken = '') {
@@ -167,6 +166,10 @@ export default class ResourceCache {
 
     const data = this.collectPages(resourceUrl, cacheToken);
     const out = [];
+
+    let lastStart;
+    let lastEnd;
+    let lastPage;
 
     for (const row of data) {
       const page = row.page;
@@ -180,6 +183,20 @@ export default class ResourceCache {
       const startId = Math.min(...ids);
       const endId = Math.max(...ids);
 
+      const badKeys = [];
+
+      if (page.page - 1 === lastPage || (page.page === lastPage) {
+        badKeys.push(...this._diffRange(lastEnd, startId));
+      }
+
+      if (page.page + 1 === lastPage || (page.page === lastPage) {
+        badKeys.push(...this._diffRange(endId, lastStart));
+      }
+
+
+      lastStart = startId;
+      lastEnd = endId;
+
       for (const row of page.data) {
         out[row.id] = row;
       }
@@ -192,8 +209,39 @@ export default class ResourceCache {
           .map(Number)
           .filter(key => startId <= key && key <= endId)
           .filter(key => !ids.includes(key))
-          .forEach(key => delete out[key]);
+          .forEach(key => badKeys.push(key));
       }
+    }
+
+    return out;
+  }
+
+  /**
+   * Used for key elimination. Calculates the keys between two indexes.
+   * @param {Number} start - Start index
+   * @param {Number} end - End index
+   * @returns {Array} - keys
+   * @private
+   * @example
+   * cache._diffRange(1, 5) === [2, 3, 4]
+   */
+  _diffRange(start, end) {
+    if (start > end) {
+      const _x = end;
+
+      end = start;
+      start = _x;
+    }
+    console.log(start, end);
+
+    if (start === end || start - end === 1) {
+      return [];
+    }
+
+    const out = [];
+
+    for (let i = start + 1; i < end; i++) {
+      out.push(i);
     }
 
     return out;
