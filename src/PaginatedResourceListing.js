@@ -228,8 +228,8 @@ export default class PaginatedResourceListing {
       this.api.request(url, 'GET', {}, {}, '', true)
         .then(request => {
           const response = JSON.parse(request.responseText);
-          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`));
-          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`));
+          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
+          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
 
           const instance = new PaginatedResourceListing(
             this.api, this.route, this._Target, this.query,
