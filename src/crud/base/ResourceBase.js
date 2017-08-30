@@ -155,9 +155,10 @@ export default class ResourceBase {
   }
 
   /**
-   * Clean up instance and move commit all changes locally. This means that any changed
-   * fields will be marked as unchanged whilst keeping their new values. The changes will
-   * not be saved.
+   * Clean up instance and commit all changes locally.
+   * This means that any changed fields will be marked
+   * as unchanged whilst  keeping their new values. The
+   * changes will not be saved.
    * @returns {void} - nothing
    */
   sanitize() {
