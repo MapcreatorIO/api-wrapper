@@ -155,6 +155,34 @@ export default class ResourceBase {
   }
 
   /**
+   * Clean up instance and move commit all changes locally. This means that any changed
+   * fields will be marked as unchanged whilst keeping their new values. The changes will
+   * not be saved.
+   * @returns {void} - nothing
+   */
+  sanitize() {
+    this._updateProperties();
+    Object.assign(this._baseProperties, this._properties);
+    this._properties = {};
+  }
+
+  /**
+   * Clone the object
+   * @returns {ResourceBase} - Exact clone of the object
+   */
+  clone() {
+    this._updateProperties();
+
+    const out = new this.constructor(this.api, this._baseProperties);
+
+    for (const key of Object.keys(this._properties)) {
+      out[key] = this._properties[key];
+    }
+
+    return out;
+  }
+
+  /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}

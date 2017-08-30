@@ -32,7 +32,6 @@
 
 import mitt from 'mitt';
 
-
 /**
  * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
@@ -46,6 +45,9 @@ export default class ResourceCache {
     this.emitter = mitt();
 
     this._storage = {};
+
+    // Prevent observers
+    Object.freeze(this);
   }
 
   /**
@@ -59,6 +61,9 @@ export default class ResourceCache {
     if (page.rows === 0) {
       return; // Don't insert empty pages
     }
+
+    delete page.__ob__; // Remove VueJs observer
+    Object.freeze(page);
 
     // Test if this is data we can actually work with by testing if there are any non-numeric ids (undefined etc)
     const invalidData = page.data.map(row => row.id).filter(x => typeof x !== 'number').length > 0;
@@ -211,11 +216,65 @@ export default class ResourceCache {
           .forEach(key => badKeys.push(key));
       }
 
-      badKeys.forEach(key => delete out[key])
+      badKeys.forEach(key => delete out[key]);
     }
 
     return out;
   }
+
+  /**
+   * Update using deep matching
+   * @param {Array<ResourceBase>} rows - Data to be updated
+   */
+  deepUpdate(rows) {
+    // Split up data into types
+    const data = {};
+    const ids = {};
+
+    for (const row of rows) {
+      const key = row.constructor.name;
+
+      (data[key] || (data[key] = [])).push(row);
+      (ids[key] || (ids[key] = [])).push(row.id);
+    }
+
+    const models = Object.keys(data);
+
+    for (const resourceUrl of Object.keys(this._storage)) {
+      for (const token of Object.keys(this._storage[resourceUrl])) {
+        const pages = this._storage[resourceUrl][token];
+
+        for (const page of pages) {
+          if (page.data.length === 0) {
+            continue;
+          }
+
+          const key = page.data[0].constructor.name;
+
+          if (!models.includes(key)) {
+            break;
+          }
+
+          for (const row of page.data) {
+            if (!ids[key].includes(row.id)) {
+              continue;
+            }
+
+            const index = ids[key].findIndex(x => x === row.id);
+            const value = data[key][index];
+
+            value.sanitize();
+
+            value.fieldNames.forEach(x => {
+              row[x] = value[x];
+            });
+          }
+        }
+      }
+    }
+
+  }
+
 
   /**
    * Used for key elimination. Calculates the keys between two indexes.
