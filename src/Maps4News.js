@@ -97,6 +97,7 @@ export default class Maps4News {
       cacheEnabled: process.env.CACHE_ENABLED.toLowerCase() === 'true',
       cacheSeconds: Number(process.env.CACHE_SECONDS),
       shareCache: process.env.CACHE_SHARED.toLowerCase() === 'true',
+      autoUpdateSharedCache: process.env.CACHE_SHARED_AUTO_UPDATE.toLowerCase() === 'true',
     };
 
     this._cache = new ResourceCache(this);
