@@ -68,13 +68,13 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Unlink items from the organisation
+   * Detach items from the organisation
    * @param {Array<ResourceBase>|ResourceBase} items - List of items to unlink
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
    */
-  unlink(items) {
+  detach(items) {
     return this._modifyResourceLink(items, 'DELETE');
   }
 

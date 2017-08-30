@@ -68,11 +68,11 @@ export default class OwnableResource extends Trait {
   }
 
   /**
-   * Unlink items from the organisation
+   * Detach items from the organisation
    * @param {Array<Organisation>|Array<Number>} items - List of items to unlink
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
-  unlinkOrganisations(items) {
+  detachOrganisations(items) {
     return this._modifyOrganisationLink(items, 'DELETE');
   }
 
