@@ -58,7 +58,8 @@ export default class PaginatedResourceListing {
     }
 
     this._api = api;
-    this._route = route;
+
+    this.route = route;
     this._Target = Target;
     this._query = query;
 
@@ -98,6 +99,14 @@ export default class PaginatedResourceListing {
    * @param {String} value - route
    */
   set route(value) {
+    if (!value.startsWith('https://') && !value.startsWith('http://')) {
+      if (!value.startsWith('/')) {
+        value = '/' + value;
+      }
+
+      value = `${this._api.host}/${this._api.version}${value}`;
+    }
+
     this._route = value;
   }
 
