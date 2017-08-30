@@ -241,6 +241,8 @@ export default class ResourceCache {
     const models = Object.keys(data);
 
     for (const resourceUrl of Object.keys(this._storage)) {
+      let invalidate = false;
+
       for (const token of Object.keys(this._storage[resourceUrl])) {
         const pages = this._storage[resourceUrl][token];
 
@@ -268,13 +270,17 @@ export default class ResourceCache {
             value.fieldNames.forEach(x => {
               row[x] = value[x];
             });
+
+            invalidate = true;
           }
         }
       }
+
+      if (invalidate) {
+        this.emitter.emit('invalidate', {resourceUrl: resourceUrl});
+      }
     }
-
   }
-
 
   /**
    * Used for key elimination. Calculates the keys between two indexes.
