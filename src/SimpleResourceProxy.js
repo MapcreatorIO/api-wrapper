@@ -56,6 +56,10 @@ export default class SimpleResourceProxy {
       throw new TypeError('Target must to be a class not an instance');
     }
 
+    if (altUrl) {
+      this.__baseUrl = altUrl;
+    }
+
     this._api = api;
     this._Target = Target;
     this._seedData = seedData;
