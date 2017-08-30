@@ -31,7 +31,6 @@
  */
 
 import {AbstractClassError} from '../../errors/AbstractError';
-import PaginatedResourceListing from '../../PaginatedResourceListing';
 import ResourceBase from './ResourceBase';
 
 /**

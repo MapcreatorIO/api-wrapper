@@ -30,10 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from '../crud/base/CrudBase';
-import Maps4News from '../Maps4News';
-import PaginatedResourceListing from '../PaginatedResourceListing';
-
 /**
  * Get all the pages from a {@link PaginatedResourceListing} or a range
  * @param {Promise<PaginatedResourceListing>|PaginatedResourceListing} page - Promise that returns a {@link PaginatedResourceWrapper}
