@@ -223,10 +223,16 @@ export default class ResourceCache {
   }
 
   /**
-   * Update using deep matching
-   * @param {Array<ResourceBase>} rows - Data to be updated
+   * Update records in the cache manually
+   * @param {ResourceBase|Array<ResourceBase>} rows - Data to be updated
+   * @returns {void} - nothing
    */
-  deepUpdate(rows) {
+  update(rows) {
+    if (!(rows instanceof Array)) {
+      this.update([rows]);
+      return;
+    }
+
     // Split up data into types
     const data = {};
     const ids = {};
@@ -244,9 +250,11 @@ export default class ResourceCache {
       let invalidate = false;
 
       for (const token of Object.keys(this._storage[resourceUrl])) {
-        const pages = this._storage[resourceUrl][token];
+        const entries = this._storage[resourceUrl][token];
 
-        for (const page of pages) {
+        for (const entry of entries) {
+          const page = entry.page;
+
           if (page.data.length === 0) {
             continue;
           }
