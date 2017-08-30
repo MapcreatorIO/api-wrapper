@@ -61,6 +61,14 @@ export default class SimpleResourceProxy {
     this._seedData = seedData;
 
     if (altUrl) {
+      if (!altUrl.startsWith('https://') || !altUrl.startsWith('http://')) {
+        if (!altUrl.startsWith('/')) {
+          altUrl = '/' + altUrl;
+        }
+
+        altUrl = `${this._api.host}/${this._api.version}${altUrl}`;
+      }
+
       this.__baseUrl = altUrl;
     }
   }
