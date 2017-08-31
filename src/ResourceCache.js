@@ -37,7 +37,6 @@ import Uuid from './utils/uuid';
  * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
  * @todo Add periodic data refreshing while idle, most likely implemented in cache
- * @todo Hook into api network traffic to figure out if updates are needed
  */
 export default class ResourceCache {
   constructor(api, cacheTime = api.defaults.cacheSeconds) {
@@ -74,11 +73,12 @@ export default class ResourceCache {
     }
 
     const validThrough = this._timestamp() + this.cacheTime;
+    const cacheId = Uuid.uuid4()
     const data = {
       page, validThrough, diff,
-      id: Uuid.uuid4(),
+      id: cacheId,
       timeout: setTimeout(
-        () => this.revalidate(page.route),
+        () => this._deleteCacheIds(cacheId),
         this.cacheTime * 1000,
       ),
     };
