@@ -98,7 +98,7 @@ export default class ResourceCache {
    */
   _deleteCacheIds(ids) {
     if (!(ids instanceof Array)) {
-      this.delete([ids]);
+      this._deleteCacheIds([ids]);
       return;
     }
 
