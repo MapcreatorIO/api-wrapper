@@ -31,6 +31,7 @@
  */
 
 import mitt from 'mitt';
+import Uuid from './utils/uuid';
 
 /**
  * Used for caching resources. Requires the resource to have an unique id field
@@ -75,6 +76,7 @@ export default class ResourceCache {
     const validThrough = this._timestamp() + this.cacheTime;
     const data = {
       page, validThrough, diff,
+      id: Uuid.uuid4(),
       timeout: setTimeout(
         () => this.revalidate(page.route),
         this.cacheTime * 1000,
@@ -87,6 +89,38 @@ export default class ResourceCache {
 
     this.emitter.emit('push', {page, validThrough, resourceUrl: page.route});
     this.emitter.emit('invalidate', {resourceUrl: page.route});
+  }
+
+  /**
+   * Delete from cache using cacheId
+   * @param {String|Array<String>} ids - cache ids
+   * @returns {void}
+   */
+  _deleteCacheIds(ids) {
+    if (!(ids instanceof Array)) {
+      this.delete([ids]);
+      return;
+    }
+
+    let found = 0;
+
+    for (const resourceUrl of Object.keys(this._storage)) {
+      for (const token of Object.keys(this._storage[resourceUrl])) {
+        const entries = this._storage[resourceUrl][token];
+
+        for (let i = 0; i < entries.length; i++) {
+          if (ids.includes(entries[i].id)) {
+            entries.splice(i, 1);
+            i--;
+            found++;
+
+            if (found === ids.length) {
+              return;
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
