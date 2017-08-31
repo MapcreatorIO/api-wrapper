@@ -219,7 +219,7 @@ export default class Maps4News {
               const apiError = new ApiError(err.type, err.message, request.status);
 
               if (apiError.type === 'AuthenticationException' && apiError.message === 'Unauthenticated' && apiError.code === 401) {
-                console.warn('Lost maps4news session, please re-authenticate');
+                console.warn('Lost Maps4News session, please re-authenticate');
 
                 this.auth.forget();
               }
