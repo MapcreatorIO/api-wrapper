@@ -40,7 +40,7 @@ const FNV1_32A_INIT = 0x811c9dc5;
  * @returns {string} - String representation of the hash
  * @private
  */
-export function fnv32a(str) {
+export function pfnv32a(str) {
   const hash = str
     .split('')
     .map(x => x.charCodeAt(0))

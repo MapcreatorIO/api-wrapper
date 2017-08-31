@@ -73,7 +73,7 @@ export default class ResourceCache {
     }
 
     const validThrough = this._timestamp() + this.cacheTime;
-    const cacheId = Uuid.uuid4()
+    const cacheId = Uuid.uuid4();
     const data = {
       page, validThrough, diff,
       id: cacheId,
