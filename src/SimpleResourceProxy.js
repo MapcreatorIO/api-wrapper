@@ -131,8 +131,9 @@ export default class SimpleResourceProxy {
    * api.layers.list({perPage: 10, search});
    */
   list(params) {
-    Object.assign(params, this.defaultParams);
-    return this._buildResolver(params).getPage(params.page);
+    const resolver = this._buildResolver(params);
+
+    return resolver.getPage(resolver.page);
   }
 
   /**
@@ -154,11 +155,10 @@ export default class SimpleResourceProxy {
    * api.layers.list({perPage: 10, search});
    */
   listAndWrap(params) {
-    Object.assign(params, this.defaultParams);
+    const resolver = this._buildResolver(params);
+    const wrapped = resolver.wrap(resolver.page);
 
-    const wrapped = this._buildResolver(params).wrap(params.page);
-
-    wrapped.get(params.page);
+    wrapped.get(resolver.page);
     return wrapped;
   }
 
@@ -171,7 +171,7 @@ export default class SimpleResourceProxy {
     }
 
     if (paramType === 'number') {
-      return this.newList({page: params});
+      return this.list({page: params});
     }
 
     return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage);
