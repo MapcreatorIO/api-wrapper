@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Trait} from '../traits/Trait';
+import Trait from '../traits/Trait';
 
 /**
  * Tests if the parent is a parent of child

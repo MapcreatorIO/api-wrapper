@@ -34,4 +34,4 @@
  * Trait interface
  * @interface
  */
-export class Trait {}
+export default class Trait {}

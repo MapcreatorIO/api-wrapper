@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Trait} from './Trait';
+import Trait from './Trait';
 import ImageHandler from '../ImageHandler';
 
 
