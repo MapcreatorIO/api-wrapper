@@ -38,7 +38,6 @@ import {isParentOf} from './utils/reflection';
  * Proxy for accessing resource. This will make sure that they
  * are properly wrapped before the promise resolves.
  * @protected
- * @todo remove ::search* in favor of an object containing function parameters
  */
 export default class SimpleResourceProxy {
   /**
@@ -115,7 +114,7 @@ export default class SimpleResourceProxy {
 
   /**
    * List target resource
-   * @param {Number|Object} params - ParametersThe page to be requested
+   * @param {Number|Object} [params] - ParametersThe page to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
@@ -130,7 +129,7 @@ export default class SimpleResourceProxy {
    *
    * api.layers.list({perPage: 10, search});
    */
-  list(params) {
+  list(params = {}) {
     const resolver = this._buildResolver(params);
 
     return resolver.getPage(resolver.page);
@@ -138,7 +137,7 @@ export default class SimpleResourceProxy {
 
   /**
    * List target resource
-   * @param {Number|Object} params - ParametersThe page to be requested
+   * @param {Number|Object} [params] - ParametersThe page to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
    * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
@@ -154,7 +153,7 @@ export default class SimpleResourceProxy {
    *
    * api.layers.listandWrap({perPage: 10, search});
    */
-  listAndWrap(params) {
+  listAndWrap(params = {}) {
     const resolver = this._buildResolver(params);
     const wrapped = resolver.wrap(resolver.page);
 
@@ -162,7 +161,7 @@ export default class SimpleResourceProxy {
     return wrapped;
   }
 
-  _buildResolver(params) {
+  _buildResolver(params = {}) {
     const paramType = typeof params;
     const url = this._baseUrl;
 
