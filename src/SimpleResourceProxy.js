@@ -152,7 +152,7 @@ export default class SimpleResourceProxy {
    *   scale_min: ['>:1', '<:10'],
    * };
    *
-   * api.layers.list({perPage: 10, search});
+   * api.layers.listandWrap({perPage: 10, search});
    */
   listAndWrap(params) {
     const resolver = this._buildResolver(params);
@@ -177,6 +177,10 @@ export default class SimpleResourceProxy {
     return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage);
   }
 
+  /**
+   * Get the defaults parameters.
+   * @returns {{page: number, perPage: number, shareCache: boolean, search: {}}} - Defaults
+   */
   get defaultParams() {
     const defaults = this.api.defaults;
 
