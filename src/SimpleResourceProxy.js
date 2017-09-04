@@ -171,7 +171,7 @@ export default class SimpleResourceProxy {
     }
 
     if (paramType === 'number') {
-      return this.list({page: params});
+      return this._buildResolver({page: params});
     }
 
     return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage);
