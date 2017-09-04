@@ -92,11 +92,10 @@ export default class Maps4News {
 
     /**
      * Defaults for common parameters. These are populated during the build process using the `.env` file.
-     * @type {{perPage: number, cacheEnabled: boolean, cacheSeconds: number, shareCache: boolean}}
+     * @type {{perPage: number, cacheSeconds: number, shareCache: boolean}}
      */
     this.defaults = {
       perPage: Number(process.env.PER_PAGE),
-      cacheEnabled: bool(process.env.CACHE_ENABLED),
       cacheSeconds: Number(process.env.CACHE_SECONDS),
       shareCache: bool(process.env.CACHE_SHARED),
       autoUpdateSharedCache: bool(process.env.CACHE_SHARED_AUTO_UPDATE),

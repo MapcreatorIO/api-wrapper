@@ -140,14 +140,13 @@ export default class SimpleResourceProxy {
    * Lists target resource
    * @param {Number} page - The page to be requested
    * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @param {Boolean} cacheEnabled - If the pagination cache should be used
    * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    * @returns {PaginatedResourceWrapper} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    *
    */
-  listAndWrap(page = 1, perPage = this.api.defaults.perPage, cacheEnabled = this.api.defaults.cacheEnabled, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
-    return this.searchAndWrap({}, page, perPage, cacheEnabled, cacheTime, shareCache);
+  listAndWrap(page = 1, perPage = this.api.defaults.perPage, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+    return this.searchAndWrap({}, page, perPage, cacheTime, shareCache);
   }
 
   /**
@@ -155,7 +154,6 @@ export default class SimpleResourceProxy {
    * @param {Object<String, String|Array<String>>} query - Query
    * @param {Number} page - The page to be requested
    * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @param {Boolean} cacheEnabled - If the pagination cache should be used
    * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    * @returns {PaginatedResourceWrapper} - Wrapped {@link PaginatedResourceListing} instance
@@ -170,10 +168,10 @@ export default class SimpleResourceProxy {
    *
    * api.layers.searchAndWrap(query)
    */
-  searchAndWrap(query, page = 1, perPage = this.api.defaults.perPage, cacheEnabled = this.api.defaults.cacheEnabled, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+  searchAndWrap(query, page = 1, perPage = this.api.defaults.perPage, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
     const url = this._baseUrl;
     const resolver = new PaginatedResourceListing(this._api, url, this.Target, query, page, perPage);
-    const wrapped = resolver.wrap(cacheEnabled, cacheTime, shareCache);
+    const wrapped = resolver.wrap(cacheTime, shareCache);
 
     wrapped.get(page);
 

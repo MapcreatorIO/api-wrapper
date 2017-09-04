@@ -295,12 +295,11 @@ export default class PaginatedResourceListing {
 
   /**
    * Wraps {@link PaginatedResourceWrapper} around the page
-   * @param {Boolean} cacheEnabled - If the pagination cache should be used
    * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    * @returns {PaginatedResourceWrapper} - Wrapped resource listing
    */
-  wrap(cacheEnabled = this.api.defaults.cacheEnabled, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
-    return new PaginatedResourceWrapper(this, this.api, cacheEnabled, cacheTime, shareCache);
+  wrap(cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+    return new PaginatedResourceWrapper(this, this.api, cacheTime, shareCache);
   }
 }
