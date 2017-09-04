@@ -39,9 +39,10 @@ import Uuid from './utils/uuid';
  * @todo Add periodic data refreshing while idle, most likely implemented in cache
  */
 export default class ResourceCache {
-  constructor(api, cacheTime = api.defaults.cacheSeconds) {
+  constructor(api, cacheTime = api.defaults.cacheSeconds, dereference = api.defaults.dereferenceCache) {
     this._api = api;
     this.cacheTime = cacheTime;
+    this.dereference = dereference;
     this.emitter = mitt();
 
     this._storage = {};
@@ -196,12 +197,11 @@ export default class ResourceCache {
    * Resolve cache and return indexed data
    * @param {String} resourceUrl - Resource url
    * @param {String} cacheToken - Cache token
-   * @param {Boolean} dereference - Dereference output data by cloning the instances before returning them.
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array} - Indexed relevant data
    * @todo add page numbers or range as optional parameter
    */
-  resolve(resourceUrl, cacheToken = '', dereference = this._api.defaults.dereferenceCache) {
+  resolve(resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
 
     const data = this.collectPages(resourceUrl, cacheToken);
@@ -254,7 +254,7 @@ export default class ResourceCache {
       badKeys.forEach(key => delete out[key]);
     }
 
-    if (dereference) {
+    if (this.dereference) {
       return out.map(x => x.clone());
     }
 
