@@ -72,7 +72,7 @@ export default class ResourceCache {
       throw new TypeError('Missing or invalid row.id for page.data. Data rows must to contain a numeric "id" field.');
     }
 
-    const validThrough = this._timestamp() + this.cacheTime;
+    const validThrough = this._timestamp + this.cacheTime;
     const cacheId = Uuid.uuid4();
     const data = {
       page, validThrough, diff,
@@ -137,10 +137,10 @@ export default class ResourceCache {
       // Remove old data from the cache and stop old timeouts
       Object.keys(storage).forEach(key => {
         storage[key]
-          .filter(row => row.validThrough < this._timestamp())
+          .filter(row => row.validThrough < this._timestamp)
           .forEach(row => clearTimeout(row.timeout));
 
-        storage[key] = storage[key].filter(row => row.validThrough >= this._timestamp());
+        storage[key] = storage[key].filter(row => row.validThrough >= this._timestamp);
       });
 
       const junk = Object.keys(storage).filter(key => storage[key].length === 0);
@@ -364,7 +364,7 @@ export default class ResourceCache {
    * @returns {number} - timestamp
    * @private
    */
-  _timestamp() {
+  get _timestamp() {
     return Math.floor(Date.now() / 1000);
   }
 }
