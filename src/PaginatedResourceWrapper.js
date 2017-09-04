@@ -43,14 +43,12 @@ export default class PaginatedResourceWrapper {
    *
    * @param {PaginatedResourceListing} listing - Listing result
    * @param {Maps4News} api - Instance of the api
-   * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    */
-  constructor(listing, api = listing.api, cacheTime = api.defaults.cacheSeconds, shareCache = api.defaults.shareCache) {
+  constructor(listing, api = listing.api, shareCache = api.defaults.shareCache) {
 
     // Fields
     this._api = api;
-    this.cacheTime = cacheTime;
     this._shareCache = shareCache;
     this._currentPage = 1;
     this._context = [];
@@ -62,7 +60,7 @@ export default class PaginatedResourceWrapper {
     this.data = [];
 
     // Internal
-    this._localCache = new ResourceCache(api, cacheTime);
+    this._localCache = new ResourceCache(api, this.api.defaults.cacheSeconds);
     this._inflight = [];
     this._last = listing;
     this._waiting = false;

@@ -140,13 +140,12 @@ export default class SimpleResourceProxy {
    * Lists target resource
    * @param {Number} page - The page to be requested
    * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    * @returns {PaginatedResourceWrapper} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    *
    */
-  listAndWrap(page = 1, perPage = this.api.defaults.perPage, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
-    return this.searchAndWrap({}, page, perPage, cacheTime, shareCache);
+  listAndWrap(page = 1, perPage = this.api.defaults.perPage, shareCache = this.api.defaults._shareCache) {
+    return this.searchAndWrap({}, page, perPage, shareCache);
   }
 
   /**
@@ -154,7 +153,6 @@ export default class SimpleResourceProxy {
    * @param {Object<String, String|Array<String>>} query - Query
    * @param {Number} page - The page to be requested
    * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    * @returns {PaginatedResourceWrapper} - Wrapped {@link PaginatedResourceListing} instance
    *
@@ -168,10 +166,10 @@ export default class SimpleResourceProxy {
    *
    * api.layers.searchAndWrap(query)
    */
-  searchAndWrap(query, page = 1, perPage = this.api.defaults.perPage, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
+  searchAndWrap(query, page = 1, perPage = this.api.defaults.perPage, shareCache = this.api.defaults._shareCache) {
     const url = this._baseUrl;
     const resolver = new PaginatedResourceListing(this._api, url, this.Target, query, page, perPage);
-    const wrapped = resolver.wrap(cacheTime, shareCache);
+    const wrapped = resolver.wrap(shareCache);
 
     wrapped.get(page);
 
@@ -188,5 +186,80 @@ export default class SimpleResourceProxy {
     data = Object.assign(this._seedData, data);
 
     return new this.Target(this._api, data);
+  }
+
+  /**
+   * List target resource
+   * @param {Number|Object} params - ParametersThe page to be requested
+   * @param {Number} [params.page=1] - The page to be requested
+   * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @example
+   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
+   * // See Api documentation for search query syntax
+   * const search = {
+   *   name: '^:test',
+   *   scale_min: ['>:1', '<:10'],
+   * };
+   *
+   * api.layers.list({perPage: 10, search});
+   */
+  newList(params) {
+    Object.assign(params, this.defaultParams);
+    return this._buildResolver(params).getPage(params.page);
+  }
+
+  /**
+   * List target resource
+   * @param {Number|Object} params - ParametersThe page to be requested
+   * @param {Number} [params.page=1] - The page to be requested
+   * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
+   * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
+   * @returns {PaginatedResourceWrapper} - Wrapped paginated resource
+   * @example
+   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
+   * // See Api documentation for search query syntax
+   * const search = {
+   *   name: '^:test',
+   *   scale_min: ['>:1', '<:10'],
+   * };
+   *
+   * api.layers.list({perPage: 10, search});
+   */
+  newListAndWrap(params) {
+    Object.assign(params, this.defaultParams);
+
+    const wrapped = this._buildResolver(params).wrap(params.page);
+
+    wrapped.get(params.page);
+    return wrapped;
+  }
+
+  _buildResolver(params) {
+    const paramType = typeof params;
+    const url = this._baseUrl;
+
+    if (!['number', 'object'].includes(paramType)) {
+      throw new TypeError(`Expected params to be of type number or object. Got "${paramType}"`);
+    }
+
+    if (paramType === 'number') {
+      return this.newList({page: params});
+    }
+
+    return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage);
+  }
+
+  get defaultParams() {
+    const defaults = this.api.defaults;
+
+    return {
+      page: 1,
+      perPage: defaults.perPage,
+      shareCache: defaults.shareCache,
+      search: {},
+    };
   }
 }
