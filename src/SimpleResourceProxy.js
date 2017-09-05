@@ -38,7 +38,6 @@ import {isParentOf} from './utils/reflection';
  * Proxy for accessing resource. This will make sure that they
  * are properly wrapped before the promise resolves.
  * @protected
- * @todo remove ::search* in favor of an object containing function parameters
  */
 export default class SimpleResourceProxy {
   /**
@@ -102,84 +101,7 @@ export default class SimpleResourceProxy {
   }
 
   /**
-   * Lists target resource
-   * @param {Object<String, String|Array<String>>} query - Query
-   * @param {Number} page - The page to be requested
-   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
-   *
-   * @example
-   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
-   * // See Api documentation for search query syntax
-   * var query = {
-   *   name: '^:test',
-   *   scale_min: ['>:1', '<:10'],
-   * }
-   *
-   * api.layers.search(query).then(console.dir);
-   * @todo move page, perPage, etc. to an object and add other options
-   */
-  search(query, page = 1, perPage = this.api.defaults.perPage) {
-    const url = this._baseUrl;
-    const resolver = new PaginatedResourceListing(this._api, url, this.Target, query);
-
-    return resolver.getPage(page, perPage);
-  }
-
-  /**
-   * Lists target resource
-   * @param {Number} page - The page to be requested
-   * @param {Number|undefined} perPage - Amount of items per page. This is silently capped by the API
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
-   */
-  list(page = 1, perPage = this.api.defaults.perPage) {
-    return this.search({}, page, perPage);
-  }
-
-  /**
-   * Lists target resource
-   * @param {Number} page - The page to be requested
-   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @param {Number} cacheTime - Amount of seconds to store a value in cache
-   * @param {Boolean} shareCache - Share cache across instances
-   * @returns {PaginatedResourceWrapper} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
-   *
-   */
-  listAndWrap(page = 1, perPage = this.api.defaults.perPage, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
-    return this.searchAndWrap({}, page, perPage, cacheTime, shareCache);
-  }
-
-  /**
-   * Lists target resource
-   * @param {Object<String, String|Array<String>>} query - Query
-   * @param {Number} page - The page to be requested
-   * @param {Number} perPage - Amount of items per page. This is silently capped by the API
-   * @param {Number} cacheTime - Amount of seconds to store a value in cache
-   * @param {Boolean} shareCache - Share cache across instances
-   * @returns {PaginatedResourceWrapper} - Wrapped {@link PaginatedResourceListing} instance
-   *
-   * @example
-   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
-   * // See Api documentation for search query syntax
-   * var query = {
-   *   name: '^:test',
-   *   scale_min: ['>:1', '<:10'],
-   * }
-   *
-   * api.layers.searchAndWrap(query)
-   */
-  searchAndWrap(query, page = 1, perPage = this.api.defaults.perPage, cacheTime = this.api.defaults.cacheSeconds, shareCache = this.api.defaults._shareCache) {
-    const url = this._baseUrl;
-    const resolver = new PaginatedResourceListing(this._api, url, this.Target, query, page, perPage);
-    const wrapped = resolver.wrap(cacheTime, shareCache);
-
-    wrapped.get(page);
-
-    return wrapped;
-  }
-
-  /**
-   * Build a new isntance of the target
+   * Build a new instance of the target
    * @param {Object<String, *>} data - Data for the object to be populated with
    * @returns {ResourceBase} - Resource with target data
    */
@@ -188,5 +110,84 @@ export default class SimpleResourceProxy {
     data = Object.assign(this._seedData, data);
 
     return new this.Target(this._api, data);
+  }
+
+  /**
+   * List target resource
+   * @param {Number|Object} [params] - Parameters or the page number to be requested
+   * @param {Number} [params.page=1] - The page to be requested
+   * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @example
+   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
+   * // See Api documentation for search query syntax
+   * const search = {
+   *   name: '^:test',
+   *   scale_min: ['>:1', '<:10'],
+   * };
+   *
+   * api.layers.list({perPage: 10, search});
+   */
+  list(params = {}) {
+    const resolver = this._buildResolver(params);
+
+    return resolver.getPage(resolver.page);
+  }
+
+  /**
+   * List target resource
+   * @param {Number|Object} [params] - Parameters or the page to be requested
+   * @param {Number} [params.page=1] - The page to be requested
+   * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
+   * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
+   * @returns {PaginatedResourceWrapper} - Wrapped paginated resource
+   * @example
+   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
+   * // See Api documentation for search query syntax
+   * const search = {
+   *   name: '^:test',
+   *   scale_min: ['>:1', '<:10'],
+   * };
+   *
+   * api.layers.listandWrap({perPage: 10, search});
+   */
+  listAndWrap(params = {}) {
+    const resolver = this._buildResolver(params);
+    const wrapped = resolver.wrap(resolver.page);
+
+    wrapped.get(resolver.page);
+    return wrapped;
+  }
+
+  _buildResolver(params = {}) {
+    const paramType = typeof params;
+    const url = this._baseUrl;
+
+    if (!['number', 'object'].includes(paramType)) {
+      throw new TypeError(`Expected params to be of type number or object. Got "${paramType}"`);
+    }
+
+    if (paramType === 'number') {
+      return this._buildResolver({page: params});
+    }
+
+    return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage);
+  }
+
+  /**
+   * Get the defaults parameters.
+   * @returns {{page: number, perPage: number, shareCache: boolean, search: {}}} - Defaults
+   */
+  get defaultParams() {
+    const defaults = this.api.defaults;
+
+    return {
+      page: 1,
+      perPage: defaults.perPage,
+      shareCache: defaults.shareCache,
+      search: {},
+    };
   }
 }

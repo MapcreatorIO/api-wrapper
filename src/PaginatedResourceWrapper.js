@@ -43,14 +43,12 @@ export default class PaginatedResourceWrapper {
    *
    * @param {PaginatedResourceListing} listing - Listing result
    * @param {Maps4News} api - Instance of the api
-   * @param {Number} cacheTime - Amount of seconds to store a value in cache
    * @param {Boolean} shareCache - Share cache across instances
    */
-  constructor(listing, api = listing.api, cacheTime = api.defaults.cacheSeconds, shareCache = api.defaults.shareCache) {
+  constructor(listing, api = listing.api, shareCache = api.defaults.shareCache) {
 
     // Fields
     this._api = api;
-    this.cacheTime = cacheTime;
     this._shareCache = shareCache;
     this._currentPage = 1;
     this._context = [];
@@ -62,7 +60,7 @@ export default class PaginatedResourceWrapper {
     this.data = [];
 
     // Internal
-    this._localCache = new ResourceCache(api, cacheTime);
+    this._localCache = new ResourceCache(api, this.api.defaults.cacheSeconds);
     this._inflight = [];
     this._last = listing;
     this._waiting = false;
@@ -291,14 +289,16 @@ export default class PaginatedResourceWrapper {
   /**
    * Register an event handler for the given type.
    *
-   * @param {string} type Type of event to listen for, or `"*"` for all events.
-   * @param {function(event: any): void} handler Function to call in response to the given event.
+   * @param {string} type - Type of event to listen for, or `"*"` for all events.
+   * @param {function(eventType: string, event: any): void|function(event: any): void} handler - Function to call in response to the given event.
    * @returns {void}
    */
   on(type, handler) {
-    this.cache.emitter.on(type, e => {
-      if (e.resourceUrl === this.route) {
-        handler(e);
+    this.cache.emitter.on(type, (t, e) => {
+      if (type === '*' && e.resourceUrl === this.route) {
+        handler(t, e);
+      } else if (type !== '*' && t.resourceUrl === this.route) {
+        handler(t);
       }
     });
   }
@@ -306,8 +306,8 @@ export default class PaginatedResourceWrapper {
   /**
    * Function to call in response to the given event
    *
-   * @param {string} type Type of event to unregister `handler` from, or `"*"`
-   * @param {function(event: any): void} handler Handler function to remove.
+   * @param {string} type - Type of event to unregister `handler` from, or `"*"`
+   * @param {function(event: any): void} handler - Handler function to remove.
    * @returns {void}
    */
   off(type, handler) {

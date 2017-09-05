@@ -77,7 +77,6 @@ import {makeRequest} from './utils/requests';
 
 /**
  * Base API class
- * @todo Add setting to disable console.warn
  */
 export default class Maps4News {
   /**
@@ -88,7 +87,7 @@ export default class Maps4News {
     this.auth = auth;
     this.host = host;
 
-    const bool = (str) => str.toLowerCase() === 'true';
+    const bool = str => str.toLowerCase() === 'true';
 
     /**
      * Defaults for common parameters. These are populated during the build process using the `.env` file.
