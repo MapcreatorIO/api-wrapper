@@ -101,7 +101,7 @@ export default class SimpleResourceProxy {
   }
 
   /**
-   * Build a new isntance of the target
+   * Build a new instance of the target
    * @param {Object<String, *>} data - Data for the object to be populated with
    * @returns {ResourceBase} - Resource with target data
    */
@@ -114,7 +114,7 @@ export default class SimpleResourceProxy {
 
   /**
    * List target resource
-   * @param {Number|Object} [params] - ParametersThe page to be requested
+   * @param {Number|Object} [params] - Parameters or the page number to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
@@ -137,7 +137,7 @@ export default class SimpleResourceProxy {
 
   /**
    * List target resource
-   * @param {Number|Object} [params] - ParametersThe page to be requested
+   * @param {Number|Object} [params] - Parameters or the page to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
    * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
