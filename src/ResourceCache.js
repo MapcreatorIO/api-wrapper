@@ -262,7 +262,7 @@ export default class ResourceCache {
   }
 
   /**
-   * Update records in the cache manually
+   * Update records in the cache manually lazily. Any matching instance found will be updated.
    * @param {ResourceBase|Array<ResourceBase>} rows - Data to be updated
    * @returns {void} - nothing
    */
