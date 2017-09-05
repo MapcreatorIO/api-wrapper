@@ -77,7 +77,6 @@ import {makeRequest} from './utils/requests';
 
 /**
  * Base API class
- * @todo Add setting to disable console.warn
  */
 export default class Maps4News {
   /**
