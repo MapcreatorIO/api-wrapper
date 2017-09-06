@@ -107,7 +107,7 @@ export default class SimpleResourceProxy {
    */
   new(data = {}) {
     // Merge but don't overwrite using seed data
-    data = Object.assign(this._seedData, data);
+    data = Object.assign({}, this._seedData, data);
 
     return new this.Target(this._api, data);
   }
