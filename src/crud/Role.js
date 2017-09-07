@@ -52,7 +52,7 @@ export default class Role extends CrudBase {
   }
 
   /**
-   * Sync permissions to the role
+   * Sync user to the role
    * @param {Array<ResourceBase>} items - List of items to sync
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
@@ -61,7 +61,7 @@ export default class Role extends CrudBase {
   }
 
   /**
-   * Attach permissions to the role
+   * Attach user to the role
    * @param {Array<ResourceBase>} items - List of items to attach
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
@@ -70,7 +70,7 @@ export default class Role extends CrudBase {
   }
 
   /**
-   * Detach permissions from the role
+   * Detach user from the role
    * @param {Array<Organisation>|Array<Number>} items - List of items to unlink
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
