@@ -1,5 +1,39 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import Maps4News from './Maps4News';
-import {isParentOf} from './utils/reflection';
+import PaginatedResourceWrapper from './PaginatedResourceWrapper';
+import {hashObject} from './utils/hash';
+import {getTypeName, isParentOf} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
 
 /**
@@ -18,13 +52,14 @@ export default class PaginatedResourceListing {
    * @param {Array<ResourceBase>} data - Resolved data
    * @private
    */
-  constructor(api, route, Target, query = {}, page = 1, perPage = 12, pageCount = null, rowCount = 0, data = []) {
+  constructor(api, route, Target, query = {}, page = 1, perPage = api.defaults.perPage, pageCount = null, rowCount = 0, data = []) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
 
     this._api = api;
-    this._route = route;
+
+    this.route = route;
     this._Target = Target;
     this._query = query;
 
@@ -57,6 +92,22 @@ export default class PaginatedResourceListing {
    */
   get route() {
     return this._route;
+  }
+
+  /**
+   * Override the target route
+   * @param {String} value - route
+   */
+  set route(value) {
+    if (!value.startsWith('https://') && !value.startsWith('http://')) {
+      if (!value.startsWith('/')) {
+        value = '/' + value;
+      }
+
+      value = `${this._api.host}/${this._api.version}${value}`;
+    }
+
+    this._route = value;
   }
 
   /**
@@ -122,32 +173,34 @@ export default class PaginatedResourceListing {
    * @param {Object<String, String|Array<String>>} value - Query
    * @throws TypeError
    * @default {}
-   * @see ResourceProxy#search
+   * @see {@link ResourceProxy#search}
    */
   set query(value) {
     // Verify query structure
     if (typeof value !== 'object') {
-      throw new TypeError(`Expected value to be of type "object" got "${typeof value}"`);
+      throw new TypeError(`Expected value to be of type "Object" got "${getTypeName(value)}"`);
     }
 
     for (const key of Object.keys(value)) {
       if (typeof key !== 'string') {
-        throw new TypeError(`Expected key to be of type "string" got "${typeof key}"`);
+        throw new TypeError(`Expected key to be of type "String" got "${getTypeName(key)}"`);
       }
 
       if (Array.isArray(value[key])) {
         if (value[key].length > 0) {
           for (const query of value[key]) {
             if (typeof query !== 'string') {
-              throw new TypeError(`Expected query for "${key}" to be of type "string" got "${typeof key}"`);
+              throw new TypeError(`Expected query for "${key}" to be of type "String" got "${getTypeName(query)}"`);
             }
           }
         } else {
           // Drop empty nodes
           delete value[key];
         }
+      } else if (value[key] === null) {
+        delete value[key];
       } else if (typeof value[key] !== 'string') {
-        throw new TypeError(`Expected query value to be of type "string" or "array" got "${typeof key}"`);
+        throw new TypeError(`Expected query value to be of type "string" or "Array" got "${getTypeName(key)}"`);
       }
     }
 
@@ -163,13 +216,13 @@ export default class PaginatedResourceListing {
   getPage(page, perPage = this.perPage) {
     page = Math.max(1, page);
 
-    perPage = Math.min(1, perPage);
-    perPage = Math.max(50, perPage);
-
     const query = {page};
 
     if (perPage) {
-      query['per_page'] = Math.max(1, perPage);
+      perPage = Math.max(1, perPage);
+      perPage = Math.min(50, perPage);
+
+      query['per_page'] = perPage;
     }
 
     // Add search query (if any)
@@ -177,19 +230,20 @@ export default class PaginatedResourceListing {
       query['search'] = this.query;
     }
 
-    const url = `${this.route}?${encodeQueryString(query)}`;
+    const glue = this.route.includes('?') ? '&' : '?';
+    const url = `${this.route}${glue}${encodeQueryString(query)}`;
 
     return new Promise((resolve, reject) => {
       this.api.request(url, 'GET', {}, {}, '', true)
         .then(request => {
           const response = JSON.parse(request.responseText);
-          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`));
-          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`));
+          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
+          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
 
           const instance = new PaginatedResourceListing(
             this.api, this.route, this._Target, this.query,
             page, perPage, totalPages, rowCount,
-            response.data.map(row => new this._Target(this.api, row))
+            response.data.map(row => new this._Target(this.api, row)),
           );
 
           resolve(instance, request);
@@ -198,7 +252,7 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Test if there is a next page
+   * If there is a next page
    * @returns {boolean} - If there is a next page
    */
   get hasNext() {
@@ -206,11 +260,21 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Test if there is a previous page
+   * If there is a previous page
    * @returns {boolean} - If there is a previous page
    */
   get hasPrevious() {
     return this.page > 1;
+  }
+
+  /**
+   * Used for caching pages internally
+   * @returns {string} - Cache token
+   * @see {@link PaginatedResourceWrapper}
+   * @see {@link ResourceCache}
+   */
+  get cacheToken() {
+    return hashObject({query: this.query});
   }
 
   /**
@@ -227,5 +291,14 @@ export default class PaginatedResourceListing {
    */
   previous() {
     return this.getPage(this.page - 1);
+  }
+
+  /**
+   * Wraps {@link PaginatedResourceWrapper} around the page
+   * @param {Boolean} shareCache - Share cache across instances
+   * @returns {PaginatedResourceWrapper} - Wrapped resource listing
+   */
+  wrap(shareCache = this.api.defaults._shareCache) {
+    return new PaginatedResourceWrapper(this, this.api, shareCache);
   }
 }

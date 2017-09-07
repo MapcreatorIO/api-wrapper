@@ -8,8 +8,7 @@ any side-effects. The variable `api.authenticated` will be set to true if a toke
 has been found and is still valid. 
 
 Tokens are stored in HTTPS cookies if possible and using `localStorage` when the
-browser is not using a HTTPS connection. No storage mechanism has been implemented
-for [nodejs] applications yet.
+browser is not using a HTTPS connection. [Nodejs] uses a file named `.m4n_token` to store the token.
 
 ## Web
 Multiple flows are supported for web browsers. All the web examples assume the web
@@ -25,8 +24,8 @@ guessed if none is provided.
 var clientId = 1;
 
 // Callback url is set to the current url by default
-var auth = new maps4news.ImplicitFlow(clientId);
-var api = new maps4news.Maps4News(auth);
+var auth = new ImplicitFlow(clientId);
+var api = new 	Maps4News(auth);
 
 // This will hijack the page if no authentication cache can
 // be found. Smartest thing to do is to just let it happen
@@ -50,8 +49,8 @@ var clientId = 1;
 // the current page can be set as the callback (default) or
 // a custom page that just contains `api.authenticate()`
 // that uses ImplicitFlowPopup as the auth parameter.
-var auth = new maps4news.ImplicitFlowPopup(clientId);
-var api = new maps4news.Maps4News(auth);
+var auth = new 	ImplicitFlowPopup(clientId);
+var api = new 	Maps4News(auth);
 
 // This will create a pop-up window containing the log in
 // page. Once the pop-up redirects back to the callback it
@@ -73,8 +72,8 @@ and then closes. This can be done in the following way.
 var clientId = 1;
 var callbackUrl = 'https://example.com/callback.html';
 
-var auth = new maps4news.ImplicitFlowPopup(clientId);
-var api = new maps4news.Maps4News(auth);
+var auth = new 	ImplicitFlowPopup(clientId);
+var api = new 	Maps4News(auth);
 
 // This will resolve once the callback page has been loaded
 api.authenticate().then(function() {
@@ -89,7 +88,7 @@ api.authenticate().then(function() {
 var clientId = 1;
 
 // This will instantly detect the token and close the page
-new maps4news.ImplicitFlowPopup(clientId);
+new 	ImplicitFlowPopup(clientId);
 ```
 
 ### Password flow (dangerous)
@@ -106,8 +105,8 @@ var password = 'Password1!'; // password
 
 // Secret will be leaked if this is used on a webpage. Please only use
 // this for non-web applications.
-var auth = new maps4news.PasswordFlow(clientId, secret, username, password);
-var api = new maps4news.Maps4News(auth);
+var auth = new 	PasswordFlow(clientId, secret, username, password);
+var api = new 	Maps4News(auth);
 
 // This will resolve once the authentication has completed
 api.authenticate().then(function() {
@@ -120,8 +119,8 @@ api.authenticate().then(function() {
 The dummy flow can be used when a token *should* be present in the cache. 
 
 ```js
-var auth = new maps4news.DummyFlow();
-var api = new maps4news.Maps4News(auth);
+var auth = new 	DummyFlow();
+var api = new 	Maps4News(auth);
 
 // Manually check if we're logged in
 if (api.authenticated) {
@@ -151,8 +150,8 @@ var secret = ''; // secret
 var username = 'user@example.com'; // email is used for authentication
 var password = 'Password1!'; // password
 
-var auth = new maps4news.PasswordFlow(clientId, secret, username, password);
-var api = new maps4news.Maps4News(auth);
+var auth = new PasswordFlow(clientId, secret, username, password);
+var api = new Maps4News(auth);
 
 // This will resolve once the authentication has completed
 api.authenticate().then(function() {
@@ -165,8 +164,8 @@ api.authenticate().then(function() {
 The dummy flow can also be used when a token is known.
 
 ```js
-var auth = new maps4news.DummyFlow();
-var api = new maps4news.Maps4News(auth);
+var auth = new DummyFlow();
+var api = new Maps4News(auth);
 
 var token = {
   token: "eyJ0eXAiOiJKV1...",
@@ -175,7 +174,7 @@ var token = {
 };
 
 // Set the token
-api.auth.token = maps4news.OAuthToken.fromResponseObject(token);
+api.auth.token = OAuthToken.fromResponseObject(token);
 
 // Manually check if we're logged in
 if (api.authenticated) {

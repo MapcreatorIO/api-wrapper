@@ -1,3 +1,35 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import StaticClass from './StaticClass';
 
 /**
@@ -11,19 +43,6 @@ export default class Uuid extends StaticClass {
    * @returns {string} - Uuid
    */
   static uuid4() {
-    // Use the secure method if possible
-    return typeof crypto !== 'undefined' ? Uuid._uuid4Safe() : Uuid._uuid4Unsafe();
-  }
-
-  /**
-   * Unsafe UUID4 generation using Math.random
-   * @returns {string} - Uuid
-   *
-   * @see http://stackoverflow.com/a/8809472
-   * @license MIT|Public Domain
-   * @private
-   */
-  static _uuid4Unsafe() {
     let d = new Date().getTime();
 
     if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
@@ -35,26 +54,6 @@ export default class Uuid extends StaticClass {
 
       d = Math.floor(d / 16);
       return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
-    });
-  }
-
-  /**
-   * Safe UUID4 generation using the crypto api
-   * @returns {String} - Uuid
-   * @private
-   */
-  static _uuid4Safe() {
-    let data = new Uint8Array(16);
-
-    crypto.getRandomValues(data);
-
-    // cast to array so we can use pop()
-    data = [].slice.call(data);
-
-    // Replace 'xx' with a two width base 16 number
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/xx/g, () => {
-      // Prepend 00 for padding and grab the last two characters
-      return ('00' + data.pop().toString(16)).slice(-2);
     });
   }
 

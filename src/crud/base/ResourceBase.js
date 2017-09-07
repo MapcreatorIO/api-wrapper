@@ -1,7 +1,40 @@
-import {snakeToCamelCase} from '../../utils/caseConverter';
-import {AbstractClassError, AbstractError} from '../../exceptions/AbstractError';
-import {isParentOf} from '../../utils/reflection';
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
+import SimpleResourceProxy from '../../SimpleResourceProxy';
+import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
+import {isParentOf} from '../../utils/reflection';
 
 /**
  * Resource base
@@ -21,11 +54,46 @@ export default class ResourceBase {
       throw new TypeError('Expected api to be of type Maps4News');
     }
 
-    this._baseProperties = data;
+    // Normalize keys to snake_case
+    // Fix data types
+    for (const key of Object.keys(data)) {
+      const newKey = camelToSnakeCase(pascalToCamelCase(key));
+
+      data[newKey] = ResourceBase._guessType(newKey, data[key]);
+
+      if (newKey !== key) {
+        delete data[key];
+      }
+    }
+
+    this._baseProperties = data || {};
     this._properties = {};
     this._api = api;
 
-    this._applyProperties();
+    const fields = Object.keys(this._baseProperties);
+
+    // Apply properties
+    for (const key of fields) {
+      this._applyProperty(key);
+    }
+
+    // Add deleted field if possible
+    if (fields.includes('deleted_at')) {
+      Object.defineProperty(this, 'deleted', {
+        enumerable: true,
+        configurable: true,
+
+        get: () => {
+          return Boolean(this.deletedAt);
+        },
+      });
+    }
+
+    /* We keep track of any new fields by recording the
+     * keys the object currently has. We don't need no
+     * fancy-pants observers, Proxies etc.
+     */
+    this._knownFields = Object.keys(this).filter(x => x[0] !== '_');
   }
 
   /**
@@ -40,8 +108,8 @@ export default class ResourceBase {
    * Resource path template
    * @returns {String} - Path template
    */
-  get path() {
-    return `/${this.resourceName}/\{id}`;
+  get resourcePath() {
+    return `/${this.resourceName}/{id}`;
   }
 
   /**
@@ -51,6 +119,68 @@ export default class ResourceBase {
    */
   get resourceName() {
     throw new AbstractError();
+  }
+
+  /**
+   * Protected read-only fields
+   * @returns {Array<string>} - Array containing the protected fields
+   * @protected
+   */
+  get _protectedFields() {
+    return ['id', 'created_at', 'updated_at', 'deleted_at'];
+  }
+
+  /**
+   * Moves new fields to this._properties and turns them into a getter/setter
+   * @returns {void}
+   * @protected
+   */
+  _updateProperties() {
+    // Build a list of new fields
+    const fields = Object.keys(this)
+      .filter(x => x[0] !== '_')
+      .filter(x => !this._knownFields.includes(x));
+
+    // Move the pointer from this to the properties object
+    for (const key of fields) {
+      const newKey = camelToSnakeCase(key);
+
+      this._properties[newKey] = this[key];
+      delete this[key];
+
+      this._knownFields.push(key);
+
+      this._applyProperty(newKey);
+    }
+  }
+
+  /**
+   * Clean up instance and commit all changes locally.
+   * This means that any changed fields will be marked
+   * as unchanged whilst  keeping their new values. The
+   * changes will not be saved.
+   * @returns {void} - nothing
+   */
+  sanitize() {
+    this._updateProperties();
+    Object.assign(this._baseProperties, this._properties);
+    this._properties = {};
+  }
+
+  /**
+   * Clone the object
+   * @returns {ResourceBase} - Exact clone of the object
+   */
+  clone() {
+    this._updateProperties();
+
+    const out = new this.constructor(this.api, this._baseProperties);
+
+    for (const key of Object.keys(this._properties)) {
+      out[key] = this._properties[key];
+    }
+
+    return out;
   }
 
   /**
@@ -74,29 +204,65 @@ export default class ResourceBase {
   }
 
   /**
-   * Creates proxies for the properties
+   * Create proxy for property
+   * @param {string} key - property key
    * @returns {void}
    * @private
    */
-  _applyProperties() {
-    for (const key of Object.keys(this._baseProperties)) {
-      Object.defineProperty(this, snakeToCamelCase(key), {
-        enumerable: true,
-        configurable: true,
+  _applyProperty(key) {
+    const desc = {
+      enumerable: true,
+      configurable: true,
 
-        get: () => {
-          if (this._properties.hasOwnProperty(key)) {
-            return this._properties[key];
-          }
+      get: () => {
+        if (this._properties.hasOwnProperty(key)) {
+          return this._properties[key];
+        }
 
-          return this._baseProperties[key];
-        },
+        return this._baseProperties[key];
+      },
+    };
 
-        set: (val) => {
-          this._properties[key] = val;
-          return val;
-        },
-      });
+    if (!this._protectedFields.includes(key)) {
+      desc.set = (val) => {
+        this._properties[key] = ResourceBase._guessType(key, val);
+        delete this._url; // Clears url cache
+      };
+    }
+
+    Object.defineProperty(this, snakeToCamelCase(key), desc);
+  }
+
+  /**
+   * Guess type based on property name
+   * @param {string} name - Field name
+   * @param {*} value - Field Value
+   * @private
+   * @returns {*} - Original or converted value
+   */
+  static _guessType(name, value) {
+    const regexp = /(?:^|_)([^_$]+)$/g;
+    const match = regexp.exec(name);
+    const idMacros = ['last', 'me', 'mine'];
+
+    if (match === null || typeof value !== 'string') {
+      return value;
+    }
+
+    switch (match[1]) {
+      case 'end':
+      case 'start':
+      case 'at':
+        return new Date(value.replace(' ', 'T'));
+      case 'id':
+        // Test if the value is in fact a macro
+        if (idMacros.includes(String(value).toLowerCase())) {
+          return value;
+        }
+
+        return Number(value);
+      default:
+        return value;
     }
   }
 
@@ -113,13 +279,16 @@ export default class ResourceBase {
    * @returns {string} - Resource url
    */
   get url() {
-    let url = `${this._api.host}/${this._api.version}${this.path}`;
+    if (!this._url) {
+      let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
 
-    for (const key of Object.keys(this._baseProperties)) {
-      url = url.replace(`{${key}}`, this[key]);
+      // Find and replace any keys
+      url = url.replace(/{(\w+)}/g, (match, key) => this[snakeToCamelCase(key)]);
+
+      this._url = url;
     }
 
-    return url;
+    return this._url;
   }
 
   /**
@@ -127,7 +296,7 @@ export default class ResourceBase {
    * @returns {string} - Resource base url
    */
   get baseUrl() {
-    const basePath = this.path.match(/^(\/[^{]+\b)/)[1];
+    const basePath = this.resourcePath.match(/^(\/[^{]+\b)/)[1];
 
     return `${this._api.host}/${this._api.version}${basePath}`;
   }
@@ -148,5 +317,23 @@ export default class ResourceBase {
    */
   toString() {
     return `${this.constructor.name}(${this.id})`;
+  }
+
+  /**
+   * Macro for resource listing
+   * @param {ResourceBase} Target - Target object
+   * @param {?String} url - Target url, if null it will guess
+   * @param {object} seedData - Internal use, used for seeding SimpleResourceProxy::new
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @protected
+   */
+  _proxyResourceList(Target, url = null, seedData = {}) {
+    if (!url) {
+      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
+
+      url = `${this.url}/${resource}s`;
+    }
+
+    return new SimpleResourceProxy(this.api, Target, url, seedData);
   }
 }

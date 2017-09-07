@@ -1,6 +1,37 @@
-import {AbstractClassError} from '../../exceptions/AbstractError';
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import {AbstractClassError} from '../../errors/AbstractError';
 import ResourceBase from './ResourceBase';
-import PaginatedResourceListing from '../../PaginatedResourceListing';
 
 /**
  * Base of all resource items that support Crud operations
@@ -25,37 +56,20 @@ export default class CrudBase extends ResourceBase {
    * @protected
    */
   _buildCreateData() {
-    const out = this._properties;
+    this._updateProperties();
 
-    for (const key of Object.keys(this._baseProperties)) {
-      if (this[key] !== null) {
-        out[key] = this[key];
-      }
+    const out = {};
+    const keys = [].concat(
+      Object.keys(this._properties),
+      Object.keys(this._baseProperties),
+    ).filter((item, pos, self) => self.indexOf(item) === pos);
+
+    for (const key of keys) {
+      out[key] = this._properties[key] || this._baseProperties[key];
     }
 
     delete out.id;
     return out;
-  }
-
-  /**
-   * Macro for resource listing
-   * @param {ResourceBase} Target - Target object
-   * @param {String} url - Target url, if not set it will guess
-   * @param {Number} page - Page number
-   * @param {Number} perPage - Amount of items per page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
-   * @protected
-   */
-  _listResource(Target, url = null, page = 1, perPage = null) {
-    if (!url) {
-      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
-
-      url = `${this.url}/${resource}s`;
-    }
-
-    const resolver = new PaginatedResourceListing(this.api, url, Target);
-
-    return resolver.getPage(page, perPage);
   }
 
   /**
@@ -91,11 +105,19 @@ export default class CrudBase extends ResourceBase {
    * @private
    */
   _update() {
+    this._updateProperties();
+
     return new Promise((resolve, reject) => {
       this.api
         .request(this.url, 'PATCH', this._properties)
         .catch(reject)
-        .then(() => resolve(this));
+        .then(() => {
+          if (this.api.defaults.autoUpdateSharedCache) {
+            this.api.cache.update(this);
+          }
+
+          resolve(this);
+        });
     });
   }
 

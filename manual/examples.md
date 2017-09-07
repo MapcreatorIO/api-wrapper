@@ -50,7 +50,7 @@ api.users.get('me').then(me => {
 Setting the id to null forces the creation of a new object upon saving. 
 
 ```js
-api.colors(1).then(color => {
+api.colors.get(1).then(color => {
   color.id = null;
   color.save();
 });
@@ -60,7 +60,7 @@ api.colors(1).then(color => {
 Listing resources with pagination. First page with 5 items per page
 
 ```js
-api.colors.list(1, 20).then(page => {
+api.colors.list(1, 5).then(page => {
   console.log('Got resources:');
 
   for (var i = 0; i < page.data.length; i++) {
@@ -72,7 +72,7 @@ api.colors.list(1, 20).then(page => {
 Loop over every page and print the result to the console.
 
 ```js
-function parsePages() {
+function parsePages(page) {
   for (var i = 0; i < page.data.length; i++) {
     console.log(page.data[i].toString());     
   }  
@@ -83,13 +83,41 @@ function parsePages() {
   }
 }
 
-api.colors.list(1, 50).then(parsePages);
+api.colors
+   .list(1, 50)
+   .then(parsePages);
 ```
+
+Loop over all pages and return the data in a promise
+
+```js
+function parsePages(page) {
+  var data = [];
+  
+  function parse(page) {
+      data = data.concat(page.data);
+      
+      if(page.hasNext) {
+          return page.next().then(parse);
+      } else {
+          return data;
+      }
+  }  
+    
+  return parse(page);
+}
+
+api.colors
+   .list(1, 50)
+   .then(parsePages)
+   .then(d => console.log('Total rows: ' + d.length));
+```
+
 
 Select current user but do not fetch any info to make fetching resources easier.
 
 ```js
-api.users.select('me').colors().then(page => {
+api.users.select('me').colors.list().then(page => {
   console.dir(page.data);
 });
 ```

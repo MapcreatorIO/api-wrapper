@@ -1,15 +1,9 @@
 @Library('deployment') _
 import org.mapcreator.Deploy
 
-def git_push(branch) {
+def git_push(branch, args) {
 	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch}"
-	}
-}
-
-def git_push_tags(branch) {
-	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7bdf0a8c-d1c2-44a4-8644-a4677f0662aa', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch} --tags"
+		sh "git push -u https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MapCreatorEU/m4n-api.git ${branch} ${args}"
 	}
 }
 
@@ -20,42 +14,47 @@ node('npm && yarn') {
 
 	stage('checkout') {
 		checkout scm
+		sh 'git fetch --tags'
 	}
 
 	stage('initialize') {
 		sh 'yarn --no-emoji --non-interactive --no-progress'
-		sh 'rm -r dist docs || true'
+		sh 'rm -r dist docs .env || true'
+    sh 'git checkout -- "*"'
 	}
 
 	stage('linter') {
-	 	sh '$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src'
-	 	checkstyle pattern: 'build/checkstyle.xml'
-	}
-
-	stage('build') {
-		sh '$(yarn bin)/webpack'
-		archiveArtifacts artifacts: 'dist/*', fingerprint: true
+		sh 'yarn run lint'
+		checkstyle pattern: 'build/checkstyle.xml'
 	}
 
 	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
-	if (SHOULD_TAG) {
-		stage('tag') {
+	stage('tag') {
+		if (SHOULD_TAG) {
+			sh 'yarn run authors'
+			sh 'git add AUTHORS.md'
+			sh 'git commit -m "Update AUTHORS.md" || true'
 
-			if (SHOULD_TAG) {
-				if (BRANCH_NAME == 'master') {
-					sh 'npm version minor -m "Auto upgrade to minor %s" || true'
-				}
+			if (BRANCH_NAME == 'master') {
+			sh 'npm version minor -m "Auto upgrade to minor %s" || true'
+			}
 
-				if (BRANCH_NAME == 'develop') {
-					sh 'npm version patch -m "Auto upgrade to patch %s" || true'
-				}
-
-				git_push_tags "HEAD:${BRANCH_NAME}"
+			if (BRANCH_NAME == 'develop') {
+			sh 'npm version patch -m "Auto upgrade to patch %s" || true'
 			}
 		}
+	}
 
-		stage('publish') {
+	stage('build') {
+		sh 'yarn run build'
+		archiveArtifacts artifacts: 'dist/*', fingerprint: true
+	}
+
+	stage('publish') {
+		if (SHOULD_TAG) {
+			git_push("HEAD:${BRANCH_NAME}", '--tags')
+
 			withCredentials([file(credentialsId: '10faaf42-30f6-412b-b53c-ab6f063ea9cd', variable: 'FILE')]) {
 				sh 'cp ${FILE} .npmrc'
 
@@ -63,16 +62,22 @@ node('npm && yarn') {
 
 				sh 'rm -v .npmrc'
 			}
+
+			PACKAGE_VERSION = sh(returnStdout: true, script: 'git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').trim()
+			println "Published package version ${PACKAGE_VERSION}"
+
+			slackSend(color: 'good', message: "`@mapcreator/maps4news` version ${PACKAGE_VERSION} was just published, please run `npm install @mapcreator/maps4news${PACKAGE_VERSION.replace('v', '@')}`.", channel: '#api')
 		}
+	}
 
-		stage('docs') {
-			sh '$(yarn bin)/esdoc'
+	stage('docs') {
+		sh 'yarn run docs'
 
-			sh 'mv -v dist docs/'
+		if (SHOULD_TAG) {
+			sh 'mv -v dist docs'
 			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
 
 			sh 'git checkout gh-pages'
-
 			sh 'rm -rf $(ls -a | grep -ve docs -e .git -e .gitignore) || true'
 			sh 'mv docs/* ./'
 			sh 'rm -r docs'
@@ -86,12 +91,12 @@ node('npm && yarn') {
 
 			sh 'git commit -m "Update auto generated docs"'
 
-			git_push 'gh-pages'
+			git_push('gh-pages', '--force')
 		}
 	}
 
 	stage('cleanup') {
-		sh 'rm -rf node_modules dist docs build || true'
+		sh 'rm -rf node_modules dist docs build .env || true'
 	}
 }
 

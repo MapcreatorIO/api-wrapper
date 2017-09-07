@@ -5,18 +5,18 @@ import User from './User';
 export default class Role extends CrudBase {
   /**
    * Get the list permissions linked to the role
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Permission} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  permissions() {
-    return this._listResource(Permission);
+  get permissions() {
+    return this._proxyResourceList(Permission);
   }
 
   /**
    * Get the list users linked to the role
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link User} instances and rejects with {@link ApiError}
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  users() {
-    return this._listResource(User);
+  get users() {
+    return this._proxyResourceList(User);
   }
 
   get resourceName() {

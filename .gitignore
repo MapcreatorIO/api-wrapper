@@ -2,6 +2,16 @@
 /dist/
 /build/
 /docs/
+!/src/
+
+# Test files during dev work
+/test*.html
+
+# Config
+.m4n_token
+
+# Environment file
+/.env
 
 # Ignore test html
 /*.html

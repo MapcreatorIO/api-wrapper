@@ -1,11 +1,21 @@
 {
   "env": {
-      "browser": true,
-      "es6": true
+    "browser": true,
+    "es6": true
   },
   "extends": "eslint:recommended",
+  "parser": "babel-eslint",
   "parserOptions": {
-      "sourceType": "module"
+    "sourceType": "module"
+  },
+  "globals": {
+    "global": false,
+    "require": false,
+    "module": true,
+    "process": false,
+
+    "VERSION": false,
+    "LICENSE": false
   },
   "rules": {
     "comma-dangle": [1,"always-multiline"],
@@ -55,7 +65,7 @@
     "no-native-reassign": 1,
     "no-new-wrappers": 1,
     "no-octal-escape": 1,
-    "no-process-env": 2,
+    "no-process-env": 0,
     "no-proto": 1,
     "no-redeclare": 1,
     "no-return-assign": [2,"except-parens"],
@@ -80,7 +90,7 @@
     "comma-spacing": 1,
     "comma-style": 1,
     "eol-last": 2,
-    "indent": [1,2],
+    "indent": [1, 2, {"SwitchCase": 1}],
     "key-spacing": [2,{"afterColon":true}],
     "linebreak-style": [1,"unix"],
     "new-cap": [2,{"newIsCap":true,"capIsNew":true}],

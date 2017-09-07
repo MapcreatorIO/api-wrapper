@@ -1,15 +1,47 @@
-import CrudBase from './base/CrudBase';
-import Layer from './Layer';
-import JobShare from './JobShare';
-import JobResult from './JobResult';
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import {isParentOf} from '../utils/reflection';
+import CrudBase from './base/CrudBase';
+import JobResult from './JobResult';
+import JobShare from './JobShare';
+import Layer from './Layer';
 
 export default class JobRevision extends CrudBase {
   get baseUrl() {
-    return `/jobs/${this['job_id']}/revisions`;
+    return `/jobs/${this.jobId}/revisions`;
   }
 
-  get path() {
+  get resourcePath() {
     return '/jobs/{job_id}/revisions/{id}';
   }
 
@@ -17,6 +49,43 @@ export default class JobRevision extends CrudBase {
     return 'job-revisions';
   }
 
+  /**
+   * Get layers
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get layers() {
+    return this._proxyResourceList(Layer);
+  }
+
+  /**
+   * Get the job result
+   * @returns {Promise} - Resolves with a {@link JobResult} instance and rejects with {@link ApiError}
+   */
+  result() {
+    const url = `${this.url}/result`;
+
+    return new Promise((resolve, reject) => {
+      this.api.request(url)
+        .catch(reject)
+        .then(data => resolve(new JobResult(this.api, data)));
+    });
+  }
+
+  /**
+   * Get a result proxy
+   *
+   * @returns {JobResult} - Empty job result used for
+   */
+  get resultProxy() {
+    const data = {
+      jobId: this.jobId,
+      jobRevisionId: this.id,
+    };
+
+    return new JobResult(this.api, data);
+  }
+
+  // noinspection JSCheckFunctionSignatures
   /**
    * Save updated job revision
    * @param {Object} object - Map object
@@ -84,14 +153,6 @@ export default class JobRevision extends CrudBase {
   }
 
   /**
-   * Get layers
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Layer} instances and rejects with {@link ApiError}
-   */
-  layers() {
-    return this._listResource(Layer);
-  }
-
-  /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @returns {Promise} - Resolves with a {@link String} containing the share link and rejects with {@link ApiError}
@@ -100,26 +161,12 @@ export default class JobRevision extends CrudBase {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
-        visibility !== JobShare.visibility.PRIVATE) {
+      visibility !== JobShare.visibility.PRIVATE) {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
     const url = `${this.url}/share`;
 
     return this.api.request(url, 'POST', {visibility});
-  }
-
-  /**
-   * Get the job result
-   * @returns {Promise} - Resolves with a {@link JobResult} instance and rejects with {@link ApiError}
-   */
-  result() {
-    const url = `${this.url}/result`;
-
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(new JobResult(this.api, data)));
-    });
   }
 }

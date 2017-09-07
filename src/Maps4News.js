@@ -1,42 +1,80 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2017, MapCreator
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ *  Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 // Polyfill for terrible browsers (looking at you IE)
 if (!global._babelPolyfill) {
   require('babel-polyfill');
 }
 
-import {isParentOf} from './utils/reflection';
-import OAuth from './oauth/OAuth';
+import {
+  Choropleth,
+  Color,
+  Contract,
+  Dimension,
+  DimensionSet,
+  Faq,
+  Feature,
+  Font,
+  FontFamily,
+  Highlight,
+  InsetMap,
+  Job,
+  JobShare,
+  JobType,
+  Language,
+  Layer,
+  Mapstyle,
+  MapstyleSet,
+  Notification,
+  Organisation,
+  Permission,
+  Role,
+  PlaceName,
+  Svg,
+  SvgSet,
+  SvgSetType,
+  User,
+} from './crud';
+import ResourceBase from './crud/base/ResourceBase';
+
+import ApiError from './errors/ApiError';
+import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
-import {makeRequest} from './utils/requests';
-import ApiError from './exceptions/ApiError';
-import ValidationError from './exceptions/ValidationError';
+import OAuth from './oauth/OAuth';
+import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
-import Color from './crud/Color';
-import Choropleth from './crud/Choropleth';
-import Contract from './crud/Contract';
-import DimensionSet from './crud/DimensionSet';
-import Dimension from './crud/Dimension';
-import Faq from './crud/Faq';
-import Feature from './crud/Feature';
-import FontFamily from './crud/FontFamily';
-import Font from './crud/Font';
-import Highlight from './crud/Highlight';
-import InsetMap from './crud/InsetMap';
-import User from './crud/User';
-import Notification from './crud/Notification';
-import Language from './crud/Language';
-import Layer from './crud/Layer';
-import Mapstyle from './crud/Mapstyle';
-import Permission from './crud/Permission';
-import MapstyleSet from './crud/MapstyleSet';
-import JobShare from './crud/JobShare';
-import Job from './crud/Job';
-import JobType from './crud/JobType';
-import Organisation from './crud/Organisation';
-import PlaceName from './crud/PlaceName';
-import Svg from './crud/Svg';
-import SvgSetType from './crud/SvgSetType';
-import SvgSet from './crud/SvgSet';
-import Role from './crud/Role';
+import {fnv32a} from './utils/hash';
+import {isParentOf} from './utils/reflection';
+import {makeRequest} from './utils/requests';
 
 /**
  * Base API class
@@ -46,9 +84,25 @@ export default class Maps4News {
    * @param {OAuth} auth - Authentication flow
    * @param {string} host - Remote API host
    */
-  constructor(auth = new DummyFlow(), host = 'https://api.maps4news.com') {
+  constructor(auth = new DummyFlow(), host = process.env.HOST) {
     this.auth = auth;
     this.host = host;
+
+    const bool = str => str.toLowerCase() === 'true';
+
+    /**
+     * Defaults for common parameters. These are populated during the build process using the `.env` file.
+     * @type {{perPage: number, cacheSeconds: number, shareCache: boolean}}
+     */
+    this.defaults = {
+      perPage: Number(process.env.PER_PAGE),
+      cacheSeconds: Number(process.env.CACHE_SECONDS),
+      shareCache: bool(process.env.CACHE_SHARED),
+      autoUpdateSharedCache: bool(process.env.CACHE_SHARED_AUTO_UPDATE),
+      dereferenceCache: bool(process.env.CACHE_DEREFERENCE_OUTPUT),
+    };
+
+    this._cache = new ResourceCache(this);
   }
 
   /**
@@ -58,6 +112,14 @@ export default class Maps4News {
    */
   get version() {
     return 'v1';
+  }
+
+  /**
+   * Get the shared cache instance
+   * @returns {ResourceCache} - Shared cache instance
+   */
+  get cache() {
+    return this._cache;
   }
 
   /**
@@ -85,7 +147,7 @@ export default class Maps4News {
    * @returns {boolean} - If the client is authenticated with the api
    */
   get authenticated() {
-    return this._auth.authenticated;
+    return this.auth.authenticated;
   }
 
   /**
@@ -103,7 +165,7 @@ export default class Maps4News {
   set host(value) {
     value = value.replace(/\/+$/, '');
     this._host = value;
-    this._auth.host = value;
+    this.auth.host = value;
   }
 
   /**
@@ -112,8 +174,8 @@ export default class Maps4News {
    */
   authenticate() {
     return new Promise((resolve, reject) => {
-      this._auth.authenticate().then(() => {
-        this._auth.token.save();
+      this.auth.authenticate().then(() => {
+        this.auth.token.save();
 
         resolve(this);
       }).catch(reject);
@@ -139,7 +201,7 @@ export default class Maps4News {
     }
 
     if (this.authenticated) {
-      headers.Authorization = this._auth.token.toString();
+      headers.Authorization = this.auth.token.toString();
     }
 
     return new Promise((resolve, reject) => {
@@ -153,7 +215,15 @@ export default class Maps4News {
             const err = response.error;
 
             if (!err.validation_errors) {
-              reject(new ApiError(err.type, err.message, request.status));
+              const apiError = new ApiError(err.type, err.message, request.status);
+
+              if (apiError.type === 'AuthenticationException' && apiError.message === 'Unauthenticated' && apiError.code === 401) {
+                console.warn('Lost Maps4News session, please re-authenticate');
+
+                this.auth.forget();
+              }
+
+              reject(apiError);
             } else {
               reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
             }
@@ -172,12 +242,50 @@ export default class Maps4News {
   }
 
   /**
+   * Static proxy generation
+   * @param {string|function} Target - Constructor or url
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   * @example
+   * api.static('/custom/resource/path/{id}/').get(123);
+   *
+   * @example
+   * class FooBar extends ResourceBase {
+   *    get resourceName() {
+   *      return 'custom';
+   *    }
+   * }
+   *
+   * api.static(FooBar)
+   *   .get(1)
+   *   .then(console.log);
+   */
+  static(Target) {
+    if (isParentOf(ResourceBase, Target)) {
+      return new ResourceProxy(this, Target);
+    }
+
+    const Constructor = class AnonymousResource extends ResourceBase {
+      get resourceName() {
+        return 'anonymous';
+      }
+
+      get resourcePath() {
+        return String(Target);
+      }
+    };
+
+    Object.defineProperty(Constructor, 'name', {value: `AnonymousResource_${fnv32a(String(Target))}`});
+
+    return this.static(Constructor);
+  }
+
+  /**
    * Choropleth accessor
    * @see {@link Choropleth}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get choropleths() {
-    return new ResourceProxy(this, Choropleth);
+    return this.static(Choropleth);
   }
 
   /**
@@ -186,7 +294,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get colors() {
-    return new ResourceProxy(this, Color);
+    return this.static(Color);
   }
 
   /**
@@ -195,7 +303,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get contracts() {
-    return new ResourceProxy(this, Contract);
+    return this.static(Contract);
   }
 
   /**
@@ -204,7 +312,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get dimensions() {
-    return new ResourceProxy(this, Dimension);
+    return this.static(Dimension);
   }
 
   /**
@@ -213,7 +321,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets() {
-    return new ResourceProxy(this, DimensionSet);
+    return this.static(DimensionSet);
   }
 
   /**
@@ -222,7 +330,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get faqs() {
-    return new ResourceProxy(this, Faq);
+    return this.static(Faq);
   }
 
   /**
@@ -231,7 +339,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get features() {
-    return new ResourceProxy(this, Feature);
+    return this.static(Feature);
   }
 
   /**
@@ -240,7 +348,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get fonts() {
-    return new ResourceProxy(this, Font);
+    return this.static(Font);
   }
 
   /**
@@ -249,7 +357,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get fontFamilies() {
-    return new ResourceProxy(this, FontFamily);
+    return this.static(FontFamily);
   }
 
   /**
@@ -258,7 +366,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get highlights() {
-    return new ResourceProxy(this, Highlight);
+    return this.static(Highlight);
   }
 
   /**
@@ -267,7 +375,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get insetMaps() {
-    return new ResourceProxy(this, InsetMap);
+    return this.static(InsetMap);
   }
 
   /**
@@ -276,7 +384,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get jobs() {
-    return new ResourceProxy(this, Job);
+    return this.static(Job);
   }
 
   /**
@@ -285,7 +393,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get jobShares() {
-    return new ResourceProxy(this, JobShare);
+    return this.static(JobShare);
   }
 
   /**
@@ -294,7 +402,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get jobTypes() {
-    return new ResourceProxy(this, JobType);
+    return this.static(JobType);
   }
 
   /**
@@ -303,7 +411,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get languages() {
-    return new ResourceProxy(this, Language);
+    return this.static(Language);
   }
 
   /**
@@ -312,7 +420,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get layers() {
-    return new ResourceProxy(this, Layer);
+    return this.static(Layer);
   }
 
   /**
@@ -321,7 +429,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get mapstyles() {
-    return new ResourceProxy(this, Mapstyle);
+    return this.static(Mapstyle);
   }
 
   /**
@@ -329,8 +437,8 @@ export default class Maps4News {
    * @see {@link MapstyleSet}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get mapstylesSets() {
-    return new ResourceProxy(this, MapstyleSet);
+  get mapstyleSets() {
+    return this.static(MapstyleSet);
   }
 
   /**
@@ -339,7 +447,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get notifications() {
-    return new ResourceProxy(this, Notification);
+    return this.static(Notification);
   }
 
   /**
@@ -348,7 +456,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get organisations() {
-    return new ResourceProxy(this, Organisation);
+    return this.static(Organisation);
   }
 
   /**
@@ -357,7 +465,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get permissions() {
-    return new ResourceProxy(this, Permission);
+    return this.static(Permission);
   }
 
   /**
@@ -366,7 +474,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get roles() {
-    return new ResourceProxy(this, Role);
+    return this.static(Role);
   }
 
   /**
@@ -375,7 +483,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get placeNames() {
-    return new ResourceProxy(this, PlaceName);
+    return this.static(PlaceName);
   }
 
   /**
@@ -384,7 +492,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get svgs() {
-    return new ResourceProxy(this, Svg);
+    return this.static(Svg);
   }
 
   /**
@@ -393,7 +501,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get svgSets() {
-    return new ResourceProxy(this, SvgSet);
+    return this.static(SvgSet);
   }
 
   /**
@@ -402,7 +510,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get svgSetTypes() {
-    return new ResourceProxy(this, SvgSetType);
+    return this.static(SvgSetType);
   }
 
   /**
@@ -411,7 +519,7 @@ export default class Maps4News {
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get users() {
-    return new ResourceProxy(this, User);
+    return this.static(User);
   }
 
   /**
@@ -419,10 +527,20 @@ export default class Maps4News {
    * @returns {Promise} - resolves/rejects with the HTTP response status code. Rejects if status code != 2xx
    */
   testXhr() {
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       makeRequest(`${this.host}/favicon.ico`)
-        .then(x=>resolve(x.status))
-        .catch(x=>reject(x.status));
+        .then(x => resolve(x.status))
+        .catch(x => reject(x.status));
     });
+  }
+
+  /**
+   * Forget the current session
+   * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored in
+   * cookies or localStorage.
+   * @returns {void}
+   */
+  logout() {
+    this.auth.forget();
   }
 }
