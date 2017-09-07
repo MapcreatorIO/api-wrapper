@@ -36,6 +36,7 @@ import PlaceName from './crud/PlaceName';
 import Svg from './crud/Svg';
 import SvgSetType from './crud/SvgSetType';
 import SvgSet from './crud/SvgSet';
+import Role from './crud/Role';
 
 /**
  * Base API class
@@ -357,6 +358,15 @@ export default class Maps4News {
    */
   get permissions() {
     return new ResourceProxy(this, Permission);
+  }
+
+  /**
+   * Role accessor
+   * @see {@link Role}
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   */
+  get roles() {
+    return new ResourceProxy(this, Role);
   }
 
   /**

@@ -14,6 +14,7 @@ import Permission from './Permission';
 import Organisation from './Organisation';
 import ResourceProxy from '../ResourceProxy';
 import Language from './Language';
+import Role from './Role';
 
 export default class User extends CrudBase {
   get resourceName() {
@@ -138,11 +139,19 @@ export default class User extends CrudBase {
   }
 
   /**
-   * Get the list job shares linked to the user
+   * Get the list permissions linked to the user
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Permission} instances and rejects with {@link ApiError}
    */
   permissions() {
     return this._listResource(Permission);
+  }
+
+  /**
+   * Get the list roles linked to the user
+   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance containing {@link Role} instances and rejects with {@link ApiError}
+   */
+  roles() {
+    return this._listResource(Role);
   }
 
   // endregion
