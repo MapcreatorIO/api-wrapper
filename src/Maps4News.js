@@ -57,6 +57,7 @@ import {
   Notification,
   Organisation,
   Permission,
+  Role,
   PlaceName,
   Svg,
   SvgSet,
@@ -465,6 +466,15 @@ export default class Maps4News {
    */
   get permissions() {
     return this.static(Permission);
+  }
+
+  /**
+   * Role accessor
+   * @see {@link Role}
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   */
+  get roles() {
+    return this.static(Role);
   }
 
   /**
