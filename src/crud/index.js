@@ -54,6 +54,7 @@ export Notification from './Notification.js';
 export Organisation from './Organisation.js';
 export Permission from './Permission.js';
 export PlaceName from './PlaceName.js';
+export Role from './Role.js';
 export Svg from './Svg.js';
 export SvgSet from './SvgSet.js';
 export SvgSetType from './SvgSetType.js';

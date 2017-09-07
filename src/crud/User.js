@@ -46,6 +46,7 @@ import Notification from './Notification';
 import Organisation from './Organisation';
 import Permission from './Permission';
 import SvgSet from './SvgSet';
+import Role from './Role';
 
 export default class User extends CrudBase {
   get resourceName() {
@@ -174,11 +175,19 @@ export default class User extends CrudBase {
   }
 
   /**
-   * Get the list job shares linked to the user
+   * Get the list permissions linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get permissions() {
     return this._proxyResourceList(Permission);
+  }
+
+  /**
+   * Get the list roles linked to the user
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get roles() {
+    return this._proxyResourceList(Role);
   }
 
   // endregion
