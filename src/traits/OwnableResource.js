@@ -38,15 +38,17 @@ import Trait from './Trait';
  * @mixin
  */
 export default class OwnableResource extends Trait {
+  initializer() {
+    // This is a hack to fix a circular dependency issue
+    this.__Organisation = require('../crud/Organisation').default;
+  }
+
   /**
-   *
-   * @returns {Promise} - Promise will resolve with {@link Array<Organisation>} and reject with an {@link ApiError} instance.
+   * Get the list of associated organisations
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get organisations() {
-    // This is a hack to fix a circular dependency issue
-    const Organisation = require('../crud/Organisation').default;
-
-    return this._proxyResourceList(Organisation, `${this.url}/organisations`);
+    return this._proxyResourceList(this.__Organisation, `${this.url}/organisations`);
   }
 
   /**
@@ -55,7 +57,7 @@ export default class OwnableResource extends Trait {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   syncOrganisations(items) {
-    return this._modifyOrganisationLink(items, 'PATCH');
+    return this._modifyLink(items, 'PATCH', this.__Organisation);
   }
 
   /**
@@ -64,7 +66,7 @@ export default class OwnableResource extends Trait {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   attachOrganisations(items) {
-    return this._modifyOrganisationLink(items, 'POST');
+    return this._modifyLink(items, 'POST', this.__Organisation);
   }
 
   /**
@@ -73,30 +75,7 @@ export default class OwnableResource extends Trait {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   detachOrganisations(items) {
-    return this._modifyOrganisationLink(items, 'DELETE');
-  }
-
-  /**
-   * Sync, attach or unlink resources
-   * @param {Array<Organisation>|Array<Number>} items - List of items to sync or attach
-   * @param {String} method - Http method to use
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
-   * @private
-   */
-  _modifyOrganisationLink(items, method) {
-    // This is a hack to fix a circular dependency issue
-    const Organisation = require('../crud/Organisation').default;
-
-    const filter = x => !isParentOf(Organisation, x) && !isParentOf(Number, x);
-    const isValid = items.filter(filter).length === 0;
-
-    if (!isValid) {
-      throw new TypeError('Array must contain either Numbers (organisation id) or Organisations.');
-    }
-
-    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
-
-    return this.api.request(`${this.url}/organisations`, method, {keys});
+    return this._modifyLink(items, 'DELETE', this.__Organisation);
   }
 
   /**

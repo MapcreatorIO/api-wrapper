@@ -34,4 +34,13 @@
  * Trait interface
  * @interface
  */
-export default class Trait {}
+export default class Trait {
+  /**
+   * Optional initialization method
+   * @returns {void}
+   * @abstract
+   */
+  initializer() {
+
+  }
+}

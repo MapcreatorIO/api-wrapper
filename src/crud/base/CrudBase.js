@@ -32,6 +32,7 @@
 
 import {AbstractClassError} from '../../errors/AbstractError';
 import ResourceBase from './ResourceBase';
+import {isParentOf} from '../../utils/reflection';
 
 /**
  * Base of all resource items that support Crud operations
@@ -139,5 +140,34 @@ export default class CrudBase extends ResourceBase {
         .catch(reject)
         .then(data => resolve(new this(this.api, data)));
     });
+  }
+
+  /**
+   * Sync, attach or unlink resources
+   * @param {Array<Organisation>|Array<Number>} items - List of items to sync or attach
+   * @param {String} method - Http method to use
+   * @param {ResourceBase} Type - Resource type
+   * @param {?String} path - Optional appended resource path, will guess if null
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @todo refactor to CrudBase and remove organisation specific method from trait
+   * @protected
+   */
+  _modifyLink(items, method, Type, path) {
+    if (!path) {
+      const resource = (new Type(this.api)).resourceName.replace(/s+$/, '');
+
+      path = `${resource}s`;
+    }
+
+    const filter = x => !isParentOf(Type, x) && !isParentOf(Number, x);
+    const isValid = items.filter(filter).length === 0;
+
+    if (!isValid) {
+      throw new TypeError(`Array must contain either Numbers (resource id) or "${Type.name}".`);
+    }
+
+    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
+
+    return this.api.request(`${this.url}/${path}`, method, {keys});
   }
 }

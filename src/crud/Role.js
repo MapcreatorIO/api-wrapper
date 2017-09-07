@@ -30,7 +30,7 @@ export default class Role extends CrudBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   syncPermissions(items) {
-    return this._modifyLink(items, 'PATCH', Permission, 'permissions');
+    return this._modifyLink(items, 'PATCH', Permission);
   }
 
   /**
@@ -39,7 +39,7 @@ export default class Role extends CrudBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   attachPermissions(items) {
-    return this._modifyLink(items, 'POST', Permission, 'permissions');
+    return this._modifyLink(items, 'POST', Permission);
   }
 
   /**
@@ -48,7 +48,7 @@ export default class Role extends CrudBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   detachPermissions(items) {
-    return this._modifyLink(items, 'DELETE', Permission, 'permissions');
+    return this._modifyLink(items, 'DELETE', Permission);
   }
 
   /**
@@ -57,7 +57,7 @@ export default class Role extends CrudBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   syncUsers(items) {
-    return this._modifyLink(items, 'PATCH', User, 'users');
+    return this._modifyLink(items, 'PATCH', User);
   }
 
   /**
@@ -66,7 +66,7 @@ export default class Role extends CrudBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   attachUsers(items) {
-    return this._modifyLink(items, 'POST', User, 'users');
+    return this._modifyLink(items, 'POST', User);
   }
 
   /**
@@ -75,30 +75,6 @@ export default class Role extends CrudBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   detachUsers(items) {
-    return this._modifyLink(items, 'DELETE', User, 'users');
-  }
-
-  /**
-   * Sync, attach or unlink resources
-   * @param {Array<Organisation>|Array<Number>} items - List of items to sync or attach
-   * @param {String} method - Http method to use
-   * @param {Constructor} Type - Resource type
-   * @param {String} path - Appended resource path
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
-   * @todo refactor to CrudBase and remove organisation specific method from trait
-   * @todo implicit path generation
-   * @private
-   */
-  _modifyLink(items, method, Type, path) {
-    const filter = x => !isParentOf(Type, x) && !isParentOf(Number, x);
-    const isValid = items.filter(filter).length === 0;
-
-    if (!isValid) {
-      throw new TypeError(`Array must contain either Numbers (resource id) or ${Type.name}.`);
-    }
-
-    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
-
-    return this.api.request(`${this.url}/${path}`, method, {keys});
+    return this._modifyLink(items, 'DELETE', User);
   }
 }
