@@ -212,21 +212,7 @@ export default class Maps4News {
           const response = JSON.parse(request.responseText);
 
           if (!response.success) {
-            const err = response.error;
-
-            if (!err.validation_errors) {
-              const apiError = new ApiError(err.type, err.message, request.status);
-
-              if (apiError.type === 'AuthenticationException' && apiError.message === 'Unauthenticated' && apiError.code === 401) {
-                console.warn('Lost Maps4News session, please re-authenticate');
-
-                this.auth.forget();
-              }
-
-              reject(apiError);
-            } else {
-              reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
-            }
+            reject(this._parseErrorResponse(request, response));
           } else {
             // Return an empty object if no data has been sent
             // instead of returning undefined.
@@ -234,11 +220,29 @@ export default class Maps4News {
           }
         }
       }).catch(request => {
-        const err = JSON.parse(request.responseText).error;
+        const response = JSON.parse(request.responseText);
 
-        reject(new ApiError(err.type, err.message, request.status));
+        reject(this._parseErrorResponse(request, response));
       });
     });
+  }
+
+  _parseErrorResponse(request, response) {
+    const err = response.error;
+
+    if (!err['validation_errors']) {
+      const apiError = new ApiError(err.type, err.message, request.status);
+
+      if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
+        console.warn('Lost Maps4News session, please re-authenticate');
+
+        this.logout();
+      }
+
+      return apiError;
+    } else {
+      return new ValidationError(err.type, err.message, request.status, err['validation_errors']);
+    }
   }
 
   /**
