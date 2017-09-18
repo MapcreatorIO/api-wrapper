@@ -196,6 +196,8 @@ export default class ResourceBase {
           if (updateSelf) {
             this._properties = {};
             this._baseProperties = data;
+
+            this._updateProperties();
           }
 
           resolve(new this(this._api, data));

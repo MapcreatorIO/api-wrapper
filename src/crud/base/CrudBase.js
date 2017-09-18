@@ -95,6 +95,7 @@ export default class CrudBase extends ResourceBase {
           this._properties = {};
           this._baseProperties = data;
 
+          this._updateProperties();
           resolve(this);
         });
     });
