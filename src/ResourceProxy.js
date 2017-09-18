@@ -57,13 +57,17 @@ export default class ResourceProxy extends SimpleResourceProxy {
   _parseSelector(id) {
     const defaults = {};
 
-    defaults[this.Target.resourceUrlKey] = id;
+    switch (typeof id) {
+      case 'number':
+      case 'string':
+        defaults[this.Target.resourceUrlKey] = id;
 
-    return {
-      number: defaults,
-      string: defaults,
-      object: id,
-    }[typeof id] || {};
+        return defaults;
+      case 'object':
+        return id;
+      default:
+        return {};
+    }
   }
 
   /**
