@@ -91,9 +91,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * api.users.select('me').colors().then(doSomethingCool);
    */
   select(id) {
-    let data = typeof id === 'undefined' ? {} : {id};
-
-    data = Object.assign({}, this._seedData, this._parseSelector(id));
+    const data = Object.assign({}, this._seedData, this._parseSelector(id));
 
     return this.new(data);
   }
