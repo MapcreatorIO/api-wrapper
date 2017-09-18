@@ -49,6 +49,10 @@ export default class JobRevision extends CrudBase {
     return 'job-revisions';
   }
 
+  static get resourceUrlKey() {
+    return 'revision';
+  }
+
   /**
    * Get layers
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource

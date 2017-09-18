@@ -122,6 +122,14 @@ export default class ResourceBase {
   }
 
   /**
+   * Returns the url key of the resource
+   * @returns {String} - Resource key
+   */
+  static get resourceUrlKey() {
+    return 'id';
+  }
+
+  /**
    * Protected read-only fields
    * @returns {Array<string>} - Array containing the protected fields
    * @protected

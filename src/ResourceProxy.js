@@ -49,19 +49,30 @@ export default class ResourceProxy extends SimpleResourceProxy {
   }
 
   /**
+   * Parse selector
+   * @param {Number|String|Object} [id=] - The resource id to be requested
+   * @returns {Object} - Parsed selector
+   * @private
+   */
+  _parseSelector(id) {
+    const defaults = {};
+
+    defaults[this.Target.resourceUrlKey] = id;
+
+    return {
+      number: defaults,
+      string: defaults,
+      object: id,
+    }[typeof id] || {};
+  }
+
+  /**
    * Get target resource
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   get(id) {
-    let data = {
-      number: {id},
-      string: {id},
-      object: id,
-    }[typeof id] || {};
-
-    data = Object.assign(this._seedData, data);
-
+    const data = Object.assign({}, this._seedData, this._parseSelector(id));
     const url = this.new(data).url;
 
     return new Promise((resolve, reject) => {
@@ -82,7 +93,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
   select(id) {
     let data = typeof id === 'undefined' ? {} : {id};
 
-    data = Object.assign(this._seedData, data);
+    data = Object.assign({}, this._seedData, this._parseSelector(id));
 
     return this.new(data);
   }
