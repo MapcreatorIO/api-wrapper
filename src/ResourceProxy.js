@@ -31,6 +31,7 @@
  */
 
 import SimpleResourceProxy from './SimpleResourceProxy';
+import {encodeQueryString} from './utils/requests';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -73,11 +74,15 @@ export default class ResourceProxy extends SimpleResourceProxy {
   /**
    * Get target resource
    * @param {Number|String|Object} [id=] - The resource id to be requested
+   * @param {String} deleted - Determains if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
-  get(id) {
+  get(id, deleted = this.api.defaults.showDeleted) {
     const data = Object.assign({}, this._seedData, this._parseSelector(id));
-    const url = this.new(data).url;
+    let url = this.new(data).url;
+    const glue = url.includes('?') ? '&' : '?';
+
+    url = `${this.route}${glue}${encodeQueryString({deleted})}`;
 
     return new Promise((resolve, reject) => {
       this._api
