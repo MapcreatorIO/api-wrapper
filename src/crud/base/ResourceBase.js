@@ -208,7 +208,7 @@ export default class ResourceBase {
             this._updateProperties();
           }
 
-          resolve(new this(this._api, data));
+          resolve(new this.constructor(this._api, data));
         });
     });
   }
