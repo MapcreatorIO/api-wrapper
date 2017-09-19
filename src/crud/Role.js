@@ -1,7 +1,6 @@
 import CrudBase from './base/CrudBase';
 import Permission from './Permission';
 import User from './User';
-import {isParentOf} from '../utils/reflection';
 
 export default class Role extends CrudBase {
   /**

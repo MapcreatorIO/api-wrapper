@@ -242,9 +242,9 @@ export default class Maps4News {
       }
 
       return apiError;
-    } else {
-      return new ValidationError(err.type, err.message, request.status, err['validation_errors']);
     }
+    return new ValidationError(err.type, err.message, request.status, err['validation_errors']);
+
   }
 
   /**
