@@ -110,24 +110,45 @@ export default class RequestParameters {
   // region instance
   // region instance getters
   get page() {
-    return this._page || RequestParameters.page;
+    if (!this._page) {
+      this._page = RequestParameters.page;
+    }
+
+    return this._page;
   }
 
   get perPage() {
-    return this._perPage || RequestParameters.perPage;
+    if (!this._perPage) {
+      this._perPage = RequestParameters.perPage;
+    }
+
+    return this._perPage;
   }
 
   get search() {
-    return this._search || RequestParameters.search;
+    if (!this._search) {
+      this._search = RequestParameters.search;
+    }
+
+    return this._search;
   }
 
   get sort() {
-    return this._sort || RequestParameters.sort;
+    if (!this._sort) {
+      this._sort = RequestParameters.sort;
+    }
+
+    return this._sort;
   }
 
   get deleted() {
-    return this._deleted || RequestParameters.deleted;
+    if (!this._deleted) {
+      this._deleted = RequestParameters.deleted;
+    }
+
+    return this._deleted;
   }
+
   // endregion instance getters
 
   // region instance setters
@@ -150,6 +171,7 @@ export default class RequestParameters {
   set deleted(value) {
     this._deleted = RequestParameters._validateDeleted(value);
   }
+
   // endregion instance setters
   // endregion instance
 
@@ -160,7 +182,7 @@ export default class RequestParameters {
   }
 
   static get perPage() {
-    return RequestParameters._perPage ||  Number(process.env.PER_PAGE);
+    return RequestParameters._perPage || Number(process.env.PER_PAGE);
   }
 
   static get search() {
@@ -174,6 +196,7 @@ export default class RequestParameters {
   static get deleted() {
     return RequestParameters._deleted || process.env.SHOW_DELETED.toLowerCase();
   }
+
   // endregion getters
 
   // region setters
@@ -196,6 +219,7 @@ export default class RequestParameters {
   static set deleted(value) {
     RequestParameters._deleted = RequestParameters._validateDeleted(value);
   }
+
   // endregion setters
   // endregion static
 
@@ -270,5 +294,6 @@ export default class RequestParameters {
       throw new TypeError(`Expected deleted to be on of ${possible.join(', ')}`);
     }
   }
+
   // endregion validators
 }
