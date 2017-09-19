@@ -139,7 +139,7 @@ export default class CrudBase extends ResourceBase {
     return new Promise((resolve, reject) => {
       this.api.request(this.url, 'PUT')
         .catch(reject)
-        .then(data => resolve(new this(this.api, data)));
+        .then(data => resolve(new this.constructor(this.api, data)));
     });
   }
 
