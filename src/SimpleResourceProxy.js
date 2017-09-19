@@ -117,6 +117,8 @@ export default class SimpleResourceProxy {
    * @param {Number|Object} [params] - Parameters or the page number to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {Number} [params.sort=''] - Amount of items per page. This is silently capped by the API
+   * @param {Number} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    * @example
@@ -140,6 +142,8 @@ export default class SimpleResourceProxy {
    * @param {Number|Object} [params] - Parameters or the page to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {Number} [params.sort=''] - Amount of items per page. This is silently capped by the API
+   * @param {Number} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
    * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
    * @returns {PaginatedResourceWrapper} - Wrapped paginated resource
@@ -173,7 +177,7 @@ export default class SimpleResourceProxy {
       return this._buildResolver({page: params});
     }
 
-    return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage);
+    return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage, params.sort, params.deleted);
   }
 
   /**
@@ -188,6 +192,8 @@ export default class SimpleResourceProxy {
       perPage: defaults.perPage,
       shareCache: defaults.shareCache,
       search: {},
+      sort: '',
+      deleted: this.api.defaults.showDeleted,
     };
   }
 }

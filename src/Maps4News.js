@@ -92,7 +92,7 @@ export default class Maps4News {
 
     /**
      * Defaults for common parameters. These are populated during the build process using the `.env` file.
-     * @type {{perPage: number, cacheSeconds: number, shareCache: boolean}}
+     * @type {{perPage: number, cacheSeconds: number, shareCache: boolean, autoUpdateSharedCache: boolean, dereferenceCache: boolean, showDeleted: string}}
      * @todo add default popup window options
      */
     this.defaults = {

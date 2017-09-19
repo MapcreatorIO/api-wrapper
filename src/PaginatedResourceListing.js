@@ -47,12 +47,15 @@ export default class PaginatedResourceListing {
    * @param {Object|{}} query - Search query
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page
+   * @param {String} sort - sorting rules
+   * @param {String} deleted - Show deleted resources, none, only, all
    * @param {Number} pageCount - Resolved page count
    * @param {Number} rowCount - Resolved rowCount
    * @param {Array<ResourceBase>} data - Resolved data
+   * @todo change constructor to only accept a RequestParameters object
    * @private
    */
-  constructor(api, route, Target, query = {}, page = 1, perPage = api.defaults.perPage, pageCount = null, rowCount = 0, data = []) {
+  constructor(api, route, Target, query = {}, page = 1, perPage = api.defaults.perPage, sort = '', deleted = api.defaults.showDeleted, pageCount = null, rowCount = 0, data = []) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -68,6 +71,8 @@ export default class PaginatedResourceListing {
     this._perPage = perPage;
     this._rows = rowCount;
     this._pageCount = pageCount;
+    this._sort = sort;
+    this._deleted = deleted;
   }
 
   /**
@@ -133,6 +138,32 @@ export default class PaginatedResourceListing {
    */
   get perPage() {
     return this._perPage;
+  }
+
+  /**
+   * Set sort direction
+   * @returns {String} - Sort
+   * @example
+   * const sort = 'name,id'
+   */
+  get sort() {
+    return this._sort;
+  }
+
+  /**
+   * Current sorting value
+   * @param {String} value - Sort
+   */
+  set sort(value) {
+    this._sort = value;
+  }
+
+  get deleted() {
+    return this._deleted;
+  }
+
+  set deleted(value) {
+    this._deleted = value;
   }
 
   /**
@@ -230,6 +261,14 @@ export default class PaginatedResourceListing {
       query['search'] = this.query;
     }
 
+    if (this.sort) {
+      query.sort = this.sort;
+    }
+
+    if (this.deleted && this.deleted !== 'none') {
+      query.deleted = this.deleted.toLowerCase();
+    }
+
     const glue = this.route.includes('?') ? '&' : '?';
     const url = `${this.route}${glue}${encodeQueryString(query)}`;
 
@@ -242,7 +281,8 @@ export default class PaginatedResourceListing {
 
           const instance = new PaginatedResourceListing(
             this.api, this.route, this._Target, this.query,
-            page, perPage, totalPages, rowCount,
+            page, perPage, this.sort, this.deleted,
+            totalPages, rowCount,
             response.data.map(row => new this._Target(this.api, row)),
           );
 
