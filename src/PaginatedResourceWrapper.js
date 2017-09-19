@@ -139,6 +139,19 @@ export default class PaginatedResourceWrapper {
    * Updates the cached pages.
    * @param {Boolean} flush - Clear the cached route data
    * @returns {void}
+   * @example
+   * function onRefresh() {
+   *   if(wrapper.waiting) {
+   *     return; // not done yet
+   *   }
+   *
+   *   wrapper.off('post-rebuild', onRefresh);
+   *
+   *   // Do stuff here
+   * }
+   *
+   * wrapper.on('post-rebuild', onRefresh);
+   * wrapper.refresh();
    */
   refresh(flush = false) {
     if (flush) {
