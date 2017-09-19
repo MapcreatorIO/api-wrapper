@@ -31,8 +31,8 @@
  */
 
 import {AbstractClassError} from '../../errors/AbstractError';
-import ResourceBase from './ResourceBase';
 import {isParentOf} from '../../utils/reflection';
+import ResourceBase from './ResourceBase';
 
 /**
  * Base of all resource items that support Crud operations
@@ -83,6 +83,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Store new item
+   * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    * @private
    */
@@ -103,6 +104,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Update existing item
+   * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    * @private
    */
@@ -127,20 +129,38 @@ export default class CrudBase extends ResourceBase {
    * Delete item
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    */
-  delete() {
-    return this.api.request(this.url, 'DELETE');
+  delete(updateSelf = true) {
+    return this.api
+      .request(this.url, 'DELETE')
+      .then(data => {
+        if (updateSelf) {
+          this._baseProperties['deleted_at'] = new Date();
+        }
+
+        return data;
+      });
   }
 
   /**
    * Restore item
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    */
-  restore() {
-    return new Promise((resolve, reject) => {
-      this.api.request(this.url, 'PUT')
-        .catch(reject)
-        .then(data => resolve(new this.constructor(this.api, data)));
-    });
+  restore(updateSelf = true) {
+    return this.api
+      .request(this.url, 'PUT')
+      .then(data => {
+        const instance = new this.constructor(this.api, data);
+
+        if (updateSelf) {
+          this._properties = {};
+          this._baseProperties = data;
+
+          this._updateProperties();
+        }
+
+        return instance;
+      });
+
   }
 
   /**
