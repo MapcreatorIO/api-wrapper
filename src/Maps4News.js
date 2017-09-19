@@ -100,6 +100,7 @@ export default class Maps4News {
       shareCache: bool(process.env.CACHE_SHARED),
       autoUpdateSharedCache: bool(process.env.CACHE_SHARED_AUTO_UPDATE),
       dereferenceCache: bool(process.env.CACHE_DEREFERENCE_OUTPUT),
+      showDeleted: process.env.SHOW_DELETED.toLowerCase(),
     };
 
     this._cache = new ResourceCache(this);
