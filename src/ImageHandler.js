@@ -84,8 +84,12 @@ export default class ImageHandler {
 
   /**
    * Get image base64 representation
-   * @returns {Promise} - Resolves with a {@link String} containing a base64 representation of the image and rejects with {@link ApiError}
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    * @todo nodejs compatibility
+   * @example
+   * layer.imageHandler.download().then(url => {
+   *   $('img').src = url;
+   * });
    */
   download() {
     return new Promise((resolve, reject) => {
