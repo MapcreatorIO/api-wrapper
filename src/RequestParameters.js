@@ -273,7 +273,7 @@ export default class RequestParameters {
       } else if (value[key] === null) {
         delete value[key];
       } else if (typeof value[key] !== 'string') {
-        throw new TypeError(`Expected query value to be of type "string" or "Array" got "${getTypeName(key)}"`);
+        throw new TypeError(`Expected query value to be of type "String" or "Array" got "${getTypeName(key)}"`);
       }
     }
 
