@@ -281,8 +281,21 @@ export default class RequestParameters {
   }
 
   static _validateSort(value) {
-    // @todo implement
-    throw new Error('Unimplemented');
+    if (!(value instanceof Array)) {
+      throw new TypeError(`Expected sort value to be of type "Array" got "${getTypeName(value)}"`);
+    }
+
+    // Array keys type checking
+    value
+      .filter(x => typeof x !== 'string')
+      .forEach(x => {
+        throw new TypeError(`Expected sort array values to be of type "String" got "${getTypeName(x)}"`);
+      });
+
+    // Don't do regex matching because it's something
+    // we can just let the server do for us.
+
+    return value;
   }
 
   static _validateDeleted(value) {
