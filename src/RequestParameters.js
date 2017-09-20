@@ -49,6 +49,13 @@ export default class RequestParameters {
       // Weird syntax used here is to confuse esdoc
       (this || {})[key] = object[key];
     }
+
+    // I know this looks dumb but it's the simplest way to implement setting the defaults
+    this.page;
+    this.perPage;
+    this.search;
+    this.sort;
+    this.deleted;
   }
 
   // region instance
