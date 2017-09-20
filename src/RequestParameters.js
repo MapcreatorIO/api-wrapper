@@ -35,7 +35,7 @@ import DeletedState from './enums/DeletedState';
 import {getTypeName} from './utils/reflection';
 
 export default class RequestParameters {
-  constructor(object) {
+  constructor(object = {}) {
     // Apply properties
     for (const key of Object.keys(object)) {
       if (key[0] === '_' || !(key in this)) {
@@ -47,50 +47,30 @@ export default class RequestParameters {
       }
 
       // Weird syntax used here is to confuse esdoc
-      (this||{})[key] = object[key];
+      (this || {})[key] = object[key];
     }
   }
 
   // region instance
   // region instance getters
   get page() {
-    if (!this._page) {
-      this._page = RequestParameters.page;
-    }
-
-    return this._page;
+    return this._resolve('page');
   }
 
   get perPage() {
-    if (!this._perPage) {
-      this._perPage = RequestParameters.perPage;
-    }
-
-    return this._perPage;
+    return this._resolve('perPage');
   }
 
   get search() {
-    if (!this._search) {
-      this._search = RequestParameters.search;
-    }
-
-    return this._search;
+    return this._resolve('search');
   }
 
   get sort() {
-    if (!this._sort) {
-      this._sort = RequestParameters.sort;
-    }
-
-    return this._sort;
+    return this._resolve('sort');
   }
 
   get deleted() {
-    if (!this._deleted) {
-      this._deleted = RequestParameters.deleted;
-    }
-
-    return this._deleted;
+    return this._resolve('deleted');
   }
 
   // endregion instance getters
@@ -253,4 +233,14 @@ export default class RequestParameters {
   }
 
   // endregion validators
+
+  _resolve(name) {
+    const _name = '_' + name;
+
+    if (!this[_name]) {
+      this[_name] = RequestParameters[name];
+    }
+
+    return this[_name];
+  }
 }
