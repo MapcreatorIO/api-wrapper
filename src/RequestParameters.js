@@ -33,6 +33,7 @@
 
 import DeletedState from './enums/DeletedState';
 import {getTypeName} from './utils/reflection';
+import {encodeQueryString} from './utils/requests';
 
 export default class RequestParameters {
   constructor(object = {}) {
@@ -50,12 +51,8 @@ export default class RequestParameters {
       (this || {})[key] = object[key];
     }
 
-    // I know this looks dumb but it's the simplest way to implement setting the defaults
-    this.page; // eslint-disable-line no-unused-expressions
-    this.perPage; // eslint-disable-line no-unused-expressions
-    this.search; // eslint-disable-line no-unused-expressions
-    this.sort; // eslint-disable-line no-unused-expressions
-    this.deleted; // eslint-disable-line no-unused-expressions
+    // Apply defaults
+    RequestParameters.keys().forEach(x => this._resolve(x));
   }
 
   // region instance
@@ -212,6 +209,9 @@ export default class RequestParameters {
   }
 
   static _validateSort(value) {
+    // @todo Disabled for now due to the fact that I have to rewrite a lot of code for this to work
+    return value;
+
     if (!(value instanceof Array)) {
       throw new TypeError(`Expected sort value to be of type "Array" got "${getTypeName(value)}"`);
     }
@@ -249,5 +249,42 @@ export default class RequestParameters {
     }
 
     return this[_name];
+  }
+
+  encode() {
+    const data = {};
+
+    RequestParameters
+      .keys()
+      .forEach(key => {
+        data[key] = this._resolve(key);
+      });
+
+    // @todo join sort `sort = sort.join(',')`
+
+    return encodeQueryString(data);
+  }
+
+  copy() {
+    const data = {};
+
+    RequestParameters
+      .keys()
+      .forEach(key => {
+        data[key] = this._resolve(key);
+      });
+
+    return new RequestParameters(data);
+  }
+
+  static keys() {
+    // enumeration is disabled for properties
+    return [
+      'page',
+      'perPage',
+      'search',
+      'sort',
+      'deleted',
+    ];
   }
 }

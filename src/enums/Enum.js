@@ -38,7 +38,7 @@
  * const ANSWER = new Enum({
  *   YES: true,
  *   NO: false,
- *   MAYBE: [true, false][Math.round(Math.random()], // Either true or false
+ *   MAYBE: !Math.round(Math.random()), // Either true or false
  * });
  */
 export default class Enum {
@@ -60,6 +60,8 @@ export default class Enum {
         });
       }
     }
+
+    Object.freeze(this);
   }
 
   keys() {
