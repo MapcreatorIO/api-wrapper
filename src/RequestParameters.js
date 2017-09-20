@@ -51,11 +51,11 @@ export default class RequestParameters {
     }
 
     // I know this looks dumb but it's the simplest way to implement setting the defaults
-    this.page;
-    this.perPage;
-    this.search;
-    this.sort;
-    this.deleted;
+    this.page; // eslint-disable-line no-unused-expressions
+    this.perPage; // eslint-disable-line no-unused-expressions
+    this.search; // eslint-disable-line no-unused-expressions
+    this.sort; // eslint-disable-line no-unused-expressions
+    this.deleted; // eslint-disable-line no-unused-expressions
   }
 
   // region instance

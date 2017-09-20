@@ -76,14 +76,14 @@ export default class CrudBase extends ResourceBase {
   /**
    * Save item. This will create a new item if `id` is unset
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
-   .catch(reject)
-   .then(data => {
-          this._properties = {};
-          this._baseProperties = data;
-
-          this._updateProperties();
-          resolve(this);
-        });
+   * .catch(reject)
+   * .then(data => {
+   *        this._properties = {};
+   *        this._baseProperties = data;
+   *
+   *        this._updateProperties();
+   *        resolve(this);
+   *      });
    */
   save() {
     return !this.id ? this._create() : this._update();
@@ -91,20 +91,23 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Store new item
-   * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    * @private
    */
   _create() {
-    return new Promise((resolve, reject) => {
-      this.api
-        .request(this.baseUrl, 'POST', this._buildCreateData())
-    });
+    this.api
+      .request(this.baseUrl, 'POST', this._buildCreateData())
+      .then(data => {
+        this._properties = {};
+        this._baseProperties = data;
+
+        this._updateProperties();
+        return this;
+      });
   }
 
   /**
    * Update existing item
-   * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    * @private
    */
@@ -127,6 +130,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Delete item
+   * @param {Boolean} [updateSelf=true] - Update current instance
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    */
   delete(updateSelf = true) {
@@ -143,6 +147,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Restore item
+   * @param {Boolean} [updateSelf=true] - Update current instance
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
    */
   restore(updateSelf = true) {
