@@ -39,7 +39,8 @@
     "docs": "$(npm bin)/esdoc",
     "lint": "$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
     "authors": "$(npm bin)/contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
-    "clean": "rm -r dist docs || true"
+    "clean": "rm -r dist docs || true",
+    "all": "npm run clean && npm run lint && npm run authors && npm run build && npm run docs"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
