@@ -30,40 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-
-// Enums
-export DeletedState from './enums/DeletedState';
-
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
-
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
-
-// Resources
-export * as resources from './crud';
-
-// Helpers
-export * as helpers from './utils/helpers';
-
 /**
- * Package version
- * @private
+ * Base enum class
+ * @example
+ * const Colors = new Enum(['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE']);
+ *
+ * const ANSWER = new Enum({
+ *   YES: true,
+ *   NO: false,
+ *   MAYBE: [true, false][Math.round(Math.random()], // Either true or false
+ * });
  */
-export const version = VERSION;
+export default class Enum {
+  constructor(enums) {
+    if (enums instanceof Array) {
+      let counter = 0;
 
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
+      for (const key of Object.keys(enums)) {
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          value: counter++,
+        });
+      }
+    } else {
+      for (const key of Object.keys(enums)) {
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          value: enums[key],
+        });
+      }
+    }
+  }
+
+  keys() {
+    return Object.keys(this);
+  }
+
+  values() {
+    return this.keys().map(key => this[key]);
+  }
+}

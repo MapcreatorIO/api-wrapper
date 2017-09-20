@@ -31,65 +31,8 @@
  */
 
 
+import DeletedState from './enums/DeletedState';
 import {getTypeName} from './utils/reflection';
-import StaticClass from './utils/StaticClass';
-
-/**
- * Enum containing the possible different values for {@link RequestParameters#deleted}
- */
-export class DeletedState extends StaticClass {
-  /**
-   * Get possible values
-   * @returns {Array<string>} - Possible enum values
-   */
-  static getValues() {
-    return [
-      StaticClass.NONE,
-      StaticClass.ONLY,
-      StaticClass.ALL,
-    ];
-  }
-
-  /**
-   * Don't return any deleted items
-   * @returns {string} - enum
-   * @const
-   * @static
-   */
-  static get NONE() {
-    return 'none';
-  }
-
-  /**
-   * Return only deleted items
-   * @returns {string} - enum
-   * @const
-   * @static
-   */
-  static get ONLY() {
-    return 'only';
-  }
-
-  /**
-   * Show both deleted items and non-deleted items
-   * @returns {string} - enum
-   * @const
-   * @static
-   */
-  static get ALL() {
-    return 'all';
-  }
-
-  /**
-   * Show both deleted items and non-deleted items
-   * @returns {string} - enum
-   * @const
-   * @static
-   */
-  static get BOTH() {
-    return 'all';
-  }
-}
 
 export default class RequestParameters {
   constructor(object) {
@@ -103,7 +46,8 @@ export default class RequestParameters {
         continue;
       }
 
-      this[key] = object[key];
+      // Weird syntax used here is to confuse esdoc
+      (this||{})[key] = object[key];
     }
   }
 
@@ -301,7 +245,7 @@ export default class RequestParameters {
   static _validateDeleted(value) {
     value = value.toLowerCase();
 
-    const possible = DeletedState.getValues();
+    const possible = DeletedState.values();
 
     if (!possible.includes(value)) {
       throw new TypeError(`Expected deleted to be on of ${possible.join(', ')}`);
