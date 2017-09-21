@@ -221,6 +221,7 @@ export default class PaginatedResourceListing {
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
+   * @todo use the RequestParameters::encode method
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
   getPage(page, perPage = this.perPage) {

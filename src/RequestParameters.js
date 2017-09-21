@@ -260,6 +260,7 @@ export default class RequestParameters {
         data[key] = this._resolve(key);
       });
 
+    // @todo ensure that the type is always the same
     if (Array.isArray(data.sort)) {
       data.sort = data.sort.join(',');
     }
