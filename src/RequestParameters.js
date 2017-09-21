@@ -260,7 +260,9 @@ export default class RequestParameters {
         data[key] = this._resolve(key);
       });
 
-    // @todo join sort `sort = sort.join(',')`
+    if (Array.isArray(data.sort)) {
+      data.sort = data.sort.join(',');
+    }
 
     return encodeQueryString(data);
   }
