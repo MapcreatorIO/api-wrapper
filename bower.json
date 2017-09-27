@@ -1,7 +1,7 @@
 {
   "name": "maps4news",
   "description": "Maps4News JavaScript Api",
-  "main": "dist/bundle.web.js",
+  "main": "dist/bundle.js",
   "authors": [
     "Bas Bieling <b.bieling@mapcreator.eu>"
   ],
