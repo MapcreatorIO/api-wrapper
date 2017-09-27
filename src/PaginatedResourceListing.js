@@ -151,7 +151,7 @@ export default class PaginatedResourceListing {
    * Set sort direction
    * @returns {String} - Sort
    * @example
-   * const sort = 'name,id'
+   * const sort = ['-name', 'id']
    */
   get sort() {
     return this.parameters.sort;
@@ -165,10 +165,20 @@ export default class PaginatedResourceListing {
     this.parameters.sort = value;
   }
 
+  /**
+   * Deleted items filter state
+   * @returns {String} value - Deleted items filter state
+   * @see {@link DeletedState}
+   */
   get deleted() {
     return this.parameters.deleted;
   }
 
+  /**
+   * Deleted items filter state
+   * @param {String} value - Deleted items filter state
+   * @see {@link DeletedState}
+   */
   set deleted(value) {
     this.parameters.deleted = value;
   }
