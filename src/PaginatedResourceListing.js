@@ -239,7 +239,7 @@ export default class PaginatedResourceListing {
     query.perPage = perPage;
 
     const glue = this.route.includes('?') ? '&' : '?';
-    const url = this.route + glue + this.parameters.encode();
+    const url = this.route + glue + query.encode();
 
     return this.api.request(url, 'GET', {}, {}, '', true)
       .then(request => {
