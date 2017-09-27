@@ -69,6 +69,8 @@ export default class Enum {
   }
 
   values() {
-    return this.keys().map(key => this[key]);
+    return this.keys()
+      .map(key => this[key])
+      .filter((v, i, s) => s.indexOf(v) === i);
   }
 }
