@@ -36,7 +36,14 @@ import {camelToPascalCase} from './utils/caseConverter';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
 
+/**
+ * Used for keeping track of the request parameters
+ */
 export default class RequestParameters {
+  /**
+   * RequestParameters constructor
+   * @param {Object} object - properties
+   */
   constructor(object = {}) {
     // Apply properties
     for (const key of Object.keys(object)) {
@@ -430,5 +437,6 @@ export default class RequestParameters {
 
     this._watch.push(method);
   }
+
   // endregion utils
 }
