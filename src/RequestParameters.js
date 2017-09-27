@@ -252,6 +252,17 @@ export default class RequestParameters {
   }
 
   encode() {
+    const data = this.toObject();
+
+    // @todo ensure that the type is always the same
+    if (Array.isArray(data.sort)) {
+      data.sort = data.sort.join(',');
+    }
+
+    return encodeQueryString(data);
+  }
+
+  toObject() {
     const data = {};
 
     RequestParameters
@@ -260,12 +271,7 @@ export default class RequestParameters {
         data[key] = this._resolve(key);
       });
 
-    // @todo ensure that the type is always the same
-    if (Array.isArray(data.sort)) {
-      data.sort = data.sort.join(',');
-    }
-
-    return encodeQueryString(data);
+    return data;
   }
 
   copy() {
