@@ -326,6 +326,8 @@ export default class RequestParameters {
     if (!possible.includes(value)) {
       throw new TypeError(`Expected deleted to be on of ${possible.join(', ')}`);
     }
+
+    return value;
   }
 
   // endregion validators
