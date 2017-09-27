@@ -98,7 +98,7 @@ export default class CrudBase extends ResourceBase {
   _create() {
     return new Promise((resolve, reject) => {
       this.api
-        .request(this.baseUrl, 'POST', this._buildCreateData())
+        .request(this.baseUrl, 'POST', this._buildCreateData());
     });
   }
 
