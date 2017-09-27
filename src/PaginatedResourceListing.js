@@ -34,7 +34,6 @@ import Maps4News from './Maps4News';
 import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 import {hashObject} from './utils/hash';
 import {isParentOf} from './utils/reflection';
-import {encodeQueryString} from './utils/requests';
 
 /**
  * Proxy for accessing paginated resources
@@ -242,22 +241,18 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + this.parameters.encode();
 
-    return new Promise((resolve, reject) => {
-      this.api.request(url, 'GET', {}, {}, '', true)
-        .then(request => {
-          const response = JSON.parse(request.responseText);
-          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
-          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
+    this.api.request(url, 'GET', {}, {}, '', true)
+      .then(request => {
+        const response = JSON.parse(request.responseText);
+        const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
+        const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
 
-          const instance = new PaginatedResourceListing(
-            this.api, this.route, this._Target,
-            this.parameters, totalPages, rowCount,
-            response.data.map(row => new this._Target(this.api, row)),
-          );
-
-          resolve(instance, request);
-        }).catch(reject);
-    });
+        return new PaginatedResourceListing(
+          this.api, this.route, this._Target,
+          this.parameters, totalPages, rowCount,
+          response.data.map(row => new this._Target(this.api, row)),
+        );
+      });
   }
 
   /**
