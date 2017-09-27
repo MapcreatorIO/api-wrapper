@@ -54,6 +54,8 @@ export default class RequestParameters {
 
     // Apply defaults
     RequestParameters.keys().forEach(x => this._resolve(x));
+
+    this._watch = {};
   }
 
   // region instance
@@ -344,6 +346,8 @@ export default class RequestParameters {
 
     value = RequestParameters['_validate' + camelToPascalCase(name)](value);
     (this || {})[_name] = value; // Weird syntax confuses esdoc
+
+    this._watch.forEach(m => m(name, value));
   }
 
   /**
@@ -406,5 +410,23 @@ export default class RequestParameters {
       'sort',
       'deleted',
     ];
+  }
+
+  /**
+   * Watch for changes
+   * @param {Function} method - Callback method
+   * @param {?String} [name=null] - Property name
+   * @returns {void}
+   */
+  watch(method, name = null) {
+    if (name) {
+      method = (n, v) => {
+        if (n === name.toLowerCase()) {
+          method(v);
+        }
+      };
+    }
+
+    this._watch.push(method);
   }
 }
