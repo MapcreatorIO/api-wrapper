@@ -241,7 +241,7 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + this.parameters.encode();
 
-    this.api.request(url, 'GET', {}, {}, '', true)
+    return this.api.request(url, 'GET', {}, {}, '', true)
       .then(request => {
         const response = JSON.parse(request.responseText);
         const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
