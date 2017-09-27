@@ -350,6 +350,7 @@ export default class RequestParameters {
     this._watch.forEach(m => m(name, value));
   }
 
+  // region utils
   /**
    * Urlencode parameters
    * @returns {string} - HTTP query
@@ -429,4 +430,5 @@ export default class RequestParameters {
 
     this._watch.push(method);
   }
+  // endregion utils
 }
