@@ -278,7 +278,7 @@ export default class PaginatedResourceListing {
    * @see {@link ResourceCache}
    */
   get cacheToken() {
-    return hashObject({query: this.query});
+    return this.parameters.token();
   }
 
   /**
