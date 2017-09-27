@@ -305,9 +305,6 @@ export default class RequestParameters {
   }
 
   static _validateSort(value) {
-    // @todo Disabled for now due to the fact that I have to rewrite a lot of code for this to work
-    return value;
-
     if (!(value instanceof Array)) {
       throw new TypeError(`Expected sort value to be of type "Array" got "${getTypeName(value)}"`);
     }
