@@ -62,7 +62,7 @@ export default class RequestParameters {
     // Apply defaults
     RequestParameters.keys().forEach(x => this._resolve(x));
 
-    this._watch = {};
+    this._watch = [];
   }
 
   // region instance
