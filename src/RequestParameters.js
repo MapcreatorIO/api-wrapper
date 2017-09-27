@@ -32,6 +32,7 @@
 
 
 import DeletedState from './enums/DeletedState';
+import {camelToPascalCase} from './utils/caseConverter';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
 
@@ -57,22 +58,47 @@ export default class RequestParameters {
 
   // region instance
   // region instance getters
+  /**
+   * Get page number
+   * @returns {Number} - Page number
+   * @throws TypeError
+   */
   get page() {
     return this._resolve('page');
   }
 
+  /**
+   * Get rows per page
+   * @returns {Number} - Per page
+   * @throws TypeError
+   */
   get perPage() {
     return this._resolve('perPage');
   }
 
+  /**
+   * Search query
+   * @returns {Object<String, String|Array<String>>} - Query
+   * @throws TypeError
+   */
   get search() {
     return this._resolve('search');
   }
 
+  /**
+   * Get sort options
+   * @returns {Array<String>} - Per page
+   * @throws TypeError
+   */
   get sort() {
     return this._resolve('sort');
   }
 
+  /**
+   * If deleted items should be shown
+   * @returns {String} - Deleted items filter state
+   * @see {@link DeletedState}
+   */
   get deleted() {
     return this._resolve('deleted');
   }
@@ -80,24 +106,45 @@ export default class RequestParameters {
   // endregion instance getters
 
   // region instance setters
+  /**
+   * Page number
+   * @param {Number} value - Page number
+   */
   set page(value) {
-    this._page = RequestParameters._validatePage(value);
+    this._update('page', value);
   }
 
+  /**
+   * Rows per page number
+   * @param {Number} value - Per page
+   */
   set perPage(value) {
-    this._perPage = RequestParameters._validatePerPage(value);
+    this._update('perPage', value);
   }
 
+  /**
+   * Search query
+   * @param {Object<String, String|Array<String>>} value - Search query
+   */
   set search(value) {
-    this._search = RequestParameters._validateSearch(value);
+    this._update('search', value);
   }
 
+  /**
+   * Sort query
+   * @param {Array<String>} value - Sort query
+   */
   set sort(value) {
-    this._sort = RequestParameters._validateSort(value);
+    this._update('sort', value);
   }
 
+  /**
+   * Deleted items filter state
+   * @param {String} value - Deleted items filter state
+   * @see {@link DeletedState}
+   */
   set deleted(value) {
-    this._deleted = RequestParameters._validateDeleted(value);
+    this._update('deleted', value);
   }
 
   // endregion instance setters
@@ -105,22 +152,42 @@ export default class RequestParameters {
 
   // region static
   // region getters
+  /**
+   * Default page number
+   * @returns {Number} - Page number
+   */
   static get page() {
     return RequestParameters._page || 1;
   }
 
+  /**
+   * Default per page
+   * @returns {Number} - Per page
+   */
   static get perPage() {
     return RequestParameters._perPage || Number(process.env.PER_PAGE);
   }
 
+  /**
+   * Default search query
+   * @returns {Object<String, String|Array<String>>} - Search query
+   */
   static get search() {
     return RequestParameters._search || {};
   }
 
+  /**
+   * Default sort query
+   * @returns {Array<String>} - Sort query
+   */
   static get sort() {
     return RequestParameters._sort || [];
   }
 
+  /**
+   * Default deleted items filter state
+   * @returns {String} -  Deleted items filter state
+   */
   static get deleted() {
     return RequestParameters._deleted || process.env.SHOW_DELETED.toLowerCase();
   }
@@ -128,22 +195,42 @@ export default class RequestParameters {
   // endregion getters
 
   // region setters
+  /**
+   * Default page number
+   * @param {Number} value - Page number
+   */
   static set page(value) {
     RequestParameters._page = RequestParameters._validatePage(value);
   }
 
+  /**
+   * Default per page
+   * @param {Number} value - Per page
+   */
   static set perPage(value) {
     RequestParameters._perPage = RequestParameters._validatePerPage(value);
   }
 
+  /**
+   * Default search query
+   * @param {Object<String, String|Array<String>>} value - Search query
+   */
   static set search(value) {
     RequestParameters._search = RequestParameters._validateSearch(value);
   }
 
+  /**
+   * Default sort query
+   * @param {Array<String>} value - Sort query
+   */
   static set sort(value) {
     RequestParameters._sort = RequestParameters._validateSort(value);
   }
 
+  /**
+   * Default deleted items filter state
+   * @param {String} value -  Deleted items filter state
+   */
   static set deleted(value) {
     RequestParameters._deleted = RequestParameters._validateDeleted(value);
   }
@@ -245,12 +332,24 @@ export default class RequestParameters {
     const _name = '_' + name;
 
     if (!this[_name]) {
-      this[_name] = RequestParameters[name];
+      // Confuse esdoc
+      (this || {})[_name] = RequestParameters[name];
     }
 
     return this[_name];
   }
 
+  _update(name, value) {
+    const _name = '_' + name;
+
+    value = RequestParameters['_validate' + camelToPascalCase(name)](value);
+    (this || {})[_name] = value; // Weird syntax confuses esdoc
+  }
+
+  /**
+   * Urlencode parameters
+   * @returns {string} - HTTP query
+   */
   encode() {
     const data = this.toObject();
 
@@ -262,6 +361,10 @@ export default class RequestParameters {
     return encodeQueryString(data);
   }
 
+  /**
+   * Convert to object
+   * @returns {Object} - Object
+   */
   toObject() {
     const data = {};
 
@@ -274,6 +377,10 @@ export default class RequestParameters {
     return data;
   }
 
+  /**
+   * Copy object
+   * @returns {RequestParameters} - Copy
+   */
   copy() {
     const data = {};
 
@@ -286,6 +393,10 @@ export default class RequestParameters {
     return new RequestParameters(data);
   }
 
+  /**
+   * Different parameters
+   * @returns {Array<String>} - keys
+   */
   static keys() {
     // enumeration is disabled for properties
     return [
