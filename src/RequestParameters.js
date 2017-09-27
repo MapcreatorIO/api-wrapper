@@ -32,7 +32,7 @@
 
 
 import DeletedState from './enums/DeletedState';
-import {camelToPascalCase} from './utils/caseConverter';
+import {camelToPascalCase, camelToSnakeCase, snakeToCamelCase} from './utils/caseConverter';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
 
@@ -45,24 +45,20 @@ export default class RequestParameters {
    * @param {Object} object - properties
    */
   constructor(object = {}) {
+    this._watch = [];
+
     // Apply properties
     for (const key of Object.keys(object)) {
-      if (key[0] === '_' || !(key in this)) {
-        continue;
-      }
-
-      if (typeof this[key] === 'function') {
+      if (key[0] === '_' || !RequestParameters.keys().includes(key)) {
         continue;
       }
 
       // Weird syntax used here is to confuse esdoc
-      (this || {})[key] = object[key];
+      (this || {})[snakeToCamelCase(key)] = object[key];
     }
 
     // Apply defaults
     RequestParameters.keys().forEach(x => this._resolve(x));
-
-    this._watch = [];
   }
 
   // region instance
@@ -362,7 +358,6 @@ export default class RequestParameters {
   encode() {
     const data = this.toObject();
 
-    // @todo ensure that the type is always the same
     if (Array.isArray(data.sort)) {
       data.sort = data.sort.join(',');
     }
@@ -380,7 +375,7 @@ export default class RequestParameters {
     RequestParameters
       .keys()
       .forEach(key => {
-        data[key] = this._resolve(key);
+        data[camelToSnakeCase(key)] = this._resolve(key);
       });
 
     return data;
@@ -391,15 +386,7 @@ export default class RequestParameters {
    * @returns {RequestParameters} - Copy
    */
   copy() {
-    const data = {};
-
-    RequestParameters
-      .keys()
-      .forEach(key => {
-        data[key] = this._resolve(key);
-      });
-
-    return new RequestParameters(data);
+    return new RequestParameters(this.toObject());
   }
 
   /**

@@ -231,36 +231,16 @@ export default class PaginatedResourceListing {
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
-   * @todo use the RequestParameters::encode method
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
-  getPage(page, perPage = this.perPage) {
-    page = Math.max(1, page);
+  getPage(page = this.page, perPage = this.perPage) {
+    const query = this.parameters.copy();
 
-    const query = {page};
-
-    if (perPage) {
-      perPage = Math.max(1, perPage);
-      perPage = Math.min(50, perPage);
-
-      query['per_page'] = perPage;
-    }
-
-    // Add search query (if any)
-    if (Object.keys(this.query).length > 0) {
-      query['search'] = this.query;
-    }
-
-    if (this.sort) {
-      query.sort = this.sort;
-    }
-
-    if (this.deleted && this.deleted !== 'none') {
-      query.deleted = this.deleted.toLowerCase();
-    }
+    query.page = page;
+    query.perPage = perPage;
 
     const glue = this.route.includes('?') ? '&' : '?';
-    const url = `${this.route}${glue}${encodeQueryString(query)}`;
+    const url = this.route + glue + this.parameters.encode();
 
     return new Promise((resolve, reject) => {
       this.api.request(url, 'GET', {}, {}, '', true)
