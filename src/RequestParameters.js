@@ -47,18 +47,19 @@ export default class RequestParameters {
   constructor(object = {}) {
     this._watch = [];
 
+    // Apply defaults
+    RequestParameters.keys().forEach(x => this._resolve(x));
+
     // Apply properties
     for (const key of Object.keys(object)) {
-      if (key[0] === '_' || !RequestParameters.keys().includes(key)) {
+      const Key = snakeToCamelCase(key);
+
+      if (key[0] === '_' || !RequestParameters.keys().includes(Key)) {
         continue;
       }
 
-      // Weird syntax used here is to confuse esdoc
-      (this || {})[snakeToCamelCase(key)] = object[key];
+      this._update(Key, object[key]);
     }
-
-    // Apply defaults
-    RequestParameters.keys().forEach(x => this._resolve(x));
   }
 
   // region instance
