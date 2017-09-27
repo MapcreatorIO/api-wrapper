@@ -30,11 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isParentOf} from './utils/reflection';
-import Maps4News from './Maps4News';
 import ResourceBase from './crud/base/ResourceBase';
 import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
+import Maps4News from './Maps4News';
+import {isParentOf} from './utils/reflection';
 
 /**
  * Image resource handler
@@ -92,18 +92,13 @@ export default class ImageHandler {
    * });
    */
   download() {
-    return new Promise((resolve, reject) => {
-      this._api.request(this.url, 'GET', {}, {}, 'arraybuffer')
-        .catch(reject)
-        .then(data => {
-          const blob = new Blob([data], {type: 'image'});
+    this._api.request(this.url, 'GET', {}, {}, 'arraybuffer')
+      .then(data => {
+        const blob = new Blob([data], {type: 'image'});
 
-          // noinspection JSUnresolvedFunction
-          const url = (window.URL || window.webkitURL).createObjectURL(blob);
-
-          resolve(url);
-        });
-    });
+        // noinspection JSUnresolvedFunction
+        return (window.URL || window.webkitURL).createObjectURL(blob);
+      });
   }
 
   /**
