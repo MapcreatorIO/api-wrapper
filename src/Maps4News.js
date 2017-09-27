@@ -57,8 +57,8 @@ import {
   Notification,
   Organisation,
   Permission,
-  Role,
   PlaceName,
+  Role,
   Svg,
   SvgSet,
   SvgSetType,
@@ -173,12 +173,10 @@ export default class Maps4News {
    * @returns {Promise} - Resolves with {@link Maps4News} instance and rejects with {@link OAuthError}
    */
   authenticate() {
-    return new Promise((resolve, reject) => {
-      this.auth.authenticate().then(() => {
-        this.auth.token.save();
+    return this.auth.authenticate().then(() => {
+      this.auth.token.save();
 
-        resolve(this);
-      }).catch(reject);
+      return this;
     });
   }
 

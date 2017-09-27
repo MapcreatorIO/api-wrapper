@@ -45,8 +45,8 @@ import MapstyleSet from './MapstyleSet';
 import Notification from './Notification';
 import Organisation from './Organisation';
 import Permission from './Permission';
-import SvgSet from './SvgSet';
 import Role from './Role';
+import SvgSet from './SvgSet';
 
 export default class User extends CrudBase {
   get resourceName() {
@@ -60,13 +60,9 @@ export default class User extends CrudBase {
   ips() {
     const url = `${this.url}/ips`;
 
-    return new Promise((resolve, reject) => {
-      this.api.request(url)
-        .catch(reject)
-        .then(data => resolve(
-          data.map(row => row['ip_address']),
-        ));
-    });
+    return this.api
+      .request(url)
+      .then(data => data.map(row => row['ip_address']));
   }
 
   /**

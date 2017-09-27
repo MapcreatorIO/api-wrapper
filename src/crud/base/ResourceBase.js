@@ -197,20 +197,18 @@ export default class ResourceBase {
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
   refresh(updateSelf = true) {
-    return new Promise((resolve, reject) => {
-      this._api.request(this.url)
-        .catch(reject)
-        .then(data => {
-          if (updateSelf) {
-            this._properties = {};
-            this._baseProperties = data;
+    return this._api
+      .request(this.url)
+      .then(data => {
+        if (updateSelf) {
+          this._properties = {};
+          this._baseProperties = data;
 
-            this._updateProperties();
-          }
+          this._updateProperties();
+        }
 
-          resolve(new this.constructor(this._api, data));
-        });
-    });
+        return new this.constructor(this._api, data);
+      });
   }
 
   /**
