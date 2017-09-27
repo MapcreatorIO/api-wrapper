@@ -225,7 +225,12 @@ export default class PaginatedResourceWrapper {
     if (this._context[token]) {
       this._last = this._context[token];
     } else {
-      this._last = new PaginatedResourceListing(this.api, this._last.route, this._last.Target, value, 1, this._last.perPage, this._last.sort, this._last.deleted);
+      const parameters = this._last.parameters.copy();
+
+      parameters.search = value;
+      parameters.page = 1;
+
+      this._last = new PaginatedResourceListing(this.api, this._last.route, this._last.Target, parameters);
       this.get(1);
       this.currentPage = 1;
     }

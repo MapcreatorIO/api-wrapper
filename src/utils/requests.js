@@ -106,7 +106,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
  * @protected
  */
 export function encodeQueryString(paramsObject) {
-  return _encodeQueryString(paramsObject);
+  return _encodeQueryString(paramsObject).replace('&&', '&');
 }
 
 /**

@@ -30,42 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Converts snake_case strings to camelCase
- * @param {String} str - a snake_case string
- * @returns {String} - Converted camelCase string
- * @private
- */
-export function snakeToCamelCase(str) {
-  return str.replace(/(?:(_[a-z\d]))/g, x => x[1].toUpperCase());
-}
+import Enum from './Enum';
 
 /**
- * Converts camelCase strings to snake_case
- * @param {String} str - a camelCase string
- * @returns {String} - Converted snake_case string
- * @private
+ * Enum containing the possible different values for {@link RequestParameters#deleted}
+ * @enum {string}
+ * @property {string} ALL - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} BOTH - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} NONE - Don't return deleted resources
+ * @property {string} ONLY - Only return deleted resources
+ * @readonly
+ * @export
  */
-export function camelToSnakeCase(str) {
-  return str.replace(/([A-Z])/g, x => '_' + x.toLowerCase());
-}
+const DeletedState = new Enum({
+  ALL: 'all',
+  BOTH: 'all',
+  NONE: 'none',
+  ONLY: 'only',
+});
 
-/**
- * Converts PascalCase strings to camelCase
- * @param {String} str - a PascalCase string
- * @returns {String} - Converted camelCase string
- * @private
- */
-export function pascalToCamelCase(str) {
-  return str.replace(/^([A-Z])/g, x => x.toLowerCase());
-}
-
-/**
- * Converts camelCase strings to PascalCase
- * @param {String} str - a camelCase string
- * @returns {String} - Converted PascalCase string
- * @private
- */
-export function camelToPascalCase(str) {
-  return str.replace(/^([a-z])/g, x => x.toUpperCase());
-}
+export default DeletedState;

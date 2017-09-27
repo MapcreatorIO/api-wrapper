@@ -33,6 +33,7 @@
 import ResourceBase from './crud/base/ResourceBase';
 import PaginatedResourceListing from './PaginatedResourceListing';
 import {isParentOf} from './utils/reflection';
+import RequestParameters from './RequestParameters';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -114,7 +115,7 @@ export default class SimpleResourceProxy {
 
   /**
    * List target resource
-   * @param {Number|Object} [params] - Parameters or the page number to be requested
+   * @param {Number|Object|RequestParameters} [params] - Parameters or the page number to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
    * @param {Number} [params.sort=''] - Amount of items per page. This is silently capped by the API
@@ -139,7 +140,7 @@ export default class SimpleResourceProxy {
 
   /**
    * List target resource
-   * @param {Number|Object} [params] - Parameters or the page to be requested
+   * @param {Number|Object|RequestParameters} [params] - Parameters or the page to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
    * @param {Number} [params.sort=''] - Amount of items per page. This is silently capped by the API
@@ -177,23 +178,10 @@ export default class SimpleResourceProxy {
       return this._buildResolver({page: params});
     }
 
-    return new PaginatedResourceListing(this._api, url, this.Target, params.search, params.page, params.perPage, params.sort, params.deleted);
-  }
+    if (!(params instanceof RequestParameters)) {
+      params = new RequestParameters(params);
+    }
 
-  /**
-   * Get the defaults parameters.
-   * @returns {{page: number, perPage: number, shareCache: boolean, search: {}}} - Defaults
-   */
-  get defaultParams() {
-    const defaults = this.api.defaults;
-
-    return {
-      page: 1,
-      perPage: defaults.perPage,
-      shareCache: defaults.shareCache,
-      search: {},
-      sort: '',
-      deleted: this.api.defaults.showDeleted,
-    };
+    return new PaginatedResourceListing(this._api, url, this.Target, params);
   }
 }

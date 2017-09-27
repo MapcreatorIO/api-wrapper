@@ -31,41 +31,46 @@
  */
 
 /**
- * Converts snake_case strings to camelCase
- * @param {String} str - a snake_case string
- * @returns {String} - Converted camelCase string
- * @private
+ * Base enum class
+ * @example
+ * const Colors = new Enum(['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE']);
+ *
+ * const ANSWER = new Enum({
+ *   YES: true,
+ *   NO: false,
+ *   MAYBE: !Math.round(Math.random()), // Either true or false
+ * });
  */
-export function snakeToCamelCase(str) {
-  return str.replace(/(?:(_[a-z\d]))/g, x => x[1].toUpperCase());
-}
+export default class Enum {
+  constructor(enums) {
+    if (enums instanceof Array) {
+      let counter = 0;
 
-/**
- * Converts camelCase strings to snake_case
- * @param {String} str - a camelCase string
- * @returns {String} - Converted snake_case string
- * @private
- */
-export function camelToSnakeCase(str) {
-  return str.replace(/([A-Z])/g, x => '_' + x.toLowerCase());
-}
+      for (const key of Object.keys(enums)) {
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          value: counter++,
+        });
+      }
+    } else {
+      for (const key of Object.keys(enums)) {
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          value: enums[key],
+        });
+      }
+    }
 
-/**
- * Converts PascalCase strings to camelCase
- * @param {String} str - a PascalCase string
- * @returns {String} - Converted camelCase string
- * @private
- */
-export function pascalToCamelCase(str) {
-  return str.replace(/^([A-Z])/g, x => x.toLowerCase());
-}
+    Object.freeze(this);
+  }
 
-/**
- * Converts camelCase strings to PascalCase
- * @param {String} str - a camelCase string
- * @returns {String} - Converted PascalCase string
- * @private
- */
-export function camelToPascalCase(str) {
-  return str.replace(/^([a-z])/g, x => x.toUpperCase());
+  keys() {
+    return Object.keys(this);
+  }
+
+  values() {
+    return this.keys()
+      .map(key => this[key])
+      .filter((v, i, s) => s.indexOf(v) === i);
+  }
 }

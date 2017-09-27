@@ -32,6 +32,10 @@
 
 // Core
 export Maps4News from './Maps4News';
+export RequestParameters from './RequestParameters';
+
+// Enums
+export DeletedState from './enums/DeletedState';
 
 // Flows
 export OAuth from './oauth/OAuth';

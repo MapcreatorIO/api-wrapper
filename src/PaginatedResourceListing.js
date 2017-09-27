@@ -33,8 +33,7 @@
 import Maps4News from './Maps4News';
 import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 import {hashObject} from './utils/hash';
-import {getTypeName, isParentOf} from './utils/reflection';
-import {encodeQueryString} from './utils/requests';
+import {isParentOf} from './utils/reflection';
 
 /**
  * Proxy for accessing paginated resources
@@ -44,18 +43,14 @@ export default class PaginatedResourceListing {
    * @param {Maps4News} api - Instance of the api
    * @param {String} route - Resource route
    * @param {ResourceBase} Target - Wrapper target
-   * @param {Object|{}} query - Search query
-   * @param {Number} page - Page number
-   * @param {Number} perPage - Amount of items per page
-   * @param {String} sort - sorting rules
-   * @param {String} deleted - Show deleted resources, none, only, all
+   * @param {RequestParameters} parameters - Request parameters
    * @param {Number} pageCount - Resolved page count
    * @param {Number} rowCount - Resolved rowCount
    * @param {Array<ResourceBase>} data - Resolved data
    * @todo change constructor to only accept a RequestParameters object
    * @private
    */
-  constructor(api, route, Target, query = {}, page = 1, perPage = api.defaults.perPage, sort = '', deleted = api.defaults.showDeleted, pageCount = null, rowCount = 0, data = []) {
+  constructor(api, route, Target, parameters, pageCount = null, rowCount = 0, data = []) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -64,15 +59,10 @@ export default class PaginatedResourceListing {
 
     this.route = route;
     this._Target = Target;
-    this._query = query;
-
-    this._data = data;
-    this._page = page;
-    this._perPage = perPage;
-    this._rows = rowCount;
+    this._parameters = parameters;
     this._pageCount = pageCount;
-    this._sort = sort;
-    this._deleted = deleted;
+    this._rows = rowCount;
+    this._data = data;
   }
 
   /**
@@ -125,11 +115,27 @@ export default class PaginatedResourceListing {
   }
 
   /**
+   * Request parameters
+   * @returns {RequestParameters} - Request parameters
+   */
+  get parameters() {
+    return this._parameters;
+  }
+
+  /**
+   * Request parameters
+   * @param {RequestParameters} value - Request parameters
+   */
+  set parameters(value) {
+    this._parameters = value;
+  }
+
+  /**
    * Current page number
    * @returns {Number} - Current page
    */
   get page() {
-    return this._page;
+    return this.parameters.page;
   }
 
   /**
@@ -137,17 +143,17 @@ export default class PaginatedResourceListing {
    * @returns {Number} - Amount of items
    */
   get perPage() {
-    return this._perPage;
+    return this.parameters.perPage;
   }
 
   /**
    * Set sort direction
    * @returns {String} - Sort
    * @example
-   * const sort = 'name,id'
+   * const sort = ['-name', 'id']
    */
   get sort() {
-    return this._sort;
+    return this.parameters.sort;
   }
 
   /**
@@ -155,15 +161,25 @@ export default class PaginatedResourceListing {
    * @param {String} value - Sort
    */
   set sort(value) {
-    this._sort = value;
+    this.parameters.sort = value;
   }
 
+  /**
+   * Deleted items filter state
+   * @returns {String} value - Deleted items filter state
+   * @see {@link DeletedState}
+   */
   get deleted() {
-    return this._deleted;
+    return this.parameters.deleted;
   }
 
+  /**
+   * Deleted items filter state
+   * @param {String} value - Deleted items filter state
+   * @see {@link DeletedState}
+   */
   set deleted(value) {
-    this._deleted = value;
+    this.parameters.deleted = value;
   }
 
   /**
@@ -196,7 +212,7 @@ export default class PaginatedResourceListing {
    * @return {Object<String, String|Array<String>>} - Query
    */
   get query() {
-    return this._query;
+    return this.parameters.search;
   }
 
   /**
@@ -207,35 +223,7 @@ export default class PaginatedResourceListing {
    * @see {@link ResourceProxy#search}
    */
   set query(value) {
-    // Verify query structure
-    if (typeof value !== 'object') {
-      throw new TypeError(`Expected value to be of type "Object" got "${getTypeName(value)}"`);
-    }
-
-    for (const key of Object.keys(value)) {
-      if (typeof key !== 'string') {
-        throw new TypeError(`Expected key to be of type "String" got "${getTypeName(key)}"`);
-      }
-
-      if (Array.isArray(value[key])) {
-        if (value[key].length > 0) {
-          for (const query of value[key]) {
-            if (typeof query !== 'string') {
-              throw new TypeError(`Expected query for "${key}" to be of type "String" got "${getTypeName(query)}"`);
-            }
-          }
-        } else {
-          // Drop empty nodes
-          delete value[key];
-        }
-      } else if (value[key] === null) {
-        delete value[key];
-      } else if (typeof value[key] !== 'string') {
-        throw new TypeError(`Expected query value to be of type "string" or "Array" got "${getTypeName(key)}"`);
-      }
-    }
-
-    this._query = value;
+    this.parameters.search = value;
   }
 
   /**
@@ -244,51 +232,27 @@ export default class PaginatedResourceListing {
    * @param {Number} perPage - Amount of items per page (max 50)
    * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
    */
-  getPage(page, perPage = this.perPage) {
-    page = Math.max(1, page);
+  getPage(page = this.page, perPage = this.perPage) {
+    const query = this.parameters.copy();
 
-    const query = {page};
-
-    if (perPage) {
-      perPage = Math.max(1, perPage);
-      perPage = Math.min(50, perPage);
-
-      query['per_page'] = perPage;
-    }
-
-    // Add search query (if any)
-    if (Object.keys(this.query).length > 0) {
-      query['search'] = this.query;
-    }
-
-    if (this.sort) {
-      query.sort = this.sort;
-    }
-
-    if (this.deleted && this.deleted !== 'none') {
-      query.deleted = this.deleted.toLowerCase();
-    }
+    query.page = page;
+    query.perPage = perPage;
 
     const glue = this.route.includes('?') ? '&' : '?';
-    const url = `${this.route}${glue}${encodeQueryString(query)}`;
+    const url = this.route + glue + query.encode();
 
-    return new Promise((resolve, reject) => {
-      this.api.request(url, 'GET', {}, {}, '', true)
-        .then(request => {
-          const response = JSON.parse(request.responseText);
-          const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
-          const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
+    return this.api.request(url, 'GET', {}, {}, '', true)
+      .then(request => {
+        const response = JSON.parse(request.responseText);
+        const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
+        const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
 
-          const instance = new PaginatedResourceListing(
-            this.api, this.route, this._Target, this.query,
-            page, perPage, this.sort, this.deleted,
-            totalPages, rowCount,
-            response.data.map(row => new this._Target(this.api, row)),
-          );
-
-          resolve(instance, request);
-        }).catch(reject);
-    });
+        return new PaginatedResourceListing(
+          this.api, this.route, this._Target,
+          this.parameters, totalPages, rowCount,
+          response.data.map(row => new this._Target(this.api, row)),
+        );
+      });
   }
 
   /**
