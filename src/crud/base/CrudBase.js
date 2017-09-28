@@ -172,7 +172,6 @@ export default class CrudBase extends ResourceBase {
    * @param {ResourceBase} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
-   * @todo refactor to CrudBase and remove organisation specific method from trait
    * @protected
    */
   _modifyLink(items, method, Type, path) {
