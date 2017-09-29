@@ -60,6 +60,22 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
+   * Job result log url
+   * @returns {string} - log url
+   */
+  get logUrl() {
+    return `${this.url}/log`;
+  }
+
+  /**
+   * Get log blob url
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   */
+  downloadLog() {
+    return this._download(this.logUrl);
+  }
+
+  /**
    * Job result preview url, usable in an `<img>` tag
    * @returns {string} - Preview url
    */
