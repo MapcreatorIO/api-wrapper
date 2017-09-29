@@ -74,7 +74,7 @@ import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {fnv32a} from './utils/hash';
 import {isParentOf} from './utils/reflection';
-import {makeRequest} from './utils/requests';
+import {fetch, makeRequest} from './utils/requests';
 
 /**
  * Base API class
@@ -200,6 +200,32 @@ export default class Maps4News {
     if (this.authenticated) {
       headers.Authorization = this.auth.token.toString();
     }
+
+    const hasHeader = (h) => Object
+      .keys(headers)
+      .filter(x => x.toLowerCase() === h.toLowerCase())
+      .length > 0;
+
+    // Automatically detect possible content-type header
+    if (typeof data === 'object') {
+      data = JSON.stringify(data);
+
+      if (!hasHeader('Content-Type')) {
+        headers['Content-Type'] = 'application/json';
+      }
+    } else if (data && !hasHeader('Content-Type')) {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
+
+    if (!hasHeader('Accept')) {
+      headers['Accept'] = 'application/json';
+    }
+
+    fetch(url, {
+      headers, method,
+      body: data,
+      // responsetype
+    });
 
     return new Promise((resolve, reject) => {
       makeRequest(url, method, data, headers, responseType).then(request => {
@@ -521,18 +547,6 @@ export default class Maps4News {
    */
   get users() {
     return this.static(User);
-  }
-
-  /**
-   * Test if XHR requests can be made
-   * @returns {Promise} - resolves/rejects with the HTTP response status code. Rejects if status code != 2xx
-   */
-  testXhr() {
-    return new Promise((resolve, reject) => {
-      makeRequest(`${this.host}/favicon.ico`)
-        .then(x => resolve(x.status))
-        .catch(x => reject(x.status));
-    });
   }
 
   /**

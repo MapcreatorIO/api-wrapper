@@ -30,11 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import OAuth from './OAuth';
-import OAuthToken from './OAuthToken';
-import {encodeQueryString, makeRequest} from '../utils/requests';
 import OAuthError from '../errors/OAuthError';
 import {isNode} from '../utils/node';
+import {encodeQueryString, fetch} from '../utils/requests';
+import OAuth from './OAuth';
+import OAuthToken from './OAuthToken';
 
 /**
  * Password authentication flow
@@ -145,18 +145,23 @@ export default class PasswordFlow extends OAuth {
       'scope': this.scopes.join(' '),
     };
 
-    return new Promise((resolve, reject) => {
-      makeRequest(url, 'POST', encodeQueryString(query)).then(request => {
-        const data = JSON.parse(request.responseText);
+    const init = {
+      method: 'POST',
+      body: encodeQueryString(query),
+      mode: 'cors',
+    };
 
+    fetch(url, init).then(response => {
+      const data = response.json();
+
+      if (data.success) {
         this.token = OAuthToken.fromResponseObject(data);
         this.token.scopes = this.scopes;
-        resolve(this.token);
-      }).catch(request => {
-        const data = JSON.parse(request.responseText);
 
-        reject(new OAuthError(data['error'], data['message']));
-      });
+        return this.token;
+      } else {
+        throw new OAuthError(data.error, data.message);
+      }
     });
   }
 }

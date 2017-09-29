@@ -30,6 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import fetchPonyfill from 'fetch-ponyfill';
+export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
+
 /**
  * Makes a HTTP request and returns a promise. Promise will fail/reject if the
  * status code isn't 2XX.
@@ -41,6 +44,7 @@
  *
  * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
  * @protected
+ * @deprecated
  * @todo Better nodejs compatibility, maybe a requests library
  */
 export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
@@ -59,20 +63,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
 
     request.open(method, url, true);
 
-    // Automatically detect possible content-type header
-    if (typeof body === 'object') {
-      body = JSON.stringify(body);
 
-      if (!hasHeader('Content-Type')) {
-        headers['Content-Type'] = 'application/json';
-      }
-    } else if (body && !hasHeader('Content-Type')) {
-      headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    }
-
-    if (!hasHeader('Accept')) {
-      headers['Accept'] = 'application/json';
-    }
 
     // Apply headers
     for (const key of Object.keys(headers)) {
@@ -97,6 +88,7 @@ export function makeRequest(url, method = 'GET', body = '', headers = {}, respon
     }
   });
 }
+
 
 /**
  * Encodes an object to a http query string with support for recursion
