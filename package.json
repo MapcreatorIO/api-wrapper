@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "fetch-ponyfill": "^4.1.0",
     "mitt": "^1.1.2"
   },
   "devDependencies": {
