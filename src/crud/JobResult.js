@@ -31,6 +31,8 @@
  */
 
 import ResourceBase from './base/ResourceBase';
+import ApiError from '../errors/ApiError';
+import {fetch} from '../utils/requests';
 
 export default class JobResult extends ResourceBase {
   get resourcePath() {
@@ -55,5 +57,30 @@ export default class JobResult extends ResourceBase {
    */
   get previewUrl() {
     return `${this.url}/preview`;
+  }
+
+  /**
+   * Get image base64 representation
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   */
+  downloadPreview() {
+    const headers = {
+      Accept: 'application/json',
+      Authorization: this.api.auth.token.toString(),
+    };
+
+    return fetch(this.previewUrl, {headers})
+      .then(res => {
+        if (res.ok) {
+          return res.blob();
+        } else {
+          return res.json().then(data => {
+            const err = data.error;
+
+            throw new ApiError(err.type, err.message, res.status);
+          });
+        }
+      })
+      .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
   }
 }
