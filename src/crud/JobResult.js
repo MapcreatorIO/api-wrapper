@@ -30,9 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
 import ApiError from '../errors/ApiError';
 import {fetch} from '../utils/requests';
+import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
   get resourcePath() {
@@ -73,13 +73,13 @@ export default class JobResult extends ResourceBase {
       .then(res => {
         if (res.ok) {
           return res.blob();
-        } else {
-          return res.json().then(data => {
-            const err = data.error;
-
-            throw new ApiError(err.type, err.message, res.status);
-          });
         }
+        return res.json().then(data => {
+          const err = data.error;
+
+          throw new ApiError(err.type, err.message, res.status);
+        });
+
       })
       .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
   }

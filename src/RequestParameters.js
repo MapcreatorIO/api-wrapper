@@ -33,9 +33,9 @@
 
 import DeletedState from './enums/DeletedState';
 import {camelToPascalCase, camelToSnakeCase, snakeToCamelCase} from './utils/caseConverter';
+import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import {fnv32a, hashObject} from './utils/hash';
 
 /**
  * Used for keeping track of the request parameters
@@ -435,5 +435,6 @@ export default class RequestParameters {
   token() {
     return hashObject(this.toObject());
   }
+
   // endregion utils
 }
