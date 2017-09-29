@@ -52,6 +52,14 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
+   * Get archive blob url
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   */
+  downloadArchive() {
+    return this._download(this.archiveUrl);
+  }
+
+  /**
    * Job result preview url, usable in an `<img>` tag
    * @returns {string} - Preview url
    */
@@ -60,16 +68,20 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
-   * Get image base64 representation
+   * Get image blob url representation
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    */
   downloadPreview() {
+    return this._download(this.previewUrl);
+  }
+
+  _download(url) {
     const headers = {
       Accept: 'application/json',
       Authorization: this.api.auth.token.toString(),
     };
 
-    return fetch(this.previewUrl, {headers})
+    return fetch(url, {headers})
       .then(res => {
         if (res.ok) {
           return res.blob();
