@@ -36,7 +36,7 @@ import {fetch} from '../utils/requests';
 
 export default class JobResult extends ResourceBase {
   get resourcePath() {
-    return '/jobs/{job_id}/revisions/{job_revision_id}/result';
+    return '/jobs/{job_id}/revisions/{revision}/result';
   }
 
   get resourceName() {

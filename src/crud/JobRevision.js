@@ -81,7 +81,7 @@ export default class JobRevision extends CrudBase {
   get resultProxy() {
     const data = {
       jobId: this.jobId,
-      jobRevisionId: this.id,
+      revision: this.revision,
     };
 
     return new JobResult(this.api, data);
