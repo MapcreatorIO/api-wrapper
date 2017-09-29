@@ -30,6 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import fetchPonyfill from 'fetch-ponyfill';
+export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
+
 /**
  * Makes a HTTP request and returns a promise. Promise will fail/reject if the
  * status code isn't 2XX.

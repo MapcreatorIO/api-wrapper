@@ -35,6 +35,7 @@ import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';
+import {fetch} from './utils/requests';
 
 /**
  * Image resource handler
@@ -92,13 +93,24 @@ export default class ImageHandler {
    * });
    */
   download() {
-    return this._api.request(this.url, 'GET', {}, {}, 'arraybuffer')
-      .then(data => {
-        const blob = new Blob([data], {type: 'image'});
+    const headers = {
+      Accept: 'application/json',
+      Authorization: this.api.auth.token.toString(),
+    };
 
-        // noinspection JSUnresolvedFunction
-        return (window.URL || window.webkitURL).createObjectURL(blob);
-      });
+    return fetch(this.url, {headers})
+      .then(res => {
+        if (res.ok) {
+          return res.blob();
+        } else {
+          return res.json().then(data => {
+            const err = data.error;
+
+            throw new ApiError(err.type, err.message, res.status);
+          });
+        }
+      })
+      .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
   }
 
   /**
