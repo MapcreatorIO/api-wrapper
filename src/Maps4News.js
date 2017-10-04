@@ -207,7 +207,7 @@ export default class Maps4News {
     }
 
     // Automatically detect possible content-type header
-    if (typeof data === 'object') {
+    if (typeof data === 'object' && !(data instanceof FormData)) {
       data = JSON.stringify(data);
 
       if (!headers.has('Content-Type')) {
