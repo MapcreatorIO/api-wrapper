@@ -59,5 +59,5 @@ export function fnv32a(str) {
  * @private
  */
 export function hashObject(data) {
-  return fnv32a(encodeQueryString(data));
+  return fnv32a(JSON.stringify(data));
 }

@@ -31,6 +31,7 @@
  */
 
 import fetchPonyfill from 'fetch-ponyfill';
+
 export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
 
 /**
@@ -56,6 +57,7 @@ export function encodeQueryString(paramsObject) {
 function _encodeQueryString(paramsObject, _basePrefix = []) {
   return Object
     .keys(paramsObject)
+    .filter(key => paramsObject[key] !== null)
     .sort()
     .map(key => {
       const prefix = _basePrefix.slice(0);
