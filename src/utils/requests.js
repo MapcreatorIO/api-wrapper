@@ -34,7 +34,7 @@ import fetchPonyfill from 'fetch-ponyfill';
 import {isNode} from './node';
 
 // eslint-disable-next-line no-eval
-export const FormData = !isNode() ? window.FormData : eval('console.log("hotload"); require("form-data");');
+export const FormData = !isNode() ? window.FormData : eval('require("form-data");');
 export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
 
 /**
