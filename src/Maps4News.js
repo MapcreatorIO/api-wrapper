@@ -222,6 +222,7 @@ export default class Maps4News {
     }
 
     if (['GET', 'HEAD'].includes(method)) {
+      // eslint-disable-next-line no-undefined
       data = undefined;
     }
 

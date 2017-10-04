@@ -31,11 +31,9 @@
  */
 
 import ResourceBase from './crud/base/ResourceBase';
-import ApiError from './errors/ApiError';
-import ValidationError from './errors/ValidationError';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';
-import {FormData, fetch} from './utils/requests';
+import {FormData} from './utils/requests';
 
 /**
  * Image resource handler

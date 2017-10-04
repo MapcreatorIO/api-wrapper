@@ -3,6 +3,7 @@
 /build/
 /docs/
 !/src/
+/local/
 
 # Test files during dev work
 /test*.html

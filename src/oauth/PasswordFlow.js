@@ -154,14 +154,14 @@ export default class PasswordFlow extends OAuth {
     fetch(url, init).then(response => {
       const data = response.json();
 
-      if (data.success) {
-        this.token = OAuthToken.fromResponseObject(data);
-        this.token.scopes = this.scopes;
-
-        return this.token;
-      } else {
+      if (!data.success) {
         throw new OAuthError(data.error, data.message);
       }
+
+      this.token = OAuthToken.fromResponseObject(data);
+      this.token.scopes = this.scopes;
+
+      return this.token;
     });
   }
 }

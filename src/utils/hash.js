@@ -30,8 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {encodeQueryString} from './requests';
-
 const FNV1_32A_INIT = 0x811c9dc5;
 
 /**
