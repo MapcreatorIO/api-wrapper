@@ -101,7 +101,6 @@ export default class ImageHandler {
    * Upload new image
    * @param {File} image - Image file
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
-   * @todo refactor
    */
   upload(image) {
     if (!isParentOf(File, image)) {
