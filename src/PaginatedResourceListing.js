@@ -69,14 +69,6 @@ export default class PaginatedResourceListing {
   }
 
   /**
-   * Pagination header prefix
-   * @returns {String} - Header prefix
-   */
-  static get headerPrefix() {
-    return 'X-Paginate';
-  }
-
-  /**
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
@@ -244,11 +236,14 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + query.encode();
 
-    return this.api.request(url, 'GET', {}, {}, '', true)
-      .then(request => {
-        const response = JSON.parse(request.responseText);
-        const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
-        const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
+    return this.api.request(url, 'GET', {}, {}, true)
+      .then(output => {
+        const headers = output.response.headers;
+
+        const getOrDefault = (x, y) => headers.has(x) ? headers.get(x) : y;
+
+        const rowCount = Number(getOrDefault('X-Paginate-Total', output.data.length));
+        const totalPages = Number(getOrDefault('X-Paginate-Pages', 1));
         const parameters = this.parameters.copy();
 
         parameters.page = page;
@@ -256,7 +251,7 @@ export default class PaginatedResourceListing {
         return new PaginatedResourceListing(
           this.api, this.route, this._Target,
           parameters, totalPages, rowCount,
-          response.data.map(row => new this._Target(this.api, row)),
+          output.data.map(row => new this._Target(this.api, row)),
         );
       });
   }
