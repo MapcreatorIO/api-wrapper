@@ -249,10 +249,13 @@ export default class PaginatedResourceListing {
         const response = JSON.parse(request.responseText);
         const rowCount = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Total`)) || response.data.length;
         const totalPages = Number(request.getResponseHeader(`${PaginatedResourceListing.headerPrefix}-Pages`)) || 1;
+        const parameters = this.parameters.copy();
+
+        parameters.page = page;
 
         return new PaginatedResourceListing(
           this.api, this.route, this._Target,
-          this.parameters, totalPages, rowCount,
+          parameters, totalPages, rowCount,
           response.data.map(row => new this._Target(this.api, row)),
         );
       });
