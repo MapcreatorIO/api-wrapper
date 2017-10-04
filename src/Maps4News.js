@@ -74,7 +74,7 @@ import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {fnv32a} from './utils/hash';
 import {isParentOf} from './utils/reflection';
-import {makeRequest} from './utils/requests';
+import {fetch, Headers} from './utils/requests';
 
 /**
  * Base API class
@@ -186,49 +186,93 @@ export default class Maps4News {
    * @param {string|object} data - Raw string or object. If an object is passed it will be encoded
    *                               and the content-type will be set to `application/json`
    * @param {object} headers - Any headers that should be set for the request
-   * @param {string} responseType - The XmlHttpRequest type
-   * @param {boolean} raw - When set to true the promise will resolve with the request object
+   * @param {boolean} bundleResponse - When set to true the promise will resolve with an object {response: {@link Response}, data: *}
    * @returns {Promise} - Resolves with either an object or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
    */
-  request(url, method = 'GET', data = {}, headers = {}, responseType = '', raw = false) {
+  request(url, method = 'GET', data = {}, headers = {}, bundleResponse = false) {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
       url = url.replace(/(^\/+)/, () => '');
       url = `${this._host}/${this.version}/${url}`;
     }
 
-    if (this.authenticated) {
-      headers.Authorization = this.auth.token.toString();
+    method = method.toUpperCase();
+
+    if (!(headers instanceof Headers)) {
+      headers = new Headers(headers);
     }
 
-    return new Promise((resolve, reject) => {
-      makeRequest(url, method, data, headers, responseType).then(request => {
-        if (request.getResponseHeader('Content-Type') !== 'application/json') {
-          resolve(raw ? request : request.response);
-        } else {
-          const response = JSON.parse(request.responseText);
+    if (this.authenticated) {
+      headers.set('Authorization', this.auth.token.toString());
+    }
 
-          if (!response.success) {
-            reject(this._parseErrorResponse(request, response));
-          } else {
-            // Return an empty object if no data has been sent
-            // instead of returning undefined.
-            resolve(raw ? request : response.data || {});
-          }
+    // Automatically detect possible content-type header
+    if (typeof data === 'object' && !(data instanceof FormData)) {
+      data = JSON.stringify(data);
+
+      if (!headers.has('Content-Type')) {
+        headers.set('Content-Type', 'application/json');
+      }
+    } else if (data && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/x-www-form-urlencoded');
+    }
+
+    if (!headers.has('Accept')) {
+      headers.set('Accept', 'application/json');
+    }
+
+    if (['GET', 'HEAD'].includes(method)) {
+      data = undefined;
+    }
+
+    return fetch(url, {
+      headers, method,
+      body: data,
+      redirect: 'follow',
+      mode: 'cors',
+    }).then(response => {
+      const respond = data => !bundleResponse ? data : {response, data};
+
+      // Check if there is an error response and parse it
+      if (!response.ok) {
+        return response.json().then(data => {
+          throw this._parseErrorResponse(data, response.status);
+        });
+      }
+
+      if (response.headers.has('Content-Type')) {
+        const contentType = response.headers.get('Content-Type').toLowerCase();
+
+        // Any type of text
+        if (contentType.startsWith('text/')) {
+          return response.text().then(respond);
         }
-      }).catch(request => {
-        const response = JSON.parse(request.responseText);
 
-        reject(this._parseErrorResponse(request, response));
-      });
+        // Response data
+        if (contentType === 'application/json') {
+          return response.json()
+            .then(x => {
+              // Just in case, code path should in theory never be reached
+              if (typeof x.success === 'boolean' && !x.success) {
+                this._parseErrorResponse(data, response.status);
+              }
+
+              return x;
+            })
+            .then(x => x.data ? x.data : {})
+            .then(respond);
+        }
+      }
+
+      return response.blob().then(respond);
     });
   }
 
-  _parseErrorResponse(request, response) {
-    const err = response.error;
+  _parseErrorResponse(data, status) {
+    const err = data.error;
 
     if (!err['validation_errors']) {
-      const apiError = new ApiError(err.type, err.message, request.status);
+      const apiError = new ApiError(err.type, err.message, status);
 
       if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
         console.warn('Lost Maps4News session, please re-authenticate');
@@ -238,8 +282,8 @@ export default class Maps4News {
 
       return apiError;
     }
-    return new ValidationError(err.type, err.message, request.status, err['validation_errors']);
 
+    return new ValidationError(err.type, err.message, status, err['validation_errors']);
   }
 
   /**
@@ -521,18 +565,6 @@ export default class Maps4News {
    */
   get users() {
     return this.static(User);
-  }
-
-  /**
-   * Test if XHR requests can be made
-   * @returns {Promise} - resolves/rejects with the HTTP response status code. Rejects if status code != 2xx
-   */
-  testXhr() {
-    return new Promise((resolve, reject) => {
-      makeRequest(`${this.host}/favicon.ico`)
-        .then(x => resolve(x.status))
-        .catch(x => reject(x.status));
-    });
   }
 
   /**

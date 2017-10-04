@@ -86,30 +86,14 @@ export default class ImageHandler {
   /**
    * Get image base64 representation
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
-   * @todo nodejs compatibility
    * @example
    * layer.imageHandler.download().then(url => {
    *   $('img').src = url;
    * });
    */
   download() {
-    const headers = {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
-
-    return fetch(this.url, {headers})
-      .then(res => {
-        if (res.ok) {
-          return res.blob();
-        }
-        return res.json().then(data => {
-          const err = data.error;
-
-          throw new ApiError(err.type, err.message, res.status);
-        });
-
-      })
+    return this.api
+      .request(this.url)
       .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
   }
 
@@ -117,51 +101,16 @@ export default class ImageHandler {
    * Upload new image
    * @param {File} image - Image file
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
-   * @todo refactor
    */
   upload(image) {
     if (!isParentOf(File, image)) {
       throw new TypeError('Expected image to be of type File');
     }
 
-    return new Promise((resolve, reject) => {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      formData.append('image', image);
+    formData.append('image', image);
 
-      const request = new XMLHttpRequest();
-
-      request.open('POST', this.url, true);
-      request.setRequestHeader('Authorization', this.api.auth.token.toString());
-      request.setRequestHeader('Accept', 'application/json');
-
-      request.onreadystatechange = () => {
-        if (request.readyState !== XMLHttpRequest.DONE) {
-          return;
-        }
-
-        try {
-          const response = JSON.parse(request.responseText);
-
-          if (!response.success) {
-            const err = response.error;
-
-            if (!err.validation_errors) {
-              reject(new ApiError(err.type, err.message, request.status));
-            } else {
-              reject(new ValidationError(err.type, err.message, request.status, err.validation_errors));
-            }
-          } else {
-            // Return an empty object if no data has been sent
-            // instead of returning undefined.
-            resolve(response.data || {});
-          }
-        } catch (ignore) {
-          reject(new ApiError('ResponseException', 'The server returned an invalid response', request.status));
-        }
-      };
-
-      request.send(formData);
-    });
+    return this.api.request(this.url, 'POST', formData);
   }
 }
