@@ -34,63 +34,6 @@ import fetchPonyfill from 'fetch-ponyfill';
 export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
 
 /**
- * Makes a HTTP request and returns a promise. Promise will fail/reject if the
- * status code isn't 2XX.
- * @param {string} url - Target url
- * @param {string} method - HTTP method
- * @param {string|object<string, string>} body - raw body content or object to be json encoded
- * @param {object<string, string>} headers - headers
- * @param {string} responseType - XMLHttpRequest response type
- *
- * @returns {Promise} - resolves/rejects with {@link XMLHttpRequest} object. Rejects if status code != 2xx
- * @protected
- * @deprecated
- * @todo Better nodejs compatibility, maybe a requests library
- */
-export function makeRequest(url, method = 'GET', body = '', headers = {}, responseType = '') {
-  return new Promise((resolve, reject) => {
-    method = method.toUpperCase();
-
-    const request = new XMLHttpRequest();
-
-    request.responseType = responseType;
-
-    function hasHeader(h) {
-      return Object.keys(headers)
-        .filter(x => x.toLowerCase() === h.toLowerCase())
-        .length > 0;
-    }
-
-    request.open(method, url, true);
-
-
-
-    // Apply headers
-    for (const key of Object.keys(headers)) {
-      request.setRequestHeader(key, headers[key]);
-    }
-
-    request.onreadystatechange = () => {
-      // State 4 === Done
-      if (request.readyState === XMLHttpRequest.DONE) {
-        if (request.status >= 200 && request.status < 300) {
-          resolve(request);
-        } else {
-          reject(request);
-        }
-      }
-    };
-
-    if (body && method !== 'GET') {
-      request.send(body);
-    } else {
-      request.send();
-    }
-  });
-}
-
-
-/**
  * Encodes an object to a http query string with support for recursion
  * @param {object<string, *>} paramsObject - data to be encoded
  * @returns {string} - encoded http query string
