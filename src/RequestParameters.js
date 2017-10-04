@@ -33,9 +33,9 @@
 
 import DeletedState from './enums/DeletedState';
 import {camelToPascalCase, camelToSnakeCase, snakeToCamelCase} from './utils/caseConverter';
+import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import {fnv32a, hashObject} from './utils/hash';
 
 /**
  * Used for keeping track of the request parameters
@@ -276,7 +276,13 @@ export default class RequestParameters {
       throw new TypeError(`Expected value to be of type "Object" got "${getTypeName(value)}"`);
     }
 
-    for (const key of Object.keys(value)) {
+    // Normalization macro
+    const normalize = x => typeof x === 'number' ? x.toString() : x;
+
+    for (let key of Object.keys(value)) {
+      key = normalize(key);
+      value[key] = normalize(value[key]);
+
       if (typeof key !== 'string') {
         throw new TypeError(`Expected key to be of type "String" got "${getTypeName(key)}"`);
       }
@@ -295,7 +301,7 @@ export default class RequestParameters {
       } else if (value[key] === null) {
         delete value[key];
       } else if (typeof value[key] !== 'string') {
-        throw new TypeError(`Expected query value to be of type "String" or "Array" got "${getTypeName(key)}"`);
+        throw new TypeError(`Expected query value to be of type "String" or "Array" got "${getTypeName(value[key])}"`);
       }
     }
 
@@ -427,7 +433,13 @@ export default class RequestParameters {
   }
 
   token() {
-    return hashObject(this.toObject());
+    const data = this.toObject();
+
+    delete data['page'];
+    delete data['per_page'];
+
+    return hashObject(data);
   }
+
   // endregion utils
 }

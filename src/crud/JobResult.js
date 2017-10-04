@@ -30,11 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import ApiError from '../errors/ApiError';
+import {fetch} from '../utils/requests';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
   get resourcePath() {
-    return '/jobs/{job_id}/revisions/{job_revision_id}/result';
+    return '/jobs/{job_id}/revisions/{revision}/result';
   }
 
   get resourceName() {
@@ -50,10 +52,63 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
+   * Get archive blob url
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   */
+  downloadArchive() {
+    return this._download(this.archiveUrl);
+  }
+
+  /**
+   * Job result log url
+   * @returns {string} - log url
+   */
+  get logUrl() {
+    return `${this.url}/log`;
+  }
+
+  /**
+   * Get log blob url
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   */
+  downloadLog() {
+    return this._download(this.logUrl);
+  }
+
+  /**
    * Job result preview url, usable in an `<img>` tag
    * @returns {string} - Preview url
    */
   get previewUrl() {
     return `${this.url}/preview`;
+  }
+
+  /**
+   * Get image blob url representation
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   */
+  downloadPreview() {
+    return this._download(this.previewUrl);
+  }
+
+  _download(url) {
+    const headers = {
+      Accept: 'application/json',
+      Authorization: this.api.auth.token.toString(),
+    };
+
+    return fetch(url, {headers})
+      .then(res => {
+        if (res.ok) {
+          return res.blob();
+        }
+        return res.json().then(data => {
+          const err = data.error;
+
+          throw new ApiError(err.type, err.message, res.status);
+        });
+
+      })
+      .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
   }
 }
