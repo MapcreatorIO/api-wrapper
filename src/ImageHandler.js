@@ -93,23 +93,8 @@ export default class ImageHandler {
    * });
    */
   download() {
-    const headers = {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
-
-    return fetch(this.url, {headers})
-      .then(res => {
-        if (res.ok) {
-          return res.blob();
-        }
-        return res.json().then(data => {
-          const err = data.error;
-
-          throw new ApiError(err.type, err.message, res.status);
-        });
-
-      })
+    return this.api
+      .request(this.url)
       .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
   }
 
