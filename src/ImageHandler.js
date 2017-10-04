@@ -35,7 +35,7 @@ import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';
-import {fetch} from './utils/requests';
+import {FormData, fetch} from './utils/requests';
 
 /**
  * Image resource handler

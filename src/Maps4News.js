@@ -74,7 +74,7 @@ import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {fnv32a} from './utils/hash';
 import {isParentOf} from './utils/reflection';
-import {fetch, Headers} from './utils/requests';
+import {FormData, fetch, Headers} from './utils/requests';
 
 /**
  * Base API class
