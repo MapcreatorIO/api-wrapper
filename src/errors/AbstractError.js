@@ -33,7 +33,15 @@
 /**
  * Thrown by abstract methods and classes
  */
-export class AbstractError extends Error {}
+export class AbstractError extends Error {
+  /**
+   * AbstractError constructor
+   * @param {String} message - Error message
+   */
+  constructor(message) {
+    super(message);
+  }
+}
 
 /**
  * Thrown upon invocation of an abstract class
