@@ -38,7 +38,9 @@
  * const ANSWER = new Enum({
  *   YES: true,
  *   NO: false,
- *   MAYBE: !Math.round(Math.random()), // Either true or false
+ *   // Passing functions as values will turn them into getters
+ *   // Getter results will appear in ::values
+ *   MAYBE: () => !Math.round(Math.random()),
  * });
  */
 export class Enum {
@@ -54,20 +56,33 @@ export class Enum {
       }
     } else {
       for (const key of Object.keys(enums)) {
-        Object.defineProperty(this, key, {
-          enumerable: true,
-          value: enums[key],
-        });
+        const init = {enumerable: true};
+
+        if (typeof enums[key] === 'function') {
+          init.get = enums[key];
+        } else {
+          init.value = enums[key];
+        }
+
+        Object.defineProperty(this, key, init);
       }
     }
 
     Object.freeze(this);
   }
 
+  /**
+   * List enum keys
+   * @returns {Array} - Enum keys
+   */
   keys() {
     return Object.keys(this);
   }
 
+  /**
+   * List enum values
+   * @returns {Array<*>} - Enum values
+   */
   values() {
     return this.keys()
       .map(key => this[key])
