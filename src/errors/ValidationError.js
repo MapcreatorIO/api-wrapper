@@ -55,12 +55,13 @@ export default class ValidationError extends ApiError {
     return this._validationErrors;
   }
 
+  /**
+   * @inheritDoc
+   */
   toString() {
-    const errors = [].concat(
-      ...Object
-        .keys(this.validationErrors)
-        .map(x => this.validationErrors[x])
-    );
+    const errors = Object
+      .keys(this.validationErrors)
+      .map(x => this.validationErrors[x]);
 
     return `There were some validation errors: ${errors.join(' ')}`;
   }
