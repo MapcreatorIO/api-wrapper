@@ -56,6 +56,10 @@ export * as resources from './crud';
 // Helpers
 export * as helpers from './utils/helpers';
 
+// Errors
+export * as errors from './errors';
+
+
 /**
  * Package version
  * @private
