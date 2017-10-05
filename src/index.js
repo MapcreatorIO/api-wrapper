@@ -71,3 +71,5 @@ export const version = VERSION;
  * @private
  */
 export const license = LICENSE;
+
+export const test = TEST(10);

@@ -31,7 +31,7 @@
  */
 
 
-import DeletedState from './enums/DeletedState';
+import {DeletedState} from './enums';
 import {camelToPascalCase, camelToSnakeCase, snakeToCamelCase} from './utils/caseConverter';
 import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
