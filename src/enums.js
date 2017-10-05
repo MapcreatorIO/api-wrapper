@@ -41,7 +41,7 @@
  *   MAYBE: !Math.round(Math.random()), // Either true or false
  * });
  */
-export default class Enum {
+export class Enum {
   constructor(enums) {
     if (enums instanceof Array) {
       let counter = 0;
@@ -74,3 +74,21 @@ export default class Enum {
       .filter((v, i, s) => s.indexOf(v) === i);
   }
 }
+
+
+/**
+ * Enum containing the possible different values for {@link RequestParameters#deleted}
+ * @enum {string}
+ * @property {string} ALL - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} BOTH - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} NONE - Don't return deleted resources
+ * @property {string} ONLY - Only return deleted resources
+ * @readonly
+ */
+export const DeletedState = new Enum({
+  ALL: 'all',
+  BOTH: 'all',
+  NONE: 'none',
+  ONLY: 'only',
+});
+

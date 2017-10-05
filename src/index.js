@@ -35,7 +35,7 @@ export Maps4News from './Maps4News';
 export RequestParameters from './RequestParameters';
 
 // Enums
-export DeletedState from './enums/DeletedState';
+export DeletedState from './enums';
 
 // Flows
 export OAuth from './oauth/OAuth';
