@@ -46,7 +46,7 @@ export default class Enum {
     if (enums instanceof Array) {
       let counter = 0;
 
-      for (const key of Object.keys(enums)) {
+      for (const key of enums) {
         Object.defineProperty(this, key, {
           enumerable: true,
           value: counter++,
