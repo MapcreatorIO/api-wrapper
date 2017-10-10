@@ -169,4 +169,14 @@ export default class JobRevision extends CrudBase {
 
     return this.api.request(url, 'POST', {visibility});
   }
+
+  /**
+   * Clones a job revision to the user requesting it
+   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   */
+  clone() {
+    const url = `${this.url}/clone`;
+
+    return this.api.request(url, 'POST');
+  }
 }

@@ -109,6 +109,7 @@ export default class ImageHandler {
 
     formData.append('image', image);
 
+    debugger;
     return this.api.request(this.url, 'POST', formData);
   }
 }
