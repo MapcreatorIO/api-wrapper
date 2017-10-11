@@ -74,7 +74,7 @@ import ResourceCache from './ResourceCache';
 import ResourceProxy from './ResourceProxy';
 import {fnv32a} from './utils/hash';
 import {isParentOf} from './utils/reflection';
-import {FormData, fetch, Headers} from './utils/requests';
+import {fetch, FormData, Headers} from './utils/requests';
 
 /**
  * Base API class
@@ -207,14 +207,16 @@ export default class Maps4News {
     }
 
     // Automatically detect possible content-type header
-    if (typeof data === 'object' && !(data instanceof FormData)) {
+    const isFormData = data instanceof FormData;
+
+    if (typeof data === 'object' && !isFormData) {
       data = JSON.stringify(data);
 
       if (!headers.has('Content-Type')) {
         headers.set('Content-Type', 'application/json');
       }
-    } else if (data && !headers.has('Content-Type')) {
-      headers.set('Content-Type', 'application/x-www-form-urlencoded');
+    } else if (data && !headers.has('Content-Type') && !isFormData) {
+      // headers.set('Content-Type', 'application/x-www-form-urlencoded');
     }
 
     if (!headers.has('Accept')) {
