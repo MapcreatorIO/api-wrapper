@@ -51,7 +51,6 @@ module.exports = {
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(version),
       LICENSE: JSON.stringify(license),
-      TEST: '(function(x){return x * x;})',
     }),
 
     new webpack.optimize.UglifyJsPlugin({
