@@ -30,6 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import stringify from 'json-stable-stringify';
+
 const FNV1_32A_INIT = 0x811c9dc5;
 
 /**
@@ -65,5 +67,5 @@ export function fnv32b(str) {
  * @private
  */
 export function hashObject(data) {
-  return fnv32b(JSON.stringify(data));
+  return fnv32b(stringify(data));
 }

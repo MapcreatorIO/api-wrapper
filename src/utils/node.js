@@ -37,5 +37,7 @@
  * @private
  */
 export function isNode() {
-  return typeof window === 'undefined' && typeof module !== 'undefined' && module.exports;
+  return typeof window === 'undefined'
+    && typeof module !== 'undefined'
+    && typeof module.exports !== 'undefined';
 }
