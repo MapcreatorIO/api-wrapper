@@ -30,40 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const FNV1_32A_INIT = 0x811c9dc5;
+import test from 'ava';
+import {fnv32b} from '../src/utils/hash';
 
-/**
- * Fast hash function for non-cryptographic use
- * @param {string} str - Input to be hashed
- * @returns {string} - String representation of the hash
- * @private
- */
-export function fnv32b(str) {
-  let hash = str
-    .split('')
-    .map(x => x.charCodeAt(0))
-    .reduce((sum, val) => {
-      sum ^= val;
-      return sum + (sum << 1) + (sum << 4) + (sum << 7) + (sum << 8) + (sum << 24);
-    }, FNV1_32A_INIT);
-
-  // Avalanche
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-
-  return ('0000000' + (hash >>> 0).toString(16)).substr(-8);
-}
-
-/**
- * Fast object hashing for non-cryptographic use
- * @param {object} data - input data
- * @returns {string} - String reprisentation of the hash
- * @private
- */
-export function hashObject(data) {
-  return fnv32b(JSON.stringify(data));
-}
+test('fnv32b hashes properly', t => {
+  t.is(fnv32b('MapCreator'), 'd3006af8');
+});
