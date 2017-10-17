@@ -114,7 +114,7 @@ test('static class can\'t be Instantiated', t => {
 
   }
 
-  const err = t.throws(() => new Foo());
+  t.throws(() => new Foo());
 });
 
 test('uuid4 returns a new random uuid', t => {
