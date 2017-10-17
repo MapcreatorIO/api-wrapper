@@ -1,6 +1,6 @@
 {
   "name": "@mapcreator/maps4news",
-  "version": "1.1.32",
+  "version": "1.1.33",
   "description": "Maps4News JavaScript Api",
   "main": "dist/bundle.js",
   "repository": "git@github.com:MapCreatorEU/m4n-api.git",
@@ -40,11 +40,11 @@
     "webpack-merge": "^4.1.0"
   },
   "scripts": {
-    "build": "$(npm bin)/webpack && gzip dist/bundle.min.js -9knf && rm dist/bundle.min.js.map && sed -e '$ d' dist/bundle.min.js > dist/bundle.min.js~ && mv dist/bundle.min.js~ dist/bundle.min.js && gzip -l dist/bundle.min.js.gz",
-    "watch": "$(npm bin)/webpack --progress --watch",
-    "docs": "$(npm bin)/esdoc",
+    "build": "npx webpack && gzip dist/bundle.min.js -9knf && rm dist/bundle.min.js.map && sed -e '$ d' dist/bundle.min.js > dist/bundle.min.js~ && mv dist/bundle.min.js~ dist/bundle.min.js && gzip -l dist/bundle.min.js.gz",
+    "watch": "npx webpack --progress --watch",
+    "docs": "npx esdoc",
     "lint": "$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
-    "authors": "$(npm bin)/contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
+    "authors": "npx contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
     "clean": "rm -r dist docs || true",
     "all": "npm run clean && npm run lint && npm run build && npm run docs",
     "test": "ava"
