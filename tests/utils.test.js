@@ -32,9 +32,10 @@
 
 import test from 'ava';
 import {Enum} from '../src/enums';
+import Trait from '../src/traits/Trait';
 import {fnv32b, hashObject} from '../src/utils/hash';
 import {isNode} from '../src/utils/node';
-import {getTypeName, isParentOf} from '../src/utils/reflection';
+import {getTypeName, isParentOf, mix} from '../src/utils/reflection';
 import {encodeQueryString} from '../src/utils/requests';
 import Singleton from '../src/utils/Singleton';
 import StaticClass from '../src/utils/StaticClass';
@@ -175,4 +176,58 @@ test('Enum should accept dictionaries', t => {
   aggr = aggr.filter((v, i, s) => s.indexOf(v) === i).sort();
 
   t.deepEqual(aggr, [false, true]);
+});
+
+test('Enum::values should only return unique values', t => {
+  const Test = new Enum({
+    ME: 'CRESCENT_FRESH',
+    YOU: 'CRESCENT_FRESH',
+    RUDE_DUDE: 'NOT_CRESCENT_FRESH',
+  });
+
+  t.is(Test.keys().length, 3);
+  t.is(Test.values().length, 2);
+  t.deepEqual(Test.values(), ['CRESCENT_FRESH', 'NOT_CRESCENT_FRESH']);
+});
+
+test('Traits work correctly', t => {
+  const uuid4 = Uuid.uuid4();
+
+  class Foo extends Trait {
+    foo() {
+      return this.bar;
+    }
+  }
+
+  class Bar extends Trait {
+    initializer() {
+      this._bar = uuid4;
+    }
+
+    get bar() {
+      return this._bar;
+    }
+  }
+
+  class Baz extends mix(Foo, Bar) {
+
+  }
+
+  const instance = new Baz();
+
+  t.is(instance.foo(), uuid4);
+});
+
+test('Mixing can only be done with Traits', t => {
+  class Foo {
+  }
+
+  class Bar {
+  }
+
+  class Baz extends Trait {
+  }
+
+  t.throws(() => mix(Foo, Bar));
+  t.is(typeof mix(Foo, Baz), 'function');
 });
