@@ -46,7 +46,7 @@
     "docs": "npx esdoc",
     "lint": "$(yarn bin)/eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
     "authors": "npx contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
-    "clean": "rm -r dist docs || true",
+    "clean": "rm -r dist docs .nyc_output build || true",
     "all": "npm run clean && npm run lint && npm run build && npm run docs",
     "test": "npx ava"
   },
