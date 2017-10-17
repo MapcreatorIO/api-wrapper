@@ -43,7 +43,7 @@
  *   MAYBE: () => !Math.round(Math.random()),
  * });
  */
-let atoi = 0;
+let index = 0;
 
 export class Enum {
   constructor(enums) {
@@ -51,7 +51,7 @@ export class Enum {
       for (const key of enums) {
         Object.defineProperty(this, key, {
           enumerable: true,
-          value: atoi++,
+          value: index++,
         });
       }
     } else {

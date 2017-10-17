@@ -31,6 +31,7 @@
  */
 
 import test from 'ava';
+import {Enum} from '../src/enums';
 import {fnv32b, hashObject} from '../src/utils/hash';
 import {isNode} from '../src/utils/node';
 import {getTypeName, isParentOf} from '../src/utils/reflection';
@@ -138,4 +139,40 @@ test('uuid4 returns a new random uuid', t => {
 
 test('uuid0 returns a null uuid', t => {
   t.is(Uuid.nil(), '0000000-0000-0000-0000-000000000000');
+});
+
+test('Enum should be numeric by default', t => {
+  const values = ['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE'];
+  const Colors = new Enum(values);
+
+  t.plan(values.length + 1);
+
+  for (const color of values) {
+    t.is(typeof Colors[color], 'number');
+  }
+
+  t.deepEqual(Colors.keys(), values);
+});
+
+test('Enum should accept dictionaries', t => {
+  const ANSWER = new Enum({
+    YES: true,
+    NO: false,
+    // Passing functions as values will turn them into getters
+    // Getter results will appear in ::values
+    MAYBE: () => !Math.round(Math.random()),
+  });
+
+  t.true(ANSWER.YES);
+  t.false(ANSWER.NO);
+
+  let aggr = [];
+
+  for (let i = 0; i < 100; i++) {
+    aggr.push(ANSWER.MAYBE);
+  }
+
+  aggr = aggr.filter((v, i, s) => s.indexOf(v) === i).sort();
+
+  t.deepEqual(aggr, [false, true]);
 });

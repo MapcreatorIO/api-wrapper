@@ -47,7 +47,7 @@
     "authors": "npx contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
     "clean": "rm -r dist docs || true",
     "all": "npm run clean && npm run lint && npm run build && npm run docs",
-    "test": "ava"
+    "test": "npx ava"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"

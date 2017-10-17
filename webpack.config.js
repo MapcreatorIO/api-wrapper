@@ -52,7 +52,6 @@ module.exports = {
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(version),
       LICENSE: JSON.stringify(license),
-      iota: ''
     }),
 
     new webpack.optimize.UglifyJsPlugin({
