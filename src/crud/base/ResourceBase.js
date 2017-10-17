@@ -324,7 +324,17 @@ export default class ResourceBase {
    * @returns {string} - Resource name and id
    */
   toString() {
-    return `${this.constructor.name}(${this.id})`;
+    return `${this.constructor.name}(${this[this.resourceUrlKey]})`;
+  }
+
+  /**
+   * Transform instance to object
+   * @returns {{}} - object
+   */
+  toObject() {
+    this._updateProperties();
+
+    return Object.assign({}, this._baseProperties, this._properties);
   }
 
   /**
