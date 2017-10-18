@@ -51,6 +51,11 @@ node('npm && yarn') {
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
+	stage('test') {
+    sh 'yarn run test'
+
+	}
+
 	stage('publish') {
 		if (SHOULD_TAG) {
 			git_push("HEAD:${BRANCH_NAME}", '--tags')

@@ -43,15 +43,15 @@
  *   MAYBE: () => !Math.round(Math.random()),
  * });
  */
+let index = 0;
+
 export class Enum {
   constructor(enums) {
     if (enums instanceof Array) {
-      let counter = 0;
-
       for (const key of enums) {
         Object.defineProperty(this, key, {
           enumerable: true,
-          value: counter++,
+          value: index++,
         });
       }
     } else {

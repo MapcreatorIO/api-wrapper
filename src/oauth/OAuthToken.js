@@ -147,6 +147,7 @@ export default class OAuthToken {
       token: this.token,
       type: this.type,
       expires: this.expires.toUTCString(),
+      scopes: this.scopes,
     };
 
     if (isNode()) {
@@ -185,7 +186,7 @@ export default class OAuthToken {
         const raw = fs.readFileSync(name);
         const data = JSON.parse(raw);
 
-        return new OAuthToken(data.token, data.type, new Date(data.expires));
+        return new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
       }
 
       return null;
@@ -200,7 +201,7 @@ export default class OAuthToken {
         const raw = decodeURIComponent(parts[1].split(';')[0]);
         const data = JSON.parse(raw);
 
-        return new OAuthToken(data.token, data.type, new Date(data.expires));
+        return new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
       }
     }
 
@@ -210,7 +211,7 @@ export default class OAuthToken {
     if (raw) {
       const data = JSON.parse(raw);
 
-      const instance = new OAuthToken(data.token, data.type, new Date(data.expires));
+      const instance = new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
 
       if (!instance.expired) {
         return instance;
