@@ -53,7 +53,7 @@ node('npm && yarn') {
 
 	stage('test') {
     sh 'yarn run test-ci'
-    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'Coverage', reportTitles: ''])
+    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
     step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
 	}
 
