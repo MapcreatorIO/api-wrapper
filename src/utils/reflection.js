@@ -87,11 +87,10 @@ export function mix(baseClass, ...mixins) {
   const cocktail = class _Cocktail extends baseClass {
     constructor(...args) {
       super(...args);
-      mixins.forEach(mixin => {
-        if (mixin.prototype.initializer) {
-          mixin.prototype.initializer.call(this);
-        }
-      });
+      mixins
+        .map(mixin => mixin.prototype.initializer)
+        .filter(_ => _)
+        .forEach(initializer => initializer.call(this));
     }
   };
 
