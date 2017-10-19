@@ -231,3 +231,8 @@ test('Mixing can only be done with Traits', t => {
   t.throws(() => mix(Foo, Bar));
   t.is(typeof mix(Foo, Baz), 'function');
 });
+
+test('getTypeName correctly gets the type name', t => {
+  t.is(getTypeName(Date), 'Date');
+  t.is(getTypeName(new Date()), 'Date');
+});
