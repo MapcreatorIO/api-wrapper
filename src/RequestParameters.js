@@ -31,14 +31,15 @@
  */
 
 
+import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case';
 import {DeletedState} from './enums';
 import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case';
 
 /**
  * Used for keeping track of the request parameters
+ * @todo transform CamelCase to snake_case in search keys and sort vars
  */
 export default class RequestParameters {
   /**
@@ -196,7 +197,7 @@ export default class RequestParameters {
    * @returns {String} -  Deleted items filter state
    */
   static get deleted() {
-    return RequestParameters._deleted || process.env.SHOW_DELETED.toLowerCase();
+    return RequestParameters._deleted || DeletedState.NONE;
   }
 
   // endregion getters
@@ -272,7 +273,7 @@ export default class RequestParameters {
   }
 
   static _validateSearch(value) {
-    if (typeof value !== 'object') {
+    if (typeof value !== 'object' || Array.isArray(value)) {
       throw new TypeError(`Expected value to be of type "Object" got "${getTypeName(value)}"`);
     }
 
@@ -309,6 +310,10 @@ export default class RequestParameters {
   }
 
   static _validateSort(value) {
+    if (typeof value === 'string') {
+      return this._validateSort(value.split(','));
+    }
+
     if (!(value instanceof Array)) {
       throw new TypeError(`Expected sort value to be of type "Array" got "${getTypeName(value)}"`);
     }
@@ -327,6 +332,10 @@ export default class RequestParameters {
   }
 
   static _validateDeleted(value) {
+    if (typeof value !== 'string') {
+      throw new TypeError(`Expected deleted to be of type "string" got "${getTypeName(value)}". See: DeletedState`);
+    }
+
     value = value.toLowerCase();
 
     const possible = DeletedState.values();
@@ -368,8 +377,17 @@ export default class RequestParameters {
   encode() {
     const data = this.toObject();
 
-    if (Array.isArray(data.sort)) {
-      data.sort = data.sort.join(',');
+    // Fix column names for sort
+    data.sort = data.sort.map(snakeCase).join(',');
+
+    // Fix column names for search
+    for (const key of Object.keys(data.search)) {
+      const snakeKey = snakeCase(key);
+
+      if (key !== snakeKey) {
+        data.search[snakeKey] = data.search[key];
+        delete data.search[key];
+      }
     }
 
     return encodeQueryString(data);
@@ -419,17 +437,20 @@ export default class RequestParameters {
    * @param {Function} method - Callback method
    * @param {?String} [name=null] - Property name
    * @returns {void}
+   * @deprecated
    */
   watch(method, name = null) {
     if (name) {
-      method = (n, v) => {
+      const wrapped = (n, v) => {
         if (n === name.toLowerCase()) {
           method(v);
         }
       };
-    }
 
-    this._watch.push(method);
+      this._watch.push(wrapped);
+    } else {
+      this._watch.push(method);
+    }
   }
 
   token() {
@@ -439,6 +460,12 @@ export default class RequestParameters {
     delete data['per_page'];
 
     return hashObject(data);
+  }
+
+  static resetDefaults() {
+    for (const key of RequestParameters.keys()) {
+      delete RequestParameters['_' + key];
+    }
   }
 
   // endregion utils
