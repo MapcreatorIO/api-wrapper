@@ -6,6 +6,8 @@ if [[ $(basename $(pwd)) == "scripts" ]]; then
   cd ..
 fi
 
+mkdir -pv build
+
 # build
 npx webpack
 
