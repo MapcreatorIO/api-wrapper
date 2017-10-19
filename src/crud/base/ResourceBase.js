@@ -33,7 +33,7 @@
 import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import SimpleResourceProxy from '../../SimpleResourceProxy';
-import {camelToSnakeCase, pascalToCamelCase, snakeToCamelCase} from '../../utils/caseConverter';
+import {camel as camelCase, snake as snakeCase} from 'case';
 import {isParentOf} from '../../utils/reflection';
 
 /**
@@ -57,7 +57,7 @@ export default class ResourceBase {
     // Normalize keys to snake_case
     // Fix data types
     for (const key of Object.keys(data)) {
-      const newKey = camelToSnakeCase(pascalToCamelCase(key));
+      const newKey = snakeCase(key);
 
       data[newKey] = ResourceBase._guessType(newKey, data[key]);
 
@@ -151,7 +151,7 @@ export default class ResourceBase {
 
     // Move the pointer from this to the properties object
     for (const key of fields) {
-      const newKey = camelToSnakeCase(key);
+      const newKey = snakeCase(key);
 
       this._properties[newKey] = this[key];
       delete this[key];
@@ -238,7 +238,7 @@ export default class ResourceBase {
       };
     }
 
-    Object.defineProperty(this, snakeToCamelCase(key), desc);
+    Object.defineProperty(this, camelCase(key), desc);
   }
 
   /**
@@ -291,7 +291,7 @@ export default class ResourceBase {
       let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
 
       // Find and replace any keys
-      url = url.replace(/{(\w+)}/g, (match, key) => this[snakeToCamelCase(key)]);
+      url = url.replace(/{(\w+)}/g, (match, key) => this[camelCase(key)]);
 
       this._url = url;
     }
@@ -316,7 +316,7 @@ export default class ResourceBase {
   get fieldNames() {
     return Object
       .keys(this._baseProperties)
-      .map(snakeToCamelCase);
+      .map(camelCase);
   }
 
   /**
