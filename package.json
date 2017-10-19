@@ -48,7 +48,7 @@
     "lint": "npx eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
     "authors": "npx contributors | grep -v -e '^- [A-Za-z]' | tail -n +4 > AUTHORS.md",
     "clean": "rm -r dist docs .nyc_output build || true",
-    "all": "npm run clean && npm run lint && npm run build && npm run docs",
+    "all": "npm run clean && npm run lint && npm run build && npm run test && npm run docs",
     "test": "npx ava",
     "test-ci": "npx nyc --all --report-dir build/coverage --clean -n 'src/**.js' -r html -r cobertura npx ava -t | tee build/ava.tap"
   },
