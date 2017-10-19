@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+set -o xtrace
+
+if [[ $(basename $(pwd)) == "scripts" ]]; then
+  cd ..
+fi
+
 function cleanDir {
   junk=$(ls -a | grep -ve docs -e .git -e .gitignore)
 
