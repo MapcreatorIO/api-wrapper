@@ -7,7 +7,7 @@ if [[ $(basename $(pwd)) == "scripts" ]]; then
 fi
 
 function cleanDir {
-  junk=$(ls -a | grep -ve docs -e .git -e .gitignore)
+  junk=$(ls -a | grep -ve docs -e .git -e .gitignore | grep --invert-match '^\.*$')
 
   rm -rf ${junk} || true
 }
