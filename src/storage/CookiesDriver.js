@@ -78,7 +78,13 @@ export default class CookiesDriver extends DataStoreDriver {
       expires = expires.toUTCString();
     }
 
-    document.cookie = `${name}=${value}; expires=${expires}`;
+    let cookie = `${name}=${value}; expires=${expires}`;
+
+    if (CookiesDriver.secure) {
+      cookie += ';secure';
+    }
+
+    document.cookie = cookie;
   }
 
   /**
@@ -96,7 +102,13 @@ export default class CookiesDriver extends DataStoreDriver {
   remove(name) {
     name = encodeURIComponent(CookiesDriver._prefix + name);
 
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+    let cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+
+    if (CookiesDriver.secure) {
+      cookie += ';secure';
+    }
+
+    document.cookie = cookie;
   }
 
   /**
