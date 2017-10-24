@@ -31,6 +31,7 @@
  */
 
 import Trait from '../traits/Trait';
+import {fnv32b} from './hash';
 
 /**
  * Tests if the parent is a parent of child
@@ -105,6 +106,10 @@ export function mix(baseClass, ...mixins) {
   }
 
   cocktail.__mixins = mixins;
+
+  const hash = fnv32b(mixins.map(x => x.name).join(','));
+
+  Object.defineProperty(cocktail, 'name', {value: `Cocktail_${hash}`});
 
   return cocktail;
 }

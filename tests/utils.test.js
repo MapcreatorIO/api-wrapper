@@ -214,8 +214,10 @@ test('Traits work correctly', t => {
   }
 
   const instance = new Baz();
+  const cocktail = Object.getPrototypeOf(Baz);
 
   t.is(instance.foo(), uuid4);
+  t.is(cocktail.name, 'Cocktail_5d296402');
 });
 
 test('Mixing can only be done with Traits', t => {
