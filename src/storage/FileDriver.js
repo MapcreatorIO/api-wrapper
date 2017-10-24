@@ -32,7 +32,6 @@
 
 import {isNode} from '../utils/node';
 import DataStoreDriver from './DataStoreDriver';
-import * as fs from 'fs';
 
 export default class FileDriver extends DataStoreDriver {
   /**
@@ -128,7 +127,7 @@ export default class FileDriver extends DataStoreDriver {
    * @private
    */
   _read() {
-    const data = fs.readFileSync(this.path);
+    const data = this.__fs.readFileSync(this.path);
 
     return JSON.parse(data);
   }
@@ -142,6 +141,15 @@ export default class FileDriver extends DataStoreDriver {
   _write(data) {
     data = JSON.stringify(data);
 
-    fs.writeFileSync(this.path, data);
+    this.__fs.writeFileSync(this.path, data);
+  }
+
+  get _fs() {
+    if (!this.__fs) {
+      // eslint-disable-next-line no-eval
+      this.__fs = eval('require("fs")');
+    }
+
+    return this.__fs;
   }
 }
