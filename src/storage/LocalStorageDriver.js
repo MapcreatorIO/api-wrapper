@@ -31,6 +31,7 @@
  */
 
 import DataStoreDriver from './DataStoreDriver';
+import {isNode} from '../utils/node';
 
 export default class LocalStorageDriver extends DataStoreDriver {
   /**
@@ -40,6 +41,13 @@ export default class LocalStorageDriver extends DataStoreDriver {
    */
   static get _prefix() {
     return '_m4n_';
+  }
+
+  /**
+   * @inheritDoc
+   */
+  static get available() {
+    return !isNode();
   }
 
   /**

@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {isNode} from '../utils/node';
 import DataStoreDriver from './DataStoreDriver';
 
 export default class CookiesDriver extends DataStoreDriver {
@@ -53,6 +54,13 @@ export default class CookiesDriver extends DataStoreDriver {
    */
   static get secure() {
     return window.location.protocol === 'https:';
+  }
+
+  /**
+   * @inheritDoc
+   */
+  static get available() {
+    return !isNode();
   }
 
   /**
