@@ -43,7 +43,6 @@ test('RequestParameters should use defaults', t => {
   const params = new RequestParameters();
 
   RequestParameters.keys().forEach(key => {
-    t.log(`Testing ${key}`);
     t.deepEqual(params[key], RequestParameters[key]);
   });
 });
@@ -129,7 +128,6 @@ for (const key of Object.keys(validationTests)) {
     });
 
     target.bad.forEach(input => {
-      t.log(`Testing "${typeof input}" = "${input}"`);
       t.throws(() => {
         params[key] = input;
       });
