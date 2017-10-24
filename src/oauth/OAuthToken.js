@@ -30,8 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import NodeError from '../errors/NodeError';
-import {isNode} from '../utils/node';
 import StorageManager from '../storage/StorageManager';
 
 /**

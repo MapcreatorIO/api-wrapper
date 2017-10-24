@@ -30,6 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable no-unused-vars */
+
 import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
 
 export default class DataStoreDriver {
