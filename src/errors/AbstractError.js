@@ -45,6 +45,14 @@ export class AbstractError extends Error {
 
 /**
  * Thrown upon invocation of an abstract class
+ * @example
+ * class FooBar {
+ *   constructor() {
+ *     if (this.constructor === FooBar) {
+ *       throw new AbstractClassError();
+ *     }
+ *   }
+ * }
  */
 export class AbstractClassError extends AbstractError {
   constructor() {
