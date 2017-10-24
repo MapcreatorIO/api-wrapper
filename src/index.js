@@ -33,6 +33,7 @@
 // Core
 export Maps4News from './Maps4News';
 export RequestParameters from './RequestParameters';
+export StorageManager from './storage/StorageManager';
 
 // Enums
 export DeletedState from './enums';
