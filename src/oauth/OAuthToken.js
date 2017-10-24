@@ -32,6 +32,7 @@
 
 import NodeError from '../errors/NodeError';
 import {isNode} from '../utils/node';
+import StorageManager from '../storage/StorageManager';
 
 /**
  * Oauth token container
@@ -95,26 +96,7 @@ export default class OAuthToken {
    * @constant
    */
   static get storageName() {
-    return 'm4n_api_token';
-  }
-
-  /**
-   * Filename for nodejs token storage
-   * @returns {string} - filename
-   * @constant
-   */
-  static get nodeTokenFilename() {
-    return '.m4n_token';
-  }
-
-  /**
-   * Gets the default name for the name parameter on save and restore
-   * @returns {string} - name
-   * @private
-   * @static
-   */
-  static get _defaultName() {
-    return isNode() ? OAuthToken.nodeTokenFilename : OAuthToken.storageName;
+    return 'api_token';
   }
 
   /**
@@ -138,11 +120,10 @@ export default class OAuthToken {
   /**
    * Store the token for later recovery. Token will be stored in HTTPS cookie if possible.
    * @param {String} name - db key name
-   * @param {Boolean} forceLocalStorage - force the token to be stored in the localStorage
    * @returns {void}
    * @see OAuthToken#recover
    */
-  save(name = OAuthToken._defaultName, forceLocalStorage = false) {
+  save(name = OAuthToken.storageName) {
     const data = {
       token: this.token,
       type: this.type,
@@ -150,24 +131,8 @@ export default class OAuthToken {
       scopes: this.scopes,
     };
 
-    if (isNode()) {
-      if (forceLocalStorage) {
-        throw new NodeError('Can not force localStorage usage when running under node');
-      }
-
-      // We're using eval to require fs to make sure that it isn't added to the bundle
-      // eslint-disable-next-line no-eval
-      const fs = eval('require("fs")');
-      const json = JSON.stringify(data, null, 2);
-
-      fs.writeFileSync(name, json);
-    } else if (window.location.protocol === 'https:' && !forceLocalStorage) {
-      const dataEncoded = encodeURIComponent(JSON.stringify(data));
-
-      document.cookie = `${name}=${dataEncoded}; expires=${data.expires}`;
-    } else {
-      localStorage.setItem(name, JSON.stringify(data));
-    }
+    // Third parameter is only used when we're using cookies
+    StorageManager.secure.set(name, JSON.stringify(data), this.expires);
   }
 
   /**
@@ -176,48 +141,14 @@ export default class OAuthToken {
    * @returns {OAuthToken|null} - null if none could be recovered
    * @see OAuthToken#save
    */
-  static recover(name = OAuthToken._defaultName) {
-    if (isNode()) {
-      // We're using eval to require fs to make sure that it isn't added to the bundle
-      // eslint-disable-next-line no-eval
-      const fs = eval('require("fs")');
+  static recover(name = OAuthToken.storageName) {
+    const data = JSON.parse(StorageManager.secure.get(name) || '{}');
+    const instance = new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
 
-      if (fs.existsSync(name)) {
-        const raw = fs.readFileSync(name);
-        const data = JSON.parse(raw);
-
-        return new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
-      }
-
+    if (!instance.expired) {
       return null;
     }
 
-    // Cookie
-    if (window.location.protocol === 'https:') {
-      const cookies = `; ${document.cookie}`;
-      const parts = cookies.split(`; ${name}=`);
-
-      if (parts.length === 2) {
-        const raw = decodeURIComponent(parts[1].split(';')[0]);
-        const data = JSON.parse(raw);
-
-        return new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
-      }
-    }
-
-    // LocalStorage
-    const raw = localStorage.getItem(name);
-
-    if (raw) {
-      const data = JSON.parse(raw);
-
-      const instance = new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
-
-      if (!instance.expired) {
-        return instance;
-      }
-    }
-
-    return null;
+    return instance;
   }
 }

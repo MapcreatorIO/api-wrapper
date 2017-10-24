@@ -572,8 +572,7 @@ export default class Maps4News {
 
   /**
    * Forget the current session
-   * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored in
-   * cookies or localStorage.
+   * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
    * @returns {void}
    */
   logout() {

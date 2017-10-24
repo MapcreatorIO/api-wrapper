@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import StorageManager from '../storage/StorageManager';
 import StaticClass from '../utils/StaticClass';
 import Uuid from '../utils/uuid';
 
@@ -56,7 +57,7 @@ export default class StateContainer extends StaticClass {
     const key = StateContainer.prefix + Date.now();
     const value = Uuid.uuid4();
 
-    localStorage.setItem(key, value);
+    StorageManager.best.setItem(key, value);
     return value;
   }
 
@@ -67,12 +68,14 @@ export default class StateContainer extends StaticClass {
    * @returns {Boolean} - if the state is valid
    */
   static validate(state, purge = true) {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+    const storage = StorageManager.best;
 
-      if (localStorage.getItem(key) === state) {
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+
+      if (storage.getItem(key) === state) {
         if (purge) {
-          localStorage.removeItem(key);
+          storage.removeItem(key);
         }
 
         return true;
@@ -87,12 +90,14 @@ export default class StateContainer extends StaticClass {
    * @returns {void}
    */
   static clean() {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+    const storage = StorageManager.best;
+
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
       const prefix = key.slice(0, StateContainer.prefix.length);
 
       if (prefix === StateContainer.prefix) {
-        localStorage.removeItem(key);
+        storage.removeItem(key);
       }
     }
   }
@@ -102,14 +107,15 @@ export default class StateContainer extends StaticClass {
    * @returns {Object<String, String>} - List of stored states
    */
   static list() {
+    const storage = StorageManager.best;
     const out = {};
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
       const prefix = key.slice(0, StateContainer.prefix.length);
 
       if (prefix === StateContainer.prefix) {
-        out[key] = localStorage.getItem(key);
+        out[key] = storage.getItem(key);
       }
     }
 

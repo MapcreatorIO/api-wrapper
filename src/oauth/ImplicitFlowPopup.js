@@ -33,6 +33,7 @@
 import ImplicitFlow from './ImplicitFlow';
 import OAuthToken from './OAuthToken';
 import OAuthError from '../errors/OAuthError';
+import StorageManager from '../storage/StorageManager';
 
 /**
  * Implicit OAuth flow using a pop-up.
@@ -53,11 +54,12 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
     super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
+    this._storage = StorageManager.best;
 
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       const data = this.token.toResponseObject() || this._getAnchorParams();
 
-      localStorage.setItem(ImplicitFlowPopup.localStorageKey, JSON.stringify(data));
+      this._storage.set(ImplicitFlowPopup.storageKey, JSON.stringify(data));
 
       window.close();
     }
@@ -73,12 +75,12 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
   }
 
   /**
-   * localStorage key name for temporarily storing the token
+   * Storage key name for temporarily storing the token
    * @returns {String} - key name
    * @constant
    */
-  static get localStorageKey() {
-    return 'm4n_api_auth_response';
+  static get storageKey() {
+    return 'api_auth_response';
   }
 
   /**
@@ -109,9 +111,9 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
         if (popup.closed) {
           clearInterval(ticker);
 
-          const data = JSON.parse(localStorage.getItem(ImplicitFlowPopup.localStorageKey));
+          const data = JSON.parse(this._storage.getItem(ImplicitFlowPopup.storageKey));
 
-          localStorage.removeItem(ImplicitFlowPopup.localStorageKey);
+          this._storage.removeItem(ImplicitFlowPopup.storageKey);
 
           if (!data) {
             reject(new OAuthError('window_closed', 'Pop-up window was closed'));
