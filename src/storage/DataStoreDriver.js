@@ -37,6 +37,18 @@ export default class DataStoreDriver {
     if (this.constructor === DataStoreDriver) {
       throw new AbstractClassError();
     }
+
+    if (!this.constructor.available) {
+      throw new Error(`${this.constructor.name} is unavailable`);
+    }
+  }
+
+  /**
+   * If the driver is currently available
+   * @returns {boolean} - Driver availability
+   */
+  static get available() {
+    throw new AbstractMethodError();
   }
 
   /**
@@ -61,7 +73,7 @@ export default class DataStoreDriver {
   /**
    * Get a value from the store
    * @param {String} name - value name
-   * @returns {String}
+   * @returns {String} - value
    * @abstract
    */
   get(name) {
