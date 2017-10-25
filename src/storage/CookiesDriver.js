@@ -45,7 +45,7 @@ export default class CookiesDriver extends DataStoreDriver {
    * @returns {String} - Prefix
    * @private
    */
-  static get _prefix() {
+  get _prefix() {
     return this.__prefix;
   }
 
@@ -71,7 +71,7 @@ export default class CookiesDriver extends DataStoreDriver {
    * @returns {void}
    */
   set(name, value, expires = new Date('2050-01-01')) {
-    name = encodeURIComponent(CookiesDriver._prefix + name);
+    name = encodeURIComponent(this._prefix + name);
     value = encodeURIComponent(value);
 
     if (expires instanceof Date) {
@@ -91,7 +91,7 @@ export default class CookiesDriver extends DataStoreDriver {
    * @inheritDoc
    */
   get(name) {
-    name = CookiesDriver._prefix + name;
+    name = this._prefix + name;
 
     return this._toObject()[name];
   }
@@ -100,7 +100,7 @@ export default class CookiesDriver extends DataStoreDriver {
    * @inheritDoc
    */
   remove(name) {
-    name = encodeURIComponent(CookiesDriver._prefix + name);
+    name = encodeURIComponent(this._prefix + name);
 
     let cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
 
@@ -115,7 +115,7 @@ export default class CookiesDriver extends DataStoreDriver {
    * @inheritDoc
    */
   keys() {
-    const regex = new RegExp('^' + CookiesDriver._prefix);
+    const regex = new RegExp('^' + this._prefix);
 
     return Object.keys(this._toObject()).map(x => x.replace(regex, ''));
   }
@@ -131,7 +131,7 @@ export default class CookiesDriver extends DataStoreDriver {
     document.cookie
       .split(';')
       .map(x => x.trim().split('=').map(decodeURIComponent))
-      .filter(x => x[0].startsWith(CookiesDriver._prefix))
+      .filter(x => x[0].startsWith(this._prefix))
       .forEach(x => {
         cookies[x[0]] = x[1];
       });
