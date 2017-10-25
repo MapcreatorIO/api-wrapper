@@ -31,7 +31,7 @@
  */
 
 import fetchPonyfill from 'fetch-ponyfill';
-export const FormData = require('form-data');
+export const FormData = (typeof window !== 'undefined' && window.FormData) ? window.FormData : require('../../node_modules/form-data/lib/form_data');
 export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
 
 /**
