@@ -31,6 +31,8 @@
  */
 
 // Polyfill for terrible browsers (looking at you IE)
+import {isNode} from './utils/node';
+
 if (!global._babelPolyfill) {
   require('babel-polyfill');
 }
@@ -187,7 +189,7 @@ export default class Maps4News {
    *                               and the content-type will be set to `application/json`
    * @param {object} headers - Any headers that should be set for the request
    * @param {boolean} bundleResponse - When set to true the promise will resolve with an object {response: {@link Response}, data: *}
-   * @returns {Promise} - Resolves with either an object or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
+   * @returns {Promise} - Resolves with either an object, blob, buffer or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
    */
   request(url, method = 'GET', data = {}, headers = {}, bundleResponse = false) {
     if (!url.startsWith('http')) {
@@ -267,7 +269,11 @@ export default class Maps4News {
         }
       }
 
-      return response.blob().then(respond);
+      if (isNode()) {
+        return response.blob().then(respond);
+      }
+
+      return response.buffer().then(respond);
     });
   }
 

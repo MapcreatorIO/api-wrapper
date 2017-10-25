@@ -34,6 +34,7 @@ import ResourceBase from './crud/base/ResourceBase';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';
 import {FormData} from './utils/requests';
+import {isNode} from './utils/node';
 
 /**
  * Image resource handler
@@ -92,16 +93,24 @@ export default class ImageHandler {
   download() {
     return this.api
       .request(this.url)
-      .then(blob => (window.URL || window.webkitURL).createObjectURL(blob));
+      .then(data => {
+        if (isNode()) {
+          return data;
+        }
+
+        return (window.URL || window.webkitURL).createObjectURL(data);
+      });
   }
 
   /**
    * Upload new image
-   * @param {File} image - Image file
+   * @param {File|Buffer} image - Image file
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    */
   upload(image) {
-    if (!isParentOf(File, image)) {
+    const Type = isNode() ? Buffer : File;
+
+    if (!isParentOf(Type, image)) {
       throw new TypeError('Expected image to be of type File');
     }
 
