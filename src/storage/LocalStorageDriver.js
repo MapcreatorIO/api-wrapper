@@ -33,6 +33,9 @@
 import DataStoreDriver from './DataStoreDriver';
 import {isNode} from '../utils/node';
 
+/**
+ * @private
+ */
 export default class LocalStorageDriver extends DataStoreDriver {
   /**
    * LocalStorage name prefix

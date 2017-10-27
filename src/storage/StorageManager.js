@@ -35,8 +35,15 @@ import CookiesDriver from './CookiesDriver';
 import FileDriver from './FileDriver';
 import LocalStorageDriver from './LocalStorageDriver';
 
+/**
+ * @private
+ */
 export default class StorageManager extends StaticClass {
-  static get availible() {
+  /**
+   * Available storage drivers
+   * @returns {Array.<function>} - Available storage drivers
+   */
+  static get available() {
     return [
       LocalStorageDriver,
       CookiesDriver,
@@ -44,24 +51,44 @@ export default class StorageManager extends StaticClass {
     ].filter(x => x.available);
   }
 
+  /**
+   * Get LocalStorageDriver instance
+   * @returns {LocalStorageDriver} - instance
+   */
   static get localStorage() {
     return new LocalStorageDriver();
   }
 
+  /**
+   * Get CookiesDriver instance
+   * @returns {CookiesDriver} - instance
+   */
   static get cookies() {
     return new CookiesDriver();
   }
 
+  /**
+   * Get FileDriver instance
+   * @returns {FileDriver} - instance
+   */
   static get file() {
     return new FileDriver();
   }
 
+  /**
+   * Returns the best available storage driver. For a secure driver use {@link StorageManager#secure}
+   * @returns {DataStoreDriver} - Best available storage driver
+   */
   static get best() {
-    return new this.availible[0]();
+    return new this.available[0]();
   }
 
+  /**
+   * Returns the a secure storage driver
+   * @returns {DataStoreDriver} - Secure storage driver
+   */
   static get secure() {
-    const C = this.availible.filter(x => x.secure)[0];
+    const C = this.available.filter(x => x.secure)[0];
 
     return new C();
   }

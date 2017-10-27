@@ -34,6 +34,9 @@
 
 import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
 
+/**
+ * @private
+ */
 export default class DataStoreDriver {
   constructor() {
     if (this.constructor === DataStoreDriver) {

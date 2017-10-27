@@ -33,6 +33,9 @@
 import {isNode} from '../utils/node';
 import DataStoreDriver from './DataStoreDriver';
 
+/**
+ * @private
+ */
 export default class FileDriver extends DataStoreDriver {
   /**
    * @param {String} path - File storage path

@@ -33,6 +33,9 @@
 import {isNode} from '../utils/node';
 import DataStoreDriver from './DataStoreDriver';
 
+/**
+ * @private
+ */
 export default class CookiesDriver extends DataStoreDriver {
   constructor(prefix = '_m4n_') {
     super();
