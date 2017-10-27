@@ -41,7 +41,7 @@ export default class FileDriver extends DataStoreDriver {
    * @param {String} path - File storage path
    * @inheritDoc
    */
-  constructor(path = './.m4n') {
+  constructor(path = '.m4n') {
     super();
 
     this._path = path;
@@ -65,6 +65,15 @@ export default class FileDriver extends DataStoreDriver {
     }
 
     this._path = value;
+  }
+
+  get realPath() {
+    if (this.path.startsWith('/')) {
+      return this.path;
+    }
+
+    // eslint-disable-next-line no-undef
+    return this._fs.realpathSync(this.path);
   }
 
   /**
@@ -130,7 +139,11 @@ export default class FileDriver extends DataStoreDriver {
    * @private
    */
   _read() {
-    const data = this.__fs.readFileSync(this.path);
+    const data = this._fs.readFileSync(this.realPath).toString();
+
+    if (!data) {
+      return {};
+    }
 
     return JSON.parse(data);
   }
@@ -144,7 +157,7 @@ export default class FileDriver extends DataStoreDriver {
   _write(data) {
     data = JSON.stringify(data);
 
-    this.__fs.writeFileSync(this.path, data);
+    this._fs.writeFileSync(this.realPath, data);
   }
 
   get _fs() {

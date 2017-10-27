@@ -5,6 +5,9 @@
 !/src/
 /local/
 
+# Maps4news api storage file
+.m4n
+
 # Test files during dev work
 /test*.html
 
