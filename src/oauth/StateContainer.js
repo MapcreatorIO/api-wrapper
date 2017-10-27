@@ -46,7 +46,7 @@ export default class StateContainer extends StaticClass {
    * @constant
    */
   static get prefix() {
-    return 'm4n_api_state_';
+    return 'oauth_state_';
   }
 
   /**
@@ -54,11 +54,11 @@ export default class StateContainer extends StaticClass {
    * @returns {string} - state
    */
   static generate() {
-    const key = StateContainer.prefix + Date.now();
-    const value = Uuid.uuid4();
+    const uuid = Uuid.uuid4();
+    const key = StateContainer.prefix + uuid;
 
-    StorageManager.best.setItem(key, value);
-    return value;
+    StorageManager.best.set(key, Date.now());
+    return uuid;
   }
 
   /**
@@ -69,20 +69,14 @@ export default class StateContainer extends StaticClass {
    */
   static validate(state, purge = true) {
     const storage = StorageManager.best;
+    const key = StateContainer.prefix + state;
+    const found = typeof storage.get(key) !== 'undefined';
 
-    for (let i = 0; i < storage.length; i++) {
-      const key = storage.key(i);
-
-      if (storage.getItem(key) === state) {
-        if (purge) {
-          storage.removeItem(key);
-        }
-
-        return true;
-      }
+    if (purge && found) {
+      storage.remove(key);
     }
 
-    return false;
+    return found;
   }
 
   /**
@@ -90,15 +84,10 @@ export default class StateContainer extends StaticClass {
    * @returns {void}
    */
   static clean() {
-    const storage = StorageManager.best;
+    const tokens = Object.keys(this.list());
 
-    for (let i = 0; i < storage.length; i++) {
-      const key = storage.key(i);
-      const prefix = key.slice(0, StateContainer.prefix.length);
-
-      if (prefix === StateContainer.prefix) {
-        storage.removeItem(key);
-      }
+    for (const token of tokens) {
+      StorageManager.best.remove(StateContainer.prefix + token);
     }
   }
 
@@ -108,17 +97,15 @@ export default class StateContainer extends StaticClass {
    */
   static list() {
     const storage = StorageManager.best;
-    const out = {};
 
-    for (let i = 0; i < storage.length; i++) {
-      const key = storage.key(i);
-      const prefix = key.slice(0, StateContainer.prefix.length);
+    return storage
+      .keys()
+      .filter(x => x.startsWith(StateContainer.prefix))
+      .map(x => x.replace(StateContainer.prefix, ''))
+      .reduce((out, key) => {
+        out[key] = storage.get(key);
 
-      if (prefix === StateContainer.prefix) {
-        out[key] = storage.getItem(key);
-      }
-    }
-
-    return out;
+        return out;
+      }, {});
   }
 }
