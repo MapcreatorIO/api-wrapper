@@ -68,3 +68,10 @@ test.serial('StateContainer should list all keys', t => {
   StateContainer.clean();
   t.deepEqual(StateContainer.list(), {});
 });
+
+
+test.after('cleanup', t => {
+  StateContainer.clean();
+
+  t.deepEqual(StateContainer.list(), {});
+});
