@@ -31,8 +31,8 @@
  */
 
 import test from 'ava';
-import RequestParameters from '../src/RequestParameters';
-import {DeletedState} from '../src/enums';
+import RequestParameters from '../../src/RequestParameters';
+import {DeletedState} from '../../src/enums';
 
 RequestParameters.resetDefaults();
 const cleanParams = new RequestParameters();

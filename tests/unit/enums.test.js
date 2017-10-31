@@ -31,47 +31,52 @@
  */
 
 import test from 'ava';
-import StateContainer from '../../src/oauth/StateContainer';
+import {Enum} from '../../src/enums';
 
-test.before(t => {
-  StateContainer.clean();
+test('Enum should be numeric by default', t => {
+  const values = ['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE'];
+  const Colors = new Enum(values);
 
-  t.deepEqual(StateContainer.list(), {});
-});
+  t.plan(values.length + 1);
 
-// We can just test everything in here
-test('StateContainer validates tokens', t => {
-  const token = StateContainer.generate();
-
-  t.true(StateContainer.validate(token, false)); // Token shouldn't be purged
-  t.true(StateContainer.validate(token)); // Token should be purged
-  t.false(StateContainer.validate(token)); // Token should not be found anymore
-});
-
-test.serial('StateContainer should list all keys', t => {
-  const tokens = [];
-
-  StateContainer.clean();
-  t.deepEqual(StateContainer.list(), {});
-
-  for (let i = 0; i < 100; i++) {
-    tokens.push(StateContainer.generate());
+  for (const color of values) {
+    t.is(typeof Colors[color], 'number');
   }
 
-  // This array should contain all unmatched tokens
-  const out = Object
-    .keys(StateContainer.list())
-    .filter(x => !tokens.includes(x));
-
-  t.deepEqual(out, []);
-
-  StateContainer.clean();
-  t.deepEqual(StateContainer.list(), {});
+  t.deepEqual(Colors.keys(), values);
 });
 
+test('Enum should accept dictionaries', t => {
+  const ANSWER = new Enum({
+    YES: true,
+    NO: false,
+    // Passing functions as values will turn them into getters
+    // Getter results will appear in ::values
+    MAYBE: () => !Math.round(Math.random()),
+  });
 
-test.after('cleanup', t => {
-  StateContainer.clean();
+  t.true(ANSWER.YES);
+  t.false(ANSWER.NO);
 
-  t.deepEqual(StateContainer.list(), {});
+  let aggr = [];
+
+  for (let i = 0; i < 100; i++) {
+    aggr.push(ANSWER.MAYBE);
+  }
+
+  aggr = aggr.filter((v, i, s) => s.indexOf(v) === i).sort();
+
+  t.deepEqual(aggr, [false, true]);
+});
+
+test('Enum::values should only return unique values', t => {
+  const Test = new Enum({
+    ME: 'CRESCENT_FRESH',
+    YOU: 'CRESCENT_FRESH',
+    RUDE_DUDE: 'NOT_CRESCENT_FRESH',
+  });
+
+  t.is(Test.keys().length, 3);
+  t.is(Test.values().length, 2);
+  t.deepEqual(Test.values(), ['CRESCENT_FRESH', 'NOT_CRESCENT_FRESH']);
 });
