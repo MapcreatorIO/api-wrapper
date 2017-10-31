@@ -4836,14 +4836,6 @@ taffydb@2.7.2:
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/taffydb/-/taffydb-2.7.2.tgz#7bf8106a5c1a48251b3e3bc0a0e1732489fd0dc8"
 
-tap-dot@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/tap-dot/-/tap-dot-1.0.5.tgz#541703b784977508ee4f86f98e71d993beda23b4"
-  dependencies:
-    chalk "^1.1.1"
-    tap-out "^1.3.2"
-    through2 "^2.0.0"
-
 tap-nyc@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tap-nyc/-/tap-nyc-1.0.3.tgz#5b608052ec0fc594de8e0c5b765fa4ea2ff754f8"
@@ -4856,7 +4848,7 @@ tap-nyc@^1.0.3:
     tap-out "^1.4.1"
     through2 "^2.0.0"
 
-tap-out@^1.3.2, tap-out@^1.4.1:
+tap-out@^1.4.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/tap-out/-/tap-out-1.4.2.tgz#c907ec1bf9405111d088263e92f5608b88cbb37a"
   dependencies:

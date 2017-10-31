@@ -8,4 +8,5 @@ fi
 
 mkdir -pv build
 
-npx nyc --all --report-dir build/coverage --clean -n 'src/**.js' -r html -r cobertura npx ava -t | tee build/ava.tap | npx tap-dot
+npx nyc --all --report-dir build/coverage --clean -n 'src/**.js' -r html -r cobertura npx ava -t > build/ava.tap
+npx tap-nyc < build/ava.tap
