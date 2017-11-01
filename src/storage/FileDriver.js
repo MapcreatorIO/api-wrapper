@@ -139,7 +139,13 @@ export default class FileDriver extends DataStoreDriver {
    * @private
    */
   _read() {
-    const data = this._fs.readFileSync(this.realPath).toString();
+    let data;
+
+    try {
+      data = this._fs.readFileSync(this.realPath).toString();
+    } catch (e) {
+      data = '{}';
+    }
 
     if (!data) {
       return {};
@@ -150,16 +156,23 @@ export default class FileDriver extends DataStoreDriver {
 
   /**
    * Write data to file
-   * @param {Object<String, String>} data - Key, value object
+   * @param {Object<String, String>} obj - Key, value object
    * @returns {void}
    * @private
    */
-  _write(data) {
-    data = JSON.stringify(data);
+  _write(obj) {
+    const data = JSON.stringify(obj);
+    const fd = this._fs.openSync(this.realPath, 'w');
 
-    this._fs.writeFileSync(this.realPath, data);
+    this._fs.writeSync(fd, data);
+    this._fs.closeSync(fd);
   }
 
+  /**
+   * Get fs instance
+   * @returns {fs} - fs instance
+   * @private
+   */
   get _fs() {
     if (!this.__fs) {
       // eslint-disable-next-line no-eval
