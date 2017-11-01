@@ -90,6 +90,8 @@ export default class StorageManager extends StaticClass {
   static get secure() {
     const C = this.available.filter(x => x.secure)[0];
 
-    return new C();
+    if (typeof C === 'undefined') {
+      return StorageManager.localStorage;
+    }
   }
 }
