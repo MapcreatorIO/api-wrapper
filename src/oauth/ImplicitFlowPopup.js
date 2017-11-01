@@ -111,9 +111,9 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
         if (popup.closed) {
           clearInterval(ticker);
 
-          const data = JSON.parse(this._storage.getItem(ImplicitFlowPopup.storageKey));
+          const data = JSON.parse(this._storage.get(ImplicitFlowPopup.storageKey));
 
-          this._storage.removeItem(ImplicitFlowPopup.storageKey);
+          this._storage.remove(ImplicitFlowPopup.storageKey);
 
           if (!data) {
             reject(new OAuthError('window_closed', 'Pop-up window was closed'));
