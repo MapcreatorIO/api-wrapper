@@ -45,9 +45,7 @@ export default class OAuthToken {
   constructor(token, type = 'Bearer', expires = 432000, scopes = []) {
     this.scopes = scopes;
     this.token = token;
-    this.type = type
-      .toLowerCase()
-      .replace(/(\s|^)\w/g, x => x.toUpperCase());
+    this.type = type.toLowerCase().replace(/(\s|^)\w/g, x => x.toUpperCase());
 
     if (typeof expires === 'number') {
       // Expires is in seconds

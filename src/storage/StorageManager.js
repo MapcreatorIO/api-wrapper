@@ -93,5 +93,7 @@ export default class StorageManager extends StaticClass {
     if (typeof C === 'undefined') {
       return StorageManager.best;
     }
+
+    return new C();
   }
 }
