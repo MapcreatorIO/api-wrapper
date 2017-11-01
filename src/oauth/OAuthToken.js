@@ -140,8 +140,14 @@ export default class OAuthToken {
    * @see OAuthToken#save
    */
   static recover(name = OAuthToken.storageName) {
-    const data = JSON.parse(StorageManager.secure.get(name) || '{}');
-    const instance = new OAuthToken(data.token, data.type, new Date(data.expires), data.scopes || []);
+    const data = StorageManager.secure.get(name);
+
+    if (!data) {
+      return null;
+    }
+
+    const obj = JSON.parse(data);
+    const instance = new OAuthToken(obj.token, obj.type, new Date(obj.expires), obj.scopes || []);
 
     if (!instance.expired) {
       return null;
