@@ -107,10 +107,19 @@ export default class OAuthToken {
       data = JSON.parse(data);
     }
 
+    // Default expires = 5 days
+    let expires = 86400 * 5;
+
+    if (typeof data['exipires_in'] !== 'undefined') {
+      expires = Number(data['expires_in']);
+    } else if (typeof data['expires'] === 'string') {
+      expires = new Date(data['expires']);
+    }
+
     return new OAuthToken(
       data['access_token'],
       data['token_type'],
-      Number(data['expires_in']),
+      expires,
       data['scope'] || [],
     );
   }
