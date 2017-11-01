@@ -32,7 +32,7 @@
 
 import OAuthError from '../errors/OAuthError';
 import {isNode} from '../utils/node';
-import {encodeQueryString, fetch} from '../utils/requests';
+import {fetch} from '../utils/requests';
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 
@@ -147,8 +147,11 @@ export default class PasswordFlow extends OAuth {
 
     const init = {
       method: 'POST',
-      body: encodeQueryString(query),
+      body: query,
       mode: 'cors',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     };
 
     fetch(url, init).then(response => {
