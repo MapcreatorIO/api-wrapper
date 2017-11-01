@@ -91,7 +91,7 @@ export default class StorageManager extends StaticClass {
     const C = this.available.filter(x => x.secure)[0];
 
     if (typeof C === 'undefined') {
-      return StorageManager.localStorage;
+      return StorageManager.best;
     }
   }
 }
