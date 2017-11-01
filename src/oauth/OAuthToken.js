@@ -156,7 +156,7 @@ export default class OAuthToken {
     const obj = JSON.parse(data);
     const instance = new OAuthToken(obj.token, obj.type, new Date(obj.expires), obj.scopes || []);
 
-    if (!instance.expired) {
+    if (instance.expired) {
       return null;
     }
 
