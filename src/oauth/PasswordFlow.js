@@ -137,7 +137,7 @@ export default class PasswordFlow extends OAuth {
   authenticate() {
     const url = this.host + this._path;
     const query = {
-      'grant_type': '_password',
+      'grant_type': 'password',
       'client_id': this.clientId,
       'client_secret': this._secret,
       'username': this._username,
