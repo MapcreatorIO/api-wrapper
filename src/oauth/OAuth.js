@@ -33,7 +33,6 @@
 import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
-import {isNode} from '../utils/node';
 import StorageManager from '../storage/StorageManager';
 
 /**
