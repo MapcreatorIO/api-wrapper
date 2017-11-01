@@ -81,13 +81,8 @@ export default class OAuth {
    * @returns {void}
    */
   forget() {
-    if (isNode()) {
-      // eslint-disable-next-line no-eval
-      eval('require("fs")').unlink(OAuthToken.nodeTokenFilename);
-    } else {
-      StateContainer.clean();
-      StorageManager.secure.remove(OAuthToken.storageName);
-    }
+    StateContainer.clean();
+    StorageManager.secure.remove(OAuthToken.storageName);
 
     this.token = null;
   }
