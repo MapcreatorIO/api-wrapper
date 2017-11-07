@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * BSD 3-Clause License
  *
  * Copyright (c) 2017, MapCreator
@@ -31,23 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'util.php';
+import test from 'ava';
+import PasswordFlow from '../../../src/oauth/PasswordFlow';
+import {startWebserver, stopWebserver} from '../util';
 
-header('Content-Type: application/json');
+let port = 0;
+let host = 'http://localhost:' + port;
 
-if (@$_GET['error'] === 'mock' || @$_POST['password'] !== 'password') {
-  $output = [
-    'error' => 'mock_error',
-    'message' => 'This is a mock error'
-  ];
+test.before('start webserver', () => {
+  port = startWebserver('tests/scripts');
+  host = 'http://localhost:' + port;
+});
 
-  echo json_encode($output);
-} else {
-  $output = [
-    'token_type' => 'bearer',
-    'expires_in' => 86400,
-    'access_token' => md5(time())
-  ];
+test('PasswordFlow should auth', t => {
+  const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
-  echo json_encode($output);
-}
+  flow.path = '/oauth/passwordFlow.php';
+  t.is(flow.path, '/oauth/passwordFlow.php');
+
+  flow.host = host;
+  t.is(flow.host, host);
+
+  return flow.authenticate().then(token => {
+    return !token.expired;
+  });
+});
+
+test('PasswordFlow should catch errors', t => {
+  const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
+
+  flow.path = '/oauth/passwordFlow.php?error=mock';
+  flow.host = host;
+
+  t.plan(1);
+
+  return flow
+    .authenticate()
+    .catch(e => t.is('mock_error', e._error));
+});
+
+test.after.always('shutdown webserver', () => {
+  stopWebserver(port);
+});

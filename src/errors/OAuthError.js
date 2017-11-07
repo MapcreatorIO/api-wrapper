@@ -76,6 +76,5 @@ export default class OAuthError extends Error {
       return `${error}: ${this._message}`;
     }
     return error;
-
   }
 }

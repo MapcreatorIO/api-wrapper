@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * BSD 3-Clause License
  *
  * Copyright (c) 2017, MapCreator
@@ -31,23 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'util.php';
+import {execFileSync} from 'child_process';
 
-header('Content-Type: application/json');
+export function stopWebserver(port) {
+  if (port > 0) {
+    execFileSync('./scripts/stop_webserver.sh', [port]);
+  }
+}
 
-if (@$_GET['error'] === 'mock' || @$_POST['password'] !== 'password') {
-  $output = [
-    'error' => 'mock_error',
-    'message' => 'This is a mock error'
-  ];
-
-  echo json_encode($output);
-} else {
-  $output = [
-    'token_type' => 'bearer',
-    'expires_in' => 86400,
-    'access_token' => md5(time())
-  ];
-
-  echo json_encode($output);
+export function startWebserver(path) {
+  return Number(execFileSync('./scripts/start_webserver.sh', [path], {encoding: 'ascii'}).trim());
 }

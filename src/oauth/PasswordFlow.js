@@ -140,8 +140,8 @@ export default class PasswordFlow extends OAuth {
       'grant_type': 'password',
       'client_id': this.clientId,
       'client_secret': this._secret,
-      'username': this._username,
-      'password': this._password,
+      'username': this.username,
+      'password': this.password,
       'scope': this.scopes.join(' '),
     };
 
@@ -155,17 +155,17 @@ export default class PasswordFlow extends OAuth {
       },
     };
 
-    return fetch(url, init).then(response => {
-      const data = response.json();
+    return fetch(url, init)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          throw new OAuthError(data.error, data.message);
+        }
 
-      if (data.error) {
-        throw new OAuthError(data.error, data.message);
-      }
+        this.token = OAuthToken.fromResponseObject(data);
+        this.token.scopes = this.scopes;
 
-      this.token = OAuthToken.fromResponseObject(data);
-      this.token.scopes = this.scopes;
-
-      return this.token;
-    });
+        return this.token;
+      });
   }
 }
