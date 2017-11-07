@@ -158,7 +158,7 @@ export default class PasswordFlow extends OAuth {
     return fetch(url, init).then(response => {
       const data = response.json();
 
-      if (!data.success) {
+      if (data.error) {
         throw new OAuthError(data.error, data.message);
       }
 
