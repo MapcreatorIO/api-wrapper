@@ -119,7 +119,7 @@ test('static class can\'t be Instantiated', t => {
 });
 
 test('uuid4 returns a new random uuid', t => {
-  const iterations = 10000;
+  const iterations = 1000;
   const data = [];
 
   for (let i = 0; i < iterations; i++) {
