@@ -6,6 +6,8 @@ fi
 
 for pidFile in build/http-*.pid
 do
-  kill `cat "$pidFile"`
-  rm "$pidFile"
+  if [ "$pidFile" != "build/http-*.pid" ]; then
+    kill `cat "$pidFile"` 2>&- >&-
+    rm "$pidFile"
+  fi
 done
