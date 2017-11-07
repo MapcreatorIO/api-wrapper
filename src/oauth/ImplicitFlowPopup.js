@@ -120,7 +120,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
             resolve(this.token = OAuthToken.fromResponseObject(data));
           }
         }
-      }, 500);
+      }, 250);
     });
   }
 }
