@@ -114,7 +114,7 @@ export default class Organisation extends CrudBase {
 
     for (const row of items) {
       if (!row.ownable) {
-        throw new TypeError(`${row.constructor.name}::ownable is false. Is it ownable?\nSee: https://mapcreatoreu.github.io/m4n-api/class/src/traits/OwnableResource.js~OwnableResource.html`);
+        throw new TypeError(`${row.constructor.name}::ownable is false. Is it ownable?\nSee: https://mapcreatoreu.github.io/api-wrapper/class/src/traits/OwnableResource.js~OwnableResource.html`);
       }
 
       const key = row.resourceName;

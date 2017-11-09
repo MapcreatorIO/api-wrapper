@@ -9,7 +9,7 @@
   "keywords": [
     "mapping"
   ],
-  "homepage": "https://mapcreatoreu.github.io/m4n-api",
+  "homepage": "https://mapcreatoreu.github.io/api-wrapper",
   "ignore": [
     "**/.*",
     "node_modules",
