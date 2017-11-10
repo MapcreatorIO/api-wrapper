@@ -579,7 +579,7 @@ export default class Maps4News {
         out[constantCase(row)] = row;
       }
 
-      return new Enum(data);
+      return new Enum(data, true);
     });
   }
 
@@ -596,7 +596,7 @@ export default class Maps4News {
         out[constantCase(row)] = row;
       }
 
-      return new Enum(data);
+      return new Enum(data, true);
     });
   }
 

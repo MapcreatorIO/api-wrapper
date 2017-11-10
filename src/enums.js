@@ -30,28 +30,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {getTypeName} from './utils/reflection';
+import {constant as constantCase} from 'case';
+
 /**
  * Base enum class
  * @example
  * const Colors = new Enum(['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE']);
  *
- * const ANSWER = new Enum({
+ * const Answers = new Enum({
  *   YES: true,
  *   NO: false,
  *   // Passing functions as values will turn them into getters
  *   // Getter results will appear in ::values
- *   MAYBE: () => !Math.round(Math.random()),
+ *   MAYBE: () => Math.random() >= 0.5,
  * });
+ *
+ * const FontStyles = new Enum(['italic', 'bold', 'underline', 'regular'], true);
+ * FontStyles.ITALIC === 'italic'
+ * FontStyles.BOLD   === 'bold'
+ *
+ * // etc...
  */
-let index = 0;
-
 export class Enum {
-  constructor(enums) {
-    if (enums instanceof Array) {
+  /**
+   * @param {Object<String, *>,Array<String>} enums - Data to build the enum from
+   * @param {boolean} auto - Auto generate enum from data making assumptions about
+   *                         the data, requires enums to be of type array.
+   */
+  constructor(enums, auto = false) {
+    const isArray = enums instanceof Array;
+
+    if (auto && !isArray) {
+      throw new TypeError(`Expected enums to be of type "Array" got "${getTypeName(enums)}"`);
+    }
+
+    if (isArray && auto) {
+      for (const row of enums) {
+        const key = constantCase(row);
+
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          value: row,
+        });
+      }
+    } else if (isArray) {
       for (const key of enums) {
         Object.defineProperty(this, key, {
           enumerable: true,
-          value: index++,
+          value: Enum._iota,
         });
       }
     } else {
@@ -87,6 +114,14 @@ export class Enum {
     return this.keys()
       .map(key => this[key])
       .filter((v, i, s) => s.indexOf(v) === i);
+  }
+
+  static get _iota() {
+    if (!Enum.__iota) {
+      Enum.__iota = 0;
+    }
+
+    return Enum.__iota++;
   }
 }
 
