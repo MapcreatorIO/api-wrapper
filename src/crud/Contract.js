@@ -138,8 +138,11 @@ export default class Contract extends CrudBase {
   }
 
   _zeroPad(num, size) {
-    var s = num + '';
-    while (s.length < size) s = '0' + s;
+    let s = String(num);
+
+    while (s.length < size) {
+      s = '0' + s;
+    }
     return s;
   }
 }
