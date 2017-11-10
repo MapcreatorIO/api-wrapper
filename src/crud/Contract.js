@@ -62,6 +62,9 @@ export default class Contract extends CrudBase {
       data.dateEnd = this.dateEnd;
     }
 
+    data.dateStart = this._formatDate(data.dateStart);
+    data.dateEnd = this._formatDate(data.dateEnd);
+
     return this.api
       .request(this.url, 'PATCH', data)
       .then(() => {
@@ -71,5 +74,72 @@ export default class Contract extends CrudBase {
 
         return this;
       });
+  }
+
+  /**
+   * @inheritDoc
+   */
+  _create() {
+    const createData = this._buildCreateData();
+
+    if (typeof createData.dateStart !== 'undefined') {
+      createData.dateStart = this._formatDate(createData.dateStart);
+    }
+
+    if (typeof createData.dateEnd !== 'undefined') {
+      createData.dateEnd = this._formatDate(createData.dateEnd);
+    }
+
+    return this.api
+      .request(this.baseUrl, 'POST', createData)
+      .then(data => {
+        this._properties = {};
+        this._baseProperties = data;
+
+        this._updateProperties();
+        return this;
+      });
+  }
+
+  /**
+   * Convert Date into server format, will return original value if date is not of type Date.
+   * @param {Date} date - target
+   * @returns {*} - formatted date or original value
+   * @private
+   */
+  _formatDate(date) {
+    if (!(date instanceof Date)) {
+      return date;
+    }
+
+    function pad(num, size = 2) {
+      let s = num.toString();
+
+      while (s.length < size) {
+        s = '0' + s;
+      }
+
+      return s;
+    }
+
+    let out = [
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDay(),
+    ].map(pad).join('-');
+
+    out += ' ' + [
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+    ].map(pad).join(':');
+
+    return out;
+  }
+
+  _zeroPad(num, size) {
+    var s = num + '';
+    while (s.length < size) s = '0' + s;
+    return s;
   }
 }
