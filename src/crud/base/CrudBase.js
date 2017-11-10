@@ -117,7 +117,7 @@ export default class CrudBase extends ResourceBase {
     // We'll just fake it, no need to bother the server
     // with an empty request.
     if (Object.keys(this._properties).length === 0) {
-      return new Promise(() => this);
+      return new Promise(resolve => resolve(this));
     }
 
     return this.api
