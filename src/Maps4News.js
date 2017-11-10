@@ -24,7 +24,6 @@ import {
   Role,
   Svg,
   SvgSet,
-  SvgSetType,
   User,
 } from './crud';
 import ResourceBase from './crud/base/ResourceBase';
@@ -71,6 +70,8 @@ import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
+import {Enum} from './enums';
+import {constant as constantCase} from 'case';
 
 if (!global._babelPolyfill) {
   require('babel-polyfill');
@@ -557,21 +558,46 @@ export default class Maps4News {
   }
 
   /**
-   * SvgSetType accessor
-   * @see {@link SvgSetType}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get svgSetTypes() {
-    return this.static(SvgSetType);
-  }
-
-  /**
    * User accessor
    * @see {@link User}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
   get users() {
     return this.static(User);
+  }
+
+  /**
+   * Get SVG set types
+   * @see {@link SvgSet}
+   * @returns {Promise} - Resolves with a new {@link Enum} instance and rejects with {@link ApiError}
+   */
+  getSvgSetType() {
+    return this.request('/svgs/sets/types').then(data => {
+      const out = {};
+
+      for (const row of data) {
+        out[constantCase(row)] = row;
+      }
+
+      return new Enum(data);
+    });
+  }
+
+  /**
+   * Get font styles
+   * @see {@link Font}
+   * @returns {Promise} - Resolves with a new {@link Enum} instance and rejects with {@link ApiError}
+   */
+  getFontStyles() {
+    return this.request('/fonts/styles').then(data => {
+      const out = {};
+
+      for (const row of data) {
+        out[constantCase(row)] = row;
+      }
+
+      return new Enum(data);
+    });
   }
 
   /**
