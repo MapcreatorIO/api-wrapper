@@ -30,10 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {camel as camelCase, snake as snakeCase} from 'case';
 import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import SimpleResourceProxy from '../../SimpleResourceProxy';
-import {camel as camelCase, snake as snakeCase} from 'case';
 import {isParentOf} from '../../utils/reflection';
 
 /**
@@ -172,6 +172,15 @@ export default class ResourceBase {
   sanitize() {
     this._updateProperties();
     Object.assign(this._baseProperties, this._properties);
+    this._properties = {};
+  }
+
+  /**
+   * Resets model instance to it's original state
+   * @returns {void} - nothing
+   */
+  reset() {
+    this._updateProperties();
     this._properties = {};
   }
 
