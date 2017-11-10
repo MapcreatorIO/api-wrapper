@@ -572,15 +572,7 @@ export default class Maps4News {
    * @returns {Promise} - Resolves with a new {@link Enum} instance and rejects with {@link ApiError}
    */
   getSvgSetType() {
-    return this.request('/svgs/sets/types').then(data => {
-      const out = {};
-
-      for (const row of data) {
-        out[constantCase(row)] = row;
-      }
-
-      return new Enum(data, true);
-    });
+    return this.request('/svgs/sets/types').then(data => new Enum(data, true));
   }
 
   /**
@@ -589,15 +581,7 @@ export default class Maps4News {
    * @returns {Promise} - Resolves with a new {@link Enum} instance and rejects with {@link ApiError}
    */
   getFontStyles() {
-    return this.request('/fonts/styles').then(data => {
-      const out = {};
-
-      for (const row of data) {
-        out[constantCase(row)] = row;
-      }
-
-      return new Enum(data, true);
-    });
+    return this.request('/fonts/styles').then(data => new Enum(data, true));
   }
 
   /**
