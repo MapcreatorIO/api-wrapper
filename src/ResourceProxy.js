@@ -32,6 +32,7 @@
 
 import SimpleResourceProxy from './SimpleResourceProxy';
 import {encodeQueryString} from './utils/requests';
+import {DeletedState} from './enums';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -77,7 +78,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @param {String} deleted - Determains if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
-  get(id, deleted = this.api.defaults.showDeleted) {
+  get(id, deleted = DeletedState.NONE) {
     const data = Object.assign({}, this._seedData, this._parseSelector(id));
     let url = this.new(data).url;
     const glue = url.includes('?') ? '&' : '?';
