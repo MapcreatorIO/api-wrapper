@@ -75,3 +75,13 @@ export function getPaginatedRange(page, start = 1, stop) {
     }, reject);
   });
 }
+
+/**
+ * Quickly check if the window contains a variable
+ * @param {string} str - target variable
+ * @returns {boolean} - If the window contains the variable
+ * @private
+ */
+export function windowTest(str) {
+  return typeof window !== 'undefined' && typeof window[str] !== 'undefined';
+}

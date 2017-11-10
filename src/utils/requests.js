@@ -32,9 +32,10 @@
 
 import fetchPonyfill from 'fetch-ponyfill';
 import {isNode} from './node';
+import {windowTest} from './helpers';
 
-export const {fetch, Request, Response, Headers} = fetchPonyfill({Promise});
-export const FormData = (typeof window !== 'undefined' && window.FormData) ? window.FormData : (
+export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window : fetchPonyfill({Promise});
+export const FormData = windowTest('FormData') ? window.FormData : (
   // Load FormData polyfill
   isNode() ? null : require('formdata-polyfill')
 );
