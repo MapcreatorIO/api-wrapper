@@ -47,16 +47,41 @@ export default class JobResult extends ResourceBase {
    * Job result archive url
    * @returns {string} - Archive url
    */
-  get archiveUrl() {
-    return `${this.url}/archive`;
+  get outputUrl() {
+    return `${this.url}/output`;
   }
 
   /**
    * Get archive blob url
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
    */
+  downloadOutput() {
+    return this._download(this.outputUrl);
+  }
+
+  /**
+   * Get archive blob url
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   * @deprecated
+   */
   downloadArchive() {
-    return this._download(this.archiveUrl);
+    return this.downloadOutput();
+  }
+
+  /**
+   * Get the output url url
+   * @returns {string} - Output url url
+   */
+  get outputUrlUrl() {
+    return `${this.url}/output-url`;
+  }
+
+  /**
+   * Get the remote output url
+   * @returns {Promise} -  Resolves with a {@link String} containing the url to the output and rejects with {@link ApiError}
+   */
+  getOutputUrl() {
+    return this.api.request(this.outputUrlUrl).then(x => x.url);
   }
 
   /**
