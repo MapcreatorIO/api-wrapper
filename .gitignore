@@ -5,6 +5,8 @@
 !/src/
 /local/
 
+vendor/
+
 # Maps4news api storage file
 .m4n
 
