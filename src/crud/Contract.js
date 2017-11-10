@@ -42,6 +42,7 @@ export default class Contract extends CrudBase {
 
   /**
    * @inheritDoc
+   * @override
    */
   _update() {
     this._updateProperties();
@@ -62,8 +63,13 @@ export default class Contract extends CrudBase {
       data.dateEnd = this.dateEnd;
     }
 
-    data.dateStart = this._formatDate(data.dateStart);
-    data.dateEnd = this._formatDate(data.dateEnd);
+    if (typeof data.dateStart instanceof Date) {
+      data.dateStart = this._formatDate(data.dateStart);
+    }
+
+    if (typeof data.dateEnd instanceof Date) {
+      data.dateEnd = this._formatDate(data.dateEnd);
+    }
 
     return this.api
       .request(this.url, 'PATCH', data)
@@ -78,16 +84,17 @@ export default class Contract extends CrudBase {
 
   /**
    * @inheritDoc
+   * @override
    */
   _create() {
     const createData = this._buildCreateData();
 
-    if (typeof createData.dateStart !== 'undefined') {
-      createData.dateStart = this._formatDate(createData.dateStart);
+    if (createData['date_start'] instanceof Date) {
+      createData['date_start'] = this._formatDate(createData['date_start']);
     }
 
-    if (typeof createData.dateEnd !== 'undefined') {
-      createData.dateEnd = this._formatDate(createData.dateEnd);
+    if (createData['date_end'] instanceof Date) {
+      createData['date_end'] = this._formatDate(createData['date_end']);
     }
 
     return this.api
@@ -102,25 +109,13 @@ export default class Contract extends CrudBase {
   }
 
   /**
-   * Convert Date into server format, will return original value if date is not of type Date.
+   * Convert Date into server format
    * @param {Date} date - target
-   * @returns {*} - formatted date or original value
+   * @returns {String} - formatted date
    * @private
    */
   _formatDate(date) {
-    if (!(date instanceof Date)) {
-      return date;
-    }
-
-    function pad(num, size = 2) {
-      let s = num.toString();
-
-      while (s.length < size) {
-        s = '0' + s;
-      }
-
-      return s;
-    }
+    const pad = num => ('00' + num).slice(-2);
 
     let out = [
       date.getUTCFullYear(),
@@ -135,14 +130,5 @@ export default class Contract extends CrudBase {
     ].map(pad).join(':');
 
     return out;
-  }
-
-  _zeroPad(num, size) {
-    let s = String(num);
-
-    while (s.length < size) {
-      s = '0' + s;
-    }
-    return s;
   }
 }
