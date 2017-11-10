@@ -210,7 +210,7 @@ export default class Maps4News {
     const isFormData = data instanceof FormData;
 
     if (typeof data === 'object' && !isFormData) {
-      data = JSON.stringify(this._formatDates(data));
+      data = JSON.stringify(data);
 
       if (!headers.has('Content-Type')) {
         headers.set('Content-Type', 'application/json');
@@ -273,24 +273,6 @@ export default class Maps4News {
 
       return response.buffer().then(respond);
     });
-  }
-
-  _formatDates(obj) {
-    const _obj = Object.assign({}, obj);
-
-    for (const key of Object.keys(_obj)) {
-      const target = _obj[key];
-
-      if (target instanceof Date) {
-        _obj[key] = target.toUTCString();
-      }
-
-      if (typeof target === 'object' && Object.keys(target).length > 0) {
-        _obj[key] = this._formatDates(_obj[key]);
-      }
-    }
-
-    return _obj;
   }
 
   _parseErrorResponse(data, status) {
