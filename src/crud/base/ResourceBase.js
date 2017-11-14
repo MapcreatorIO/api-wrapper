@@ -92,6 +92,7 @@ export default class ResourceBase {
     /* We keep track of any new fields by recording the
      * keys the object currently has. We don't need no
      * fancy-pants observers, Proxies etc.
+     * snake_case only
      */
     this._knownFields = Object.keys(this).filter(x => x[0] !== '_');
   }
@@ -142,7 +143,6 @@ export default class ResourceBase {
    * Moves new fields to this._properties and turns them into a getter/setter
    * @returns {void}
    * @protected
-   * @todo Apply new baseProperties fields
    */
   _updateProperties() {
     // Build a list of new fields
@@ -157,7 +157,8 @@ export default class ResourceBase {
       this._properties[newKey] = this[key];
       delete this[key];
 
-      this._knownFields.push(this._applyProperty(newKey));
+      this._applyProperty(newKey);
+      this._knownFields.push(newKey);
     }
 
     // Build a list of new BaseProperty fields
@@ -165,7 +166,8 @@ export default class ResourceBase {
       .filter(x => !this._knownFields.includes(camelCase(x)));
 
     for (const key of fields) {
-      this._knownFields.push(this._applyProperty(key));
+      this._applyProperty(key);
+      this._knownFields.push(key);
     }
   }
 
@@ -174,7 +176,7 @@ export default class ResourceBase {
    * This means that any changed fields will be marked
    * as unchanged whilst  keeping their new values. The
    * changes will not be saved.
-   * @returns {void} - nothing
+   * @returns {void}
    */
   sanitize() {
     this._updateProperties();
@@ -184,7 +186,7 @@ export default class ResourceBase {
 
   /**
    * Resets model instance to it's original state
-   * @returns {void} - nothing
+   * @returns {void}
    */
   reset() {
     this._updateProperties();
@@ -230,7 +232,7 @@ export default class ResourceBase {
   /**
    * Create proxy for property
    * @param {string} key - property key
-   * @returns {string} - new key
+   * @returns {void}
    * @private
    */
   _applyProperty(key) {
@@ -257,7 +259,6 @@ export default class ResourceBase {
     const newKey = camelCase(key);
 
     Object.defineProperty(this, newKey, desc);
-    return newKey;
   }
 
   /**
