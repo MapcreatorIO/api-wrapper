@@ -120,7 +120,7 @@ export default class Contract extends CrudBase {
     let out = [
       date.getUTCFullYear(),
       date.getUTCMonth() + 1,
-      date.getUTCDay(),
+      date.getUTCDate(),
     ].map(pad).join('-');
 
     out += ' ' + [
