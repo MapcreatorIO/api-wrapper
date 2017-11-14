@@ -1,40 +1,3 @@
-import {
-  Choropleth,
-  Color,
-  Contract,
-  Dimension,
-  DimensionSet,
-  Faq,
-  Feature,
-  Font,
-  FontFamily,
-  Highlight,
-  InsetMap,
-  Job,
-  JobShare,
-  JobType,
-  Language,
-  Layer,
-  Mapstyle,
-  MapstyleSet,
-  Notification,
-  Organisation,
-  Permission,
-  PlaceName,
-  Role,
-  Svg,
-  SvgSet,
-  User,
-} from './crud';
-import ResourceBase from './crud/base/ResourceBase';
-
-import ApiError from './errors/ApiError';
-import ValidationError from './errors/ValidationError';
-import DummyFlow from './oauth/DummyFlow';
-import OAuth from './oauth/OAuth';
-import ResourceCache from './ResourceCache';
-import ResourceProxy from './ResourceProxy';
-import {fnv32b} from './utils/hash';
 /*
  * BSD 3-Clause License
  *
@@ -66,12 +29,48 @@ import {fnv32b} from './utils/hash';
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// Polyfill for terrible browsers (looking at you IE)
+
+import {
+  Choropleth,
+  Color,
+  Contract,
+  Dimension,
+  DimensionSet,
+  Faq,
+  Feature,
+  Font,
+  FontFamily,
+  Highlight,
+  InsetMap,
+  Job,
+  JobShare,
+  JobType,
+  Language,
+  Layer,
+  Mapstyle,
+  MapstyleSet,
+  Notification,
+  Organisation,
+  Permission,
+  PlaceName,
+  Role,
+  Svg,
+  SvgSet,
+  User,
+} from './crud';
+import ResourceBase from './crud/base/ResourceBase';
+import {Enum} from './enums';
+
+import ApiError from './errors/ApiError';
+import ValidationError from './errors/ValidationError';
+import DummyFlow from './oauth/DummyFlow';
+import OAuth from './oauth/OAuth';
+import ResourceCache from './ResourceCache';
+import ResourceProxy from './ResourceProxy';
+import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
-import {Enum} from './enums';
-import {constant as constantCase} from 'case';
 
 if (!global._babelPolyfill) {
   require('babel-polyfill');
@@ -89,7 +88,7 @@ export default class Maps4News {
     this.auth = auth;
     this.host = host;
 
-    const bool = str => str.toLowerCase() === 'true';
+    const bool = str => String(str).toLowerCase() === 'true';
 
     /**
      * Defaults for common parameters. These are populated during the build process using the `.env` file.
@@ -229,12 +228,19 @@ export default class Maps4News {
       data = undefined;
     }
 
-    return fetch(url, {
+    const init = {
       headers, method,
-      body: data,
       redirect: 'follow',
       mode: 'cors',
-    }).then(response => {
+    };
+
+    if (data) {
+      init.body = data;
+    }
+
+    debugger;
+
+    return fetch(url, init).then(response => {
       const respond = data => !bundleResponse ? data : {response, data};
 
       // Check if there is an error response and parse it
