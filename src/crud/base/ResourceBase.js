@@ -142,10 +142,11 @@ export default class ResourceBase {
    * Moves new fields to this._properties and turns them into a getter/setter
    * @returns {void}
    * @protected
+   * @todo Apply new baseProperties fields
    */
   _updateProperties() {
     // Build a list of new fields
-    const fields = Object.keys(this)
+    let fields = Object.keys(this)
       .filter(x => x[0] !== '_')
       .filter(x => !this._knownFields.includes(x));
 
@@ -156,9 +157,15 @@ export default class ResourceBase {
       this._properties[newKey] = this[key];
       delete this[key];
 
-      this._knownFields.push(key);
+      this._knownFields.push(this._applyProperty(newKey));
+    }
 
-      this._applyProperty(newKey);
+    // Build a list of new BaseProperty fields
+    fields = Object.keys(this._baseProperties)
+      .filter(x => !this._knownFields.includes(camelCase(x)));
+
+    for (const key of fields) {
+      this._knownFields.push(this._applyProperty(key));
     }
   }
 
@@ -223,7 +230,7 @@ export default class ResourceBase {
   /**
    * Create proxy for property
    * @param {string} key - property key
-   * @returns {void}
+   * @returns {string} - new key
    * @private
    */
   _applyProperty(key) {
@@ -247,7 +254,10 @@ export default class ResourceBase {
       };
     }
 
-    Object.defineProperty(this, camelCase(key), desc);
+    const newKey = camelCase(key);
+
+    Object.defineProperty(this, newKey, desc);
+    return newKey;
   }
 
   /**
