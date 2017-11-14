@@ -238,8 +238,6 @@ export default class Maps4News {
       init.body = data;
     }
 
-    debugger;
-
     return fetch(url, init).then(response => {
       const respond = data => !bundleResponse ? data : {response, data};
 
