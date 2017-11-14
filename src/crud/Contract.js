@@ -115,7 +115,7 @@ export default class Contract extends CrudBase {
    * @private
    */
   _formatDate(date) {
-    const pad = num => ('00' + num).slice(-2);
+    const pad = num => ('00' + num).slice(-Math.max(String(num).length, 2));
 
     let out = [
       date.getUTCFullYear(),
