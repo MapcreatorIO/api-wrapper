@@ -89,6 +89,7 @@ export default class ImageHandler {
    * layer.imageHandler.download().then(url => {
    *   $('img').src = url;
    * });
+   * @todo fix docs for nodejs
    */
   download() {
     return this.api

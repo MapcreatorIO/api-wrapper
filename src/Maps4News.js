@@ -273,10 +273,10 @@ export default class Maps4News {
       }
 
       if (isNode()) {
-        return response.blob().then(respond);
+        return response.buffer().then(respond);
       }
 
-      return response.buffer().then(respond);
+      return response.blob().then(respond);
     });
   }
 
