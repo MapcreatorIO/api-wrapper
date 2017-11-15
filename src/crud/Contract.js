@@ -55,20 +55,20 @@ export default class Contract extends CrudBase {
 
     const data = Object.assign({}, this._properties);
 
-    if (typeof data.dateStart === 'undefined') {
-      data.dateStart = this.dateStart;
+    if (typeof data['date_start'] === 'undefined') {
+      data['date_start'] = this.dateStart;
     }
 
-    if (typeof data.dateEnd === 'undefined') {
-      data.dateEnd = this.dateEnd;
+    if (typeof data['date_end'] === 'undefined') {
+      data['date_end'] = this.dateEnd;
     }
 
-    if (typeof data.dateStart instanceof Date) {
-      data.dateStart = this._formatDate(data.dateStart);
+    if (data['date_start'] instanceof Date) {
+      data['date_start'] = this._formatDate(data['date_start']);
     }
 
-    if (typeof data.dateEnd instanceof Date) {
-      data.dateEnd = this._formatDate(data.dateEnd);
+    if (data['date_end'] instanceof Date) {
+      data['date_end'] = this._formatDate(data['date_end']);
     }
 
     return this.api
