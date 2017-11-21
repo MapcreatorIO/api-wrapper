@@ -30,49 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceProxy from '../proxy/ResourceProxy';
-import CrudBase from './base/CrudBase';
-import JobResult from './JobResult';
-import JobRevision from './JobRevision';
+import SimpleResourceProxy from './SimpleResourceProxy';
+import Organisation from '../crud/Organisation';
 
-export default class Job extends CrudBase {
+export default class OrganisationProxy extends SimpleResourceProxy {
   /**
-   * Get the list of associated job results
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @param {Maps4News} api - Instance of the api
+   * @param {ResourceBase} parent - parent instance
+   * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    */
-  get results() {
-    return this._proxyResourceList(JobResult, `${this.url}/results`);
-  }
-
-  /**
-   * Get the list job revisions
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get revisions() {
-    const data = {
-      jobId: this.id,
-    };
-
-    return new ResourceProxy(this.api, JobRevision, null, data);
-  }
-
-  get resourceName() {
-    return 'jobs';
-  }
-
-  /**
-   * Get the most up to date preview url
-   * @returns {string} - Last preview url
-   */
-  get lastPreviewUrl() {
-    return `${this.url}/revisions/last/result/preview`;
-  }
-
-  /**
-   * Get the most up to date archive url
-   * @returns {string} - Last archive url
-   */
-  get lastArchiveUrl() {
-    return `${this.url}/revisions/last/result/archive`;
+  constructor(api, parent, altUrl = null) {
+    super(api, Organisation, altUrl, {});
   }
 }
