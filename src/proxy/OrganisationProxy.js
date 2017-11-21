@@ -95,7 +95,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
   }
 
   /**
-   * Attach all organisations to the parent resource
+   * Detach all organisations from the parent resource
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   detachAll() {
