@@ -50,6 +50,10 @@ import {fnv32b} from './hash';
  * isParentOf(B, A) // false
  */
 export function isParentOf(parent, child) {
+  if (parent == null || child == null) {
+    return false;
+  }
+
   parent = typeof parent === 'function' ? parent : parent.constructor;
   child = typeof child === 'function' ? child : child.constructor;
 

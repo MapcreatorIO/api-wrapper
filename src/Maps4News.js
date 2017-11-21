@@ -66,7 +66,7 @@ import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
 import ResourceCache from './ResourceCache';
-import ResourceProxy from './ResourceProxy';
+import ResourceProxy from './proxy/ResourceProxy';
 import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
