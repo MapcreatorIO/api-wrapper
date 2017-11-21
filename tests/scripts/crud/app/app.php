@@ -38,6 +38,8 @@
 use Klein\Klein;
 use Medoo\Medoo;
 
+ini_set('html_errors', false);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $klein = new Klein();
@@ -75,7 +77,7 @@ $klein->with('/v1/[:resource]', function () use ($klein) {
     $keys = array_keys($data);
     array_multisort($keys);
 
-    if ($keys !== ['name', 'description']) {
+    if ($keys !== ['description', 'name']) {
       $data = [
         'success' => false,
         'error' => [
@@ -96,7 +98,8 @@ $klein->with('/v1/[:resource]', function () use ($klein) {
           id integer primary key,
           name text,
           description text,
-          image blob,
+          image_data blob,
+          image_mime text,
         
           created_at text,
           updated_at text
@@ -144,22 +147,54 @@ $klein->with('/v1/[:resource]', function () use ($klein) {
 
     // Update
     $klein->respond('PATCH', '/?', function ($request, $response, $_, $app) {
-      // @todo
+      // Update regardless
+      $data = json_decode($request->body(), true);
+      $data_new = [];
+
+      if (isset($data['name'])) {
+        $data_new['name'] = $data['name'];
+      } elseif (isset($data['description'])) {
+        $data_new['description'] = $data['description'];
+      }
+
+      $rowCount = 0;
+      if (count(array_keys($data_new)) > 0) {
+        $dbResponse = $app->db->update($request->resource, $data_new, ['id' => $request->id]);
+        $rowCount = $dbResponse->rowCount();
+      }
+
+      if ($rowCount === 0) {
+        $data = [
+          'success' => false,
+          'error' => "'$request->resource' with id '$request->id' does not exist"
+        ];
+
+        $response->code(404);
+        $response->json($data);
+      } else {
+        $data = [
+          'success' => true,
+          'data' => [],
+        ];
+
+        $response->code(200);
+        $response->json($data);
+      }
     });
 
     $klein->with('/image', function () use ($klein) {
       $klein->respond('GET', '/?', function ($request, $response, $_, $app) {
-        $image = $app->db->get($request->resource, ['image'], ['id' => $request->id]);
+        $image = $app->db->get($request->resource, ['image_data', 'image_mime'], ['id' => $request->id]);
 
         if (!!$image) {
-          $response->header('Content-Type', 'image');
-          $response->send($image);
+          $response->header('Content-Type', $image['image_mime']);
+          $response->body($image['image_data']);
         } else {
           $data = [
             'success' => false,
             'error' => [
-              'type' => 'not_found',
-              'message' => "'$request->resource' with id '$request->id' does not exist"
+              'type' => 'image_not_found',
+              'message' => "Image for '$request->resource' with id '$request->id' does not exist"
             ]
           ];
 
@@ -168,12 +203,58 @@ $klein->with('/v1/[:resource]', function () use ($klein) {
         }
       });
 
+      $klein->respond('POST', '/?', function ($request, $response, $_, $app) {
+        $image = $request->files()['image'];
+
+        if (is_null($image)) {
+          $data = [
+            'success' => false,
+            'error' => [
+              'type' => 'no_data',
+              'message' => 'Expected field "image" to be a file'
+            ],
+          ];
+
+          $response->json($data);
+        } else {
+          $imageData = @file_get_contents($image['tmp_name']);
+
+          $dbResponse = $app->db->update($request->resource, ['image_data' => $imageData, 'image_mime' => $image['type'],], ['id' => $request->id]);
+          $rowCount = $dbResponse->rowCount();
+
+          if ($rowCount === 0) {
+            $data = [
+              'success' => false,
+              'error' => [
+                'type' => 'not_found',
+                'message' => "'$request->resource' with id '$request->id' does not exist"
+              ]
+            ];
+
+            $response->code(404);
+            $response->json($data);
+          } else {
+            $data = [
+              'success' => true,
+              'data' => [],
+            ];
+
+            $response->json($data);
+          }
+        }
+      });
+
       $klein->respond('DELETE', '/?', function ($request, $response, $_, $app) {
         $table = $request->resource;
         $id = +$request->id;
-        $app->db->query("UPDATE OR INGORE $table SET image = NULL WHERE id = $id;");
+        $app->db->query("UPDATE OR INGORE $table SET image_data = NULL AND image_mime = NULL WHERE id = $id;");
 
-        
+        $data = [
+          'success' => true,
+          'data' => [],
+        ];
+
+        $response->json($data);
       });
     });
   });
