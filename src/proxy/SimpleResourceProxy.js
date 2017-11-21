@@ -30,10 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './crud/base/ResourceBase';
-import PaginatedResourceListing from './PaginatedResourceListing';
-import {isParentOf} from './utils/reflection';
-import RequestParameters from './RequestParameters';
+import ResourceBase from '../crud/base/ResourceBase';
+import PaginatedResourceListing from '../PaginatedResourceListing';
+import {isParentOf} from '../utils/reflection';
+import RequestParameters from '../RequestParameters';
 
 /**
  * Proxy for accessing resource. This will make sure that they

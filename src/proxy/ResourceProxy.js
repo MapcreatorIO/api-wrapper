@@ -31,8 +31,8 @@
  */
 
 import SimpleResourceProxy from './SimpleResourceProxy';
-import {encodeQueryString} from './utils/requests';
-import {DeletedState} from './enums';
+import {encodeQueryString} from '../utils/requests';
+import {DeletedState} from '../enums';
 
 /**
  * Proxy for accessing resource. This will make sure that they

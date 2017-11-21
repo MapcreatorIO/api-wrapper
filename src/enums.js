@@ -54,7 +54,7 @@ import {constant as constantCase} from 'case';
  */
 export class Enum {
   /**
-   * @param {Object<String, *>,Array<String>} enums - Data to build the enum from
+   * @param {Object<String, *>|Array<String>} enums - Data to build the enum from
    * @param {boolean} auto - Auto generate enum from data making assumptions about
    *                         the data, requires enums to be of type array.
    */

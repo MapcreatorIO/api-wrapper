@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceProxy from '../ResourceProxy';
+import ResourceProxy from '../proxy/ResourceProxy';
 import CrudBase from './base/CrudBase';
 import Color from './Color';
 import DimensionSet from './DimensionSet';

@@ -31,16 +31,23 @@
  */
 
 import fetchPonyfill from 'fetch-ponyfill';
-import {isNode} from './node';
 import {windowTest} from './helpers';
+import {isNode} from './node';
 
 export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window : fetchPonyfill({Promise});
 
-// eslint-disable-next-line no-extra-parens
-export const FormData = windowTest('FormData') ? window.FormData : (
-  // Load FormData polyfill
-  isNode() ? null : require('formdata-polyfill')
-);
+function getFormData() {
+  if (windowTest('FormData')) {
+    return window.FormData;
+  } else if (!isNode()) {
+    return require('formdata-polyfill');
+  }
+
+  // @todo find nodejs polyfill
+  return null;
+}
+
+export const FormData = getFormData();
 
 /**
  * Encodes an object to a http query string with support for recursion
