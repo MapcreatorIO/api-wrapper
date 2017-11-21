@@ -31,6 +31,7 @@
  */
 
 import Trait from './Trait';
+import OrganisationProxy from '../proxy/OrganisationProxy';
 
 /**
  * Provides a {@link ResourceBase} with functions for dealing with being ownable by an organisation
@@ -47,13 +48,14 @@ export default class OwnableResource extends Trait {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get organisations() {
-    return this._proxyResourceList(this.__Organisation, `${this.url}/organisations`);
+    return new OrganisationProxy(this.api, this, `${this.url}/organisations`);
   }
 
   /**
    * Sync items to the organisation
    * @param {Array<ResourceBase>} items - List of items to sync
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @deprecated
    */
   syncOrganisations(items) {
     return this._modifyLink(items, 'PATCH', this.__Organisation);
@@ -63,6 +65,7 @@ export default class OwnableResource extends Trait {
    * Attach items to the organisation
    * @param {Array<ResourceBase>} items - List of items to attach
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @deprecated
    */
   attachOrganisations(items) {
     return this._modifyLink(items, 'POST', this.__Organisation);
@@ -72,6 +75,7 @@ export default class OwnableResource extends Trait {
    * Detach items from the organisation
    * @param {Array<Organisation>|Array<Number>} items - List of items to unlink
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @deprecated
    */
   detachOrganisations(items) {
     return this._modifyLink(items, 'DELETE', this.__Organisation);

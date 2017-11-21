@@ -37,9 +37,68 @@ export default class OrganisationProxy extends SimpleResourceProxy {
   /**
    * @param {Maps4News} api - Instance of the api
    * @param {ResourceBase} parent - parent instance
-   * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    */
-  constructor(api, parent, altUrl = null) {
-    super(api, Organisation, altUrl, {});
+  constructor(api, parent) {
+    super(api, Organisation, `${parent.url}/organisations`, {});
+
+    this._parent = parent;
+  }
+
+  /**
+   * Returns parent instance
+   * @returns {ResourceBase} - parent instance
+   */
+  get parent() {
+    return this._parent;
+  }
+
+  /**
+   * Sync organisations to the parent resource
+   * The organisations attached to the target resource will be replaced with the organisations provided in the request.
+   * @param {Array<Organisation|number>} organisations - List of items to sync
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   */
+  sync(organisations) {
+    return this.parent._modifyLink(organisations, 'PATCH', this.Target);
+  }
+
+  /**
+   * Attach organisations to the parent resource
+   * The provided organisations will be attached to the resource if they're not already attached
+   * @param {Array<Organisation|number>} organisations - List of items to attach
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   */
+  attach(organisations) {
+    return this.parent._modifyLink(organisations, 'POST', this.Target);
+  }
+
+  /**
+   * Detach organisations from the parent resource
+   * The provided organisations will be detached from the resource
+   * @param {Array<Organisation|number>} organisations - List of items to detach
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   */
+  detach(organisations) {
+    return this.parent._modifyLink(organisations, 'DELETE', this.Target);
+  }
+
+  /**
+   * Attach all organisations to the parent resource
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   */
+  attachAll() {
+    const url = this._baseUrl + '/all';
+
+    return this.api.request(url, 'POST');
+  }
+
+  /**
+   * Attach all organisations to the parent resource
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   */
+  detachAll() {
+    const url = this._baseUrl + '/all';
+
+    return this.api.request(url, 'DELETE');
   }
 }
