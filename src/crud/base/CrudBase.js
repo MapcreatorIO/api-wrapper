@@ -180,7 +180,7 @@ export default class CrudBase extends ResourceBase {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    * @protected
    */
-  _modifyLink(items, method, Type, path) {
+  _modifyLink(items, method, Type, path = null) {
     if (!path) {
       const resource = (new Type(this.api)).resourceName.replace(/s+$/, '');
 
