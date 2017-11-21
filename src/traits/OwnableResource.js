@@ -30,55 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Trait from './Trait';
 import OrganisationProxy from '../proxy/OrganisationProxy';
+import Trait from './Trait';
 
 /**
  * Provides a {@link ResourceBase} with functions for dealing with being ownable by an organisation
  * @mixin
  */
 export default class OwnableResource extends Trait {
-  initializer() {
-    // This is a hack to fix a circular dependency issue
-    this.__Organisation = require('../crud/Organisation').default;
-  }
-
   /**
    * Get the list of associated organisations
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get organisations() {
-    return new OrganisationProxy(this.api, this, `${this.url}/organisations`);
-  }
-
-  /**
-   * Sync items to the organisation
-   * @param {Array<ResourceBase>} items - List of items to sync
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
-   * @deprecated
-   */
-  syncOrganisations(items) {
-    return this._modifyLink(items, 'PATCH', this.__Organisation);
-  }
-
-  /**
-   * Attach items to the organisation
-   * @param {Array<ResourceBase>} items - List of items to attach
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
-   * @deprecated
-   */
-  attachOrganisations(items) {
-    return this._modifyLink(items, 'POST', this.__Organisation);
-  }
-
-  /**
-   * Detach items from the organisation
-   * @param {Array<Organisation>|Array<Number>} items - List of items to unlink
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
-   * @deprecated
-   */
-  detachOrganisations(items) {
-    return this._modifyLink(items, 'DELETE', this.__Organisation);
+    return new OrganisationProxy(this.api, this);
   }
 
   /**

@@ -31,7 +31,6 @@
  */
 
 import SimpleResourceProxy from './SimpleResourceProxy';
-import Organisation from '../crud/Organisation';
 
 export default class OrganisationProxy extends SimpleResourceProxy {
   /**
@@ -39,6 +38,9 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {ResourceBase} parent - parent instance
    */
   constructor(api, parent) {
+    // Fixes dependency issue
+    const Organisation = require('../crud/Organisation').default;
+
     super(api, Organisation, `${parent.url}/organisations`, {});
 
     this._parent = parent;
