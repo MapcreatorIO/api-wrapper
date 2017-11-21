@@ -33,7 +33,7 @@
 import {camel as camelCase, snake as snakeCase} from 'case';
 import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
-import SimpleResourceProxy from '../../SimpleResourceProxy';
+import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
 import {isParentOf} from '../../utils/reflection';
 
 /**
