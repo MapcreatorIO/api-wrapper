@@ -13,6 +13,7 @@
     "require": false,
     "module": true,
     "process": false,
+    "Buffer": false,
 
     "VERSION": false,
     "LICENSE": false
