@@ -123,6 +123,12 @@ export default class CrudBase extends ResourceBase {
     return this.api
       .request(this.url, 'PATCH', this._properties)
       .then(() => {
+        // Move updated properties
+        for (const key of Object.keys(this._properties)) {
+          this._baseProperties[key] = this._properties[key];
+          delete this._properties[key];
+        }
+
         if (this.api.defaults.autoUpdateSharedCache) {
           this.api.cache.update(this);
         }
