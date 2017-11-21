@@ -14,7 +14,7 @@
     "babel-polyfill": "^6.23.0",
     "case": "^1.5.3",
     "fetch-ponyfill": "^4.1.0",
-    "formdata-polyfill": "^2.0.4",
+    "isomorphic-form-data": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
     "mitt": "^1.1.2"
   },

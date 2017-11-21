@@ -39,12 +39,9 @@ export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window 
 function getFormData() {
   if (windowTest('FormData')) {
     return window.FormData;
-  } else if (!isNode()) {
-    return require('formdata-polyfill');
   }
 
-  // @todo find nodejs polyfill
-  return null;
+  return require('isomorphic-form-data');
 }
 
 export const FormData = getFormData();
