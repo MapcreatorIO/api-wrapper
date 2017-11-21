@@ -98,15 +98,6 @@
         }
       ]
     ],
-    "sourceMap": true,
-    "env": {
-      "production": {
-        "presets": [
-          "babili",
-          "@ava/stage-4"
-        ]
-      }
-    },
     "plugins": [
       "transform-export-extensions"
     ]
@@ -115,6 +106,10 @@
     "require": [
       "babel-register"
     ],
-    "babel": "inherit"
+    "babel": {
+      "presets": [
+        "@ava/stage-4"
+      ]
+    }
   }
 }

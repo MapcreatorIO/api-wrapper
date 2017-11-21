@@ -45,11 +45,13 @@ test.before('start webserver', () => {
 });
 
 test('crud can create resources', t => {
-  const uuid = Uuid.uuid4().split('-')[0];
-
   class DummyResource extends CrudBase {
     get resourceName() {
-      return uuid;
+      if (!this.constructor._resourceName) {
+        this.constructor._resourceName = Uuid.uuid4().split('-')[0];
+      }
+
+      return this.constructor._resourceName;
     }
   }
 
