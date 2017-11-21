@@ -6,6 +6,8 @@
 /local/
 
 vendor/
+# sqlite databases
+*.sqlite
 
 # Maps4news api storage file
 .m4n
