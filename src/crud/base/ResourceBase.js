@@ -59,7 +59,7 @@ export default class ResourceBase {
     for (const key of Object.keys(data)) {
       const newKey = snakeCase(key);
 
-      data[newKey] = ResourceBase._guessType(newKey, data[key]);
+      data[newKey] = this.constructor._guessType(newKey, data[key]);
 
       if (newKey !== key) {
         delete data[key];
@@ -256,9 +256,7 @@ export default class ResourceBase {
       };
     }
 
-    const newKey = camelCase(key);
-
-    Object.defineProperty(this, newKey, desc);
+    Object.defineProperty(this, camelCase(key), desc);
   }
 
   /**
