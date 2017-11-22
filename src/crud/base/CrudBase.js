@@ -76,14 +76,6 @@ export default class CrudBase extends ResourceBase {
   /**
    * Save item. This will create a new item if `id` is unset
    * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
-   * .catch(reject)
-   * .then(data => {
-   *        this._properties = {};
-   *        this._baseProperties = data;
-   *
-   *        this._updateProperties();
-   *        resolve(this);
-   *      });
    */
   save() {
     return !this.id ? this._create() : this._update();
@@ -123,7 +115,7 @@ export default class CrudBase extends ResourceBase {
     return this.api
       .request(this.url, 'PATCH', this._properties)
       .then(() => {
-        // Move updated properties
+        // Move updated properties to baseProperties
         for (const key of Object.keys(this._properties)) {
           this._baseProperties[key] = this._properties[key];
           delete this._properties[key];
