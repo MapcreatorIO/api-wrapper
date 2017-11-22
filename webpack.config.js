@@ -59,6 +59,7 @@ module.exports = {
       include: /\.min\.js$/,
       minimize: true,
       sourceMap: false, // Useless because it's based on the bundle
+      parallel: true,
     }),
 
     new webpack.BannerPlugin(
