@@ -46,40 +46,13 @@ import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 
 
 export default class Organisation extends CrudBase {
-  /**
-   * Reduce the items to a more usable list
-   * @param {Array<ResourceBase>} items - List of items to reduce
-   * @returns {Object<String, Array<Number>>} - Object keys are resource names and the value is an array containing ids to sync/attach
-   * @throws {TypeError} If the provided items contain anything that is not ownable
-   * @private
-   */
-  _reduceOwnable(items) {
-    const out = {};
-
-    for (const row of items) {
-      if (!row.ownable) {
-        throw new TypeError(`${row.constructor.name}::ownable is false. Is it ownable?\nSee: https://mapcreatoreu.github.io/api-wrapper/class/src/traits/OwnableResource.js~OwnableResource.html`);
-      }
-
-      const key = row.resourceName;
-
-      if (!out[key]) {
-        out[key] = [row.id];
-      } else {
-        out[key].push(row.id);
-      }
-    }
-
-    return out;
-  }
-
   get resourceName() {
     return 'organisations';
   }
 
   // Resource listing
   /**
-   * Get the list font families linked to the organisation
+   * Get a proxy for font families linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get fontFamilies() {
@@ -87,7 +60,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list dimension sets linked to the organisation
+   * Get a proxy for dimension sets linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets() {
@@ -95,7 +68,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list mapstyle sets linked to the organisation
+   * Get a proxy for mapstyle sets linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get mapstyleSets() {
@@ -103,7 +76,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list svg sets linked to the organisation
+   * Get a proxy for svg sets linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get svgSets() {
@@ -111,7 +84,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list colors linked to the organisation
+   * Get a proxy for colors linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get colors() {
@@ -119,7 +92,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list features linked to the organisation
+   * Get a proxy for features linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get features() {
@@ -127,7 +100,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list layers linked to the organisation
+   * Get a proxy for layers linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get layers() {
@@ -135,7 +108,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list job types linked to the organisation
+   * Get a proxy for job types linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get jobTypes() {
@@ -143,7 +116,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list job shares linked to the organisation
+   * Get a proxy for job shares linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get jobShares() {
@@ -151,7 +124,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list users linked to the organisation
+   * Get a proxy for users linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get users() {
@@ -159,7 +132,7 @@ export default class Organisation extends CrudBase {
   }
 
   /**
-   * Get the list contracts linked to the organisation
+   * Get a proxy for contracts linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get contracts() {
