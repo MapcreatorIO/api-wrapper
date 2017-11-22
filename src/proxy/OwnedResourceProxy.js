@@ -37,6 +37,12 @@ import SimpleResourceProxy from './SimpleResourceProxy';
  * Used for proxying resource => organisation
  */
 export default class OwnedResourceProxy extends SimpleResourceProxy {
+  /**
+   * OwnedResourceProxy Constructor
+   * @param {Maps4News} api - api instance
+   * @param {Organisation} parent - parent instance
+   * @param {constructor} Target - target constructor
+   */
   constructor(api, parent, Target) {
     const resource = (new Target(api)).resourceName.replace(/s+$/, '');
     const url = `${parent.url}/${resource}s`;
@@ -50,7 +56,6 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
-   * @deprecated
    */
   sync(items) {
     return this._modifyResourceLink(items, 'PATCH');
@@ -62,7 +67,6 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
    * @throws {TypeError}If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
-   * @deprecated
    */
   attach(items) {
     return this._modifyResourceLink(items, 'POST');
@@ -74,7 +78,6 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
-   * @deprecated
    */
   detach(items) {
     return this._modifyResourceLink(items, 'DELETE');
