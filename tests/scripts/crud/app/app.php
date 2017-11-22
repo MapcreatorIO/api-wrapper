@@ -107,7 +107,7 @@ $klein->with('/v1/[:resource]', function () use ($klein) {
 
       $app->db->insert($table, $data);
 
-      $data['id'] = $app->db->id();
+      $data['id'] = +$app->db->id();
 
       $data = [
         'success' => true,
