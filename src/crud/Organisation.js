@@ -47,67 +47,6 @@ import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 
 export default class Organisation extends CrudBase {
   /**
-   * Sync items to the organisation
-   * @param {Array<ResourceBase>|ResourceBase} items - List of items to sync
-   * @returns {Array<Promise>|Promise} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
-   * @throws {TypeError} If the provided items contain anything that is not ownable
-   * @see http://es6-features.org/#PromiseCombination
-   * @deprecated
-   */
-  sync(items) {
-    return this._modifyResourceLink(items, 'PATCH');
-  }
-
-  /**
-   * Attach items to the organisation
-   * @param {Array<ResourceBase>|ResourceBase} items - List of items to attach
-   * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
-   * @throws {TypeError} If the provided items contain anything that is not ownable
-   * @see http://es6-features.org/#PromiseCombination
-   * @deprecated
-   */
-  attach(items) {
-    return this._modifyResourceLink(items, 'POST');
-  }
-
-  /**
-   * Detach items from the organisation
-   * @param {Array<ResourceBase>|ResourceBase} items - List of items to unlink
-   * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
-   * @throws {TypeError} If the provided items contain anything that is not ownable
-   * @see http://es6-features.org/#PromiseCombination
-   * @deprecated
-   */
-  detach(items) {
-    return this._modifyResourceLink(items, 'DELETE');
-  }
-
-  /**
-   * Sync, attach or unlink resources
-   * @param {Array<ResourceBase>|ResourceBase} items - List of items to sync or attach
-   * @param {String} method - Http method to use
-   * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
-   * @throws {TypeError} If the provided items contain anything that is not ownable
-   * @private
-   * @deprecated
-   */
-  _modifyResourceLink(items, method) {
-    const isCollection = items instanceof Array;
-    const collections = this._reduceOwnable(isCollection ? items : [items]);
-    const out = [];
-
-    for (const key of Object.keys(collections)) {
-      const url = `${this.url}/${key}`;
-      const data = {keys: collections[key]};
-      const promise = this.api.request(url, method, data);
-
-      out.push(promise);
-    }
-
-    return isCollection ? out : out[0];
-  }
-
-  /**
    * Reduce the items to a more usable list
    * @param {Array<ResourceBase>} items - List of items to reduce
    * @returns {Object<String, Array<Number>>} - Object keys are resource names and the value is an array containing ids to sync/attach
