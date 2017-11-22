@@ -31,20 +31,23 @@
  */
 
 import test from 'ava';
-import CrudBase from '../../../src/crud/base/CrudBase';
-import Maps4News from '../../../src/Maps4News';
-import Uuid from '../../../src/utils/uuid';
 import {startWebserver, stopWebserver} from '../util';
+import Uuid from '../../../src/utils/uuid';
+import {fetch} from '../../../src/utils/requests';
+
+const Maps4News = require('../../../src/Maps4News').default;
 
 let port = 0;
-let api = new Maps4News();
+let api = new Maps4News(undefined, 'http://localhost');
 
 test.before('start webserver', () => {
-  port = startWebserver('tests/scripts');
+  port = startWebserver('tests/scripts/crud/public');
   api.host = 'http://localhost:' + port;
 });
 
 test('crud can create resources', t => {
+  const CrudBase = require('../../../src/crud/base/CrudBase').default;
+
   class DummyResource extends CrudBase {
     get resourceName() {
       if (!this.constructor._resourceName) {
@@ -56,18 +59,21 @@ test('crud can create resources', t => {
   }
 
   t.plan(7);
+  t.log(`Using resource "${(new DummyResource(api)).resourceName}"`);
 
-  let resource;
-
-  return api.static(DummyResource).new({
+  let resource = api.static(DummyResource).new({
     name: Uuid.uuid4(),
     description: Uuid.uuid4().repeat(3),
-  }).save()
+  });
+
+  return resource.save()
     .then(r => {
       resource = r;
 
+      t.log(JSON.stringify(resource.toObject()));
       t.is(typeof resource.id, 'number');
-      t.is(resource.id > 0, true);
+      t.is(resource.createdAt.constructor.name, 'Date');
+      t.is(resource.id, 0); // Should be the 1st resource
 
       return api.static(DummyResource).get(resource.id);
     })
