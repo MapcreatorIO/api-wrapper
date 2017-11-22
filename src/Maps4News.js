@@ -69,7 +69,7 @@ import ResourceCache from './ResourceCache';
 import ResourceProxy from './proxy/ResourceProxy';
 import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
-import {isParentOf} from './utils/reflection';
+import {getTypeName, isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
 
 if (!global._babelPolyfill) {
@@ -207,7 +207,7 @@ export default class Maps4News {
     }
 
     // Automatically detect possible content-type header
-    const isFormData = data instanceof FormData;
+    const isFormData = getTypeName(data) === 'FormData';
 
     if (typeof data === 'object' && !isFormData) {
       data = JSON.stringify(data);
