@@ -42,6 +42,7 @@ import Layer from './Layer';
 import MapstyleSet from './MapstyleSet';
 import SvgSet from './SvgSet';
 import User from './User';
+import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 
 
 export default class Organisation extends CrudBase {
@@ -51,6 +52,7 @@ export default class Organisation extends CrudBase {
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type. Each will resolve with an empty {@link Object} and reject with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
+   * @deprecated
    */
   sync(items) {
     return this._modifyResourceLink(items, 'PATCH');
@@ -62,6 +64,7 @@ export default class Organisation extends CrudBase {
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
+   * @deprecated
    */
   attach(items) {
     return this._modifyResourceLink(items, 'POST');
@@ -73,6 +76,7 @@ export default class Organisation extends CrudBase {
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items contain anything that is not ownable
    * @see http://es6-features.org/#PromiseCombination
+   * @deprecated
    */
   detach(items) {
     return this._modifyResourceLink(items, 'DELETE');
@@ -85,6 +89,7 @@ export default class Organisation extends CrudBase {
    * @returns {Array<Promise>|Promise} - Array containing promises for each item type Each will resolve with no value and reject with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items contain anything that is not ownable
    * @private
+   * @deprecated
    */
   _modifyResourceLink(items, method) {
     const isCollection = items instanceof Array;
@@ -139,7 +144,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get fontFamilies() {
-    return this._proxyResourceList(FontFamily);
+    return this._proxyBuilder(FontFamily);
   }
 
   /**
@@ -147,7 +152,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets() {
-    return this._proxyResourceList(DimensionSet);
+    return this._proxyBuilder(DimensionSet);
   }
 
   /**
@@ -155,7 +160,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get mapstyleSets() {
-    return this._proxyResourceList(MapstyleSet);
+    return this._proxyBuilder(MapstyleSet);
   }
 
   /**
@@ -163,7 +168,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get svgSets() {
-    return this._proxyResourceList(SvgSet);
+    return this._proxyBuilder(SvgSet);
   }
 
   /**
@@ -171,7 +176,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get colors() {
-    return this._proxyResourceList(Color);
+    return this._proxyBuilder(Color);
   }
 
   /**
@@ -179,7 +184,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get features() {
-    return this._proxyResourceList(Feature);
+    return this._proxyBuilder(Feature);
   }
 
   /**
@@ -187,7 +192,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get layers() {
-    return this._proxyResourceList(Layer);
+    return this._proxyBuilder(Layer);
   }
 
   /**
@@ -195,7 +200,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get jobTypes() {
-    return this._proxyResourceList(JobType);
+    return this._proxyBuilder(JobType);
   }
 
   /**
@@ -203,7 +208,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get jobShares() {
-    return this._proxyResourceList(JobShare);
+    return this._proxyBuilder(JobShare);
   }
 
   /**
@@ -211,7 +216,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get users() {
-    return this._proxyResourceList(User);
+    return this._proxyBuilder(User);
   }
 
   /**
@@ -219,6 +224,16 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get contracts() {
-    return this._proxyResourceList(Contract);
+    return this._proxyBuilder(Contract);
+  }
+
+  /**
+   * Builds OwnedResourceProxy instance
+   * @param {constructor} Target - target class
+   * @returns {OwnedResourceProxy} - proxy instance
+   * @private
+   */
+  _proxyBuilder(Target) {
+    return new OwnedResourceProxy(this.api, this, Target);
   }
 }
