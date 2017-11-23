@@ -453,6 +453,10 @@ export default class RequestParameters {
     }
   }
 
+  /**
+   * Generates a cache token
+   * @returns {string} - Cache token
+   */
   token() {
     const data = this.toObject();
 
@@ -462,11 +466,14 @@ export default class RequestParameters {
     return hashObject(data);
   }
 
+  /**
+   * Resets all parameters back to default
+   * @returns {void}
+   */
   static resetDefaults() {
     for (const key of RequestParameters.keys()) {
       delete RequestParameters['_' + key];
     }
   }
-
   // endregion utils
 }
