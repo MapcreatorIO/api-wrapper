@@ -85,4 +85,16 @@ export default class OAuth {
 
     this.token = null;
   }
+
+  /**
+   * Manually import OAuthToken, usefull for debugging
+   * @param {String} token - OAuth token
+   * @param {String} [type=Bearer] - token type
+   * @param {Date|Number} [expires=5 days] - expire time in seconds or Date
+   * @param {Array<string>} [scopes=[]] - Any scopes
+   * @returns {void}
+   */
+  importToken(token, type = 'Bearer', expires = 432000, scopes = []) {
+    this.token = new OAuthToken(token, type, expires, scopes);
+  }
 }
