@@ -43,6 +43,7 @@ import MapstyleSet from './MapstyleSet';
 import SvgSet from './SvgSet';
 import User from './User';
 import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
+import Domain from './Domain';
 
 
 export default class Organisation extends CrudBase {
@@ -137,6 +138,14 @@ export default class Organisation extends CrudBase {
    */
   get contracts() {
     return this._proxyBuilder(Contract);
+  }
+
+  /**
+   * Get a proxy for contracts linked to the organisation
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get domains() {
+    return this._proxyBuilder(Domain);
   }
 
   /**
