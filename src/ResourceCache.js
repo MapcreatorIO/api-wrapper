@@ -38,6 +38,7 @@ import Uuid from './utils/uuid';
  * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
  * @todo Add periodic data refreshing while idle, most likely implemented in cache
+ * @todo complete rewrite
  */
 export default class ResourceCache extends Unobservable {
   constructor(api, cacheTime = api.defaults.cacheSeconds, dereference = api.defaults.dereferenceCache) {
@@ -63,7 +64,7 @@ export default class ResourceCache extends Unobservable {
       return; // Don't insert empty pages
     }
 
-    delete page.__ob__; // Remove VueJs observer
+    delete page['__ob__']; // Remove VueJs observer
 
     // Test if this is data we can actually work with by testing if there are any non-numeric ids (undefined etc)
     const invalidData = page.data.map(row => row.id).filter(x => typeof x !== 'number').length > 0;
@@ -171,7 +172,14 @@ export default class ResourceCache extends Unobservable {
     const storage = (this._storage[resourceUrl] || {})[cacheToken] || [];
 
     // Sort by validThrough and extract pages
-    return storage.sort((a, b) => a.validThrough - b.validThrough);
+    // SORT BY page, validThrough ASCENDING
+    return storage.sort((a, b) => {
+      if (a.page === b.page) {
+        return a.validThrough - b.validThrough;
+      }
+
+      return a.page - b.page;
+    });
   }
 
   /**
@@ -203,54 +211,61 @@ export default class ResourceCache extends Unobservable {
   resolve(resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
 
+    // row.diff should indicate that the records should just be
+    // applied to the object and not used to diff out old records
+    // List ordered from old to new
     const data = this.collectPages(resourceUrl, cacheToken);
     const out = [];
 
-    let lastStart;
-    let lastEnd;
     let lastPage;
+    let startIndex = 0;
 
     for (const row of data) {
       const page = row.page;
 
-      if (page.rows === 0) {
-        // We can't do anything if we don't have any data
+      if (page.data.length === 0) {
         continue;
       }
 
-      const ids = page.data.map(row => row.id);
-      const startId = Math.min(...ids);
-      const endId = Math.max(...ids);
+      // @todo compare `updatedAt` instead of assuming later pages are more recent
+      if (row.diff) {
+        continue; // @todo
+      } else if (lastPage === page.page) {
+        let ii;
 
-      const badKeys = [];
+        for (let i = 0; i < page.data.length; i++) {
+          ii = i + startIndex;
 
-      if (page.page - 1 === lastPage || page.page === lastPage) {
-        badKeys.push(...this._diffRange(lastEnd, startId));
+          if (typeof out[ii] === 'undefined') {
+            out.push(page.data[i]);
+          } else if (page.data[i].id !== out[ii].id) {
+            out[ii] = page.data[i];
+
+            // lookbehind
+            for (let j = 0; j < startIndex; j++) {
+              if (out[j].id === out[ii].id) {
+                out.splice(j, 1);
+
+                startIndex--;
+                i--;
+                ii--;
+                j--;
+              }
+            }
+          }
+        }
+
+        // Remove trailing data
+        if (typeof ii !== 'undefined') {
+          out.splice(ii, out.length);
+        }
+      } else {
+        startIndex = out.length;
+
+        page.data.map(x => out.push(x));
       }
 
-      if (page.page + 1 === lastPage || page.page === lastPage) {
-        badKeys.push(...this._diffRange(endId, lastStart));
-      }
-
-      lastStart = startId;
-      lastEnd = endId;
-
-      for (const row of page.data) {
-        out[row.id] = row;
-      }
-
-      if (!row.diff) {
-        // Grab list of applicable ids and delete offending
-        // keys that no longer exist in the newer data set
-        Object
-          .keys(out)
-          .map(Number)
-          .filter(key => startId <= key && key <= endId)
-          .filter(key => !ids.includes(key))
-          .forEach(key => badKeys.push(key));
-      }
-
-      badKeys.forEach(key => delete out[key]);
+      lastPage = row.page;
     }
 
     if (this.dereference) {
