@@ -192,7 +192,7 @@ export default class Maps4News {
   request(url, method = 'GET', data = {}, headers = {}, bundleResponse = false) {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
-      url = url.replace(/(^\/+)/, () => '');
+      url = url.replace(/(^\/+)/g, () => '');
       url = `${this._host}/${this.version}/${url}`;
     }
 

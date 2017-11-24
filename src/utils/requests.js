@@ -60,7 +60,7 @@ export function encodeQueryString(paramsObject) {
   const query = _encodeQueryString(paramsObject);
 
   // Removes any extra unused &'s.
-  return query.replace(/^&*|&+(?=&)|&*$/, '');
+  return query.replace(/^&*|&+(?=&)|&*$/g, '');
 }
 
 /**
