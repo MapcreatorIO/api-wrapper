@@ -31,6 +31,7 @@
  */
 
 import mitt from 'mitt';
+import Unobservable from './utils/Unobservable';
 import Uuid from './utils/uuid';
 
 /**
@@ -38,17 +39,16 @@ import Uuid from './utils/uuid';
  * @see {@link PaginatedResourceWrapper}
  * @todo Add periodic data refreshing while idle, most likely implemented in cache
  */
-export default class ResourceCache {
+export default class ResourceCache extends Unobservable {
   constructor(api, cacheTime = api.defaults.cacheSeconds, dereference = api.defaults.dereferenceCache) {
+    super();
+
     this._api = api;
     this.cacheTime = cacheTime;
     this.dereference = dereference;
     this.emitter = mitt();
 
     this._storage = {};
-
-    // Prevent observers
-    Object.freeze(this);
   }
 
   /**
@@ -64,7 +64,6 @@ export default class ResourceCache {
     }
 
     delete page.__ob__; // Remove VueJs observer
-    Object.freeze(page);
 
     // Test if this is data we can actually work with by testing if there are any non-numeric ids (undefined etc)
     const invalidData = page.data.map(row => row.id).filter(x => typeof x !== 'number').length > 0;
