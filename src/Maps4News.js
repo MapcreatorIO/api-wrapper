@@ -66,8 +66,8 @@ import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
-import ResourceCache from './ResourceCache';
 import ResourceProxy from './proxy/ResourceProxy';
+import ResourceCache from './ResourceCache';
 import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
@@ -390,7 +390,7 @@ export default class Maps4News {
   get domains() {
     return this.static(Domain);
   }
-  
+
   /**
    * Faq accessor
    * @see {@link Faq}
