@@ -31,6 +31,7 @@
  */
 
 import StorageManager from '../storage/StorageManager';
+import {encodeQueryString} from '../utils/requests';
 
 /**
  * Oauth token container
@@ -76,6 +77,14 @@ export default class OAuthToken {
       'expires_in': this.expires - Date.now(),
       'scope': this.scopes,
     };
+  }
+
+  /**
+   * Export oauth response query string
+   * @returns {string} - OAuth response query
+   */
+  toQueryString() {
+    return encodeQueryString(this.toResponseObject());
   }
 
   /**
