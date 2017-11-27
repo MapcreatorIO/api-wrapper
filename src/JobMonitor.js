@@ -35,7 +35,14 @@ import JobMonitorRow from './JobMonitorRow';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';
 
+/**
+ * Used for monitoring the job queue
+ */
 export default class JobMonitor {
+  /**
+   * JobMonitor constructor
+   * @param {Maps4News} api - Api instance
+   */
   constructor(api) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
@@ -91,7 +98,6 @@ export default class JobMonitor {
 
     // First we need to check if we have enough data to begin with
     let rowCountDiff = this.maxRows - this.data.length;
-    console.log('diff', rowCountDiff);
 
     if (rowCountDiff < 0) {
       // Remove trailing data
@@ -107,7 +113,9 @@ export default class JobMonitor {
       // Either always do 50 or calculate the correct page number and stuff which takes time...
       const perPage = 50; // Math.min(rowCountDiff, 50);
       const page = Math.floor((this.data.length + requestedRowCount) / perPage) + 1;
-      console.log('have', this.data.length + requestedRowCount, 'diff', rowCountDiff, 'perPage', perPage, 'page', page, 'target', perPage * page);
+
+      // Usefull for debugging:
+      // console.log('have', this.data.length + requestedRowCount, 'diff', rowCountDiff, 'perPage', perPage, 'page', page, 'target', perPage * page);
 
       const url = `${baseUrl}&per_page=${perPage}&page=${page}`;
 
@@ -256,6 +264,11 @@ export default class JobMonitor {
     return this._filterStatus;
   }
 
+  /**
+   * Returns the time the ::update method was called for the last time.
+   * @returns {Date} - Last update
+   * @see JobMonitor#update
+   */
   get lastUpdate() {
     return new Date(this._lastUpdate);
   }

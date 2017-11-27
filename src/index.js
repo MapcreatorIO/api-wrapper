@@ -34,6 +34,7 @@
 export Maps4News from './Maps4News';
 export RequestParameters from './RequestParameters';
 export StorageManager from './storage/StorageManager';
+export JobMonitor from './JobMonitor';
 
 // Enums
 export {DeletedState, ResultStatus, JobMonitorFilter} from './enums';
