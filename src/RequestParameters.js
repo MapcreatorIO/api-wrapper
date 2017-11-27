@@ -341,7 +341,7 @@ export default class RequestParameters {
     const possible = DeletedState.values();
 
     if (!possible.includes(value)) {
-      throw new TypeError(`Expected deleted to be on of ${possible.join(', ')}`);
+      throw new TypeError(`Expected deleted to be one of ${possible.join(', ')}, got ${value}`);
     }
 
     return value;
