@@ -56,6 +56,11 @@ export default class Job extends CrudBase {
     return new ResourceProxy(this.api, JobRevision, null, data);
   }
 
+  /**
+   * Resource name
+   * @returns {String} - Resource name
+   * @abstract
+   */
   get resourceName() {
     return 'jobs';
   }

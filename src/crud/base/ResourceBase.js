@@ -108,6 +108,7 @@ export default class ResourceBase {
   /**
    * Resource path template
    * @returns {String} - Path template
+   * @todo move to constructor
    */
   get resourcePath() {
     return `/${this.resourceName}/{id}`;
@@ -116,6 +117,7 @@ export default class ResourceBase {
   /**
    * Resource name
    * @returns {String} - Resource name
+   * @todo move to constructor
    * @abstract
    */
   get resourceName() {
@@ -133,6 +135,7 @@ export default class ResourceBase {
   /**
    * Protected read-only fields
    * @returns {Array<string>} - Array containing the protected fields
+   * @todo move to constructor
    * @protected
    */
   get _protectedFields() {
