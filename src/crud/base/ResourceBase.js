@@ -59,7 +59,7 @@ export default class ResourceBase {
     for (const key of Object.keys(data)) {
       const newKey = snakeCase(key);
 
-      data[newKey] = ResourceBase._guessType(newKey, data[key]);
+      data[newKey] = this.constructor._guessType(newKey, data[key]);
 
       if (newKey !== key) {
         delete data[key];
@@ -140,6 +140,14 @@ export default class ResourceBase {
    */
   get _protectedFields() {
     return ['id', 'created_at', 'updated_at', 'deleted_at'];
+  }
+
+  /**
+   * Returns if the resource is readonly
+   * @returns {boolean} - readonly
+   */
+  static get readonly() {
+    return false;
   }
 
   /**
@@ -252,7 +260,7 @@ export default class ResourceBase {
       },
     };
 
-    if (!this._protectedFields.includes(key)) {
+    if (!this._protectedFields.includes(key) && !this.constructor.readonly) {
       desc.set = (val) => {
         this._properties[key] = ResourceBase._guessType(key, val);
         delete this._url; // Clears url cache
