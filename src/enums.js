@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {getTypeName} from './utils/reflection';
 import {constant as constantCase} from 'case';
+import {getTypeName} from './utils/reflection';
 import Unobservable from './utils/Unobservable';
 
 /**
@@ -164,3 +164,15 @@ export const ResultStatus = new Enum({
   FAILED: 'failed',
 });
 
+/**
+ * Enum containing the possible different values for {@link RequestParameters#deleted}
+ * @enum {string}
+ * @property {string} ALL - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} QUEUED - Job has been queued
+ * @property {string} PROCESSING - Job is processing
+ * @property {string} COMPLETED - Job has been completed
+ * @property {string} CANCEL - Job has been canceled
+ * @property {string} FAILED - Job has failed
+ * @readonly
+ */
+export const JobMonitorFilter = new Enum(Object.assign({}, ResultStatus, {DEFAULT: 'default'}));
