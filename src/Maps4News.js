@@ -71,7 +71,7 @@ import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
-import Enum from './enums/Enum';
+import {Enum} from './enums';
 
 if (!global._babelPolyfill) {
   require('babel-polyfill');

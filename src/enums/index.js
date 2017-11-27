@@ -30,22 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Enum from './Enum';
-
-/**
- * Enum containing the possible different values for {@link RequestParameters#deleted}
- * @enum {string}
- * @property {string} QUEUED - Job has been queued
- * @property {string} PROCESSING - Job is processing
- * @property {string} COMPLETED - Job has been completed
- * @property {string} CANCEL - Job has been canceled
- * @property {string} FAILED - Job has failed
- * @readonly
- */
-export const ResultStatus = new Enum({
-  QUEUED: 'queued',
-  PROCESSING: 'processing',
-  COMPLETED: 'completed',
-  CANCEL: 'canceled',
-  FAILED: 'failed',
-});
+export Enum from './Enum';
+export {DeletedState} from './DeletedState';
+export {JobMonitorFilter} from './JobMonitorFilter';
+export {ResultStatus} from './ResultStatus';

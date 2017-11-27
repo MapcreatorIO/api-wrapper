@@ -35,7 +35,7 @@ import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case
 import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import DeletedState from './enums/DeletedState';
+import {DeletedState} from './enums';
 
 /**
  * Used for keeping track of the request parameters

@@ -41,10 +41,9 @@ import Enum from './Enum';
  * @property {string} ONLY - Only return deleted resources
  * @readonly
  */
-const DeletedState = new Enum({
+export const DeletedState = new Enum({
   ALL: 'all',
   BOTH: 'all',
   NONE: 'none',
   ONLY: 'only',
 });
-export default DeletedState;

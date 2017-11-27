@@ -43,5 +43,4 @@ import ResultStatus from './ResultStatus';
  * @property {string} FAILED - Job has failed
  * @readonly
  */
-const JobMonitorFilter = new Enum(Object.assign({}, ResultStatus, {DEFAULT: 'default'}));
-export default JobMonitorFilter;
+export const JobMonitorFilter = new Enum(Object.assign({}, ResultStatus, {DEFAULT: 'default'}));
