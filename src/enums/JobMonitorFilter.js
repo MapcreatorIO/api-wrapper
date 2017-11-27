@@ -31,7 +31,7 @@
  */
 
 import Enum from './Enum';
-import ResultStatus from './ResultStatus';
+import {ResultStatus} from './ResultStatus';
 
 /**
  * Enum containing the possible different values for {@link JobMonitor#filterStatus}

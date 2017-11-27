@@ -188,7 +188,7 @@ export default class JobMonitor {
    * @returns {Boolean} - Waiting for data
    */
   get waiting() {
-    return this._waiting;
+    return this._waiting > 0;
   }
 
   /**
@@ -231,7 +231,7 @@ export default class JobMonitor {
    * @returns {boolean} - hide internal users
    */
   get hideInternal() {
-    return this._hideInternal;
+    return this._hideInternal || false;
   }
 
   /**
