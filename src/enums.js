@@ -32,6 +32,7 @@
 
 import {getTypeName} from './utils/reflection';
 import {constant as constantCase} from 'case';
+import Unobservable from './utils/Unobservable';
 
 /**
  * Base enum class
@@ -52,13 +53,15 @@ import {constant as constantCase} from 'case';
  *
  * // etc...
  */
-export class Enum {
+export class Enum extends Unobservable {
   /**
    * @param {Object<String, *>|Array<String>} enums - Data to build the enum from
    * @param {boolean} auto - Auto generate enum from data making assumptions about
    *                         the data, requires enums to be of type array.
    */
   constructor(enums, auto = false) {
+    super();
+
     const isArray = enums instanceof Array;
 
     if (auto && !isArray) {
