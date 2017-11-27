@@ -36,7 +36,7 @@ export RequestParameters from './RequestParameters';
 export StorageManager from './storage/StorageManager';
 
 // Enums
-export DeletedState from './enums';
+export {DeletedState, ResultStatus, JobMonitorFilter} from './enums';
 
 // Flows
 export OAuth from './oauth/OAuth';
