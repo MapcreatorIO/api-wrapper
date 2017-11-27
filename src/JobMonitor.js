@@ -37,6 +37,7 @@ import {isParentOf} from './utils/reflection';
 
 /**
  * Used for monitoring the job queue
+ * @todo store data/timestamp based on status to make status filter switching smoother
  */
 export default class JobMonitor {
   /**
@@ -53,6 +54,7 @@ export default class JobMonitor {
     this._lastUpdate = Date.now();
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
+    this._purge = false;
   }
 
   /**
@@ -85,15 +87,8 @@ export default class JobMonitor {
     // Counter so we don't have to worry about racing
     this._waiting = 1;
 
-    if (this._hideInternal === 2) {
-      // Don't hide internal
-      // Clear and rebuild the list
+    if (this._purge) {
       this._data = [];
-
-      this._hideInternal = 0;
-    } else if (this._hideInternal === 3) {
-
-      this._hideInternal = 1;
     }
 
     // First we need to check if we have enough data to begin with
@@ -222,15 +217,13 @@ export default class JobMonitor {
    * @param {boolean} [value=false] - hide internal users
    */
   set hideInternal(value) {
-    // I'm abusing a bit flag here because it's easier.
-    // offset and use:
-    //  [0] Boolean value
-    //  [1] if 1 then it has been changed since the last update
-    if (value) {
-      this._hideInternal = 3; // 11
-    } else {
-      this._hideInternal = 2; // 10
+    value = Boolean(value);
+
+    if (this._hideInternal !== value) {
+      this._purge = true;
     }
+
+    this._hideInternal = value;
   }
 
   /**
@@ -238,7 +231,7 @@ export default class JobMonitor {
    * @returns {boolean} - hide internal users
    */
   get hideInternal() {
-    return (this._hideInternal & 1) === 1;
+    return this._hideInternal;
   }
 
   /**
@@ -251,6 +244,10 @@ export default class JobMonitor {
 
     if (!JobMonitorFilter.values().includes(value)) {
       throw new TypeError('Expected value to be property of JobMonitorFilter. Possible options: ' + JobMonitorFilter.values().join(', '));
+    }
+
+    if (this._filterStatus !== value) {
+      this._purge = true;
     }
 
     this._filterStatus = value;
