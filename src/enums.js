@@ -60,7 +60,7 @@ export class Enum extends Unobservable {
    *                         the data, requires enums to be of type array.
    */
   constructor(enums, auto = false) {
-    super();
+    super('Enum');
 
     const isArray = enums instanceof Array;
 

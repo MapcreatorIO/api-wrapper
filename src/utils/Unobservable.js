@@ -35,6 +35,10 @@
  * @protected
  */
 export default class Unobservable {
+  constructor(name = 'ObjectNoObserve') {
+    this.__name = name;
+  }
+
   /**
    * Overrides the `Object.prototype.toString.call(obj)` result
    * @returns {string} - type name
@@ -42,6 +46,6 @@ export default class Unobservable {
    */
   get [Symbol.toStringTag]() {
     // Anything can go here really as long as it's not 'Object'
-    return 'ObjectNoObserve';
+    return this.__name;
   }
 }
