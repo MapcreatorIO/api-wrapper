@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {JobMonitorFilter} from './enums';
+import JobMonitorFilter from './enums/JobMonitorFilter';
 import JobMonitorRow from './JobMonitorRow';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';

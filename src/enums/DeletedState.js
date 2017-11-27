@@ -30,49 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-export StorageManager from './storage/StorageManager';
-export JobMonitor from './JobMonitor';
-
-// Enums
-export Enum from './enums/Enum';
-export DeletedState from './enums/DeletedState';
-export JobMonitorFilter from './enums/JobMonitorFilter';
-export ResultStatus from './enums/ResultStatus';
-
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
-
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
-
-// Resources
-export * as resources from './crud';
-
-// Helpers
-export * as helpers from './utils/helpers';
-
-// Errors
-export * as errors from './errors';
-
+import Enum from './Enum';
 
 /**
- * Package version
- * @private
+ * Enum containing the possible different values for {@link RequestParameters#deleted}
+ * @enum {string}
+ * @property {string} ALL - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} BOTH - Don't discriminate between deleted items and non-deleted resources
+ * @property {string} NONE - Don't return deleted resources
+ * @property {string} ONLY - Only return deleted resources
+ * @readonly
  */
-export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
+const DeletedState = new Enum({
+  ALL: 'all',
+  BOTH: 'all',
+  NONE: 'none',
+  ONLY: 'only',
+});
+export default DeletedState;

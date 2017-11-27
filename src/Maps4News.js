@@ -60,7 +60,6 @@ import {
   User,
 } from './crud';
 import ResourceBase from './crud/base/ResourceBase';
-import {Enum} from './enums';
 
 import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
@@ -72,6 +71,7 @@ import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
+import Enum from './enums/Enum';
 
 if (!global._babelPolyfill) {
   require('babel-polyfill');
