@@ -70,7 +70,7 @@ import ResourceCache from './ResourceCache';
 import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {getTypeName, isParentOf} from './utils/reflection';
-import {fetch, FormData, Headers} from './utils/requests';
+import {fetch, Headers} from './utils/requests';
 import {Enum} from './enums';
 
 if (!global._babelPolyfill) {
