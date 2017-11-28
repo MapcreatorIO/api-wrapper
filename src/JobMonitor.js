@@ -177,6 +177,12 @@ export default class JobMonitor {
         // Truncate data if needed
         this._data.splice(this.maxRows, this.data.length - this.maxRows);
 
+        // Did we end up with less data because no more was available?
+        if (this.maxRows > this.data.length) {
+          // Prevent us from trying that again
+          this.maxRows = this.data.length;
+        }
+
         return x;
       })
       .then(x => x.reduce((s, v) => s + v, 0));
