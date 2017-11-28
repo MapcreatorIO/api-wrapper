@@ -130,16 +130,18 @@ export default class JobMonitor {
 
       // append data and remove duplicates
       // noinspection JSCheckFunctionSignatures
-      this._data = this.data
-        .concat(data)
-        .filter((thing, index, self) =>
-          index === self.findIndex((t) => t.id === thing.id),
-        );
+      this._data = this.data.concat(data);
+
+      const oldLength = this.data.length;
+
+      this._data = this.data.filter((thing, index, self) =>
+        index === self.findIndex((t) => t.id === thing.id),
+      );
 
       // We're no longer waiting
       this._waiting -= requests.length;
 
-      return data.length;
+      return data.length - (oldLength - this.data.length);
     }));
 
     // Fetch updates
@@ -152,6 +154,7 @@ export default class JobMonitor {
       .then(data => data.map(x => new JobMonitorRow(this.api, x)))
       .then(data => {
         const lookup = data.map(x => x.id);
+        let updateCount = 0;
 
         for (let i = 0; i < this._data.length && lookup.length > 0; i++) {
           const ii = lookup.indexOf(this._data[i].id);
@@ -162,6 +165,7 @@ export default class JobMonitor {
             // Remove the data and the lookup entry
             data.splice(ii, 1);
             lookup.splice(ii, 1);
+            updateCount++;
           }
         }
 
@@ -169,6 +173,8 @@ export default class JobMonitor {
         this._data = data.concat(this._data);
 
         this._waiting--;
+
+        return updateCount;
       }));
 
     return Promise
