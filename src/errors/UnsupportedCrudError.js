@@ -31,6 +31,6 @@
  */
 
 /**
- * Thrown upon invocation of an unsupported crud method
+ * Thrown upon invocation of an unsupported resources method
  */
 export default class UnsupportedCrudError extends Error {}

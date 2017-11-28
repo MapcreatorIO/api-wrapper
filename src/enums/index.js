@@ -30,49 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceProxy from '../proxy/ResourceProxy';
-import CrudBase from './base/CrudBase';
-import JobResult from './JobResult';
-import JobRevision from './JobRevision';
-
-export default class Job extends CrudBase {
-  /**
-   * Get the list of associated job results
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
-   */
-  get results() {
-    return this._proxyResourceList(JobResult, `${this.url}/results`);
-  }
-
-  /**
-   * Get the list job revisions
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get revisions() {
-    const data = {
-      jobId: this.id,
-    };
-
-    return new ResourceProxy(this.api, JobRevision, null, data);
-  }
-
-  get resourceName() {
-    return 'jobs';
-  }
-
-  /**
-   * Get the most up to date preview url
-   * @returns {string} - Last preview url
-   */
-  get lastPreviewUrl() {
-    return `${this.url}/revisions/last/result/preview`;
-  }
-
-  /**
-   * Get the most up to date archive url
-   * @returns {string} - Last archive url
-   */
-  get lastArchiveUrl() {
-    return `${this.url}/revisions/last/result/archive`;
-  }
-}
+export Enum from './Enum';
+export {DeletedState} from './DeletedState';
+export {JobMonitorFilter} from './JobMonitorFilter';
+export {ResultStatus} from './ResultStatus';

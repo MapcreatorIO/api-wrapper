@@ -30,47 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-export StorageManager from './storage/StorageManager';
-export JobMonitor from './JobMonitor';
+export Choropleth from './Choropleth';
+export Color from './Color';
+export Contract from './Contract';
+export Dimension from './Dimension';
+export DimensionSet from './DimensionSet';
+export Domain from './Domain';
+export Faq from './Faq';
+export Feature from './Feature';
+export Font from './Font';
+export FontFamily from './FontFamily';
+export Highlight from './Highlight';
+export InsetMap from './InsetMap';
+export Job from './Job';
+export JobMonitorRow from './JobMonitorRow';
+export JobResult from './JobResult';
+export JobRevision from './JobRevision';
+export JobShare from './JobShare';
+export JobType from './JobType';
+export Language from './Language';
+export Layer from './Layer';
+export Mapstyle from './Mapstyle';
+export MapstyleSet from './MapstyleSet';
+export Notification from './Notification';
+export Organisation from './Organisation';
+export Permission from './Permission';
+export PlaceName from './PlaceName';
+export Role from './Role';
+export Svg from './Svg';
+export SvgSet from './SvgSet';
+export User from './User';
 
-// Enums
-export Enum from './enums/Enum';
-export {DeletedState, JobMonitorFilter, ResultStatus} from './enums';
-
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
-
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
-
-// Resources
-export * as resources from './resources';
-
-// Helpers
-export * as helpers from './utils/helpers';
-
-// Errors
-export * as errors from './errors';
-
-
-/**
- * Package version
- * @private
- */
-export const version = VERSION;
+import CrudBase from './base/CrudBase';
+import CrudSetBase from './base/CrudSetBase';
+import ResourceBase from './base/ResourceBase';
 
 /**
- * Package license
  * @private
  */
-export const license = LICENSE;
+export const base = {
+  CrudBase, CrudSetBase, ResourceBase,
+};

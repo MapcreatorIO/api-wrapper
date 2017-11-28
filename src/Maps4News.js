@@ -36,6 +36,7 @@ import {
   Contract,
   Dimension,
   DimensionSet,
+  Domain,
   Faq,
   Feature,
   Font,
@@ -57,20 +58,20 @@ import {
   Svg,
   SvgSet,
   User,
-} from './crud';
-import ResourceBase from './crud/base/ResourceBase';
-import {Enum} from './enums';
+} from './resources';
+import ResourceBase from './resources/base/ResourceBase';
 
 import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
-import ResourceCache from './ResourceCache';
 import ResourceProxy from './proxy/ResourceProxy';
+import ResourceCache from './ResourceCache';
 import {fnv32b} from './utils/hash';
 import {isNode} from './utils/node';
 import {getTypeName, isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
+import {Enum} from './enums';
 
 if (!global._babelPolyfill) {
   require('babel-polyfill');
@@ -192,7 +193,7 @@ export default class Maps4News {
   request(url, method = 'GET', data = {}, headers = {}, bundleResponse = false) {
     if (!url.startsWith('http')) {
       // Removes '/' at the start of the string (if any)
-      url = url.replace(/(^\/+)/, () => '');
+      url = url.replace(/(^\/+)/g, () => '');
       url = `${this._host}/${this.version}/${url}`;
     }
 
@@ -379,6 +380,15 @@ export default class Maps4News {
    */
   get dimensionSets() {
     return this.static(DimensionSet);
+  }
+
+  /**
+   * Domain accessor
+   * @see {@link Domain}
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   */
+  get domains() {
+    return this.static(Domain);
   }
 
   /**

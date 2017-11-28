@@ -30,47 +30,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-export StorageManager from './storage/StorageManager';
-export JobMonitor from './JobMonitor';
+import ResourceBase from './base/ResourceBase';
 
-// Enums
-export Enum from './enums/Enum';
-export {DeletedState, JobMonitorFilter, ResultStatus} from './enums';
+export default class JobMonitorRow extends ResourceBase {
 
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
+  /**
+   * Guess type based on property name
+   * @param {string} name - Field name
+   * @param {*} value - Field Value
+   * @private
+   * @returns {*} - Original or converted value
+   */
+  static _guessType(name, value) {
+    if (['dealt_with', 'bought'].includes(name)) {
+      return Boolean(value);
+    }
 
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
+    return super._guessType(name, value);
+  }
 
-// Resources
-export * as resources from './resources';
+  /**
+   * Returns if the resource is readonly
+   * @returns {boolean} - readonly
+   */
+  static get readonly() {
+    return true;
+  }
 
-// Helpers
-export * as helpers from './utils/helpers';
+  /**
+   * Get the related job
+   * @returns {Promise<Job, ApiError>} - The job related to this row
+   */
+  get job() {
+    return this.api.jobs.get(this.jobId);
+  }
 
-// Errors
-export * as errors from './errors';
+  /**
+   * Get the related job revision
+   * @returns {Promise<JobRevision, ApiError>} - The job revision related to this row
+   */
+  get jobRevision() {
+    return this.api.jobs.select(this.jobId).revisions.get(this.id);
+  }
 
-
-/**
- * Package version
- * @private
- */
-export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
+  /**
+   * Get the related job
+   * @returns {Promise<Job, ApiError>} - The job related to this row
+   */
+  get user() {
+    return this.api.users.get(this.userId);
+  }
+}

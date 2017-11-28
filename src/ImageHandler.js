@@ -30,11 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './crud/base/ResourceBase';
+import ResourceBase from './resources/base/ResourceBase';
 import Maps4News from './Maps4News';
+import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {FormData} from './utils/requests';
-import {isNode} from './utils/node';
 
 /**
  * Image resource handler
@@ -86,10 +86,27 @@ export default class ImageHandler {
    * Get image base64 representation
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    * @example
+   * // Browser
    * layer.imageHandler.download().then(url => {
    *   $('img').src = url;
    * });
-   * @todo fix docs for nodejs
+   *
+   * // NodeJs
+   * layer.imageHandler.download().then(buffer => {
+   *   fs.open(path, 'w', function(err, fd) {
+   *     if (err) {
+   *         throw 'could not open file: ' + err;
+   *     }
+   *
+   *     // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
+   *     fs.write(fd, buffer, 0, buffer.length, null, function(err) {
+   *       if (err) throw 'error writing file: ' + err;
+   *       fs.close(fd, function() {
+   *         console.log('wrote the file successfully');
+   *       });
+   *     });
+   *   });
+   * });
    */
   download() {
     return this.api

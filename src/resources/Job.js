@@ -30,47 +30,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-export StorageManager from './storage/StorageManager';
-export JobMonitor from './JobMonitor';
+import ResourceProxy from '../proxy/ResourceProxy';
+import CrudBase from './base/CrudBase';
+import JobResult from './JobResult';
+import JobRevision from './JobRevision';
 
-// Enums
-export Enum from './enums/Enum';
-export {DeletedState, JobMonitorFilter, ResultStatus} from './enums';
+export default class Job extends CrudBase {
+  /**
+   * Get the list of associated job results
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get results() {
+    return this._proxyResourceList(JobResult, `${this.url}/results`);
+  }
 
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
+  /**
+   * Get the list job revisions
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   */
+  get revisions() {
+    const data = {
+      jobId: this.id,
+    };
 
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
+    return new ResourceProxy(this.api, JobRevision, null, data);
+  }
 
-// Resources
-export * as resources from './resources';
+  /**
+   * Resource name
+   * @returns {String} - Resource name
+   * @abstract
+   */
+  get resourceName() {
+    return 'jobs';
+  }
 
-// Helpers
-export * as helpers from './utils/helpers';
+  /**
+   * Get the most up to date preview url
+   * @returns {string} - Last preview url
+   */
+  get lastPreviewUrl() {
+    return `${this.url}/revisions/last/result/preview`;
+  }
 
-// Errors
-export * as errors from './errors';
-
-
-/**
- * Package version
- * @private
- */
-export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
+  /**
+   * Get the most up to date archive url
+   * @returns {string} - Last archive url
+   */
+  get lastArchiveUrl() {
+    return `${this.url}/revisions/last/result/archive`;
+  }
+}

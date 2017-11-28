@@ -30,8 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {getTypeName} from './utils/reflection';
 import {constant as constantCase} from 'case';
+import {getTypeName} from '../utils/reflection';
+import Unobservable from '../utils/Unobservable';
+
 
 /**
  * Base enum class
@@ -52,13 +54,15 @@ import {constant as constantCase} from 'case';
  *
  * // etc...
  */
-export class Enum {
+export default class Enum extends Unobservable {
   /**
    * @param {Object<String, *>|Array<String>} enums - Data to build the enum from
    * @param {boolean} auto - Auto generate enum from data making assumptions about
    *                         the data, requires enums to be of type array.
    */
   constructor(enums, auto = false) {
+    super();
+
     const isArray = enums instanceof Array;
 
     if (auto && !isArray) {
@@ -124,21 +128,3 @@ export class Enum {
     return Enum.__iota++;
   }
 }
-
-
-/**
- * Enum containing the possible different values for {@link RequestParameters#deleted}
- * @enum {string}
- * @property {string} ALL - Don't discriminate between deleted items and non-deleted resources
- * @property {string} BOTH - Don't discriminate between deleted items and non-deleted resources
- * @property {string} NONE - Don't return deleted resources
- * @property {string} ONLY - Only return deleted resources
- * @readonly
- */
-export const DeletedState = new Enum({
-  ALL: 'all',
-  BOTH: 'all',
-  NONE: 'none',
-  ONLY: 'only',
-});
-

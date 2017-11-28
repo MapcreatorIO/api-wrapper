@@ -30,47 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-export StorageManager from './storage/StorageManager';
-export JobMonitor from './JobMonitor';
-
-// Enums
-export Enum from './enums/Enum';
-export {DeletedState, JobMonitorFilter, ResultStatus} from './enums';
-
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
-
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
-
-// Resources
-export * as resources from './resources';
-
-// Helpers
-export * as helpers from './utils/helpers';
-
-// Errors
-export * as errors from './errors';
-
+import CrudBase from './base/CrudBase';
 
 /**
- * Package version
- * @private
+ * Domain resource
  */
-export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
+export default class Domain extends CrudBase {
+  get resourceName() {
+    return 'domains';
+  }
+}

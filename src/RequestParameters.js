@@ -32,14 +32,13 @@
 
 
 import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case';
-import {DeletedState} from './enums';
 import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
+import {DeletedState} from './enums';
 
 /**
  * Used for keeping track of the request parameters
- * @todo transform CamelCase to snake_case in search keys and sort vars
  */
 export default class RequestParameters {
   /**
@@ -341,7 +340,7 @@ export default class RequestParameters {
     const possible = DeletedState.values();
 
     if (!possible.includes(value)) {
-      throw new TypeError(`Expected deleted to be on of ${possible.join(', ')}`);
+      throw new TypeError(`Expected deleted to be one of ${possible.join(', ')}, got ${value}`);
     }
 
     return value;
@@ -453,6 +452,10 @@ export default class RequestParameters {
     }
   }
 
+  /**
+   * Generates a cache token
+   * @returns {string} - Cache token
+   */
   token() {
     const data = this.toObject();
 
@@ -462,11 +465,14 @@ export default class RequestParameters {
     return hashObject(data);
   }
 
+  /**
+   * Resets all parameters back to default
+   * @returns {void}
+   */
   static resetDefaults() {
     for (const key of RequestParameters.keys()) {
       delete RequestParameters['_' + key];
     }
   }
-
   // endregion utils
 }

@@ -39,7 +39,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    */
   constructor(api, parent) {
     // Fixes dependency issue
-    const Organisation = require('../crud/Organisation').default;
+    const Organisation = require('../resources/Organisation').default;
 
     super(api, Organisation, `${parent.url}/organisations`, {});
 

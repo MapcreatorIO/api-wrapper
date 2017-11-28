@@ -30,47 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Core
-export Maps4News from './Maps4News';
-export RequestParameters from './RequestParameters';
-export StorageManager from './storage/StorageManager';
-export JobMonitor from './JobMonitor';
-
-// Enums
-export Enum from './enums/Enum';
-export {DeletedState, JobMonitorFilter, ResultStatus} from './enums';
-
-// Flows
-export OAuth from './oauth/OAuth';
-export ImplicitFlow from './oauth/ImplicitFlow';
-export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
-export PasswordFlow from './oauth/PasswordFlow';
-export DummyFlow from './oauth/DummyFlow';
-
-// Exceptions
-export ApiError from './errors/ApiError';
-export * from './errors/AbstractError';
-export ValidationError from './errors/ValidationError';
-export StaticClassError from './errors/StaticClassError';
-
-// Resources
-export * as resources from './resources';
-
-// Helpers
-export * as helpers from './utils/helpers';
-
-// Errors
-export * as errors from './errors';
-
+import Enum from './Enum';
+import {ResultStatus} from './ResultStatus';
 
 /**
- * Package version
- * @private
+ * Enum containing the possible different values for {@link JobMonitor#filterStatus}
+ * @enum {string}
+ * @property {string} QUEUED - Job has been queued
+ * @property {string} PROCESSING - Job is processing
+ * @property {string} COMPLETED - Job has been completed
+ * @property {string} CANCEL - Job has been canceled
+ * @property {string} FAILED - Job has failed
+ * @readonly
  */
-export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
+export const JobMonitorFilter = new Enum(Object.assign({}, ResultStatus, {DEFAULT: 'default'}));

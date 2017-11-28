@@ -30,18 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
-import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
-
-
 /**
- * Feature
- * @extends {CrudSetBase}
- * @extends {OwnableResource}
+ * Makes an object and it's children unobservable by frameworks like Vuejs
+ * @protected
  */
-export default class Feature extends mix(CrudBase, OwnableResource) {
-  get resourceName() {
-    return 'features';
+export default class Unobservable {
+  /**
+   * Overrides the `Object.prototype.toString.call(obj)` result
+   * @returns {string} - type name
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag}
+   */
+  get [Symbol.toStringTag]() {
+    // Anything can go here really as long as it's not 'Object'
+    return 'ObjectNoObserve';
   }
 }

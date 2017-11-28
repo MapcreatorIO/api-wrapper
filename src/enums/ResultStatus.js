@@ -30,42 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export Choropleth from './Choropleth.js';
-export Color from './Color.js';
-export Contract from './Contract.js';
-export Dimension from './Dimension.js';
-export DimensionSet from './DimensionSet.js';
-export Faq from './Faq.js';
-export Feature from './Feature.js';
-export Font from './Font.js';
-export FontFamily from './FontFamily.js';
-export Highlight from './Highlight.js';
-export InsetMap from './InsetMap.js';
-export Job from './Job.js';
-export JobResult from './JobResult.js';
-export JobRevision from './JobRevision.js';
-export JobShare from './JobShare.js';
-export JobType from './JobType.js';
-export Language from './Language.js';
-export Layer from './Layer.js';
-export Mapstyle from './Mapstyle.js';
-export MapstyleSet from './MapstyleSet.js';
-export Notification from './Notification.js';
-export Organisation from './Organisation.js';
-export Permission from './Permission.js';
-export PlaceName from './PlaceName.js';
-export Role from './Role.js';
-export Svg from './Svg.js';
-export SvgSet from './SvgSet.js';
-export User from './User.js';
-
-import CrudBase from './base/CrudBase';
-import CrudSetBase from './base/CrudSetBase';
-import ResourceBase from './base/ResourceBase';
+import Enum from './Enum';
 
 /**
- * @private
+ * Enum containing the possible different values for {@link RequestParameters#deleted}
+ * @enum {string}
+ * @property {string} QUEUED - Job has been queued
+ * @property {string} PROCESSING - Job is processing
+ * @property {string} COMPLETED - Job has been completed
+ * @property {string} CANCEL - Job has been canceled
+ * @property {string} FAILED - Job has failed
+ * @readonly
  */
-export const base = {
-  CrudBase, CrudSetBase, ResourceBase,
-};
+export const ResultStatus = new Enum({
+  QUEUED: 'queued',
+  PROCESSING: 'processing',
+  COMPLETED: 'completed',
+  CANCEL: 'canceled',
+  FAILED: 'failed',
+});
