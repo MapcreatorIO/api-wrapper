@@ -37,7 +37,7 @@ import {mix} from '../utils/reflection';
 
 /**
  * Feature
- * @extends {CrudSetBase}
+ * @extends {CrudBase}
  * @extends {OwnableResource}
  */
 export default class Feature extends mix(CrudBase, OwnableResource) {
