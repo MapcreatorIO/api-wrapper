@@ -89,6 +89,7 @@ export default class JobMonitor {
 
     if (this._purge) {
       this._data = [];
+      this._purge = false;
     }
 
     // First we need to check if we have enough data to begin with
