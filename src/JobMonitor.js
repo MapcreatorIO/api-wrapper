@@ -129,12 +129,12 @@ export default class JobMonitor {
       // Join data
       data = data.reduce((acc, val) => acc.concat(val), []);
 
-      // append data and remove duplicates
-      // noinspection JSCheckFunctionSignatures
+      // Append data
       this._data = this.data.concat(data);
 
       const oldLength = this.data.length;
 
+      // Remove duplicates
       this._data = this.data.filter((thing, index, self) =>
         index === self.findIndex((t) => t.id === thing.id),
       );
