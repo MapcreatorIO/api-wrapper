@@ -31,7 +31,7 @@
  */
 
 import {JobMonitorFilter} from './enums';
-import JobMonitorRow from './JobMonitorRow';
+import JobMonitorRow from './resources/JobMonitorRow';
 import Maps4News from './Maps4News';
 import {isParentOf} from './utils/reflection';
 

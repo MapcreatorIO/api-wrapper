@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './resources/base/ResourceBase';
+import ResourceBase from './base/ResourceBase';
 
 export default class JobMonitorRow extends ResourceBase {
 
