@@ -37,8 +37,7 @@ import Uuid from './utils/uuid';
 /**
  * Used for caching resources. Requires the resource to have an unique id field
  * @see {@link PaginatedResourceWrapper}
- * @todo Add periodic data refreshing while idle, most likely implemented in cache
- * @todo complete rewrite
+ * @todo Add periodic data refreshing while idle, most likely implemented in cache (maybe v1/resource?timestamp=123 where it will give modified records since)
  */
 export default class ResourceCache extends Unobservable {
   constructor(api, cacheTime = api.defaults.cacheSeconds, dereference = api.defaults.dereferenceCache) {

@@ -37,7 +37,6 @@ import {isParentOf} from './utils/reflection';
 
 /**
  * Used for monitoring the job queue
- * @todo store data/timestamp based on status to make status filter switching smoother
  */
 export default class JobMonitor {
   /**

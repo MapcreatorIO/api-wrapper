@@ -39,7 +39,6 @@ import {DeletedState} from './enums';
 
 /**
  * Used for keeping track of the request parameters
- * @todo transform CamelCase to snake_case in search keys and sort vars
  */
 export default class RequestParameters {
   /**
