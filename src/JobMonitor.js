@@ -105,7 +105,7 @@ export default class JobMonitor {
     const requests = [];
 
     while (rowCountDiff > 0) {
-      // Either always do 50 or calculate the correct page number and stuff which takes time...
+      // @todo Either always do 50 or calculate the correct page number and stuff which takes time...
       const perPage = 50; // Math.min(rowCountDiff, 50);
       const page = Math.floor((this.data.length + requestedRowCount) / perPage) + 1;
 
