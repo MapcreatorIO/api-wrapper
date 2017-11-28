@@ -58,8 +58,8 @@ import {
   Svg,
   SvgSet,
   User,
-} from './crud';
-import ResourceBase from './crud/base/ResourceBase';
+} from './resources';
+import ResourceBase from './resources/base/ResourceBase';
 
 import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';

@@ -54,7 +54,7 @@ export ValidationError from './errors/ValidationError';
 export StaticClassError from './errors/StaticClassError';
 
 // Resources
-export * as resources from './crud';
+export * as resources from './resources';
 
 // Helpers
 export * as helpers from './utils/helpers';

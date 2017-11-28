@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './crud/base/ResourceBase';
+import ResourceBase from './resources/base/ResourceBase';
 import Maps4News from './Maps4News';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';

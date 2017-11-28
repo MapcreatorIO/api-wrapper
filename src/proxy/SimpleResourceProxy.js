@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from '../crud/base/ResourceBase';
+import ResourceBase from '../resources/base/ResourceBase';
 import PaginatedResourceListing from '../PaginatedResourceListing';
 import {isParentOf} from '../utils/reflection';
 import RequestParameters from '../RequestParameters';
