@@ -55,11 +55,9 @@ export default class ResourceCache extends Unobservable {
   /**
    * Push a page into the cache
    * @param {PaginatedResourceListing} page - Data to be cached
-   * @param {boolean} [diff=false] - Differential result used for updating the cache. Cache entry won't be used to for key dropping.
    * @returns {void}
-   * @todo diff documentation
    */
-  push(page, diff = false) {
+  push(page) {
     if (page.rows === 0) {
       return; // Don't insert empty pages
     }
@@ -76,7 +74,7 @@ export default class ResourceCache extends Unobservable {
     const validThrough = this._timestamp + this.cacheTime;
     const cacheId = Uuid.uuid4();
     const data = {
-      page, validThrough, diff,
+      page, validThrough,
       id: cacheId,
       timeout: setTimeout(
         () => this._deleteCacheIds(cacheId),
@@ -211,8 +209,6 @@ export default class ResourceCache extends Unobservable {
   resolve(resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
 
-    // row.diff should indicate that the records should just be
-    // applied to the object and not used to diff out old records
     // List ordered from old to new
     const data = this.collectPages(resourceUrl, cacheToken);
     const out = [];
@@ -227,10 +223,7 @@ export default class ResourceCache extends Unobservable {
         continue;
       }
 
-      // @todo compare `updatedAt` instead of assuming later pages are more recent
-      if (row.diff) {
-        continue; // @todo
-      } else if (lastPage === page.page) {
+      if (typeof lastPage !== 'undefined' && lastPage === page.page) {
         let ii;
 
         for (let i = 0; i < page.data.length; i++) {
@@ -341,36 +334,6 @@ export default class ResourceCache extends Unobservable {
         this.emitter.emit('invalidate', {resourceUrl: resourceUrl});
       }
     }
-  }
-
-  /**
-   * Used for key elimination. Calculates the keys between two indexes.
-   * @param {Number} start - Start index
-   * @param {Number} end - End index
-   * @returns {Array} - keys
-   * @private
-   * @example
-   * cache._diffRange(1, 5) === [2, 3, 4]
-   */
-  _diffRange(start, end) {
-    if (start > end) {
-      const _x = end;
-
-      end = start;
-      start = _x;
-    }
-
-    if (start === end || start - end === 1) {
-      return [];
-    }
-
-    const out = [];
-
-    for (let i = start + 1; i < end; i++) {
-      out.push(i);
-    }
-
-    return out;
   }
 
   /**
