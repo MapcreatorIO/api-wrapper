@@ -43,8 +43,7 @@ function getFormData() {
     return require('formdata-polyfill');
   }
 
-  // @todo find nodejs polyfill
-  return null;
+  return require('form-data');
 }
 
 export const FormData = getFormData();

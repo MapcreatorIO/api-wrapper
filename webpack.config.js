@@ -15,7 +15,7 @@ if (!fs.existsSync('.env')) {
 
 module.exports = {
   target: 'web', // output is fine for nodejs usage
-  externals: [],
+  externals: ['form-data'],
   entry: {
     'bundle': './src/index.js',
     'bundle.min': './src/index.js',

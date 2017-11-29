@@ -46,7 +46,7 @@ test.before('start webserver', () => {
 });
 
 test('crud can create resources', t => {
-  const CrudBase = require('../../../src/crud/base/CrudBase').default;
+  const CrudBase = require('../../../src/resources/base/CrudBase').default;
 
   class DummyResource extends CrudBase {
     get resourceName() {
@@ -72,7 +72,7 @@ test('crud can create resources', t => {
 
       t.log(JSON.stringify(resource.toObject()));
       t.is(typeof resource.id, 'number');
-      t.is(resource.createdAt.constructor.name, 'Date');
+      t.is(resource.createdAt, 'Date');
       t.is(resource.id, 0); // Should be the 1st resource
 
       return api.static(DummyResource).get(resource.id);
