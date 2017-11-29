@@ -60,15 +60,6 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
-   * Get archive blob url
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
-   * @deprecated
-   */
-  downloadArchive() {
-    return this.downloadOutput();
-  }
-
-  /**
    * Get the output url url
    * @returns {string} - Output url url
    */

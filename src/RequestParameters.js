@@ -432,27 +432,6 @@ export default class RequestParameters {
   }
 
   /**
-   * Watch for changes
-   * @param {Function} method - Callback method
-   * @param {?String} [name=null] - Property name
-   * @returns {void}
-   * @deprecated
-   */
-  watch(method, name = null) {
-    if (name) {
-      const wrapped = (n, v) => {
-        if (n === name.toLowerCase()) {
-          method(v);
-        }
-      };
-
-      this._watch.push(wrapped);
-    } else {
-      this._watch.push(method);
-    }
-  }
-
-  /**
    * Generates a cache token
    * @returns {string} - Cache token
    */
