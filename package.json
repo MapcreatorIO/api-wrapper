@@ -16,7 +16,6 @@
     "fetch-ponyfill": "^4.1.0",
     "formdata-polyfill": "^3.0.1",
     "json-stable-stringify": "^1.0.1",
-    "loglevel": "^1.6.0",
     "mitt": "^1.1.2"
   },
   "devDependencies": {

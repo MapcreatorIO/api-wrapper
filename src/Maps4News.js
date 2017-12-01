@@ -103,7 +103,6 @@ export default class Maps4News {
     };
 
     this._cache = new ResourceCache(this);
-    this.log.setDefaultLevel(process.env.LOG_LEVEL);
   }
 
   /**
@@ -606,18 +605,5 @@ export default class Maps4News {
    */
   logout() {
     this.auth.forget();
-  }
-
-  /**
-   * 3rd party logger instance
-   * @returns {Object} - Loglevel instance.
-   * @see {@link https://github.com/pimterry/loglevel}
-   */
-  get log() {
-    if (!this._log) {
-      this._log = require('loglevel');
-    }
-
-    return this._log;
   }
 }
