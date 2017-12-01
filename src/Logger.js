@@ -71,13 +71,7 @@ export default class Logger {
    * @param {number} value - Log level
    */
   set logLevel(value) {
-    value = Number(value);
-
-    if (!LogLevel.values().includes(value)) {
-      throw new TypeError('Invalid log level. See the LogLevel enum for possible values');
-    }
-
-    this._logLevel = value;
+    this._logLevel = this._validateLogLevel(value);
   }
 
   _log(level, message) {
@@ -85,30 +79,33 @@ export default class Logger {
   }
 
   /**
-   * Register an event handler for the given loglevel.
-   *
-   * @param {string|number} type - Type of event to listen for, or `"*"` for all events.
-   * @param {function(eventType: string, event: any): void|function(event: any): void} handler - Function to call in response to the given event.
-   * @returns {void}
+   * Validate and normalize level
+   * @param {number|string} level - Log level
+   * @returns {number} - Log level
+   * @private
+   * @throws TypeError
    */
-  on(type, handler) {
-    this._emitter.on(type, (t, e) => {
-      if (type === '*' && e.resourceUrl === this.route) {
-        handler(t, e);
-      } else if (type !== '*' && t.resourceUrl === this.route) {
-        handler(t);
-      }
-    });
-  }
+  _validateLogLevel(level) {
+    if (typeof level === 'number') {
+      const values = LogLevel.values();
 
-  /**
-   * Function to call in response to the given event
-   *
-   * @param {string} type - Type of event to unregister `handler` from, or `"*"`
-   * @param {function(event: any): void} handler - Handler function to remove.
-   * @returns {void}
-   */
-  off(type, handler) {
-    this.cache.emitter.off(type, handler);
+      if (!values.includes(level)) {
+        throw new TypeError(`Invalid log level: wanted value between 0 and ${Math.max(values)} (inclusive), got ${level}.`);
+      }
+
+      return level;
+    } else if (typeof level === 'string') {
+      const keys = LogLevel.keys();
+
+      level = level.toLowerCase();
+
+      if (!keys.includes(level)) {
+        throw new TypeError(`Invalid log level "${level}". Expected one of ${keys.join(', ')}`);
+      }
+
+      return LogLevel[level.toUpperCase()];
+    } else {
+      throw new TypeError('Expected log level to be of type "string" or "number"');
+    }
   }
 }
