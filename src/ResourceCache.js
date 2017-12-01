@@ -251,7 +251,7 @@ export default class ResourceCache extends Unobservable {
 
         // Remove trailing data
         if (typeof ii !== 'undefined') {
-          out.splice(ii, out.length);
+          out.splice(ii + 1, out.length);
         }
       } else {
         // First time page number is parsed, just append it.
