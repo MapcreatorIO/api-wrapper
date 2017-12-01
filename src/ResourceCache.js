@@ -202,7 +202,7 @@ export default class ResourceCache extends Unobservable {
    * @param {String} resourceUrl - Resource url
    * @param {String} cacheToken - Cache token
    * @see {@link PaginatedResourceListing#cacheToken}
-   * @returns {Array} - Indexed relevant data
+   * @returns {Array<ResourceBase>} - Indexed relevant data
    * @todo add page numbers or range as optional parameter
    */
   resolve(resourceUrl, cacheToken = '') {
@@ -218,18 +218,18 @@ export default class ResourceCache extends Unobservable {
     for (const row of data) {
       const page = row.page;
 
+      // Skip empty pages
       if (page.data.length === 0) {
         continue;
       }
 
+      // Have we parsed the same page already?
       if (typeof lastPage !== 'undefined' && lastPage === page.page) {
-        let ii;
-
         for (let i = 0; i < page.data.length; i++) {
-          ii = i + startIndex;
+          let ii = i + startIndex; // Get relative index for `out`
 
           if (typeof out[ii] === 'undefined') {
-            out.push(page.data[i]);
+            out.push(page.data[i]); // Push if there is no data
           } else if (page.data[i].id !== out[ii].id) {
             out[ii] = page.data[i];
 
@@ -252,12 +252,13 @@ export default class ResourceCache extends Unobservable {
           out.splice(ii, out.length);
         }
       } else {
+        // First time page number is parsed, just append it.
         startIndex = out.length;
 
         page.data.map(x => out.push(x));
       }
 
-      lastPage = row.page;
+      lastPage = row.page.page;
     }
 
     if (this.dereference) {
