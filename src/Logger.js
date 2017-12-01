@@ -39,6 +39,8 @@ export default class Logger {
     this._prefix = prefix;
     this._logLevel = logLevel;
     this._emitter = mitt();
+
+    this.on('*', (x, y) => console.log(x, y));
   }
 
   /**
@@ -74,8 +76,62 @@ export default class Logger {
     this._logLevel = this._validateLogLevel(value);
   }
 
+  debug(message) {
+    this._log('debug', message);
+  }
+
+  info(message) {
+    this._log('info', message);
+  }
+
+  warn(message) {
+    this._log('warn', message);
+  }
+
   _log(level, message) {
-    this._emitter.emit('', message);
+    if (this.prefix) {
+      message = `[${this.prefix}] ${message}`;
+    }
+
+    this._emitter.emit(this._validateLogLevel(level), message);
+  }
+
+  /**
+   * Register an event handler for the given log level.
+   *
+   * @param {string|number} level - Minimum log level for the event to trigger
+   * @param {function(eventType: string, event: any): void|function(event: any): void} handler - Function to call in response to the given event.
+   * @returns {void}
+   */
+  on(level, handler) {
+    if (level !== '*') {
+      level = this._validateLogLevel(level);
+    }
+
+    this._emitter.on(level, (t, e) => {
+      if (level >= this.logLevel) {
+        if (level === '*') {
+          handler(t, e);
+        } else if (level !== '*') {
+          handler(t);
+        }
+      }
+    });
+  }
+
+  /**
+   * Un-register an event handler for the given log level.
+   *
+   * @param {string|number} level - Minimum log level for the event to trigger
+   * @param {function(eventType: number, event: any): void|function(event: any): void} handler - Handler function to remove.
+   * @returns {void}
+   */
+  off(level, handler) {
+    if (level !== '*') {
+      level = this._validateLogLevel(level);
+    }
+
+    this._emitter.off(level, handler);
   }
 
   /**
@@ -90,6 +146,7 @@ export default class Logger {
       const values = LogLevel.values();
 
       if (!values.includes(level)) {
+        console.log(values);
         throw new TypeError(`Invalid log level: wanted value between 0 and ${Math.max(values)} (inclusive), got ${level}.`);
       }
 
@@ -97,13 +154,13 @@ export default class Logger {
     } else if (typeof level === 'string') {
       const keys = LogLevel.keys();
 
-      level = level.toLowerCase();
+      level = level.toUpperCase();
 
       if (!keys.includes(level)) {
         throw new TypeError(`Invalid log level "${level}". Expected one of ${keys.join(', ')}`);
       }
 
-      return LogLevel[level.toUpperCase()];
+      return LogLevel[level];
     } else {
       throw new TypeError('Expected log level to be of type "string" or "number"');
     }

@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import Logger from './Logger';
 import {
   Choropleth,
   Color,
@@ -103,6 +104,7 @@ export default class Maps4News {
     };
 
     this._cache = new ResourceCache(this);
+    this.logger = new Logger('', 0);
   }
 
   /**

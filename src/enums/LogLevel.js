@@ -41,4 +41,4 @@ import Enum from './Enum';
  * @property {number} NONE - Show no messages
  * @readonly
  */
-export const LogLevel = new Enum(['debug', 'info', 'warn', 'none']);
+export const LogLevel = new Enum(['debug', 'info', 'warn', 'none'].map(x => x.toUpperCase()));
