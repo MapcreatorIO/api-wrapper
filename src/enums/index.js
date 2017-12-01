@@ -33,4 +33,5 @@
 export Enum from './Enum';
 export {DeletedState} from './DeletedState';
 export {JobMonitorFilter} from './JobMonitorFilter';
+export {LogLevel} from './LogLevel';
 export {ResultStatus} from './ResultStatus';

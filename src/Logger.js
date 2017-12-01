@@ -79,4 +79,36 @@ export default class Logger {
 
     this._logLevel = value;
   }
+
+  _log(level, message) {
+    this._emitter.emit('', message);
+  }
+
+  /**
+   * Register an event handler for the given loglevel.
+   *
+   * @param {string|number} type - Type of event to listen for, or `"*"` for all events.
+   * @param {function(eventType: string, event: any): void|function(event: any): void} handler - Function to call in response to the given event.
+   * @returns {void}
+   */
+  on(type, handler) {
+    this._emitter.on(type, (t, e) => {
+      if (type === '*' && e.resourceUrl === this.route) {
+        handler(t, e);
+      } else if (type !== '*' && t.resourceUrl === this.route) {
+        handler(t);
+      }
+    });
+  }
+
+  /**
+   * Function to call in response to the given event
+   *
+   * @param {string} type - Type of event to unregister `handler` from, or `"*"`
+   * @param {function(event: any): void} handler - Handler function to remove.
+   * @returns {void}
+   */
+  off(type, handler) {
+    this.cache.emitter.off(type, handler);
+  }
 }
