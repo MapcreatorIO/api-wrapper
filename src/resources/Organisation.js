@@ -121,7 +121,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get jobShares() {
-    return this._proxyBuilder(JobShare);
+    return this._proxyResourceList(JobShare);
   }
 
   /**
@@ -129,7 +129,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get users() {
-    return this._proxyBuilder(User);
+    return this._proxyResourceList(User);
   }
 
   /**
@@ -137,7 +137,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get contracts() {
-    return this._proxyBuilder(Contract);
+    return this._proxyResourceList(Contract);
   }
 
   /**
@@ -145,7 +145,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get domains() {
-    return this._proxyBuilder(Domain);
+    return this._proxyResourceList(Domain);
   }
 
   /**
