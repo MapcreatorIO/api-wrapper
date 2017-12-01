@@ -54,7 +54,7 @@ export default class Organisation extends CrudBase {
   // Resource listing
   /**
    * Get a proxy for font families linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get fontFamilies() {
     return this._proxyBuilder(FontFamily);
@@ -62,7 +62,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for dimension sets linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets() {
     return this._proxyBuilder(DimensionSet);
@@ -70,7 +70,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for mapstyle sets linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get mapstyleSets() {
     return this._proxyBuilder(MapstyleSet);
@@ -78,7 +78,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for svg sets linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get svgSets() {
     return this._proxyBuilder(SvgSet);
@@ -86,7 +86,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for colors linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get colors() {
     return this._proxyBuilder(Color);
@@ -94,7 +94,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for features linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get features() {
     return this._proxyBuilder(Feature);
@@ -102,7 +102,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for layers linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get layers() {
     return this._proxyBuilder(Layer);
@@ -110,7 +110,7 @@ export default class Organisation extends CrudBase {
 
   /**
    * Get a proxy for job types linked to the organisation
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get jobTypes() {
     return this._proxyBuilder(JobType);
