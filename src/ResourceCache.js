@@ -225,8 +225,10 @@ export default class ResourceCache extends Unobservable {
 
       // Have we parsed the same page already?
       if (typeof lastPage !== 'undefined' && lastPage === page.page) {
+        let ii;
+
         for (let i = 0; i < page.data.length; i++) {
-          let ii = i + startIndex; // Get relative index for `out`
+          ii = i + startIndex; // Get relative index for `out`
 
           if (typeof out[ii] === 'undefined') {
             out.push(page.data[i]); // Push if there is no data
