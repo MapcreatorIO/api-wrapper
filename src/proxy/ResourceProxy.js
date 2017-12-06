@@ -57,7 +57,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @private
    */
   _parseSelector(id) {
-    if (id === '') {
+    if (id === '' || id === null) {
       return {};
     }
 
