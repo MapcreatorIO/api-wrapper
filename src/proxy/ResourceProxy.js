@@ -30,9 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import SimpleResourceProxy from './SimpleResourceProxy';
-import {encodeQueryString} from '../utils/requests';
 import {DeletedState} from '../enums';
+import {encodeQueryString} from '../utils/requests';
+import SimpleResourceProxy from './SimpleResourceProxy';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -57,14 +57,14 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @private
    */
   _parseSelector(id) {
-    const defaults = {};
+    if (id === '') {
+      return {};
+    }
 
     switch (typeof id) {
       case 'number':
       case 'string':
-        defaults[this.Target.resourceUrlKey] = id;
-
-        return defaults;
+        return { [this.Target.resourceUrlKey]: id};
       case 'object':
         return id;
       default:
