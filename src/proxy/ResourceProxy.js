@@ -83,7 +83,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
     let url = this.new(data).url;
     const glue = url.includes('?') ? '&' : '?';
 
-    url = `${url}${glue}${encodeQueryString({deleted})}`;
+    url += glue + encodeQueryString({deleted});
 
     return this._api
       .request(url)
