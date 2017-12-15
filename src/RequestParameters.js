@@ -32,10 +32,10 @@
 
 
 import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case';
+import {DeletedState} from './enums';
 import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
 import {encodeQueryString} from './utils/requests';
-import {DeletedState} from './enums';
 
 /**
  * Used for keeping track of the request parameters
@@ -172,7 +172,7 @@ export default class RequestParameters {
    * @returns {Number} - Per page
    */
   static get perPage() {
-    return RequestParameters._perPage || Number(process.env.PER_PAGE);
+    return RequestParameters._perPage || Number(process.env.PER_PAGE) || 12;
   }
 
   /**
@@ -377,7 +377,9 @@ export default class RequestParameters {
     const data = this.toObject();
 
     // Fix column names for sort
-    data.sort = data.sort.map(snakeCase).join(',');
+    data.sort = data.sort.map(x =>
+      snakeCase(x).replace(/^_/, '-'),
+    ).join(',');
 
     // Fix column names for search
     for (const key of Object.keys(data.search)) {
@@ -453,5 +455,6 @@ export default class RequestParameters {
       delete RequestParameters['_' + key];
     }
   }
+
   // endregion utils
 }

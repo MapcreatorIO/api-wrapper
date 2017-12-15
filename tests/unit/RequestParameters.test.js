@@ -31,8 +31,8 @@
  */
 
 import test from 'ava';
-import RequestParameters from '../../src/RequestParameters';
 import {DeletedState} from '../../src/enums';
+import RequestParameters from '../../src/RequestParameters';
 
 RequestParameters.resetDefaults();
 const cleanParams = new RequestParameters();
@@ -134,3 +134,10 @@ for (const key of Object.keys(validationTests)) {
     });
   });
 }
+
+test('issue #93', t => {
+  const params = new RequestParameters({sort: '-name'});
+
+  t.deepEqual(params.toObject()['sort'], ['-name']);
+  t.is(params.encode(), 'deleted=none&page=1&per_page=12&sort=-name');
+});
