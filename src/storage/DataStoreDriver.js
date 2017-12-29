@@ -98,7 +98,6 @@ export default class DataStoreDriver {
   /**
    * Clear storage
    * @returns {void}
-   * @abstract
    */
   clear() {
     this.keys().map(key => this.remove(key));
