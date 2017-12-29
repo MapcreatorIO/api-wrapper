@@ -127,7 +127,7 @@ export default class JobResult extends ResourceBase {
           const regex = /(?:^|;\s*)filename=(?:'([^']+)'|"([^"]+)")/i;
           const match = regex.exec(res.headers.get('Content-Disposition'));
 
-          out.filename = match[1] || match[2] || 'undefined';
+          out.filename = (match ? match[1] || match[2] : false) || 'undefined';
           return res.blob();
         }
 
