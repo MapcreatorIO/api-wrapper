@@ -89,7 +89,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   attachAll() {
-    const url = this._baseUrl + '/all';
+    const url = this.baseUrl + '/all';
 
     return this.api.request(url, 'POST');
   }
@@ -99,7 +99,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   detachAll() {
-    const url = this._baseUrl + '/all';
+    const url = this.baseUrl + '/all';
 
     return this.api.request(url, 'DELETE');
   }

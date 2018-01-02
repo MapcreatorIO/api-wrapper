@@ -122,7 +122,6 @@ export default class JobResult extends ResourceBase {
 
     return fetch(url, {headers})
       .then(res => {
-        /** @type Request res **/
         if (res.ok) {
           const regex = /(?:^|;\s*)filename=(?:'([^']+)'|"([^"]+)")/i;
           const match = regex.exec(res.headers.get('Content-Disposition'));
