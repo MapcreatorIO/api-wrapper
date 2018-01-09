@@ -110,6 +110,14 @@ export default class RequestParameters {
     return this._resolve('deleted');
   }
 
+  /**
+   * Extra parameters
+   * @returns {Object} - Extra parameters
+   */
+  get extra() {
+    return this._resolve('extra');
+  }
+
   // endregion instance getters
 
   // region instance setters
@@ -152,6 +160,14 @@ export default class RequestParameters {
    */
   set deleted(value) {
     this._update('deleted', value);
+  }
+
+  /**
+   * Extra request parameters
+   * @param {Object} value - Extra request parameters
+   */
+  set extra(value) {
+    this._update('extra', value);
   }
 
   // endregion instance setters
@@ -199,6 +215,14 @@ export default class RequestParameters {
     return RequestParameters._deleted || DeletedState.NONE;
   }
 
+  /**
+   * Default extra request parameters
+   * @returns {Object} - Extra request parameters
+   */
+  static get extra() {
+    return RequestParameters._extra || {};
+  }
+
   // endregion getters
 
   // region setters
@@ -240,6 +264,14 @@ export default class RequestParameters {
    */
   static set deleted(value) {
     RequestParameters._deleted = RequestParameters._validateDeleted(value);
+  }
+
+  /**
+   * Default extra request parameters
+   * @param {Object} value - Extra request parameters
+   */
+  static set extra(value) {
+    RequestParameters._extra = RequestParameters._validateExtra(value);
   }
 
   // endregion setters
@@ -346,6 +378,12 @@ export default class RequestParameters {
     return value;
   }
 
+  static _validateExtra(value) {
+    if (typeof value !== 'object') {
+      throw new TypeError(`Expected extra to be of type 'object', got '${getTypeName(value)}'`);
+    }
+  }
+
   // endregion validators
 
   _resolve(name) {
@@ -376,20 +414,7 @@ export default class RequestParameters {
   encode() {
     const data = this.toObject();
 
-    // Fix column names for sort
-    data.sort = data.sort.map(x =>
-      snakeCase(x).replace(/^_/, '-'),
-    ).join(',');
-
-    // Fix column names for search
-    for (const key of Object.keys(data.search)) {
-      const snakeKey = snakeCase(key);
-
-      if (key !== snakeKey) {
-        data.search[snakeKey] = data.search[key];
-        delete data.search[key];
-      }
-    }
+    data.sort = data.sort.join(',');
 
     return encodeQueryString(data);
   }
@@ -404,8 +429,35 @@ export default class RequestParameters {
     RequestParameters
       .keys()
       .forEach(key => {
+        // Skip extra key
+        if (key === 'extra') {
+          return;
+        }
+
         data[snakeCase(key)] = this._resolve(key);
       });
+
+    // Fix column names for sort
+    data.sort = data.sort.map(x =>
+      snakeCase(x).replace(/^_/, '-'),
+    );
+
+    // Fix column names for search
+    for (const key of Object.keys(data.search)) {
+      const snakeKey = snakeCase(key);
+
+      if (key !== snakeKey) {
+        data.search[snakeKey] = data.search[key];
+        delete data.search[key];
+      }
+    }
+
+    // Overwrite using extra properties
+    const extra = this._resolve('extra');
+
+    for (const key of Object.keys(extra)) {
+      data[key] = extra[key];
+    }
 
     return data;
   }
@@ -430,6 +482,7 @@ export default class RequestParameters {
       'search',
       'sort',
       'deleted',
+      'extra',
     ];
   }
 
