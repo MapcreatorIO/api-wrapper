@@ -78,7 +78,7 @@ export default class JobMonitor {
    */
   update() {
     if (this.waiting) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         resolve(0); // Still waiting for the other promise to resolve
       });
     }
