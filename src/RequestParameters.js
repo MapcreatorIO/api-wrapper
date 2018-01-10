@@ -382,6 +382,8 @@ export default class RequestParameters {
     if (typeof value !== 'object') {
       throw new TypeError(`Expected extra to be of type 'object', got '${getTypeName(value)}'`);
     }
+
+    return value;
   }
 
   // endregion validators
@@ -412,11 +414,7 @@ export default class RequestParameters {
    * @returns {string} - HTTP query
    */
   encode() {
-    const data = this.toObject();
-
-    data.sort = data.sort.join(',');
-
-    return encodeQueryString(data);
+    return encodeQueryString(this.toParameterObject());
   }
 
   /**
@@ -424,6 +422,19 @@ export default class RequestParameters {
    * @returns {Object} - Object
    */
   toObject() {
+    return RequestParameters
+      .keys()
+      .reduce((obj, key) => {
+        obj[snakeCase(key)] = this._resolve(key);
+        return obj;
+      }, {});
+  }
+
+  /**
+   * Convert to object
+   * @returns {Object} - Object
+   */
+  toParameterObject() {
     const data = {};
 
     RequestParameters
@@ -440,7 +451,7 @@ export default class RequestParameters {
     // Fix column names for sort
     data.sort = data.sort.map(x =>
       snakeCase(x).replace(/^_/, '-'),
-    );
+    ).join(',');
 
     // Fix column names for search
     for (const key of Object.keys(data.search)) {

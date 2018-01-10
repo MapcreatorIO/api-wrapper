@@ -61,17 +61,17 @@ test.serial('RequestParameters should be able to reset defaults', t => {
 test('RequestParameters can generate cache tokens', t => {
   const params = cleanParams.copy();
 
-  t.is(params.token(), '359dbd24'); // Default token
+  t.is(params.token(), 'd243d801'); // Default token
 
   // Page and perPage shouldn't affect the token
   params.page = Math.round(Math.random() * 100000);
   params.perPage = Math.round(Math.random() * 50);
 
-  t.is(params.token(), '359dbd24');
+  t.is(params.token(), 'd243d801');
 
   params.sort = 'quick,-brown,fox';
 
-  t.is(params.token(), '3d940592');
+  t.is(params.token(), 'a900b290');
 });
 
 const validationTests = {
@@ -109,6 +109,10 @@ const validationTests = {
   deleted: {
     good: DeletedState.values(),
     bad: ['foo', 'bar', {}, 123],
+  },
+  extra: {
+    good: [{}, {foo: 'bar'}],
+    bad: ['', 123],
   },
 };
 
