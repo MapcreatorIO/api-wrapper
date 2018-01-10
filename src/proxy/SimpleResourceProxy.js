@@ -65,7 +65,13 @@ export default class SimpleResourceProxy {
     this._seedData = seedData;
   }
 
-  get _baseUrl() {
+  /**
+   * Proxy target url
+   * @returns {string} url
+   * @example
+   * api.layers.select(100).organisations.baseUrl === "https://maponline-api.dev/v1/layers/100/organisations"
+   */
+  get baseUrl() {
     if (!this.__baseUrl) {
       this.__baseUrl = this.new().baseUrl;
     }
@@ -168,7 +174,7 @@ export default class SimpleResourceProxy {
 
   _buildResolver(params = {}) {
     const paramType = typeof params;
-    const url = this._baseUrl;
+    const url = this.baseUrl;
 
     if (!['number', 'object'].includes(paramType)) {
       throw new TypeError(`Expected params to be of type number or object. Got "${paramType}"`);

@@ -61,17 +61,17 @@ test.serial('RequestParameters should be able to reset defaults', t => {
 test('RequestParameters can generate cache tokens', t => {
   const params = cleanParams.copy();
 
-  t.is(params.token(), '359dbd24'); // Default token
+  t.is(params.token(), 'd243d801'); // Default token
 
   // Page and perPage shouldn't affect the token
   params.page = Math.round(Math.random() * 100000);
   params.perPage = Math.round(Math.random() * 50);
 
-  t.is(params.token(), '359dbd24');
+  t.is(params.token(), 'd243d801');
 
   params.sort = 'quick,-brown,fox';
 
-  t.is(params.token(), '3d940592');
+  t.is(params.token(), 'a900b290');
 });
 
 const validationTests = {
@@ -110,6 +110,10 @@ const validationTests = {
     good: DeletedState.values(),
     bad: ['foo', 'bar', {}, 123],
   },
+  extra: {
+    good: [{}, {foo: 'bar'}],
+    bad: ['', 123],
+  },
 };
 
 for (const key of Object.keys(validationTests)) {
@@ -138,6 +142,20 @@ for (const key of Object.keys(validationTests)) {
 test('issue #93', t => {
   const params = new RequestParameters({sort: '-name'});
 
-  t.deepEqual(params.toObject()['sort'], ['-name']);
+  t.deepEqual(params.toObject().sort, ['-name']);
   t.is(params.encode(), 'deleted=none&page=1&per_page=12&sort=-name');
+});
+
+test('extra parameters overwrite others', t => {
+  const params = new RequestParameters({
+    deleted: 'none',
+    extra: {
+      deleted: 'some',
+      pirateFlag: 'cool',
+    },
+  });
+
+  t.is(params.toObject().deleted, 'none');
+  t.is(params.toParameterObject().deleted, 'some');
+  t.is(params.encode(), 'deleted=some&page=1&per_page=12&pirateFlag=cool&sort=');
 });
