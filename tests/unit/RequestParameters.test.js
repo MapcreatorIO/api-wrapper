@@ -142,6 +142,20 @@ for (const key of Object.keys(validationTests)) {
 test('issue #93', t => {
   const params = new RequestParameters({sort: '-name'});
 
-  t.deepEqual(params.toObject()['sort'], ['-name']);
+  t.deepEqual(params.toObject().sort, ['-name']);
   t.is(params.encode(), 'deleted=none&page=1&per_page=12&sort=-name');
+});
+
+test('extra parameters overwrite others', t => {
+  const params = new RequestParameters({
+    deleted: 'none',
+    extra: {
+      deleted: 'some',
+      pirateFlag: 'cool',
+    },
+  });
+
+  t.is(params.toObject().deleted, 'none');
+  t.is(params.toParameterObject().deleted, 'some');
+  t.is(params.encode(), 'deleted=some&page=1&per_page=12&pirateFlag=cool&sort=');
 });
