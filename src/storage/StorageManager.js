@@ -46,7 +46,7 @@ export default class StorageManager extends StaticClass {
   static get available() {
     return [
       LocalStorageDriver,
-      CookiesDriver,
+      // CookiesDriver,
       FileDriver,
     ].filter(x => x.available);
   }
