@@ -50,7 +50,7 @@ export default class JobMonitor {
 
     this._api = api;
 
-    this._lastUpdate = Date.now();
+    this._lastUpdate = this._getTimestamp();
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
     this._purge = false;
@@ -78,9 +78,9 @@ export default class JobMonitor {
    * @returns {Promise<Number, ApiError>} - Resolves with the number of updated rows
    */
   update() {
-    if (this.waiting) {
+    if (this.waiting || this._lastUpdate === this._getTimestamp()) {
       return new Promise(resolve => {
-        resolve(0); // Still waiting for the other promise to resolve
+        resolve(0); // Still waiting for the other promise to resolve or we're sure there is no new data
       });
     }
 
@@ -146,13 +146,13 @@ export default class JobMonitor {
     }));
 
     // Fetch updates
-    let url = baseUrl + '&timestamp=' + Math.floor(this._lastUpdate / 1000);
+    let url = baseUrl + '&timestamp=' + Math.floor(this._lastUpdate);
 
     if (this.longPoll) {
       url += '&long_poll';
     }
 
-    this._lastUpdate = Date.now();
+    this._lastUpdate = this._getTimestamp();
 
     out.push(this.api
       .request(url)
@@ -301,5 +301,9 @@ export default class JobMonitor {
    */
   set longPoll(value) {
     this._longPoll = Boolean(value);
+  }
+
+  _getTimestamp() {
+    return Date.now() / 1000;
   }
 }
