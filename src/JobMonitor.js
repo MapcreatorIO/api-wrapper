@@ -54,6 +54,7 @@ export default class JobMonitor {
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
     this._purge = false;
+    this._longPoll = false;
   }
 
   /**
@@ -145,7 +146,11 @@ export default class JobMonitor {
     }));
 
     // Fetch updates
-    const url = baseUrl + '&timestamp=' + Math.floor(this._lastUpdate / 1000);
+    let url = baseUrl + '&timestamp=' + Math.floor(this._lastUpdate / 1000);
+
+    if (this.longPoll) {
+      url += '&long_poll';
+    }
 
     this._lastUpdate = Date.now();
 
@@ -280,5 +285,21 @@ export default class JobMonitor {
    */
   get lastUpdate() {
     return new Date(this._lastUpdate);
+  }
+
+  /**
+   * Get if long polling should be used
+   * @returns {boolean} - If long polling should be used
+   */
+  get longPoll() {
+    return this._longPoll;
+  }
+
+  /**
+   * Set if long polling should be used
+   * @param {boolean} value - If long polling should be used
+   */
+  set longPoll(value) {
+    this._longPoll = Boolean(value);
   }
 }
