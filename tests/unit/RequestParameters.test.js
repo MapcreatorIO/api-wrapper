@@ -159,3 +159,13 @@ test('extra parameters overwrite others', t => {
   t.is(params.toParameterObject().deleted, 'some');
   t.is(params.encode(), 'deleted=some&page=1&per_page=12&pirateFlag=cool&sort=');
 });
+
+test('encoded search keys must be snake_case', t => {
+  const params = cleanParams.copy();
+
+  params.search = {
+    'fooBar,Baz': 'test',
+  }
+
+  t.is(params.encode(), 'deleted=none&page=1&per_page=12&search[foo_bar,baz]=test&sort='.replace(',', '%2C'));
+});

@@ -455,7 +455,7 @@ export default class RequestParameters {
 
     // Fix column names for search
     for (const key of Object.keys(data.search)) {
-      const snakeKey = snakeCase(key);
+      const snakeKey = key.split(',').map(snakeCase).join(',');
 
       if (key !== snakeKey) {
         data.search[snakeKey] = data.search[key];
