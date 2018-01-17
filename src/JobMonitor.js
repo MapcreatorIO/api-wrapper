@@ -110,8 +110,10 @@ export default class JobMonitor {
       const perPage = 50; // Math.min(rowCountDiff, 50);
       const page = Math.floor((this.data.length + requestedRowCount) / perPage) + 1;
 
-      // Usefull for debugging:
-      // console.log('have', this.data.length + requestedRowCount, 'diff', rowCountDiff, 'perPage', perPage, 'page', page, 'target', perPage * page);
+      this.api.logger.debug(
+        `[JobMonitor] have ${this.data.length + requestedRowCount}, Diff: ${rowCountDiff},` +
+        `PerPage: ${perPage}, Page: ${page}, Target: ${perPage * page}`,
+      );
 
       const url = `${baseUrl}&per_page=${perPage}&page=${page}`;
 
