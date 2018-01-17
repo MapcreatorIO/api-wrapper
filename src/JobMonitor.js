@@ -31,8 +31,8 @@
  */
 
 import {JobMonitorFilter} from './enums';
-import JobMonitorRow from './resources/JobMonitorRow';
 import Maps4News from './Maps4News';
+import JobMonitorRow from './resources/JobMonitorRow';
 import {isParentOf} from './utils/reflection';
 
 /**
@@ -104,6 +104,7 @@ export default class JobMonitor {
     const baseUrl = `/jobs/monitor/${this.filterStatus}?internal=${!this.hideInternal}`;
     let requestedRowCount = 0;
     const requests = [];
+    const skipLongpoll = rowCountDiff > 0;
 
     while (rowCountDiff > 0) {
       // @todo Either always do 50 or calculate the correct page number and stuff which takes time...
@@ -150,7 +151,7 @@ export default class JobMonitor {
     // Fetch updates
     let url = baseUrl + '&timestamp=' + Math.floor(this._lastUpdate);
 
-    if (this.longPoll) {
+    if (this.longPoll && !skipLongpoll) {
       url += '&long_poll';
     }
 
@@ -186,19 +187,17 @@ export default class JobMonitor {
 
     return Promise
       .all(out)
-      .then(x => {
+      .then(x => x.reduce((s, v) => s + v, 0))
+      .then(rowCount => {
+        const droppedRowCount = this.data.length - this.maxRows;
+
         // Truncate data if needed
         this._data.splice(this.maxRows, this.data.length - this.maxRows);
 
-        // Did we end up with less data because no more was available?
-        if (this.maxRows > this.data.length) {
-          // Prevent us from trying that again
-          this.maxRows = this.data.length;
-        }
+        this.api.logger.debug(`Target: ${this.maxRows}, Actual: ${this.data.length}, Updated: ${rowCount}, Dropped: ${droppedRowCount}`);
 
-        return x;
-      })
-      .then(x => x.reduce((s, v) => s + v, 0));
+        return rowCount;
+      });
   }
 
   /**
