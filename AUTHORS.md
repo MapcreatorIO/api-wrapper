@@ -1,2 +1,1 @@
-- [Jimmy Wärting](https://github.com/jimmywarting)
 - [Bas](https://github.com/Mechazawa)
