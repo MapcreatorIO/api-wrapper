@@ -68,6 +68,7 @@ import OAuth from './oauth/OAuth';
 import ResourceProxy from './proxy/ResourceProxy';
 import ResourceCache from './ResourceCache';
 import {fnv32b} from './utils/hash';
+import Logger from './utils/Logger';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
@@ -103,6 +104,7 @@ export default class Maps4News {
     };
 
     this._cache = new ResourceCache(this);
+    this._logger = new Logger(process.env.LOG_LEVEL);
   }
 
   /**
@@ -128,6 +130,14 @@ export default class Maps4News {
    */
   get auth() {
     return this._auth;
+  }
+
+  /**
+   * Get logger instance
+   * @returns {Logger} - Logger instance
+   */
+  get logger() {
+    return this._logger;
   }
 
   /**
