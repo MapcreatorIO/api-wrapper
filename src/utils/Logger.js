@@ -35,7 +35,7 @@ export default class Logger {
       return;
     }
 
-    if (!this._shouldLog(level)) {
+    if (this._shouldLog(level)) {
       // eslint-disable-next-line no-console
       console[level](message);
     }
