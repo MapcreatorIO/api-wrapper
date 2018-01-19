@@ -31,6 +31,7 @@
  */
 
 import fetchPonyfill from 'fetch-ponyfill';
+import ApiError from '../errors/ApiError';
 import {windowTest} from './helpers';
 import {isNode} from './node';
 
@@ -96,4 +97,36 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
 
       return out;
     }).join('&');
+}
+
+/**
+ * @param {string} url - Target url
+ * @param {object<string, string>} headers - Request headers
+ * @returns {PromiseLike<{filename: string, blob: string}>} - filename and blob
+ * @protected
+ */
+export function downloadFile(url, headers = {}) {
+  const out = {};
+
+  return fetch(url, {headers})
+    .then(res => {
+      if (res.ok) {
+        const regex = /(?:^|;\s*)filename=(?:'([^']+)'|"([^"]+)")/i;
+        const match = regex.exec(res.headers.get('Content-Disposition'));
+
+        out.filename = (match ? match[1] || match[2] : false) || 'undefined';
+        return res.blob();
+      }
+
+      return res.json().then(data => {
+        const err = data.error;
+
+        throw new ApiError(err.type, err.message, res.status);
+      });
+    })
+    .then(blob => {
+      out.blob = (window.URL || window.webkitURL).createObjectURL(blob);
+
+      return out;
+    });
 }

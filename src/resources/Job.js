@@ -31,6 +31,7 @@
  */
 
 import ResourceProxy from '../proxy/ResourceProxy';
+import {downloadFile} from '../utils/requests';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobRevision from './JobRevision';
@@ -68,9 +69,11 @@ export default class Job extends CrudBase {
   /**
    * Get the most up to date preview url
    * @returns {string} - Last preview url
+   * @deprecated
+   * @see Job#previewUrl
    */
   get lastPreviewUrl() {
-    return `${this.url}/revisions/last/result/preview`;
+    return `${this.url}/preview`;
   }
 
   /**
@@ -79,5 +82,26 @@ export default class Job extends CrudBase {
    */
   get lastArchiveUrl() {
     return `${this.url}/revisions/last/result/archive`;
+  }
+
+  /**
+   * Job result preview url, usable in an `<img>` tag
+   * @returns {string} - Preview url
+   */
+  get previewUrl() {
+    return `${this.url}/preview`;
+  }
+
+  /**
+   * Get image blob url representation
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   */
+  downloadPreview() {
+    const headers =  {
+      Accept: 'application/json',
+      Authorization: this.api.auth.token.toString(),
+    };
+
+    return downloadFile(this.previewUrl, headers).then(data => data.blob);
   }
 }

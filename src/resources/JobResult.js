@@ -31,7 +31,7 @@
  */
 
 import ApiError from '../errors/ApiError';
-import {fetch} from '../utils/requests';
+import {downloadFile} from '../utils/requests';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
@@ -53,10 +53,10 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get archive blob url
-   * @returns {Promise<{filename: string, blob: string}>} - Resolves with a blob reference and it's filename and rejects with {@link ApiError}
+   * @returns {PromiseLike<{filename: string, blob: string}>} - Resolves with a blob reference and it's filename and rejects with {@link ApiError}
    */
   downloadOutput() {
-    return this._download(this.outputUrl);
+    return downloadFile(this.outputUrl, this._getDownloadHeaders());
   }
 
   /**
@@ -88,7 +88,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
    */
   downloadLog() {
-    return this._download(this.logUrl).then(data => data.blob);
+    return downloadFile(this.logUrl, this._getDownloadHeaders()).then(data => data.blob);
   }
 
   /**
@@ -104,42 +104,18 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    */
   downloadPreview() {
-    return this._download(this.previewUrl).then(data => data.blob);
+    return downloadFile(this.previewUrl, this._getDownloadHeaders()).then(data => data.blob);
   }
 
   /**
-   * @param {string} url - Target url
-   * @returns {Promise<{filename: string, blob: string}>} - filename and blob
+   * Get headers for downloading resources
+   * @returns {{Accept: string, Authorization: string}} - Request headers
    * @private
    */
-  _download(url) {
-    const headers = {
+  _getDownloadHeaders() {
+    return {
       Accept: 'application/json',
       Authorization: this.api.auth.token.toString(),
     };
-
-    const out = {};
-
-    return fetch(url, {headers})
-      .then(res => {
-        if (res.ok) {
-          const regex = /(?:^|;\s*)filename=(?:'([^']+)'|"([^"]+)")/i;
-          const match = regex.exec(res.headers.get('Content-Disposition'));
-
-          out.filename = (match ? match[1] || match[2] : false) || 'undefined';
-          return res.blob();
-        }
-
-        return res.json().then(data => {
-          const err = data.error;
-
-          throw new ApiError(err.type, err.message, res.status);
-        });
-      })
-      .then(blob => {
-        out.blob = (window.URL || window.webkitURL).createObjectURL(blob);
-
-        return out;
-      });
   }
 }
