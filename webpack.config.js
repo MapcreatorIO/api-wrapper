@@ -66,6 +66,7 @@ module.exports = {
       'hash:[hash], chunkhash:[chunkhash], name:[name], version:' + version +
       '\n\nThis bundle contains the following packages:\n' + exec('$(npm bin)/licensecheck'),
     ),
+
     new webpack.BannerPlugin(license),
   ],
 };
