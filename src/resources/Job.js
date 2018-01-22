@@ -85,19 +85,11 @@ export default class Job extends CrudBase {
   }
 
   /**
-   * Job result preview url, usable in an `<img>` tag
-   * @returns {string} - Preview url
-   */
-  get previewUrl() {
-    return `${this.url}/preview`;
-  }
-
-  /**
    * Get image blob url representation
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    */
   downloadPreview() {
-    return downloadFile(this.previewUrl, this._getDownloadHeaders()).then(data => data.blob);
+    return downloadFile(`${this.url}/preview`, this._getDownloadHeaders()).then(data => data.blob);
   }
 
   /**
