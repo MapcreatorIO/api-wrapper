@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ApiError from '../errors/ApiError';
 import {downloadFile} from '../utils/requests';
 import ResourceBase from './base/ResourceBase';
 
