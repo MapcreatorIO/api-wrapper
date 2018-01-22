@@ -97,12 +97,7 @@ export default class Job extends CrudBase {
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    */
   downloadPreview() {
-    const headers =  {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
-
-    return downloadFile(this.previewUrl, headers).then(data => data.blob);
+    return downloadFile(this.previewUrl, this._getDownloadHeaders()).then(data => data.blob);
   }
 
   /**
