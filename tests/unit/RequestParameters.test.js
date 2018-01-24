@@ -165,7 +165,17 @@ test('encoded search keys must be snake_case', t => {
 
   params.search = {
     'fooBar,Baz': 'test',
-  }
+  };
 
   t.is(params.encode(), 'deleted=none&page=1&per_page=12&search[foo_bar,baz]=test&sort='.replace(',', '%2C'));
+});
+
+test('null is properly encoded', t => {
+  const params = cleanParams.copy();
+
+  params.extra = {
+    foo: null,
+  };
+
+  t.is(params.encode(), 'deleted=none&foo&page=1&per_page=12&sort='.replace(',', '%2C'));
 });
