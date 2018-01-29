@@ -30,6 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Enum} from './enums';
+
+import ApiError from './errors/ApiError';
+import ValidationError from './errors/ValidationError';
+import DummyFlow from './oauth/DummyFlow';
+import OAuth from './oauth/OAuth';
+import ResourceProxy from './proxy/ResourceProxy';
+import ResourceCache from './ResourceCache';
 import {
   Choropleth,
   Color,
@@ -60,19 +68,11 @@ import {
   User,
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
-
-import ApiError from './errors/ApiError';
-import ValidationError from './errors/ValidationError';
-import DummyFlow from './oauth/DummyFlow';
-import OAuth from './oauth/OAuth';
-import ResourceProxy from './proxy/ResourceProxy';
-import ResourceCache from './ResourceCache';
 import {fnv32b} from './utils/hash';
 import Logger from './utils/Logger';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
-import {Enum} from './enums';
 
 if (!global._babelPolyfill) {
   require('babel-polyfill');
@@ -249,8 +249,23 @@ export default class Maps4News {
       init.body = data;
     }
 
+    return this._fetch(url, init, bundleResponse);
+  }
+
+  _fetch(url, init, bundleResponse) {
     return fetch(url, init).then(response => {
       const respond = data => !bundleResponse ? data : {response, data};
+
+      if (response.status === 429) {
+        const resetTimestamp = Number(response.headers.get('X-RateLimit-Reset')) * 1000;
+        const waitTime = resetTimestamp - Date.now();
+
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            this._fetch(url, init, bundleResponse).then(resolve).catch(reject);
+          }, waitTime);
+        });
+      }
 
       // Check if there is an error response and parse it
       if (!response.ok) {
@@ -273,7 +288,7 @@ export default class Maps4News {
             .then(x => {
               // Just in case, code path should in theory never be reached
               if (typeof x.success === 'boolean' && !x.success) {
-                this._parseErrorResponse(data, response.status);
+                throw this._parseErrorResponse(x, response.status);
               }
 
               return x;
