@@ -54,7 +54,7 @@ export default class JobMonitor {
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
     this._purge = false;
-    this._longPoll = false;
+    this._longPoll = true;
   }
 
   /**
