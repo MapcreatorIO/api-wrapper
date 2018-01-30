@@ -55,6 +55,8 @@ export default class JobMonitor {
     this._filterStatus = JobMonitorFilter.DEFAULT;
     this._purge = false;
     this._longPoll = true;
+    this._skipMaxUpdate = false;
+    this._maxAvailible = {};
   }
 
   /**
@@ -93,7 +95,7 @@ export default class JobMonitor {
     }
 
     // First we need to check if we have enough data to begin with
-    let rowCountDiff = this.maxRows - this.data.length;
+    let rowCountDiff = Math.min(this.maxRows, this.realMaxRows) - this.data.length;
 
     if (rowCountDiff < 0) {
       // Remove trailing data
@@ -101,10 +103,9 @@ export default class JobMonitor {
       rowCountDiff = 0;
     }
 
-    const baseUrl = `/jobs/monitor/${this.filterStatus}?internal=${!this.hideInternal}`;
     let requestedRowCount = 0;
     const requests = [];
-    const skipLongpoll = rowCountDiff > 0;
+    const skipLongPoll = rowCountDiff > 0;
 
     while (rowCountDiff > 0) {
       // @todo Either always do 50 or calculate the correct page number and stuff which takes time...
@@ -116,7 +117,7 @@ export default class JobMonitor {
         `PerPage: ${perPage}, Page: ${page}, Target: ${perPage * page}`,
       );
 
-      const url = `${baseUrl}&per_page=${perPage}&page=${page}`;
+      const url = `${this._baseUrl}&per_page=${perPage}&page=${page}`;
 
       requests.push(this.api.request(url).then(data => data.map(x => new JobMonitorRow(this.api, x))));
 
@@ -149,9 +150,9 @@ export default class JobMonitor {
     }));
 
     // Fetch updates
-    let url = baseUrl + '&timestamp=' + Math.floor(this._lastUpdate);
+    let url = this._baseUrl + '&timestamp=' + Math.floor(this._lastUpdate);
 
-    if (this.longPoll && !skipLongpoll) {
+    if (this.longPoll && !skipLongPoll) {
       url += '&long_poll';
     }
 
@@ -196,6 +197,12 @@ export default class JobMonitor {
 
         this.api.logger.debug(`Target: ${this.maxRows}, Actual: ${this.data.length}, Updated: ${rowCount}, Dropped: ${droppedRowCount}`);
 
+        if (!this._skipMaxUpdate) {
+          this._maxAvailible[this._baseUrl] = this.data.length;
+        }
+
+        this._skipMaxUpdate = false;
+
         return rowCount;
       });
   }
@@ -226,7 +233,22 @@ export default class JobMonitor {
     value = Number(value);
     value = Math.max(1, value);
 
+    this.api.logger.debug(`Setting maxRows to ${value}. skipping maxUpdate next cycle.`);
+
+    this._skipMaxUpdate = true;
+    this._maxAvailible[this._baseUrl] = value;
     this._maxRows = value;
+  }
+
+  /**
+   * Used to
+   */
+  get realMaxRows() {
+    return this._maxAvailible[this._baseUrl] || this.maxRows;
+  }
+
+  get _baseUrl() {
+    return `/jobs/monitor/${this.filterStatus}?internal=${!this.hideInternal}`;
   }
 
   /**
