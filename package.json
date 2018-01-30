@@ -1,6 +1,6 @@
 {
   "name": "@mapcreator/maps4news",
-  "version": "1.2.27",
+  "version": "1.2.28",
   "description": "Maps4News JavaScript Api",
   "main": "dist/bundle.js",
   "repository": "git@github.com:MapCreatorEU/api-wrapper.git",
