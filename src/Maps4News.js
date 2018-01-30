@@ -65,6 +65,7 @@ import {
   Role,
   Svg,
   SvgSet,
+  Tag,
   User,
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
@@ -378,6 +379,15 @@ export default class Maps4News {
    */
   get colors() {
     return this.static(Color);
+  }
+
+  /**
+   * Tag accessor
+   * @see {@link Tag}
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   */
+  get tags() {
+    return this.static(Tag);
   }
 
   /**

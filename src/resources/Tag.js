@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, MapCreator
+ * Copyright (c) 2018, MapCreator
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,45 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export Choropleth from './Choropleth';
-export Color from './Color';
-export Contract from './Contract';
-export Dimension from './Dimension';
-export DimensionSet from './DimensionSet';
-export Domain from './Domain';
-export Faq from './Faq';
-export Feature from './Feature';
-export Font from './Font';
-export FontFamily from './FontFamily';
-export Highlight from './Highlight';
-export InsetMap from './InsetMap';
-export Job from './Job';
-export JobMonitorRow from './JobMonitorRow';
-export JobResult from './JobResult';
-export JobRevision from './JobRevision';
-export JobShare from './JobShare';
-export JobType from './JobType';
-export Language from './Language';
-export Layer from './Layer';
-export Mapstyle from './Mapstyle';
-export MapstyleSet from './MapstyleSet';
-export Notification from './Notification';
-export Organisation from './Organisation';
-export Permission from './Permission';
-export PlaceName from './PlaceName';
-export Role from './Role';
-export Svg from './Svg';
-export SvgSet from './SvgSet';
-export Tag from './Tag';
-export User from './User';
-
 import CrudBase from './base/CrudBase';
-import CrudSetBase from './base/CrudSetBase';
-import ResourceBase from './base/ResourceBase';
+import OwnableResource from '../traits/OwnableResource';
+import {mix} from '../utils/reflection';
 
 /**
- * @private
+ * Tag resource
+ * @extends {CrudBase}
+ * @extends {OwnableResource}
  */
-export const base = {
-  CrudBase, CrudSetBase, ResourceBase,
-};
+export default class Tag extends mix(CrudBase, OwnableResource) {
+  get resourceName() {
+    return 'tags';
+  }
+}

@@ -41,6 +41,7 @@ import JobType from './JobType';
 import Layer from './Layer';
 import MapstyleSet from './MapstyleSet';
 import SvgSet from './SvgSet';
+import Tag from './Tag';
 import User from './User';
 import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 import Domain from './Domain';
@@ -90,6 +91,14 @@ export default class Organisation extends CrudBase {
    */
   get colors() {
     return this._proxyBuilder(Color);
+  }
+
+  /**
+   * Get a proxy for tags linked to the organisation
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
+   */
+  get tags() {
+    return this._proxyBuilder(Tag);
   }
 
   /**
