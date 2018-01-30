@@ -195,11 +195,11 @@ export default class JobMonitor {
         // Truncate data if needed
         this._data.splice(this.maxRows, this.data.length - this.maxRows);
 
-        this.api.logger.debug(`Target: ${this.maxRows}, Actual: ${this.data.length}, Updated: ${rowCount}, Dropped: ${droppedRowCount}`);
-
         if (!this._skipMaxUpdate) {
           this._maxAvailible[this._baseUrl] = this.data.length;
         }
+
+        this.api.logger.debug(`Target: ${this.maxRows}, Actual: ${this.data.length}, Updated: ${rowCount}, Dropped: ${droppedRowCount}, RealMax: ${this.realMaxRows}`);
 
         this._skipMaxUpdate = false;
 
@@ -241,7 +241,7 @@ export default class JobMonitor {
   }
 
   /**
-   * Used to
+   * Used to get internal reference max rows
    */
   get realMaxRows() {
     return this._maxAvailible[this._baseUrl] || this.maxRows;
