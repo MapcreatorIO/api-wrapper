@@ -307,7 +307,7 @@ export default class JobMonitor {
    * @see JobMonitor#update
    */
   get lastUpdate() {
-    return new Date(this._lastUpdate);
+    return new Date(this._lastUpdate * 1000);
   }
 
   /**
