@@ -204,6 +204,9 @@ export default class JobMonitor {
         this._skipMaxUpdate = false;
 
         return rowCount;
+      }).catch(e => {
+        this._waiting = 0;
+        throw e;
       });
   }
 
