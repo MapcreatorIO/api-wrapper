@@ -179,3 +179,22 @@ test('null is properly encoded', t => {
 
   t.is(params.encode(), 'deleted=none&foo&page=1&per_page=12&sort='.replace(',', '%2C'));
 });
+
+test('RequestParameters can have properties applied to it', t => {
+  const params = cleanParams.copy();
+
+  params.apply({
+    extra: {
+      deleted: 'some',
+      pirateFlag: 'cool',
+    },
+    foo: {
+      bar: 'baz',
+    },
+    _deleted: 'only',
+  });
+
+  t.is(params.deleted, 'none');
+  t.is(params.toParameterObject().pirateFlag, 'cool');
+  t.is(params.foo, undefined);
+});

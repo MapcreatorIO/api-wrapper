@@ -206,8 +206,8 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
-   * Set the search query and search
-   * @param {?Object<String, String|Array<String>>} [value=null] - Query
+   * Set the request params and submit
+   * @param {?Object<String, *>} value - Query
    * @throws TypeError
    * @default {}
    * @see {@link ResourceProxy#search}
@@ -227,11 +227,11 @@ export default class PaginatedResourceWrapper {
     } else {
       const parameters = this._last.parameters.copy();
 
-      parameters.search = value;
       parameters.page = 1;
+      parameters.apply(value);
 
       this._last = new PaginatedResourceListing(this.api, this._last.route, this._last.Target, parameters);
-      this.get(1);
+      this.get(parameters.page);
       this.currentPage = 1;
     }
 

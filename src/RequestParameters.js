@@ -52,15 +52,7 @@ export default class RequestParameters {
     RequestParameters.keys().forEach(x => this._resolve(x));
 
     // Apply properties
-    for (const key of Object.keys(object)) {
-      const Key = camelCase(key);
-
-      if (key[0] === '_' || !RequestParameters.keys().includes(Key)) {
-        continue;
-      }
-
-      this._update(Key, object[key]);
-    }
+    this.apply(object);
   }
 
   // region instance
@@ -517,6 +509,27 @@ export default class RequestParameters {
   static resetDefaults() {
     for (const key of RequestParameters.keys()) {
       delete RequestParameters['_' + key];
+    }
+  }
+
+  /**
+   * Apply parameters from object
+   * @param {object|RequestParameters} params - parameters
+   * @returns {void}
+   */
+  apply(params) {
+    if (params instanceof RequestParameters) {
+      params = params.toObject();
+    }
+
+    for (const key of Object.keys(params)) {
+      const Key = camelCase(key);
+
+      if (key[0] === '_' || !RequestParameters.keys().includes(Key)) {
+        continue;
+      }
+
+      this._update(Key, params[key]);
     }
   }
 
