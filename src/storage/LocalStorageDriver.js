@@ -30,13 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import DataStoreDriver from './DataStoreDriver';
+import DataStoreContract from './DataStoreContract';
 import {isNode} from '../utils/node';
 
 /**
  * @private
  */
-export default class LocalStorageDriver extends DataStoreDriver {
+export default class LocalStorageDriver extends DataStoreContract {
   /**
    * LocalStorage name prefix
    * @returns {String} - Prefix

@@ -31,12 +31,12 @@
  */
 
 import {isNode} from '../utils/node';
-import DataStoreDriver from './DataStoreDriver';
+import DataStoreContract from './DataStoreContract';
 
 /**
  * @private
  */
-export default class CookiesDriver extends DataStoreDriver {
+export default class CookiesDriver extends DataStoreContract {
   constructor(prefix = '_m4n_') {
     super();
 

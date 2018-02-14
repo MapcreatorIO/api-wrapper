@@ -37,9 +37,9 @@ import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
 /**
  * @private
  */
-export default class DataStoreDriver {
+export default class DataStoreContract {
   constructor() {
-    if (this.constructor === DataStoreDriver) {
+    if (this.constructor === DataStoreContract) {
       throw new AbstractClassError();
     }
 

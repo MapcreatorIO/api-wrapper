@@ -77,7 +77,7 @@ export default class StorageManager extends StaticClass {
 
   /**
    * Returns the best available storage driver. For a secure driver use {@link StorageManager#secure}
-   * @returns {DataStoreDriver} - Best available storage driver
+   * @returns {DataStoreContract} - Best available storage driver
    */
   static get best() {
     return new this.available[0]();
@@ -85,7 +85,7 @@ export default class StorageManager extends StaticClass {
 
   /**
    * Returns the a secure storage driver
-   * @returns {DataStoreDriver} - Secure storage driver
+   * @returns {DataStoreContract} - Secure storage driver
    */
   static get secure() {
     const C = this.available.filter(x => x.secure)[0];

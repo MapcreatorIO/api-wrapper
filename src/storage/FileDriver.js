@@ -31,12 +31,12 @@
  */
 
 import {isNode} from '../utils/node';
-import DataStoreDriver from './DataStoreDriver';
+import DataStoreContract from './DataStoreContract';
 
 /**
  * @private
  */
-export default class FileDriver extends DataStoreDriver {
+export default class FileDriver extends DataStoreContract {
   /**
    * @param {String} path - File storage path
    * @inheritDoc
