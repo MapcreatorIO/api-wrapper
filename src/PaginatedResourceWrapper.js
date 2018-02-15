@@ -198,6 +198,14 @@ export default class PaginatedResourceWrapper {
   }
 
   /**
+   * Row count
+   * @returns {Number} - Row count
+   */
+  get rows() {
+    return this._last.rows;
+  }
+
+  /**
    * Get the number of pages available
    * @returns {Number} - Page count
    */
