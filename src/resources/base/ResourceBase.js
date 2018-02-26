@@ -366,15 +366,17 @@ export default class ResourceBase {
   toObject(camelCaseKeys = false) {
     this._updateProperties();
 
-    let out = Object.assign({}, this._baseProperties, this._properties);
+    const out = Object.assign({}, this._baseProperties, this._properties);
 
     if (camelCaseKeys) {
-      const oldOut = out;
+      for (const key in Object.keys(out)) {
+        const ccKey = camelCase(key);
 
-      out = {};
+        if (key !== ccKey) {
+          out[ccKey] = out[key];
 
-      for (const key in Object.keys(oldOut)) {
-        out[camelCase(key)] = oldOut[key];
+          delete out[key];
+        }
       }
     }
 
