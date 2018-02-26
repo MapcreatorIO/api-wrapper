@@ -360,12 +360,25 @@ export default class ResourceBase {
 
   /**
    * Transform instance to object
+   * @param {boolean} [camelCaseKeys=false] - camelCase object keys
    * @returns {{}} - object
    */
-  toObject() {
+  toObject(camelCaseKeys = false) {
     this._updateProperties();
 
-    return Object.assign({}, this._baseProperties, this._properties);
+    let out = Object.assign({}, this._baseProperties, this._properties);
+
+    if (camelCaseKeys) {
+      const oldOut = out;
+
+      out = {};
+
+      for (const key in Object.keys(oldOut)) {
+        out[camelCase(key)] = oldOut[key];
+      }
+    }
+
+    return out;
   }
 
   /**
