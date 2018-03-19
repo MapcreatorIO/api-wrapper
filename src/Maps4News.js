@@ -311,7 +311,7 @@ export default class Maps4News {
     const err = data.error;
 
     if (!err['validation_errors']) {
-      const apiError = new ApiError(err.type, err.message, status);
+      const apiError = new ApiError(err.type, err.message, status, err.trace);
 
       if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
         this.logger.warn('Lost Maps4News session, please re-authenticate');

@@ -38,11 +38,17 @@ export default class ApiError {
    * @param {String} type - Error type
    * @param {String} message - Error message
    * @param {Number} code - Http error code
+   * @param {String|null} trace - Stack trace
    */
-  constructor(type, message, code) {
+  constructor(type, message, code, trace = null) {
     this._type = type;
     this._message = message;
     this._code = code;
+    this._trace = [];
+
+    if (typeof trace === 'string') {
+      this._trace = ApiError._parseTrace(trace);
+    }
   }
 
   /**
@@ -70,10 +76,49 @@ export default class ApiError {
   }
 
   /**
+   * Returns if the error contained a stacktrace that has been parsed
+   * @returns {boolean} - If the Error contains a stacktrace
+   */
+  get hasTrace() {
+    return this._trace.length > 0;
+  }
+
+  /**
+   * Get the parsed stacktrace from the error
+   * @returns {Array<{line: Number, file: String, code: String}>} - Stacktrace
+   */
+  get trace() {
+    return this._trace;
+  }
+
+  /**
    * Display-able string
    * @returns {string} - Displayable error string
    */
   toString() {
     return `[${this._code}] ${this._type}: ${this._message}`;
+  }
+
+  static _parseTrace(input) {
+    // https://regex101.com/r/64cAbt/1
+    const regex = /^#(\d+)\s(?:(.*?)\((\d+)\)|(.*?)):\s(.*?)$/gm;
+    const output = [];
+    let match;
+
+    // eslint-disable-next-line no-cond-assign
+    while ((match = regex.exec(input)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (match.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+
+      output.push({
+        line: match[3],
+        file: match[2] || match[4],
+        code: match[5],
+      });
+    }
+
+    return output;
   }
 }

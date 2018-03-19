@@ -125,7 +125,7 @@ export function downloadFile(url, headers = {}) {
       return res.json().then(data => {
         const err = data.error;
 
-        throw new ApiError(err.type, err.message, res.status);
+        throw new ApiError(err.type, err.message, res.status, err.trace);
       });
     })
     .then(blob => {
