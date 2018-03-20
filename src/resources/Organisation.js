@@ -30,10 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 import CrudBase from './base/CrudBase';
 import Color from './Color';
 import Contract from './Contract';
 import DimensionSet from './DimensionSet';
+import Domain from './Domain';
 import Feature from './Feature';
 import FontFamily from './FontFamily';
 import JobShare from './JobShare';
@@ -43,8 +45,6 @@ import MapstyleSet from './MapstyleSet';
 import SvgSet from './SvgSet';
 import Tag from './Tag';
 import User from './User';
-import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
-import Domain from './Domain';
 
 
 export default class Organisation extends CrudBase {
@@ -155,6 +155,34 @@ export default class Organisation extends CrudBase {
    */
   get domains() {
     return this._proxyResourceList(Domain);
+  }
+
+  /**
+   * Get a tree representation of the organisation's relationships
+   * @returns {Promise<Array<Organisation>>} - List of organisation root nodes. Organisations contain an extra property called "children"
+   * @example
+   * function printTree(nodes, prefix = '-') {
+   *  for (const node of nodes) {
+   *    console.log(`${prefix} ${node.name}`);
+   *
+   *    printTree(node.children, prefix + '-');
+   *  }
+   * }
+   *
+   * organisation.getTree().then(printTree)
+   */
+  getTree() {
+    return this._api
+      .request(this.url + '/tree')
+      .then(data => data.map(root => this._parseTree(root)));
+  }
+
+  _parseTree(rawNode) {
+    const node = new this.constructor(this._api, rawNode);
+
+    node.children = node.children.map(child => this._parseTree(child));
+
+    return node;
   }
 
   /**
