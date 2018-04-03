@@ -31,7 +31,6 @@
  */
 
 import {AbstractClassError} from '../../errors/AbstractError';
-import {isParentOf} from '../../utils/reflection';
 import ResourceBase from './ResourceBase';
 
 /**
