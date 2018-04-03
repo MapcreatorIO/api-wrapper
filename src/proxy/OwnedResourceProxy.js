@@ -40,7 +40,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * OwnedResourceProxy Constructor
    * @param {Maps4News} api - api instance
-   * @param {Organisation} parent - parent instance
+   * @param {ResourceBase} parent - parent instance
    * @param {constructor} Target - target constructor
    */
   constructor(api, parent, Target) {
