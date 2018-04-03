@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {isParentOf} from '../utils/reflection';
 import SimpleResourceProxy from './SimpleResourceProxy';
 
 export default class OrganisationProxy extends SimpleResourceProxy {
@@ -61,7 +62,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   sync(organisations) {
-    return this.parent._modifyLink(organisations, 'PATCH', this.Target);
+    return this._modifyLink(organisations, 'PATCH', this.Target);
   }
 
   /**
@@ -71,7 +72,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   attach(organisations) {
-    return this.parent._modifyLink(organisations, 'POST', this.Target);
+    return this._modifyLink(organisations, 'POST', this.Target);
   }
 
   /**
@@ -81,7 +82,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
    */
   detach(organisations) {
-    return this.parent._modifyLink(organisations, 'DELETE', this.Target);
+    return this._modifyLink(organisations, 'DELETE', this.Target);
   }
 
   /**
@@ -102,5 +103,33 @@ export default class OrganisationProxy extends SimpleResourceProxy {
     const url = this.baseUrl + '/all';
 
     return this.api.request(url, 'DELETE');
+  }
+
+  /**
+   * Sync, attach or unlink resources
+   * @param {Array<Organisation>|Array<Number>} items - List of items to sync or attach
+   * @param {String} method - Http method to use
+   * @param {ResourceBase} Type - Resource type
+   * @param {?String} path - Optional appended resource path, will guess if null
+   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @protected
+   */
+  _modifyLink(items, method, Type, path = null) {
+    if (!path) {
+      const resource = (new Type(this.api)).resourceName.replace(/s+$/, '');
+
+      path = `${resource}s`;
+    }
+
+    const filter = x => !isParentOf(Type, x) && !isParentOf(Number, x);
+    const isValid = items.filter(filter).length === 0;
+
+    if (!isValid) {
+      throw new TypeError(`Array must contain either Numbers (resource id) or "${Type.name}".`);
+    }
+
+    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
+
+    return this.api.request(`${this.parent.url}/${path}`, method, {keys});
   }
 }
