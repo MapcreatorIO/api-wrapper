@@ -36,6 +36,7 @@ import {ResultStatus} from './ResultStatus';
 /**
  * Enum containing the possible different values for {@link JobMonitor#filterStatus}
  * @enum {string}
+ * @property {string} DEFAULT - All job types
  * @property {string} QUEUED - Job has been queued
  * @property {string} PROCESSING - Job is processing
  * @property {string} COMPLETED - Job has been completed
