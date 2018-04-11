@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 import ResourceProxy from '../proxy/ResourceProxy';
 import CrudBase from './base/CrudBase';
 import Color from './Color';
@@ -180,10 +181,10 @@ export default class User extends CrudBase {
 
   /**
    * Get the list roles linked to the user
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get roles() {
-    return this._proxyResourceList(Role);
+    return new OwnedResourceProxy(this.api, this, Role);
   }
 
   // endregion
