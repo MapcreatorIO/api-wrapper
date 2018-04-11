@@ -51,7 +51,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Sync items to the organisation
-   * @param {Array<Organisation>|Array<number>|Organisation|number} items - List of items to sync
+   * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
@@ -62,7 +62,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Attach items to the organisation
-   * @param {Array<Organisation>|Array<number>|Organisation|number} items - List of items to attach
+   * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
    * @throws {TypeError}If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
@@ -73,7 +73,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Detach items from the organisation
-   * @param {Array<Organisation>|Array<number>|Organisation|number} items - List of items to unlink
+   * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
    * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
    * @throws {TypeError} If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
