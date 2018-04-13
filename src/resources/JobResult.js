@@ -38,6 +38,10 @@ export default class JobResult extends ResourceBase {
     return '/jobs/{job_id}/revisions/{revision}/result';
   }
 
+  get _revisionUrl() {
+    return this.url.replace('/result', '');
+  }
+
   get resourceName() {
     return 'job-result';
   }
@@ -63,7 +67,7 @@ export default class JobResult extends ResourceBase {
    * @returns {string} - Archive url
    */
   get outputUrl() {
-    return this.url.replace('/result', '/output');
+    return `${this._revisionUrl}/output`;
   }
 
   /**
@@ -95,7 +99,7 @@ export default class JobResult extends ResourceBase {
    * @returns {string} - log url
    */
   get logUrl() {
-    return this.url.replace('/result', '/log');
+    return `${this._revisionUrl}/log`;
   }
 
   /**
@@ -111,7 +115,7 @@ export default class JobResult extends ResourceBase {
    * @returns {string} - Preview url
    */
   get previewUrl() {
-    return this.url.replace('/result', '/preview');
+    return `${this._revisionUrl}/preview`;
   }
 
   /**
