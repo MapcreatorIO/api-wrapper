@@ -30,10 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
+import JobResult from './JobResult';
 
-export default class JobMonitorRow extends ResourceBase {
-
+export default class JobMonitorRow extends JobResult {
   /**
    * Guess type based on property name
    * @param {string} name - Field name
@@ -49,28 +48,16 @@ export default class JobMonitorRow extends ResourceBase {
     return super._guessType(name, value);
   }
 
+  get resourceName() {
+    return 'job-monitor';
+  }
+
   /**
    * Returns if the resource is readonly
    * @returns {boolean} - readonly
    */
   static get readonly() {
     return true;
-  }
-
-  /**
-   * Get the related job
-   * @returns {Promise<Job, ApiError>} - The job related to this row
-   */
-  get job() {
-    return this.api.jobs.get(this.jobId);
-  }
-
-  /**
-   * Get the related job revision
-   * @returns {Promise<JobRevision, ApiError>} - The job revision related to this row
-   */
-  get jobRevision() {
-    return this.api.jobs.select(this.jobId).revisions.get(this.id);
   }
 
   /**
