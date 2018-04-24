@@ -79,7 +79,7 @@ export default class JobResult extends ResourceBase {
    * @returns {string} - Output url url
    */
   get outputUrlUrl() {
-    return `${this.url}-url`;
+    return `${this.url}/output-url`;
   }
 
   /**
