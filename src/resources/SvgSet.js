@@ -35,7 +35,6 @@ import CrudSetBase from './base/CrudSetBase';
 import Svg from './Svg';
 import {mix} from '../utils/reflection';
 
-
 /**
  * Svg set
  * @extends {CrudSetBase}
