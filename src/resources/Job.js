@@ -101,6 +101,14 @@ export default class Job extends CrudBase {
   }
 
   /**
+   * Get the remote output url
+   * @returns {Promise} -  Resolves with a {@link String} containing the url to the output and rejects with {@link ApiError}
+   */
+  getOutputUrl() {
+    return this.api.request(`${this.url}/output-url`).then(x => x.url);
+  }
+
+  /**
    * Get headers for downloading resources
    * @returns {{Accept: string, Authorization: string}} - Request headers
    * @private
