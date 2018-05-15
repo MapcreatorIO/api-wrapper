@@ -35,6 +35,9 @@ import ApiError from '../errors/ApiError';
 import {windowTest} from './helpers';
 import {isNode} from './node';
 
+/**
+ * @private
+ */
 export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window : fetchPonyfill({Promise});
 
 function getFormData() {
@@ -48,6 +51,9 @@ function getFormData() {
   return null;
 }
 
+/**
+ * @private
+ */
 export const FormData = getFormData();
 
 /**
@@ -55,7 +61,7 @@ export const FormData = getFormData();
  * @param {object<string, *>} paramsObject - data to be encoded
  * @returns {string} - encoded http query string
  *
- * @protected
+ * @private
  */
 export function encodeQueryString(paramsObject) {
   const query = _encodeQueryString(paramsObject);
@@ -107,7 +113,7 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
  * @param {string} url - Target url
  * @param {object<string, string>} headers - Request headers
  * @returns {PromiseLike<{filename: string, blob: string}>} - filename and blob
- * @protected
+ * @private
  */
 export function downloadFile(url, headers = {}) {
   const out = {};

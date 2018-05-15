@@ -38,7 +38,7 @@ export default class Unobservable {
   /**
    * Overrides the `Object.prototype.toString.call(obj)` result
    * @returns {string} - type name
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag}
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag
    */
   get [Symbol.toStringTag]() {
     // Anything can go here really as long as it's not 'Object'

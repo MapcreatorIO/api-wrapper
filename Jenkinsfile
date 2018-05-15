@@ -32,16 +32,14 @@ node('npm && yarn') {
 
 	stage('tag') {
 		if (SHOULD_TAG) {
-			sh 'yarn run authors'
-			sh 'git add AUTHORS.md'
-			sh 'git commit -m "Update AUTHORS.md" || true'
+			VERSION_LOG = sh(returnStdout: true, script: 'git log --no-merges --format=oneline $(git describe --abbrev=0 --tags)...HEAD | sed s/[a-z0-9]\*\ /\ -\ /')
 
 			if (BRANCH_NAME == 'master') {
-			sh 'npm version minor -m "Auto upgrade to minor %s" || true'
+			  sh "npm version minor -m 'Auto upgrade to minor %s\n\n${VERSION_LOG}' || true"
 			}
 
 			if (BRANCH_NAME == 'develop') {
-			sh 'npm version patch -m "Auto upgrade to patch %s" || true'
+			  sh "npm version patch -m 'Auto upgrade to patch %s\n\n${VERSION_LOG}' || true"
 			}
 		}
 	}

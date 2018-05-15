@@ -30,7 +30,11 @@
     "babel-register": "^6.26.0",
     "contributors": "^0.5.1",
     "dotenv-webpack": "^1.5.2",
-    "esdoc": "^0.5.2",
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-inject-script-plugin": "^1.0.0",
+    "esdoc-inject-style-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^4.2.0",
     "fs-extra": "^4.0.1",
     "licensecheck": "^1.3.0",
@@ -49,7 +53,8 @@
     "clean": "rm -r dist docs .nyc_output build || true",
     "all": "./scripts/all.sh",
     "test": "npx ava",
-    "test-ci": "./scripts/test-ci.sh"
+    "test-ci": "./scripts/test-ci.sh",
+    "version": "yarn run authors && git add AUTHORS.md"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
@@ -58,31 +63,46 @@
     "source": "./src",
     "destination": "./docs",
     "name": "maps4news",
-    "access": [
-      "public",
-      "protected"
-    ],
-    "experimentalProposal": {
-      "exportExtensions": true
-    },
-    "scripts": [
-      "./dist/bundle.js",
-      "./manual/js/sandbox.js"
-    ],
-    "styles": [
-      "./manual/css/sidebar_fix.css",
-      "./manual/css/hide_import.css"
-    ],
-    "manual": {
-      "example": [
-        "./manual/examples.md",
-        "./manual/examples.authentication.md"
-      ],
-      "installation": [
-        "./manual/building.md",
-        "./manual/installation.md"
-      ]
-    }
+    "plugins": [
+      {
+        "name": "esdoc-standard-plugin",
+        "option": {
+          "accessor": {"access": ["public", "protected"], "autoPrivate": true},
+          "undocumentIdentifier": {"enable": true},
+          "unexportedIdentifier": {"enable": false},
+          "typeInference": {"enable": true},
+          "brand": {
+            "title": "Maps4News Api Wrapper",
+            "description": "Maps4News Api Javascript Wrapper"
+          },
+          "manual": {
+            "asset": "./manual/assets",
+            "index": "./README.md",
+            "files": [
+              "./manual/examples.md",
+              "./manual/examples.authentication.md",
+              "./manual/building.md",
+              "./manual/installation.md"
+            ]
+          }
+        }
+      },
+      {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}},
+      {"name": "esdoc-inject-script-plugin", "option": {
+        "enable": true,
+        "scripts": [
+          "./dist/bundle.js",
+          "./manual/js/sandbox.js"
+        ]
+      }},
+      {"name": "esdoc-inject-style-plugin", "option": {
+        "enable": true,
+        "styles": [
+          "./manual/css/sidebar_fix.css",
+          "./manual/css/hide_import.css"
+        ]
+      }}
+    ]
   },
   "babel": {
     "presets": [

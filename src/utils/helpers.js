@@ -34,7 +34,7 @@
  * Get all the pages from a {@link PaginatedResourceListing} or a range
  * @param {Promise<PaginatedResourceListing>|PaginatedResourceListing} page - Promise that returns a {@link PaginatedResourceWrapper}
  * @param {?Number} [start=1] - Start page
- * @param {?Number} [stop] - Stop page
+ * @param {?Number} [stop] - Stop page, defaults to the page count if not filled in.
  * @returns {Promise<Array<ResourceBase>>} - Resolves with an {@link Array} containing {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
  * @example
  * import { helpers } from "@mapcreator/maps4news";

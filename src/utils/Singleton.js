@@ -30,6 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Singletons will always return the same instance
+ *
+ * @private
+ */
 export default class Singleton {
   constructor() {
     if (!this.constructor.instance) {
