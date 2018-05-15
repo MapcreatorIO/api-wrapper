@@ -32,7 +32,7 @@ node('npm && yarn') {
 
 	stage('tag') {
 		if (SHOULD_TAG) {
-			VERSION_LOG = sh(returnStdout: true, script: 'git log --no-merges --format=oneline $(git describe --abbrev=0 --tags)...HEAD | sed s/[a-z0-9]\*\ /\ -\ /')
+			VERSION_LOG = sh(returnStdout: true, script: 'git log --no-merges --format=oneline $(git describe --abbrev=0 --tags)...HEAD | sed s/[a-z0-9]\\*\\ /\\ -\\ /')
 
 			if (BRANCH_NAME == 'master') {
 			  sh "npm version minor -m 'Auto upgrade to minor %s\n\n${VERSION_LOG}' || true"
