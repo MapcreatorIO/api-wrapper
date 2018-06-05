@@ -182,7 +182,7 @@ export default class Maps4News {
   /**
    * Saves the session token so that it can be recovered at a later time. The wrapper can
    * find the token most of the time if the name parameter is left blank.
-   * @param {string|undefined} name - name of the token
+   * @param {string?} name - name of the token
    * @returns {void}
    */
   saveToken(name) {
