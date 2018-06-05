@@ -35,6 +35,7 @@ import DataStoreContract from './DataStoreContract';
 
 /**
  * @private
+ * @todo fix
  */
 export default class CookiesDriver extends DataStoreContract {
   constructor(prefix = '_m4n_') {
@@ -84,7 +85,7 @@ export default class CookiesDriver extends DataStoreContract {
     let cookie = `${name}=${value}; expires=${expires}`;
 
     if (CookiesDriver.secure) {
-      cookie += ';secure';
+      cookie += '; secure';
     }
 
     document.cookie = cookie;

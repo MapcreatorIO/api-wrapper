@@ -31,6 +31,9 @@ var api = new Maps4News(auth);
 // be found. Smartest thing to do is to just let it happen
 // and initialize any other code afterwards.
 api.authenticate().then(function() {
+  // Save the token
+  api.saveToken();
+  
   // Get the current user and dump the result to the console.
   api.users.get('me').then(console.dir);
 });
@@ -56,6 +59,9 @@ var api = new Maps4News(auth);
 // page. Once the pop-up redirects back to the callback it
 // will resolve the promise. The callback page should contain
 api.authenticate().then(function() {
+  // Save the token
+  api.saveToken();
+  
   // Get the current user and dump the result to the console.
   api.users.get('me').then(console.dir);
 });
@@ -77,6 +83,9 @@ var api = new Maps4News(auth);
 
 // This will resolve once the callback page has been loaded
 api.authenticate().then(function() {
+  // Save the token
+  api.saveToken();
+  
   // Get the current user and dump the result to the console.
   api.users.get('me').then(console.dir);
 });
