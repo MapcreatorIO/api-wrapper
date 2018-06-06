@@ -30,15 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
 import HandlesImages from '../traits/HandlesImages';
 import {mix} from '../utils/reflection';
+import CrudSetItemBase from './base/CrudSetItemBase';
 
 /**
- * @extends {CrudBase}
+ * @extends {CrudSetItemBase}
  * @extends {HandlesImages}
  */
-export default class Mapstyle extends mix(CrudBase, HandlesImages) {
+export default class Mapstyle extends mix(CrudSetItemBase, HandlesImages) {
   get resourceName() {
     return 'mapstyles';
   }

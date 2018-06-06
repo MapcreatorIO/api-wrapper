@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, MapCreator
+ * Copyright (c) 2018, MapCreator
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudSetItemBase from './base/CrudSetItemBase';
+import {AbstractError} from '../../errors/AbstractError';
+import CrudBase from './CrudBase';
 
 /**
- * Dimension resource
+ * Items that are part of a set
+ * @abstract
  */
-export default class Dimension extends CrudSetItemBase {
-  get resourceName() {
-    return 'dimensions';
+export default class CrudSetItemBase extends CrudBase {
+  /**
+   * @param {Maps4News} api - Api instance
+   * @param {Object<String, *>} data - Item data
+   */
+  constructor(api, data = {}) {
+    super(api, data);
+
+    if (this.constructor === CrudBase) {
+      throw new AbstractClassError();
+    }
+  }
+
+  /**
+   * Get the parent id
+   * @returns {number|undefined} - Parent number
+   */
+  get parentId() {
+    return this.hasParent ? Number(this[this.parentKey]) : undefined;
+  }
+
+  /**
+   * Get the parent key
+   * @returns {string} - Parent key
+   */
+  get parentKey() {
+    return this.resourceName.replace(/s$/, '_set_id');
+  }
+
+  /**
+   * Returns if the resource has a parent resource set
+   * @returns {boolean} - if the resource has a parent
+   * @see ResourceBase::hasParent
+   */
+  get hasParent() {
+    return typeof this.parentKey === 'string';
   }
 }

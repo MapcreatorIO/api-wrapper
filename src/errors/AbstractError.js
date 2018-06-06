@@ -38,7 +38,7 @@ export class AbstractError extends Error {
    * AbstractError constructor
    * @param {?String} message - Error message
    */
-  constructor(message) {
+  constructor(message = 'Unimplemented') {
     super(message);
   }
 }

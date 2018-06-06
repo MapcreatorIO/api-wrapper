@@ -30,10 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
+import CrudSetItemBase from './base/CrudSetItemBase';
 
-export default class Font extends CrudBase {
+export default class Font extends CrudSetItemBase {
   get resourceName() {
     return 'fonts';
+  }
+
+  get parentKey() {
+    return 'font_family_id';
   }
 }

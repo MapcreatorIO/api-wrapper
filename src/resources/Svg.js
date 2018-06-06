@@ -30,9 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
+import CrudSetItemBase from './base/CrudSetItemBase';
 
-export default class Svg extends CrudBase {
+export default class Svg extends CrudSetItemBase {
   get resourceName() {
     return 'svgs';
   }
