@@ -58,6 +58,7 @@ export * as resources from './resources';
 
 // Helpers
 export * as helpers from './utils/helpers';
+export ResourceLister from './ResourceLister';
 
 // Errors
 export * as errors from './errors';
