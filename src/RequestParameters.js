@@ -32,6 +32,7 @@
 
 
 import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case';
+import {EventEmitter} from 'events';
 import {DeletedState} from './enums';
 import {hashObject} from './utils/hash';
 import {getTypeName} from './utils/reflection';
@@ -39,14 +40,22 @@ import {encodeQueryString} from './utils/requests';
 
 /**
  * Used for keeping track of the request parameters
+ *
+ * @fires RequestParameters#change
+ * @fires RequestParameters#change:page
+ * @fires RequestParameters#change:perPage
+ * @fires RequestParameters#change:search
+ * @fires RequestParameters#change:sort
+ * @fires RequestParameters#change:deleted
+ * @fires RequestParameters#change:extra
  */
-export default class RequestParameters {
+export default class RequestParameters extends EventEmitter {
   /**
    * RequestParameters constructor
    * @param {Object} object - properties
    */
   constructor(object = {}) {
-    this._watch = [];
+    super();
 
     // Apply defaults
     RequestParameters.keys().forEach(x => this._resolve(x));
@@ -427,7 +436,16 @@ export default class RequestParameters {
     value = RequestParameters['_validate' + pascalCase(name)](value);
     (this || {})[_name] = value; // Weird syntax confuses esdoc
 
-    this._watch.forEach(m => m(name, value));
+    /**
+     * Change event.
+     *
+     * @event RequestParameters#change
+     * @type {object}
+     * @property {string} name - Parameter name
+     * @property {*} value - New value
+     */
+    this.emit('change', {name, value});
+    this.emit('change:' + name, value);
   }
 
   // region utils
@@ -562,6 +580,5 @@ export default class RequestParameters {
       this._update(Key, params[key]);
     }
   }
-
   // endregion utils
 }

@@ -32,76 +32,116 @@
 
 import Maps4News from './Maps4News';
 import RequestParameters from './RequestParameters';
+import ResourceBase from './resources/base/ResourceBase';
 import {isParentOf} from './utils/reflection';
 
+/**
+ * Paginated resource lister
+ */
 export default class ResourceLister {
   /**
+   * ResourceLister constructor
    *
    * @param {Maps4News} api - Api instance
    * @param {string} route - Resource url route
-   * @param {ResourceBase} Resource - Resource constructor
+   * @param {Constructor<ResourceBase>} Resource - Resource constructor
    * @param {?RequestParameters} parameters - Request parameters
    * @param {number} [maxRows=50] - Initial max rows
    * @param {string} [key=id] - Key
    */
-  constructor(api, route, Resource, parameters = null, maxRows = 50, key = 'id') {
+  constructor(api, route, Resource = ResourceBase, parameters = null, maxRows = 50, key = 'id') {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
 
     this._api = api;
-
-    this._maxRows = maxRows;
-    this._data = [];
-    this._realData = [];
-    this._keys = [];
-    this._key = key;
     this._Resource = Resource;
-    this._availibleRows = 0;
+    this._route = route || (new this.Resource(api, {})).baseUrl;
+    this._parameters = parameters || new RequestParameters({perPage: RequestParameters.maxPerPage});
+    this._maxRows = maxRows;
+    this._key = key;
 
-    this.parameters = parameters || new RequestParameters({perPage: RequestParameters.maxPerPage});
+    this._boundUpdate = this.update.bind(this);
 
-    this._route = route || (new Resource(api, {})).baseUrl;
+    this._reset();
   }
 
+  /**
+   * Get the request parameters
+   * @returns {RequestParameters} - parameters
+   */
   get parameters() {
     return this._parameters;
   }
 
+  /**
+   * Set the request parameters
+   *
+   * If you set {@link ResourceLister#autoUpdate} to true then {@link ResourceLister#update}
+   * will automatically be called when the parameters are updated.
+   * @see ResourceLister#autoUpdate
+   * @param {RequestParameters} object - parameters
+   */
   set parameters(object) {
-    if (object instanceof RequestParameters) {
-      this._parameters = object;
-    } else {
-      this._parameters = new RequestParameters(object);
-    }
+    this.parameters.apply(object);
   }
 
+  /**
+   * Resource constructor accessor, used for building the resource instance
+   * @returns {Constructor<ResourceBase>} - resource constructor
+   */
   get Resource() {
     return this._Resource;
   }
 
+  /**
+   * Get the route (url)
+   * @returns {string} - route
+   */
   get route() {
     return this._route;
   }
 
+  /**
+   * Get the data
+   * @returns {Array<ResourceLister.Resource>} - data
+   */
   get data() {
     return this._data;
   }
 
+  /**
+   * Get the api instance
+   * @returns {Maps4News} - api instance
+   */
   get api() {
     return this._api;
   }
 
+  /**
+   * Get the row count
+   *
+   * @see {ResourceLister.data}
+   * @returns {number} - row count
+   */
   get rowCount() {
     return this.data.length;
   }
 
+  /**
+   * Get the maximum amount of rows allowed
+   * @returns {number} - max rows
+   */
   get maxRows() {
     return this._maxRows;
   }
 
-  set maxRows(raw) {
-    const value = Number(raw);
+  /**
+   * Set the maximum amount of rows allowed
+   * @param {number} value - max rows
+   */
+  set maxRows(value) {
+    value = Number(value);
 
     if (Number.isNaN(value)) {
       throw new TypeError(`Expected maxRows to be numeric got ${typeof raw}`);
@@ -110,20 +150,85 @@ export default class ResourceLister {
     this._maxRows = value;
   }
 
+  /**
+   * Get the number of rows the server has available
+   * @returns {number} - number of rows
+   */
   get availibleRows() {
-    return this._availibleRows;
+    return this._availableRows;
   }
 
+  /**
+   * Set if {@link ResourceLister#update} should be called when {@link ResourceLister#parameters} is updated
+   *
+   * @see ResourceLister#update
+   * @see ResourceLister#parameters
+   * @param {boolean} value - auto update
+   */
+  set autoUpdate(value) {
+    value = Boolean(value);
+
+    if (this.autoUpdate !== value) {
+      this._autoUpdate = value;
+
+      if (this.autoUpdate) {
+        this.parameters.on('change', this._boundUpdate);
+      } else {
+        this.parameters.off('change', this._boundUpdate);
+      }
+    }
+  }
+
+  /**
+   * Get if {@link ResourceLister#update} should be called when {@link ResourceLister#parameters} is updated
+   *
+   * @see ResourceLister#update
+   * @see ResourceLister#parameters
+   */
+  get autoUpdate() {
+    return this._autoUpdate || false;
+  }
+
+  /**
+   * Reset the instance
+   *
+   * @returns {void}
+   * @private
+   */
+  _reset() {
+    this._parameterToken = this.parameters.token();
+
+    this._realData = [];
+    this._data = [];
+    this._keys = [];
+    this._availableRows = 0;
+  }
+
+  /**
+   * Update the server data
+   *
+   * @returns {Promise<void>} - Resolves when the data has been updated
+   * @async
+   */
   async update() {
+    if (this._parameterToken !== this.parameters.token()) {
+      this._reset();
+    }
+
     if (this._realData.length < this.maxRows) {
       await this._fetchMore();
     }
 
-    this._data = this._realData.slice(0, this.maxRows);
-
-    this.maxRows = this.rowCount;
+    if (this.data.length !== this.maxRows) {
+      this._data = this._realData.slice(0, this.maxRows);
+    }
   }
 
+  /**
+   * Fetch more data from the server
+   * @returns {Promise<void>} - Resolves when _availableRows has been updated
+   * @private
+   */
   async _fetchMore() {
     const startPage = 1 + Math.floor(this.rowCount / RequestParameters.maxPerPage);
     const endPage = Math.ceil(this.maxRows / RequestParameters.maxPerPage);
@@ -144,20 +249,31 @@ export default class ResourceLister {
     }
 
     // Wait for responses and flatten data
-    // @todo handle 404 and guess max page count
     const responses = await Promise.all(promises);
     const data = [].concat(...responses.map(x => x.data));
 
-    this._availibleRows = Number(responses[0].response.headers.get('X-Paginate-Total')) || 0;
+    this._availableRows = Number(responses[0].response.headers.get('X-Paginate-Total')) || 0;
 
-    data.forEach(row => this.push(row));
+    data.forEach(row => this.push(row, false));
   }
 
+  /**
+   * Returns the iterable
+   * @returns {Iterator} - iterator
+   */
   [Symbol.iterator]() {
     return this.data[Symbol.iterator]();
   }
 
-  push(row) {
+  /**
+   * Push a row to the data collection
+   *
+   * This will append the row or update an existing row based on the key. If autoMaxRows is set to true and maxRows only needs to be increased by one for the new resource to show up it will
+   * @param {ResourceLister.Resource} row - resource
+   * @param {boolean} autoMaxRows - Increase maxRows if needed
+   * @returns {void}
+   */
+  push(row, autoMaxRows = true) {
     if (!isParentOf(this.Resource, row)) {
       row = new this.Resource(this.api, row);
     }
@@ -166,10 +282,20 @@ export default class ResourceLister {
 
     if (index >= 0) {
       this._realData[index] = row;
+
+      if (typeof this._data[index] !== 'undefined') {
+        this._data[index] = row;
+      }
     } else {
       this._realData.push(row);
 
       this._keys.push(row[this._key]);
+
+      if (autoMaxRows && this.maxRows + 1 === this._realData.length) {
+        this.maxRows++;
+
+        this._data.push(row);
+      }
     }
   }
 }
