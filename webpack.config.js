@@ -5,7 +5,6 @@ const exec = require('child_process').execSync;
 const Dotenv = require('dotenv-webpack');
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 const version = exec('git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').toString().trim();
 const license = fs.readFileSync('LICENSE', 'ascii');
@@ -42,13 +41,19 @@ const config = {
             presets: [
               ['env', {
                 targets: {
-                  'node': '8.11',
+                  node: '8.11',
                 },
               }],
             ],
             cacheDirectory: true,
             plugins: [
               'transform-export-extensions',
+              ['transform-runtime', {
+                'helpers': true,
+                'polyfill': false,
+                'regenerator': true,
+                'moduleName': 'babel-runtime',
+              }],
             ],
             sourceMap: true,
             env: {
@@ -78,8 +83,6 @@ const config = {
   externals: [nodeExternals()],
   devtool: 'source-map',
   plugins: [
-    new BundleAnalyzerPlugin(),
-
     new Dotenv({
       safe: true,
       systemvars: true,
@@ -96,8 +99,8 @@ const config = {
 
 const browserConfig = Object.assign({}, config, {
   entry: {
-    'bundle.browser': ['babel-polyfill', './src/index.js'],
-    'bundle.browser.min': ['babel-polyfill', './src/index.js'],
+    'bundle.browser': './src/index.js',
+    'bundle.browser.min': './src/index.js',
   },
   externals: [],
   plugins: [
@@ -106,10 +109,10 @@ const browserConfig = Object.assign({}, config, {
   ],
 });
 
-browserConfig.module.rules[0].use.options.presets[0][1] = {
+browserConfig.module.rules[0].use.options.presets[0] = ['env', {
   targets: {
     browsers: require('./package.json').browserslist,
   },
-};
+}];
 
 module.exports = [config, browserConfig];
