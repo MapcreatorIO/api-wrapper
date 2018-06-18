@@ -5,6 +5,7 @@ const exec = require('child_process').execSync;
 const Dotenv = require('dotenv-webpack');
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 const version = exec('git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').toString().trim();
 const license = fs.readFileSync('LICENSE', 'ascii');
@@ -38,11 +39,13 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['env', {
-              targets: {
-                'node': '8.11',
-              },
-            }]],
+            presets: [
+              ['env', {
+                targets: {
+                  'node': '8.11',
+                },
+              }],
+            ],
             cacheDirectory: true,
             plugins: [
               'transform-export-extensions',
@@ -75,6 +78,8 @@ const config = {
   externals: [nodeExternals()],
   devtool: 'source-map',
   plugins: [
+    new BundleAnalyzerPlugin(),
+
     new Dotenv({
       safe: true,
       systemvars: true,

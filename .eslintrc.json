@@ -18,6 +18,15 @@
     "VERSION": false,
     "LICENSE": false
   },
+  "plugins": [
+    "compat"
+  ],
+  "settings": {
+    "polyfills": [
+      "promises",
+      "fetch"
+    ]
+  },
   "rules": {
     "comma-dangle": [1,"always-multiline"],
     "no-cond-assign": [1,"always"],
@@ -121,6 +130,7 @@
     "require-yield": 1,
     "keyword-spacing": [1, {
         "after": true
-    }]
+    }],
+    "compat/compat": "error"
   }
 }
