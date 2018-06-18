@@ -30,10 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from '../resources/base/ResourceBase';
 import PaginatedResourceListing from '../PaginatedResourceListing';
-import {isParentOf} from '../utils/reflection';
 import RequestParameters from '../RequestParameters';
+import ResourceLister from '../ResourceLister';
+import ResourceBase from '../resources/base/ResourceBase';
+import {isParentOf} from '../utils/reflection';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -170,6 +171,17 @@ export default class SimpleResourceProxy {
 
     wrapped.get(resolver.page);
     return wrapped;
+  }
+
+  /**
+   * Get the resource lister
+   *
+   * @param {object|RequestParameters} parameters - parameters
+   * @param {number} maxRows - Maximum amount of rows
+   * @returns {ResourceLister} - Resource lister
+   */
+  lister(parameters = {}, maxRows = 50) {
+    return new ResourceLister(this.api, this.baseUrl, this.Target, parameters, maxRows, this.Target.resourceUrlKey);
   }
 
   _buildResolver(params = {}) {
