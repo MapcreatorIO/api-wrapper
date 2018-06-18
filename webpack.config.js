@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const exec = require('child_process').execSync;
 const Dotenv = require('dotenv-webpack');
+const nodeExternals = require('webpack-node-externals');
 
 const version = exec('git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').toString().trim();
 const license = fs.readFileSync('LICENSE', 'ascii');
@@ -13,9 +14,8 @@ if (!fs.existsSync('.env')) {
 }
 
 
-module.exports = {
+const config = {
   target: 'web', // output is fine for nodejs usage
-  externals: [],
   entry: {
     'bundle': './src/index.js',
     'bundle.min': './src/index.js',
@@ -43,6 +43,8 @@ module.exports = {
       },
     ],
   },
+  node: false,
+  externals: [nodeExternals()],
   devtool: 'source-map',
   plugins: [
     new Dotenv({
@@ -62,11 +64,20 @@ module.exports = {
       parallel: true,
     }),
 
-    new webpack.BannerPlugin(
-      'hash:[hash], chunkhash:[chunkhash], name:[name], version:' + version +
-      '\n\nThis bundle contains the following packages:\n' + exec('$(npm bin)/licensecheck'),
-    ),
-
-    new webpack.BannerPlugin(license),
+    new webpack.BannerPlugin(license + '\nhash:[hash], chunkhash:[chunkhash], name:[name], version:' + version),
   ],
 };
+
+const browserConfig = Object.assign({}, config, {
+  entry: {
+    'bundle.browser': './src/index.js',
+    'bundle.browser.min': './src/index.js',
+  },
+  externals: [],
+  plugins: [
+    new webpack.BannerPlugin('This bundle contains the following packages:\n' + exec('$(npm bin)/licensecheck')),
+    ...config.plugins,
+  ],
+});
+
+module.exports = [config, browserConfig];

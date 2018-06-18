@@ -42,7 +42,8 @@
     "tap-nyc": "^1.0.3",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.1.0",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
     "build": "./scripts/build.sh",
