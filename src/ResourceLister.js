@@ -30,15 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {snake as snakeCase} from 'case';
+import {EventEmitter} from 'events';
 import Maps4News from './Maps4News';
 import RequestParameters from './RequestParameters';
 import ResourceBase from './resources/base/ResourceBase';
+import {lazyArrayPush, lazyArraySet} from './utils/helpers';
 import {isParentOf} from './utils/reflection';
 
 /**
  * Paginated resource lister
+ *
+ * @fires ResourceLister#update
  */
-export default class ResourceLister {
+export default class ResourceLister extends EventEmitter {
   /**
    * ResourceLister constructor
    *
@@ -50,6 +55,8 @@ export default class ResourceLister {
    * @param {string} [key=id] - Key
    */
   constructor(api, route, Resource = ResourceBase, parameters = null, maxRows = 50, key = 'id') {
+    super();
+
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -57,11 +64,12 @@ export default class ResourceLister {
     this._api = api;
     this._Resource = Resource;
     this._route = route || (new this.Resource(api, {})).baseUrl;
-    this._parameters = parameters || new RequestParameters({perPage: RequestParameters.maxPerPage});
-    this._maxRows = maxRows;
-    this._key = key;
+    this._parameters = new RequestParameters(parameters || {perPage: RequestParameters.maxPerPage});
+    this._key = snakeCase(key);
 
-    this._boundUpdate = this.update.bind(this);
+    this.parameters.perPage = RequestParameters.maxPerPage;
+    this.autoUpdate = true;
+    this.maxRows = maxRows;
 
     this._reset();
   }
@@ -148,6 +156,11 @@ export default class ResourceLister {
     }
 
     this._maxRows = value;
+
+    if (this.autoUpdate) {
+      // noinspection JSIgnoredPromiseFromCall
+      this.update();
+    }
   }
 
   /**
@@ -171,6 +184,10 @@ export default class ResourceLister {
     if (this.autoUpdate !== value) {
       this._autoUpdate = value;
 
+      if (typeof this._boundUpdate === 'undefined') {
+        this._boundUpdate = this.update.bind(this);
+      }
+
       if (this.autoUpdate) {
         this.parameters.on('change', this._boundUpdate);
       } else {
@@ -186,7 +203,7 @@ export default class ResourceLister {
    * @see ResourceLister#parameters
    */
   get autoUpdate() {
-    return this._autoUpdate || false;
+    return this._autoUpdate;
   }
 
   /**
@@ -222,6 +239,14 @@ export default class ResourceLister {
     if (this.data.length !== this.maxRows) {
       this._data = this._realData.slice(0, this.maxRows);
     }
+
+    /**
+     * Update event.
+     * Called when the ResourceLister has updated
+     *
+     * @event RequestParameters#change
+     */
+    this.emit('update');
   }
 
   /**
@@ -230,8 +255,8 @@ export default class ResourceLister {
    * @private
    */
   async _fetchMore() {
-    const startPage = 1 + Math.floor(this.rowCount / RequestParameters.maxPerPage);
-    const endPage = Math.ceil(this.maxRows / RequestParameters.maxPerPage);
+    const startPage = 1 + Math.floor(this.rowCount / this.parameters.perPage);
+    const endPage = Math.ceil(this.maxRows / this.parameters.perPage);
     const glue = this.route.includes('?') ? '&' : '?';
 
     const promises = [];
