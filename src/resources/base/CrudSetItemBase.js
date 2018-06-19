@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractError} from '../../errors/AbstractError';
+import {AbstractClassError} from '../../errors/AbstractError';
 import CrudBase from './CrudBase';
 
 /**
@@ -52,10 +52,14 @@ export default class CrudSetItemBase extends CrudBase {
 
   /**
    * Get the parent id
-   * @returns {number|undefined} - Parent number
+   * @returns {?number|undefined} - Parent number
    */
   get parentId() {
-    return this.hasParent ? Number(this[this.parentKey]) : undefined;
+    if (this.hasParent) {
+      return Number(this[this.parentKey]);
+    }
+
+    return [][0]; // same as "undefined"
   }
 
   /**
