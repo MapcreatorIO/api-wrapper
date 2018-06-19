@@ -35,7 +35,6 @@ import {EventEmitter} from 'events';
 import Maps4News from './Maps4News';
 import RequestParameters from './RequestParameters';
 import ResourceBase from './resources/base/ResourceBase';
-import {lazyArrayPush, lazyArraySet} from './utils/helpers';
 import {isParentOf} from './utils/reflection';
 
 /**
@@ -244,7 +243,7 @@ export default class ResourceLister extends EventEmitter {
      * Update event.
      * Called when the ResourceLister has updated
      *
-     * @event RequestParameters#change
+     * @event RequestLister#update
      */
     this.emit('update');
   }
