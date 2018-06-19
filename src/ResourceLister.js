@@ -65,12 +65,21 @@ export default class ResourceLister extends EventEmitter {
     this._route = route || (new this.Resource(api, {})).baseUrl;
     this._parameters = new RequestParameters(parameters || {perPage: RequestParameters.maxPerPage});
     this._key = snakeCase(key);
+    this._waiting = false;
 
     this.parameters.perPage = RequestParameters.maxPerPage;
     this.autoUpdate = true;
     this.maxRows = maxRows;
 
     this._reset();
+  }
+
+  /**
+   * Get if the instance is waiting for data
+   * @returns {boolean} - waiting for data
+   */
+  get waiting() {
+    return this._waiting;
   }
 
   /**
@@ -227,16 +236,26 @@ export default class ResourceLister extends EventEmitter {
    * @async
    */
   async update() {
-    if (this._parameterToken !== this.parameters.token()) {
-      this._reset();
+    if (this.waiting) {
+      return;
     }
 
-    if (this._realData.length < this.maxRows) {
-      await this._fetchMore();
-    }
+    this._waiting = true;
 
-    if (this.data.length !== this.maxRows) {
-      this._data = this._realData.slice(0, this.maxRows);
+    try {
+      if (this._parameterToken !== this.parameters.token()) {
+        this._reset();
+      }
+
+      if (this._realData.length < this.maxRows) {
+        await this._fetchMore();
+      }
+
+      if (this.data.length !== this.maxRows) {
+        this._data = this._realData.slice(0, this.maxRows);
+      }
+    } finally {
+      this._waiting = false;
     }
 
     /**
