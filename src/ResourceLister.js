@@ -75,6 +75,14 @@ export default class ResourceLister extends EventEmitter {
   }
 
   /**
+   * Get if there are more resources to fetch. It indicates if the maxRows can be increased.
+   * @returns {boolean} - if more rows are available
+   */
+  get hasMore() {
+    return this.availibleRows < this.maxRows;
+  }
+
+  /**
    * Get if the instance is waiting for data
    * @returns {boolean} - waiting for data
    */
