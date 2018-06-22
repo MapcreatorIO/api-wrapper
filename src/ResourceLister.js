@@ -79,7 +79,7 @@ export default class ResourceLister extends EventEmitter {
    * @returns {boolean} - if more rows are available
    */
   get hasMore() {
-    return this.availibleRows < this.maxRows;
+    return typeof this.availableRows === 'undefined' || this.availableRows < this.maxRows;
   }
 
   /**
@@ -183,7 +183,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the number of rows the server has available
    * @returns {number} - number of rows
    */
-  get availibleRows() {
+  get availableRows() {
     return this._availableRows;
   }
 
@@ -234,7 +234,8 @@ export default class ResourceLister extends EventEmitter {
     this._realData = [];
     this._data = [];
     this._keys = [];
-    this._availableRows = 0;
+
+    delete this._availableRows;
   }
 
   /**
