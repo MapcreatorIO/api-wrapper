@@ -34,6 +34,7 @@ import {JobMonitorFilter} from './enums';
 import Maps4News from './Maps4News';
 import JobMonitorRow from './resources/JobMonitorRow';
 import {isParentOf} from './utils/reflection';
+import {encodeQueryString} from './utils/requests';
 
 /**
  * Used for monitoring the job queue
@@ -53,6 +54,7 @@ export default class JobMonitor {
     this._lastUpdate = this._getTimestamp();
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
+    this._filterTags = [];
     this._purge = false;
     this._longPoll = true;
     this._skipMaxUpdate = false;
@@ -117,7 +119,17 @@ export default class JobMonitor {
         `PerPage: ${perPage}, Page: ${page}, Target: ${perPage * page}`,
       );
 
-      const url = `${this._baseUrl}&per_page=${perPage}&page=${page}`;
+      const params = {
+        // eslint-disable-next-line
+        per_page: perPage,
+        page,
+      };
+
+      if (this.filterTags.length > 0) {
+        params.tags = this.filterTags;
+      }
+
+      const url = this._baseUrl + '&' + encodeQueryString(params);
 
       requests.push(this.api.request(url).then(data => data.map(x => new JobMonitorRow(this.api, x))));
 
@@ -302,6 +314,24 @@ export default class JobMonitor {
    */
   get filterStatus() {
     return this._filterStatus;
+  }
+
+  set filterTags(value) {
+    if (Array.isArray('array')) {
+      let valueType = value.toString();
+
+      if (valueType !== null && typeof value !== 'undefined') {
+        valueType = value.constructor.name;
+      }
+
+      throw new TypeError(`Expected value to be of type array got ${valueType}.`);
+    }
+
+    this._filterTags = value;
+  }
+
+  get filterTags() {
+    return this._filterTags;
   }
 
   /**
