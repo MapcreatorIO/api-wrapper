@@ -86,6 +86,7 @@ export default class Maps4News {
   constructor(auth = new DummyFlow(), host = process.env.HOST) {
     this.auth = auth;
     this.host = host;
+    this.autoLogout = true;
 
     const bool = str => String(str).toLowerCase() === 'true';
 
@@ -318,7 +319,9 @@ export default class Maps4News {
       if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
         this.logger.warn('Lost Maps4News session, please re-authenticate');
 
-        this.logout();
+        if (this.autoLogout) {
+          this.logout();
+        }
       }
 
       return apiError;
@@ -642,5 +645,23 @@ export default class Maps4News {
    */
   logout() {
     this.auth.forget();
+  }
+
+  /**
+   * Get if the api should automatically call logout when it counters an AuthenticationException
+   * @returns {boolean} - Auto logout
+   * @see {@link logout}
+   */
+  get autoLogout() {
+    return this._autoLogout;
+  }
+
+  /**
+   * Set if the api should automatically call logout when it counters an AuthenticationException
+   * @param {boolean} value - Auto logout
+   * @see {@link logout}
+   */
+  set autoLogout(value) {
+    this._autoLogout = Boolean(value);
   }
 }
