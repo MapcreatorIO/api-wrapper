@@ -203,11 +203,26 @@ export default class ResourceBase {
 
   /**
    * Resets model instance to it's original state
+   * @param {string[]|string|null} fields - Fields to reset, defaults to all fields
    * @returns {void}
    */
-  reset() {
+  reset(fields = null) {
     this._updateProperties();
-    this._properties = {};
+
+    if (fields === null) {
+      fields = this._knownFields;
+    }
+
+    if (!Array.isArray(fields)) {
+      fields = [fields];
+    }
+
+    fields = Array.isArray(fields) ? fields : [fields];
+
+    fields
+      .map(String)
+      .map(snakeCase)
+      .forEach(field => delete this._properties[field]);
   }
 
   /**
