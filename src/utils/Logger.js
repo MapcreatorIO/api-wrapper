@@ -12,7 +12,7 @@ export default class Logger {
 
   /**
    * Get available log levels
-   * @returns {string[]} - Log levels
+   * @returns {Array<string>} - Log levels
    */
   getLogLevels() {
     return [

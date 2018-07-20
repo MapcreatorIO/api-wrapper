@@ -203,7 +203,7 @@ export default class ResourceBase {
 
   /**
    * Resets model instance to it's original state
-   * @param {Array<string>|string|null} fields - Fields to reset, defaults to all fields
+   * @param {Array<string>|string|null} [fields=null] - Fields to reset, defaults to all fields
    * @returns {void}
    */
   reset(fields = null) {
