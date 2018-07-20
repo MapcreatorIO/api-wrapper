@@ -209,20 +209,16 @@ export default class ResourceBase {
   reset(fields = null) {
     this._updateProperties();
 
-    if (fields === null) {
-      fields = this._knownFields;
+    if (typeof fields === 'string') {
+      this.reset([fields]);
+    } else if (fields === null) {
+      this._properties = {}; // Delete all
+    } else if (Array.isArray(fields)) {
+      fields
+        .map(String)
+        .map(snakeCase)
+        .forEach(field => delete this._properties[field]);
     }
-
-    if (!Array.isArray(fields)) {
-      fields = [fields];
-    }
-
-    fields = Array.isArray(fields) ? fields : [fields];
-
-    fields
-      .map(String)
-      .map(snakeCase)
-      .forEach(field => delete this._properties[field]);
   }
 
   /**
