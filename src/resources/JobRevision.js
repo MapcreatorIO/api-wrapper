@@ -71,6 +71,7 @@ export default class JobRevision extends CrudBase {
     return this.api
       .request(url)
       .then(data => {
+        data.jobId = this.jobId;
         data.revision = this.revision;
 
         return new JobResult(this.api, data);
