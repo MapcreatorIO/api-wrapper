@@ -36,6 +36,7 @@ import ApiError from './errors/ApiError';
 import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
+import OAuthToken from './oauth/OAuthToken';
 import ResourceProxy from './proxy/ResourceProxy';
 import SimpleResourceProxy from './proxy/SimpleResourceProxy';
 import ResourceCache from './ResourceCache';
@@ -81,10 +82,18 @@ import {fetch, FormData, Headers} from './utils/requests';
  */
 export default class Maps4News {
   /**
-   * @param {OAuth} auth - Authentication flow
+   * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
    */
   constructor(auth = new DummyFlow(), host = process.env.HOST) {
+    if (typeof auth === 'string') {
+      const token = auth;
+
+      auth = new DummyFlow();
+
+      auth.token = new OAuthToken(token, 'Bearer', new Date('2100-01-01T01:00:00'), ['*']);
+    }
+
     this.auth = auth;
     this.host = host;
     this.autoLogout = true;

@@ -52,7 +52,7 @@ export default class OAuth {
 
     this.clientId = String(clientId);
     this.scopes = scopes;
-    this.token = OAuthToken.recover();
+    this.token = clientId !== null ? OAuthToken.recover() : null;
     this.host = process.env.HOST;
     this.path = '/';
   }

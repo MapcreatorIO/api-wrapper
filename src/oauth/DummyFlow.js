@@ -38,8 +38,13 @@ import OAuth from './OAuth';
  * cache and no attempt at authentication should be made.
  */
 export default class DummyFlow extends OAuth {
-  constructor() {
-    super('', []);
+  /**
+   * @param {String} [clientId=] - OAuth client id
+   * @param {Array<String>} scopes - A list of required scopes
+   * @returns {void}
+   */
+  constructor(clientId = '', scopes = ['*']) {
+    super(clientId, scopes);
   }
 
   /**
