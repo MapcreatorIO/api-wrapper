@@ -171,10 +171,10 @@ export default class Organisation extends CrudBase {
    *
    * organisation.getTree().then(printTree)
    */
-  getTree() {
-    return this._api
-      .request(this.url + '/tree')
-      .then(data => data.map(root => this._parseTree(root)));
+  async getTree() {
+    const data = await this._api.request(this.url + '/tree');
+
+    return data.map(root => this._parseTree(root));
   }
 
   _parseTree(rawNode) {
