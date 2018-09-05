@@ -127,7 +127,7 @@ export default class ResourceCache extends Unobservable {
    */
   revalidate(resourceUrl = null) {
     if (!resourceUrl) {
-      Object.keys(this._storage).map(this.revalidate);
+      Object.keys(this._storage).map(x => this.revalidate(x));
     } else if (this._storage[resourceUrl]) {
       const storage = this._storage[resourceUrl];
 
