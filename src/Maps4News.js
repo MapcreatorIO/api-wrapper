@@ -111,7 +111,7 @@ export default class Maps4News {
       dereferenceCache: bool(process.env.CACHE_DEREFERENCE_OUTPUT),
     };
 
-    this._cache = new ResourceCache(this);
+    this._cache = new ResourceCache(this.defaults.cacheSeconds, this.defaults.dereferenceCache);
     this._logger = new Logger(process.env.LOG_LEVEL);
   }
 

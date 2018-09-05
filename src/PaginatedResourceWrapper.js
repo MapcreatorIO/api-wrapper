@@ -60,7 +60,7 @@ export default class PaginatedResourceWrapper {
     this.data = [];
 
     // Internal
-    this._localCache = new ResourceCache(api, this.api.defaults.cacheSeconds);
+    this._localCache = new ResourceCache(this.api.defaults.cacheSeconds, this.api.defaults.dereferenceCache);
     this._inflight = [];
     this._last = listing;
     this._waiting = false;

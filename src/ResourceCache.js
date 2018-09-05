@@ -40,10 +40,9 @@ import Uuid from './utils/uuid';
  * @todo Add periodic data refreshing while idle, most likely implemented in cache (maybe v1/resource?timestamp=123 where it will give modified records since)
  */
 export default class ResourceCache extends Unobservable {
-  constructor(api, cacheTime = api.defaults.cacheSeconds, dereference = api.defaults.dereferenceCache) {
+  constructor(cacheTime, dereference) {
     super();
 
-    this._api = api;
     this.cacheTime = cacheTime;
     this.dereference = dereference;
     this.emitter = mitt();
