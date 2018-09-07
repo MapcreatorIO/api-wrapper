@@ -37,6 +37,7 @@ import {hashObject} from './utils/hash';
 /**
  * Used for wrapping {@link PaginatedResourceListing} to make it spa friendly
  * @todo Allow for manual cache updates, ex: a resource has been modified, deleted, created
+ * @deprecated
  */
 export default class PaginatedResourceWrapper {
   /**

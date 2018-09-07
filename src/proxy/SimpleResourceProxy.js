@@ -40,6 +40,7 @@ import {isParentOf} from '../utils/reflection';
  * Proxy for accessing resource. This will make sure that they
  * are properly wrapped before the promise resolves.
  * @protected
+ * @deprecated
  */
 export default class SimpleResourceProxy {
   /**
@@ -155,6 +156,7 @@ export default class SimpleResourceProxy {
    * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
    * @returns {PaginatedResourceWrapper} - Wrapped paginated resource
+   * @deprecated
    * @example
    * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
    * // See Api documentation for search query syntax
