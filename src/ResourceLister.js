@@ -67,7 +67,6 @@ export default class ResourceLister extends EventEmitter {
     this._key = snakeCase(key);
     this._waiting = false;
 
-    this.parameters.perPage = RequestParameters.maxPerPage;
     this.autoUpdate = true;
     this.maxRows = maxRows;
 
@@ -349,5 +348,14 @@ export default class ResourceLister extends EventEmitter {
         this._data.push(row);
       }
     }
+  }
+
+  /**
+   * Same as `this.maxRows += this.parameters.perPage`
+   * @param {number} [rows=parameters.perPage] - Amount to increment maxRows with
+   * @returns {void}
+   */
+  loadMore(rows = this.parameters.perPage) {
+    this.maxRows += rows;
   }
 }
