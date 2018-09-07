@@ -430,22 +430,26 @@ export default class RequestParameters extends EventEmitter {
     return this[_name];
   }
 
-  _update(name, value) {
+  _update(name, value, preventEvent = false) {
     const _name = '_' + name;
 
     value = RequestParameters['_validate' + pascalCase(name)](value);
     (this || {})[_name] = value; // Weird syntax confuses esdoc
 
-    /**
-     * Change event.
-     *
-     * @event RequestParameters#change
-     * @type {object}
-     * @property {string} name - Parameter name
-     * @property {*} value - New value
-     */
-    this.emit('change', {name, value});
-    this.emit('change:' + name, value);
+    if (!preventEvent) {
+      /**
+       * Change event.
+       *
+       * @event RequestParameters#change
+       * @type {Array<object>}
+       * @property {string} name - Parameter name
+       * @property {*} value - New value
+       */
+      this.emit('change', [{name, value}]);
+      this.emit('change:' + name, value);
+    }
+
+    return value;
   }
 
   // region utils
@@ -575,12 +579,15 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Apply parameters from object
    * @param {object|RequestParameters} params - parameters
-   * @returns {void}
+   * @returns {Object[]} - Array containing the updated values
+   * @todo update JSDoc
    */
   apply(params) {
     if (params instanceof RequestParameters) {
       params = params.toObject();
     }
+
+    const out = [];
 
     for (const key of Object.keys(params)) {
       const Key = camelCase(key);
@@ -589,8 +596,20 @@ export default class RequestParameters extends EventEmitter {
         continue;
       }
 
-      this._update(Key, params[key]);
+      out.push({
+        name: Key,
+        value: this._update(Key, params[key], true),
+      });
     }
+
+    this.emit('change', out);
+
+    for (const {name, value} of out) {
+      this.emit('change:' + name, value);
+    }
+
+    return out;
   }
+
   // endregion utils
 }
