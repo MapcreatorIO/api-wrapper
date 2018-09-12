@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './resources/base/ResourceBase';
+import {ImageSize} from './enums/ImageSize';
 import Maps4News from './Maps4News';
+import ResourceBase from './resources/base/ResourceBase';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {FormData} from './utils/requests';
@@ -84,6 +85,7 @@ export default class ImageHandler {
 
   /**
    * Get image base64 representation
+   * @param {ImageSize} size - The size of the image
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    * @example
    * // Browser
@@ -108,16 +110,14 @@ export default class ImageHandler {
    *   });
    * });
    */
-  download() {
-    return this.api
-      .request(this.url)
-      .then(data => {
-        if (isNode()) {
-          return data;
-        }
+  async download(size = ImageSize.ACTUAL) {
+    const data = await this.api.request(`${this.url}?size=${size}`);
 
-        return (window.URL || window.webkitURL).createObjectURL(data);
-      });
+    if (isNode()) {
+      return data;
+    }
+
+    return (window.URL || window.webkitURL).createObjectURL(data);
   }
 
   /**

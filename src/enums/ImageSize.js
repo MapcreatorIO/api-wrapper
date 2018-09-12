@@ -30,8 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export Enum from './Enum';
-export {DeletedState} from './DeletedState';
-export {JobMonitorFilter} from './JobMonitorFilter';
-export {ResultStatus} from './ResultStatus';
-export {ImageSize} from './ImageSize';
+import Enum from './Enum';
+
+/**
+ * Enum containing the possible different values for {@link RequestParameters#deleted}
+ * @enum {string}
+ * @property {string}
+ * @readonly
+ */
+export const ImageSize = new Enum({
+  SMALL: 'small', // 64x64
+  MEDIUM: 'medium', // 128x128
+  LARGE: 'large', // 256x256
+  ACTUAL: '',
+});
