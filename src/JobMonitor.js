@@ -53,9 +53,8 @@ export default class JobMonitor {
 
     this._api = api;
 
-    this.maxRows = maxRows;
-    this.longPoll = longPoll;
-
+    this._maxRows = Math.max(1, Number(maxRows));
+    this._longPoll = Boolean(longPoll);
     this._lastUpdate = this._getTimestamp();
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
