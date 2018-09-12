@@ -43,20 +43,24 @@ export default class JobMonitor {
   /**
    * JobMonitor constructor
    * @param {Maps4News} api - Api instance
+   * @param {number} [maxRows=100] - Default maximum amount of rows
+   * @param {boolean} [longPoll=true] - Use long-polling instead of regular poling
    */
-  constructor(api) {
+  constructor(api, maxRows = Number(process.env.JOB_MONITOR_MAX_ROWS), longPoll = true) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
 
     this._api = api;
 
+    this.maxRows = maxRows;
+    this.longPoll = longPoll;
+
     this._lastUpdate = this._getTimestamp();
     this._data = [];
     this._filterStatus = JobMonitorFilter.DEFAULT;
     this._filterTags = [];
     this._purge = false;
-    this._longPoll = true;
     this._skipMaxUpdate = false;
     this._maxAvailible = {};
   }
