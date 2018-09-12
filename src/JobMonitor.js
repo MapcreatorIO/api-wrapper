@@ -53,6 +53,7 @@ export default class JobMonitor {
 
     this._api = api;
 
+    this._maxAvailible = {};
     this._maxRows = Math.max(1, Number(maxRows));
     this._longPoll = Boolean(longPoll);
     this._lastUpdate = this._getTimestamp();
@@ -61,7 +62,6 @@ export default class JobMonitor {
     this._filterTags = [];
     this._purge = false;
     this._skipMaxUpdate = false;
-    this._maxAvailible = {};
   }
 
   /**
