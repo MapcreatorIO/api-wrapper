@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ImageSize} from '../enums';
 import {downloadFile} from '../utils/requests';
 import ResourceBase from './base/ResourceBase';
 
@@ -116,10 +117,11 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get image blob url representation
+   * @param {ImageSize} size - The size of the image
    * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
    */
-  downloadPreview() {
-    return downloadFile(this.previewUrl, this._getDownloadHeaders()).then(data => data.blob);
+  downloadPreview(size = ImageSize.ACTUAL) {
+    return downloadFile(`${this.previewUrl}?size=${size}`, this._getDownloadHeaders()).then(data => data.blob);
   }
 
   /**
