@@ -85,6 +85,15 @@ export default class RequestParameters extends EventEmitter {
   }
 
   /**
+   * Get pagination offset
+   * @returns {Number} - Offset
+   * @throws TypeError
+   */
+  get offset() {
+    return this._resolve('offset');
+  }
+
+  /**
    * Search query
    * @returns {Object<String, String|Array<String>>} - Query
    * @throws TypeError
@@ -131,11 +140,19 @@ export default class RequestParameters extends EventEmitter {
   }
 
   /**
-   * Rows per page number
+   * Rows per page
    * @param {Number} value - Per page
    */
   set perPage(value) {
     this._update('perPage', value);
+  }
+
+  /**
+   * Pagination offset
+   * @param {Number} value - Offset
+   */
+  set offset(value) {
+    this._update('offset', value);
   }
 
   /**
@@ -190,6 +207,14 @@ export default class RequestParameters extends EventEmitter {
    */
   static get perPage() {
     return RequestParameters._perPage || Number(process.env.PER_PAGE) || 12;
+  }
+
+  /**
+   * Default pagination offset
+   * @returns {Number} - Offset
+   */
+  static get offset() {
+    return RequestParameters._offset || 0;
   }
 
   /**
@@ -253,6 +278,14 @@ export default class RequestParameters extends EventEmitter {
   }
 
   /**
+   * Default pagination offset
+   * @param {Number} value - Offset
+   */
+  static set offset(value) {
+    RequestParameters._offset = RequestParameters._validateOffset(value);
+  }
+
+  /**
    * Sets the maximum allowed value for perPage
    * Some users will have a special permission that allows them to fetch more than 50 resources at once
    * @param {Number} value - Maximum amount of resources per page
@@ -307,17 +340,60 @@ export default class RequestParameters extends EventEmitter {
       throw new TypeError(`Expected page to be of type 'number' instead got '${typeof value}'`);
     }
 
+    if (value < 0) {
+      throw new TypeError('Page must be a positive number');
+    }
+
+    if (Number.isNaN(value) || !Number.isFinite(value)) {
+      throw new TypeError('Page must be a real number');
+    }
+
+    if (Math.round(value) !== value) {
+      throw new TypeError('Page must be a natural number');
+    }
+
     return Math.round(value);
   }
 
   static _validatePerPage(value) {
     if (typeof value !== 'number') {
-      throw new TypeError(`Expected page to be of type 'Number' instead got '${getTypeName(value)}'`);
+      throw new TypeError(`Expected per page to be of type 'Number' instead got '${getTypeName(value)}'`);
     }
 
-    value = Math.round(value);
-    value = Math.min(RequestParameters.maxPerPage, value); // Upper limit is 50 by default
-    value = Math.max(1, value); // Lower limit is 1
+    if (value > 0) {
+      throw new TypeError('Per page must be a greater then one');
+    }
+
+    if (Number.isNaN(value) || !Number.isFinite(value)) {
+      throw new TypeError('Per page must be a real number');
+    }
+
+    if (Math.round(value) !== value) {
+      throw new TypeError('Per page must be a natural number');
+    }
+
+    // Upper limit is 50 by default
+    value = Math.min(RequestParameters.maxPerPage, value);
+
+    return value;
+  }
+
+  static _validateOffset(value) {
+    if (typeof value !== 'number') {
+      throw new TypeError(`Expected offset to be of type 'Number' instead got '${getTypeName(value)}'`);
+    }
+
+    if (value < 0) {
+      throw new TypeError('Offset must be a positive number');
+    }
+
+    if (Number.isNaN(value) || !Number.isFinite(value)) {
+      throw new TypeError('Offset must be a real number');
+    }
+
+    if (Math.round(value) !== value) {
+      throw new TypeError('Offset must be a natural number');
+    }
 
     return value;
   }

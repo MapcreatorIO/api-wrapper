@@ -77,11 +77,17 @@ test('RequestParameters can generate cache tokens', t => {
 const validationTests = {
   page: {
     good: [-1, 1, 2, 3, 4, 100],
-    bad: [new Date(), {}, [], '1'],
+    bad: [new Date(), {}, [], '1', 13.37],
   },
   perPage: {
     good: [[-1, 1], 1, 2, 3, 4, [100, 50]],
-    bad: [new Date(), {}, [], '1'],
+    bad: [new Date(), {}, [], '1', 13.37],
+  },
+  offset: {
+    good: [
+      0, 1, 10, 100, 1000000,
+    ],
+    bad: [-1, NaN, Infinity, -Infinity, 13.37, [], {}, '1'],
   },
   search: {
     good: [
