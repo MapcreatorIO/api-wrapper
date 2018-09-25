@@ -132,9 +132,11 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @async
+   * @returns {OAuthToken} - The resolved token
+   * @throws {OAuthError} - Thrown if anything goes wrong during authentication
    */
-  authenticate() {
+  async authenticate() {
     const url = this.host + this._path;
     const query = {
       'grant_type': 'password',
@@ -155,17 +157,15 @@ export default class PasswordFlow extends OAuth {
       },
     };
 
-    return fetch(url, init)
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          throw new OAuthError(data.error, data.message);
-        }
+    const data = fetch(url, init).then(response => response.json());
 
-        this.token = OAuthToken.fromResponseObject(data);
-        this.token.scopes = this.scopes;
+    if (data.error) {
+      throw new OAuthError(data.error, data.message);
+    }
 
-        return this.token;
-      });
+    this.token = OAuthToken.fromResponseObject(data);
+    this.token.scopes = this.scopes;
+
+    return this.token;
   }
 }
