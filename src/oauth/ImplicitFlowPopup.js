@@ -90,17 +90,22 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
       this.windowOptions,
     );
 
-    let redirected = false;
-
-    while (popup && !redirected) {
+    while (popup) {
       if (popup.closed) {
         throw new OAuthError('window_closed', 'Pop-up window was closed before data could be extracted');
       }
 
       try {
-        redirected = !['', 'about:blank'].includes(popup.location.href);
+        const redirected = !['', 'about:blank'].includes(popup.location.href);
+
+        // If we're redirected back then we can start analysing the url
+        if (redirected) {
+          break;
+        }
+
       } catch (e) {
         // Catches DOMException thrown when the popup is cross-origin
+        // this means we haven't been redirected back yet
       }
 
       await sleep(250);
