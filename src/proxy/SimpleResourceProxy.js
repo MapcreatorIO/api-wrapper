@@ -40,7 +40,6 @@ import {isParentOf} from '../utils/reflection';
  * Proxy for accessing resource. This will make sure that they
  * are properly wrapped before the promise resolves.
  * @protected
- * @deprecated
  */
 export default class SimpleResourceProxy {
   /**
