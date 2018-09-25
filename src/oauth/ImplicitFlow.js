@@ -92,22 +92,22 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @async
+   * @returns {OAuthToken} - The resolved token
+   * @throws {OAuthError} - Thrown if anything goes wrong during authentication
    */
-  authenticate() {
-    return new Promise((resolve, reject) => {
-      if (this.authenticated) {
-        resolve(this.token);
-      } else if (this._anchorContainsError()) {
-        const err = this._getError();
+  async authenticate() {
+    if (this.authenticated) {
+      return this.token;
+    } else if (this._anchorContainsError()) {
+      const err = this._getError();
 
-        this._cleanAnchorParams();
+      this._cleanAnchorParams();
 
-        reject(err);
-      } else {
-        window.location = this._buildRedirectUrl();
-      }
-    });
+      throw err;
+    } else {
+      window.location = this._buildRedirectUrl();
+    }
   }
 
   /**
@@ -211,6 +211,7 @@ export default class ImplicitFlow extends OAuth {
   /**
    * Get and return the error in the anchor
    * @returns {OAuthError} - OAuthError object
+   * @throws {Error} - If no error could be fetched from the anchor
    * @protected
    */
   _getError() {

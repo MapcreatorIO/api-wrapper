@@ -31,7 +31,7 @@
  */
 
 import OAuthError from '../errors/OAuthError';
-import StorageManager from '../storage/StorageManager';
+import {sleep} from '../utils/helpers';
 import ImplicitFlow from './ImplicitFlow';
 import OAuthToken from './OAuthToken';
 
@@ -54,7 +54,6 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
     super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
-    this._storage = StorageManager.best;
 
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       throw new Error('We\'re a flow popup');
@@ -72,55 +71,51 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @async
+   * @returns {OAuthToken} - The resolved token
+   * @throws {OAuthError} - Thrown if anything goes wrong during authentication
    */
-  authenticate() {
+  async authenticate() {
     if (window.name === ImplicitFlowPopup.popupWindowName) {
-      return new Promise(() => {
-      });
+      return null;
     }
 
-    // Should be super.super.authenticate() :/
     if (this.authenticated) {
-      return new Promise(resolve => {
-        resolve(this.token);
-      });
+      return this.token;
     }
 
-    return new Promise((resolve, reject) => {
-      const popup = window.open(
-        this._buildRedirectUrl(),
-        ImplicitFlowPopup.popupWindowName,
-        this.windowOptions,
-      );
+    const popup = window.open(
+      this._buildRedirectUrl(),
+      ImplicitFlowPopup.popupWindowName,
+      this.windowOptions,
+    );
 
-      const ticker = setInterval(() => {
-        if (popup.closed) {
-          reject(new OAuthError('window_closed', 'Pop-up window was closed before data could be extracted'));
-        }
+    let redirected = false;
 
-        let done = false;
+    while (popup && !redirected) {
+      if (popup.closed) {
+        throw new OAuthError('window_closed', 'Pop-up window was closed before data could be extracted');
+      }
 
-        try {
-          done = !['', 'about:blank'].includes(popup.location.href);
-        } catch (e) {
-          // Nothing
-        }
+      try {
+        redirected = !['', 'about:blank'].includes(popup.location.href);
+      } catch (e) {
+        // Catches DOMException thrown when the popup is cross-origin
+      }
 
-        if (done) {
-          clearInterval(ticker);
+      await sleep(250);
+    }
 
-          const data = this._getAnchorParams(popup.location.hash);
+    const data = this._getAnchorParams(popup.location.hash);
 
-          popup.close();
+    popup.close();
 
-          if (data.error) {
-            reject(new OAuthError(data.error, data.message));
-          } else {
-            resolve(this.token = OAuthToken.fromResponseObject(data));
-          }
-        }
-      }, 250);
-    });
+    if (data.error) {
+      throw new OAuthError(data.error, data.message);
+    } else {
+      this.token = OAuthToken.fromResponseObject(data);
+
+      return this.token;
+    }
   }
 }

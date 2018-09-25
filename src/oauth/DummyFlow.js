@@ -49,15 +49,15 @@ export default class DummyFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @async
+   * @returns {OAuthToken} - Usable OAuthToken
+   * @throws {OAuthError} - If no token was found
    */
-  authenticate() {
-    return new Promise((resolve, reject) => {
-      if (this.authenticated) {
-        resolve(this.token);
-      } else {
-        reject(new OAuthError('dummy_error', 'Attempted authentication using a dummy authenticator'));
-      }
-    });
+  async authenticate() {
+    if (this.authenticated) {
+      return this.token;
+    }
+
+    throw new OAuthError('dummy_error', 'Attempted authentication using a dummy authenticator');
   }
 }

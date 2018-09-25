@@ -77,10 +77,12 @@ export default class ImageHandler {
 
   /**
    * Delete image
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @async
+   * @throws {ApiError} - When the api returns an error
+   * @returns {void}
    */
-  delete() {
-    return this._api.request(this.url, 'DELETE');
+  async delete() {
+    await this._api.request(this.url, 'DELETE');
   }
 
   /**
@@ -123,9 +125,11 @@ export default class ImageHandler {
   /**
    * Upload new image
    * @param {File|Buffer} image - Image file
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @async
+   * @throws {ApiError} - When the api returns an error
+   * @returns {void}
    */
-  upload(image) {
+  async upload(image) {
     const Type = isNode() ? Buffer : File;
 
     if (!isParentOf(Type, image)) {
@@ -136,6 +140,6 @@ export default class ImageHandler {
 
     formData.append('image', image);
 
-    return this.api.request(this.url, 'POST', formData);
+    await this.api.request(this.url, 'POST', formData);
   }
 }

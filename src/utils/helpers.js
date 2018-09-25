@@ -85,3 +85,13 @@ export function getPaginatedRange(page, start = 1, stop) {
 export function windowTest(str) {
   return typeof window !== 'undefined' && typeof window[str] !== 'undefined';
 }
+
+/**
+ * Pauses execution
+ * @param {number} ms - Milliseconds to sleep for
+ * @async
+ * @returns {void}
+ */
+export async function sleep (ms) {
+  return new Promise(a => setTimeout(a, ms));
+}

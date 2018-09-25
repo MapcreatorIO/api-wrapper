@@ -67,10 +67,12 @@ export default class OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
+   * @returns {OAuthToken} - The resolved token
+   * @throws {OAuthError} - Thrown if anything goes wrong during authentication
    * @abstract
+   * @async
    */
-  authenticate() {
+  async authenticate() {
     throw new AbstractMethodError();
   }
 
