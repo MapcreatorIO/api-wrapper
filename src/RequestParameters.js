@@ -361,7 +361,7 @@ export default class RequestParameters extends EventEmitter {
     }
 
     if (value > 0) {
-      throw new TypeError('Per page must be a greater then one');
+      throw new TypeError('Per page must be a greater then zero');
     }
 
     if (Number.isNaN(value) || !Number.isFinite(value)) {
