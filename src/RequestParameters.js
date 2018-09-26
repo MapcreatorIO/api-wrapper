@@ -360,7 +360,7 @@ export default class RequestParameters extends EventEmitter {
       throw new TypeError(`Expected per page to be of type 'Number' instead got '${getTypeName(value)}'`);
     }
 
-    if (value > 0) {
+    if (value <= 0) {
       throw new TypeError('Per page must be greater than zero');
     }
 
