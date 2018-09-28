@@ -45,7 +45,7 @@ export default class FontFamily extends mix(CrudSetBase, OwnableResource) {
     return '/fonts/families/{id}';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'font-families';
   }
 

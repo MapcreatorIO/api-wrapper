@@ -33,12 +33,12 @@
 import CrudBase from './base/CrudBase';
 
 export default class Language extends CrudBase {
-  get resourceName() {
+  static get resourceName() {
     return 'languages';
   }
 
   get resourcePath() {
-    return `/${this.resourceName}/{code}`;
+    return `/${this.constructor.resourceName}/{code}`;
   }
 
   toString() {

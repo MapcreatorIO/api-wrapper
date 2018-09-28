@@ -63,7 +63,7 @@ export default class Job extends CrudBase {
    * @returns {String} - Resource name
    * @abstract
    */
-  get resourceName() {
+  static get resourceName() {
     return 'jobs';
   }
 

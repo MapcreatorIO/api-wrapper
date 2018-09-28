@@ -48,7 +48,7 @@ import User from './User';
 
 
 export default class Organisation extends CrudBase {
-  get resourceName() {
+  static get resourceName() {
     return 'organisations';
   }
 

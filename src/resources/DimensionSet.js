@@ -46,7 +46,7 @@ export default class DimensionSet extends mix(CrudSetBase, OwnableResource) {
     return '/dimensions/sets/{id}';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'dimension-sets';
   }
 

@@ -20,7 +20,7 @@ export default class Role extends CrudBase {
     return new OwnedResourceProxy(this.api, this, User);
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'roles';
   }
 }

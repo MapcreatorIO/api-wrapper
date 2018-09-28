@@ -67,7 +67,7 @@ export default class CrudSetItemBase extends CrudBase {
    * @returns {string} - Parent key
    */
   get parentKey() {
-    return this.resourceName.replace(/s$/, '_set_id');
+    return this.constructor.resourceName.replace(/s$/, '_set_id');
   }
 
   /**

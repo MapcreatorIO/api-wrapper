@@ -33,7 +33,7 @@
 import ResourceBase from './base/ResourceBase';
 
 export default class Permission extends ResourceBase {
-  get resourceName() {
+  static get resourceName() {
     return 'permissions';
   }
 }

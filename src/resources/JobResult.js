@@ -39,7 +39,7 @@ export default class JobResult extends ResourceBase {
     return '/jobs/{job_id}/revisions/{revision}/result';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'job-result';
   }
 
