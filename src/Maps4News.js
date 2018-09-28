@@ -663,7 +663,7 @@ export default class Maps4News {
    * @returns {void}
    */
   logout() {
-    this.auth.forget();
+    this.auth.logout();
   }
 
   /**

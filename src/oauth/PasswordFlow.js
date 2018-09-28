@@ -135,7 +135,7 @@ export default class PasswordFlow extends OAuth {
    * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
    */
   authenticate() {
-    const url = this.host + this._path;
+    const url = this.host + this.path;
     const query = {
       'grant_type': 'password',
       'client_id': this.clientId,
