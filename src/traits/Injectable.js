@@ -39,9 +39,10 @@ import Trait from './Trait';
 
 
 /**
- * Adds the imageHandler to a resource
+ * Adds the possibility to inject proxies/methods
  *
  * @mixin
+ * @todo write more docs
  */
 export default class Injectable extends Trait {
   initializer() {
@@ -64,7 +65,14 @@ export default class Injectable extends Trait {
    * @param {string|object} name - Name of the property
    * @param {function?} value - Either a resource or a function that returns a proxy
    *
+   * @returns {void}
    * @example
+   *
+   * Maps4News.injectProxy({Domain});
+   *
+   * // After creating new api instance
+   *
+   * api.domains // returns proxy
    */
   static injectProxy(name, value) {
     if (!value) {
@@ -81,6 +89,14 @@ export default class Injectable extends Trait {
     }
   }
 
+  /**
+   * Inject a proxy property into the instance
+   *
+   * @param {string|object} name - Name of the property
+   * @param {function?} value - Either a resource or a function that returns a proxy
+   *
+   * @returns {void}
+   */
   static inject(name, value) {
     if (!value) {
       // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
@@ -120,6 +136,10 @@ export default class Injectable extends Trait {
   }
 
   _injectProxy(name, value) {
+    if (name === value.name) {
+      name = name.replace(/^\w/, c => c.toLowerCase()) + 's';
+    }
+
     if (hasTrait(value, OwnableResource)) {
       this._inject(name, function () {
         new OwnedResourceProxy(this.api, this, value);
@@ -137,9 +157,6 @@ export default class Injectable extends Trait {
   }
 
   _inject(name, value, getter = true) {
-    // Not sure if I should enable this
-    // name = name.replace(/^\w/, c => c.toLowerCase());
-
     Object.defineProperty(this, name, {
       enumerable: false,
       configurable: false,
