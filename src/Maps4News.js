@@ -71,6 +71,7 @@ import {
   User,
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
+import Injectable from './traits/Injectable';
 import {fnv32b} from './utils/hash';
 import Logger from './utils/Logger';
 import {isNode} from './utils/node';
@@ -80,12 +81,14 @@ import {fetch, FormData, Headers} from './utils/requests';
 /**
  * Base API class
  */
-export default class Maps4News {
+export default class Maps4News extends Injectable {
   /**
    * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
    */
   constructor(auth = new DummyFlow(), host = process.env.HOST) {
+    super();
+
     if (typeof auth === 'string') {
       const token = auth;
 

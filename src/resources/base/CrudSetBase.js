@@ -49,7 +49,7 @@ export default class CrudSetBase extends CrudBase {
 
     const data = {};
 
-    data[this.foreignKeyName] = this.id;
+    data[this.constructor.foreignKeyName] = this.id;
 
     return this._proxyResourceList(this._Child, url, data);
   }
@@ -69,11 +69,11 @@ export default class CrudSetBase extends CrudBase {
    * Get the foreign key name
    * @returns {string} - Foreign key name
    * @example
-   * api.fontFamilies.select(1).foreignKeyName === 'fontFamilyId'
+   * api.fontFamilies.select(1).constructor.foreignKeyName === 'fontFamilyId'
    */
-  get foreignKeyName() {
+  static get foreignKeyName() {
     if (!this._fk) {
-      let key = this.constructor.name; // ex: FontFamily
+      let key = this.name; // ex: FontFamily
 
       key = camelCase(key); // ex: fontFamily
 

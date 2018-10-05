@@ -56,7 +56,7 @@ export default class CrudSetItemBase extends CrudBase {
    */
   get parentId() {
     if (this.hasParent) {
-      return Number(this[this.parentKey]);
+      return Number(this[this.constructor.parentKey]);
     }
 
     return [][0]; // same as "undefined"
@@ -66,16 +66,7 @@ export default class CrudSetItemBase extends CrudBase {
    * Get the parent key
    * @returns {string} - Parent key
    */
-  get parentKey() {
-    return this.constructor.resourceName.replace(/s$/, '_set_id');
-  }
-
-  /**
-   * Returns if the resource has a parent resource set
-   * @returns {boolean} - if the resource has a parent
-   * @see ResourceBase::hasParent
-   */
-  get hasParent() {
-    return typeof this.parentKey === 'string';
+  static get parentKey() {
+    return this.resourceName.replace(/s$/, '_set_id');
   }
 }

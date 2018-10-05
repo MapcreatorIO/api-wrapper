@@ -134,3 +134,24 @@ function copyProps(target, source) {
       }
     });
 }
+
+/**
+ * Checks if the target has a certain trait.
+ *
+ * @param {Function|Object} Subject - Instance or class
+ * @param {Function} Trait - Trait to check for
+ * @returns {boolean} - If the subject has the trait
+ */
+export function hasTrait(Subject, Trait) {
+  Subject = typeof Subject === 'function' ? Subject : Subject.constructor;
+
+  do {
+    if (Array.isArray(Subject.__mixins) && Subject.__mixins.includes(Trait)) {
+      return true;
+    }
+
+    Subject = Object.getPrototypeOf(Subject);
+  } while (Subject.name !== '');
+
+  return false;
+}

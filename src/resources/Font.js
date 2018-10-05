@@ -37,7 +37,7 @@ export default class Font extends CrudSetItemBase {
     return 'fonts';
   }
 
-  get parentKey() {
+  static get parentKey() {
     return 'font_family_id';
   }
 }

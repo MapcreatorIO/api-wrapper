@@ -63,7 +63,6 @@ export ResourceLister from './ResourceLister';
 // Errors
 export * as errors from './errors';
 
-
 /**
  * Package version
  * @private
