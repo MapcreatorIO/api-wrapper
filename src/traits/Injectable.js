@@ -32,7 +32,6 @@
 
 import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 import ResourceProxy from '../proxy/ResourceProxy';
-import SimpleResourceProxy from '../proxy/SimpleResourceProxy';
 import ResourceBase from '../resources/base/ResourceBase';
 import {hasTrait, isParentOf} from '../utils/reflection';
 import OwnableResource from './OwnableResource';
@@ -97,16 +96,16 @@ export default class Injectable extends Trait {
 
   _injectRelation(name, value) {
     if (hasTrait(value, OwnableResource)) {
-      this._inject(name, function() {
+      this._inject(name, function () {
         new OwnedResourceProxy(this.api, this, value);
       });
     } else if (isParentOf(ResourceBase, value)) {
       // returns a SimpleResourceProxy
-      this._inject(name, function() {
+      this._inject(name, function () {
         return this._proxyResourceList(value);
       });
     } else {
-      this._inject(name, function() {
+      this._inject(name, function () {
         return new ResourceProxy(this, value);
       });
     }
