@@ -436,15 +436,6 @@ export default class Maps4News extends Injectable {
   }
 
   /**
-   * Domain accessor
-   * @see {@link Domain}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get domains() {
-    return this.static(Domain);
-  }
-
-  /**
    * Faq accessor
    * @see {@link Faq}
    * @returns {ResourceProxy} - A proxy for accessing the resource

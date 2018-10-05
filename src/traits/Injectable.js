@@ -48,18 +48,41 @@ export default class Injectable extends Trait {
     const injectable = this.constructor._injectable || {};
 
     for (const name of Object.keys(injectable)) {
-      const value = injectable[name];
+      const {value, isProxy} = injectable[name];
 
-      this.inject(name, value);
+      console.log(name, value, isProxy);
+
+      if (isProxy) {
+        this.injectProxy(name, value);
+      } else {
+        this.inject(name, value);
+      }
     }
   }
 
   /**
-   * @param {string|object} name
-   * @param {function?} value
+   * Inject a proxy property into the instance
+   *
+   * @param {string|object} name - Name of the property
+   * @param {function?} value - Either a resource or a function that returns a proxy
    *
    * @example
    */
+  static injectProxy(name, value) {
+    if (!value) {
+      // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
+      for (const key of Object.keys(name)) {
+        this.inject(key, name[key]);
+      }
+    } else {
+      if (typeof this._injectable === 'undefined') {
+        this._injectable = {};
+      }
+
+      this._injectable[name] = {value, isProxy: true};
+    }
+  }
+
   static inject(name, value) {
     if (!value) {
       // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
@@ -71,7 +94,7 @@ export default class Injectable extends Trait {
         this._injectable = {};
       }
 
-      this._injectable[name] = value;
+      this._injectable[name] = {value, isProxy: false};
     }
   }
 
@@ -81,25 +104,29 @@ export default class Injectable extends Trait {
     }
   }
 
-  inject(name, value) {
+  injectProxy(name, value) {
     if (!value) {
       // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
       for (const key of Object.keys(name)) {
-        this.inject(key, name[key]);
+        this.injectProxy(key, name[key]);
       }
     } else if (isParentOf(ResourceBase, value)) {
-      this._injectRelation(name, value);
+      this._injectProxy(name, value);
     } else {
       this._inject(name, value);
     }
   }
 
-  _injectRelation(name, value) {
+  inject(name, value) {
+    this._inject(name, value, false);
+  }
+
+  _injectProxy(name, value) {
     if (hasTrait(value, OwnableResource)) {
       this._inject(name, function () {
         new OwnedResourceProxy(this.api, this, value);
       });
-    } else if (isParentOf(ResourceBase, value)) {
+    } else if (isParentOf(ResourceBase, value) && this._proxyResourceList) {
       // returns a SimpleResourceProxy
       this._inject(name, function () {
         return this._proxyResourceList(value);
@@ -111,15 +138,15 @@ export default class Injectable extends Trait {
     }
   }
 
-  _inject(name, value) {
+  _inject(name, value, getter = true) {
     // Not sure if I should enable this
     // name = name.replace(/^\w/, c => c.toLowerCase());
 
     Object.defineProperty(this, name, {
       enumerable: false,
       configurable: false,
-      writable: false,
-      get: value,
+
+      [getter ? 'get' : 'value']: value,
     });
   }
 }
