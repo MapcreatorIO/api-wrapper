@@ -79,7 +79,14 @@ export function getTypeName(value) {
   value = typeof value === 'function' ? value : value.constructor;
 
   return value.name;
+
 }
+
+/**
+ * Helper class for mix
+ * @see mix
+ */
+class Empty {}
 
 /**
  * Mix traits into the target class
@@ -89,12 +96,13 @@ export function getTypeName(value) {
  * @private
  */
 export function mix(baseClass, ...mixins) {
-  const cocktail = class _Cocktail extends baseClass {
+  const cocktail = class _Cocktail extends (baseClass || Empty) {
     constructor(...args) {
       super(...args);
+
       mixins
         .map(mixin => mixin.prototype.initializer)
-        .filter(_ => _)
+        .filter(initializer => typeof initializer === 'function')
         .forEach(initializer => initializer.call(this));
     }
   };
@@ -129,7 +137,7 @@ function copyProps(target, source) {
     .getOwnPropertyNames(source)
     .concat(Object.getOwnPropertySymbols(source))
     .forEach((prop) => {
-      if (!prop.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
+      if (!prop.match(/^(?:constructor|initializer|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
         Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
       }
     });

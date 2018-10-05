@@ -36,8 +36,8 @@ import {mix} from '../utils/reflection';
 
 /**
  * Job type
- * @extends {CrudBase}
- * @extends {OwnableResource}
+ * @extends CrudBase
+ * @mixes OwnableResource
  */
 export default class JobType extends mix(CrudBase, OwnableResource) {
   get resourcePath() {

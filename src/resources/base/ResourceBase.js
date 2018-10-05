@@ -34,7 +34,8 @@ import {camel as camelCase, snake as snakeCase} from 'case';
 import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
-import {isParentOf} from '../../utils/reflection';
+import Injectable from '../../traits/Injectable';
+import {isParentOf, mix} from '../../utils/reflection';
 
 function unique(input) {
   return input.filter((v, i) => input.findIndex(vv => vv === v) === i);
@@ -44,12 +45,14 @@ function unique(input) {
  * Resource base
  * @abstract
  */
-export default class ResourceBase {
+export default class ResourceBase extends mix(null, Injectable) {
   /**
    * @param {Maps4News} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor(api, data = {}) {
+    super();
+
     if (this.constructor === ResourceBase) {
       throw new AbstractClassError();
     }

@@ -35,8 +35,8 @@ import {mix} from '../utils/reflection';
 import CrudSetItemBase from './base/CrudSetItemBase';
 
 /**
- * @extends {CrudSetItemBase}
- * @extends {HandlesImages}
+ * @extends CrudSetItemBase
+ * @mixes HandlesImages
  */
 export default class Mapstyle extends mix(CrudSetItemBase, HandlesImages) {
   static get resourceName() {

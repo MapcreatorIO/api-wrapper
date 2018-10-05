@@ -33,6 +33,7 @@
 /**
  * Trait interface
  * @interface
+ * @mixin
  */
 export default class Trait {
   /**

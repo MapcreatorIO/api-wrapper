@@ -37,8 +37,8 @@ import Font from './Font';
 
 /**
  * Font family
- * @extends {CrudSetBase}
- * @extends {OwnableResource}
+ * @extends CrudSetBase
+ * @mixes OwnableResource
  */
 export default class FontFamily extends mix(CrudSetBase, OwnableResource) {
   get resourcePath() {

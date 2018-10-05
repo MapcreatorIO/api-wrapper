@@ -41,7 +41,7 @@ import Trait from './Trait';
 /**
  * Adds the imageHandler to a resource
  *
- * @pro
+ * @mixin
  */
 export default class Injectable extends Trait {
   initializer() {
@@ -49,8 +49,6 @@ export default class Injectable extends Trait {
 
     for (const name of Object.keys(injectable)) {
       const {value, isProxy} = injectable[name];
-
-      console.log(name, value, isProxy);
 
       if (isProxy) {
         this.injectProxy(name, value);

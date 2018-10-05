@@ -36,6 +36,8 @@ import ImageHandler from '../ImageHandler';
 
 /**
  * Adds the imageHandler to a resource
+ *
+ * @mixin
  */
 export default class HandlesImages extends Trait {
   /**

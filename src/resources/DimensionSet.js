@@ -38,8 +38,8 @@ import {mix} from '../utils/reflection';
 
 /**
  * Dimension sets
- * @extends {CrudSetBase}
- * @extends {OwnableResource}
+ * @extends CrudSetBase
+ * @mixes OwnableResource
  */
 export default class DimensionSet extends mix(CrudSetBase, OwnableResource) {
   get resourcePath() {

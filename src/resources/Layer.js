@@ -37,9 +37,9 @@ import CrudBase from './base/CrudBase';
 
 /**
  * Layer
- * @extends {CrudBase}
- * @extends {OwnableResource}
- * @extends {HandlesImages}
+ * @extends CrudBase
+ * @mixes OwnableResource
+ * @mixes HandlesImages
  */
 export default class Layer extends mix(CrudBase, OwnableResource, HandlesImages) {
   static get resourceName() {
