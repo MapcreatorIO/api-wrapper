@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import StaticClassError from '../../src/errors/StaticClassError';
 import Trait from '../../src/traits/Trait';
 import {fnv32b, hashObject} from '../../src/utils/hash';
 import {isNode} from '../../src/utils/node';
@@ -115,7 +114,7 @@ test('static class can\'t be Instantiated', () => {
 
   }
 
-  expect(() => new Foo()).toThrow(StaticClassError);
+  expect(() => new Foo()).toThrow(Error);
 });
 
 test('uuid4 returns a new random uuid', () => {
