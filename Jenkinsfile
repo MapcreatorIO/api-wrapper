@@ -30,8 +30,9 @@ node('npm') {
 
 	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
-	stage('tag') {
-		if (SHOULD_TAG) {
+
+	if (SHOULD_TAG) {
+		stage('tag') {
 			VERSION_LOG = sh(returnStdout: true, script: 'git log --no-merges --format=oneline $(git describe --abbrev=0 --tags)...HEAD | sed s/[a-z0-9]\\*\\ /\\ -\\ /')
 
 			if (BRANCH_NAME == 'master') {
