@@ -54,10 +54,10 @@
     "watch": "npx webpack --progress --watch",
     "docs": "npx esdoc",
     "lint": "npx eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
-    "clean": "rm -r dist docs .nyc_output build || true",
+    "clean": "rm -fr dist docs build || true",
     "all": "./scripts/all.sh",
     "test": "npx jest",
-    "test-ci": "./scripts/test-ci.sh"
+    "test-ci": "npx jest --coverage --ci"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
