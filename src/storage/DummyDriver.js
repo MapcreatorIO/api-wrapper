@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {isNode} from '../utils/node';
 import DataStoreContract from './DataStoreContract';
 
 /**
@@ -43,7 +44,7 @@ export default class DummyDriver extends DataStoreContract {
    * @inheritDoc
    */
   static get available() {
-    return (process.env || {}).NODE_ENV === 'test';
+    return isNode() && (process.env || {}).NODE_ENV === 'test';
   }
 
   /**

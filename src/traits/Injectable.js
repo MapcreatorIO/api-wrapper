@@ -30,11 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
-import ResourceProxy from '../proxy/ResourceProxy';
 import ResourceBase from '../resources/base/ResourceBase';
 import {hasTrait, isParentOf} from '../utils/reflection';
-import OwnableResource from './OwnableResource';
 import Trait from './Trait';
 
 
@@ -140,7 +137,11 @@ export default class Injectable extends Trait {
       name = name.replace(/^\w/, c => c.toLowerCase()) + 's';
     }
 
+    const OwnableResource = require('./OwnableResource');
+
     if (hasTrait(value, OwnableResource)) {
+      const OwnedResourceProxy = require('../proxy/OwnedResourceProxy');
+
       this._inject(name, function () {
         new OwnedResourceProxy(this.api, this, value);
       });
@@ -150,6 +151,8 @@ export default class Injectable extends Trait {
         return this._proxyResourceList(value);
       });
     } else {
+      const ResourceProxy = require('../proxy/ResourceProxy');
+
       this._inject(name, function () {
         return new ResourceProxy(this, value);
       });
