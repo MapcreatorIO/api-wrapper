@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import test from 'ava';
 import Trait from '../../src/traits/Trait';
 import {fnv32b, hashObject} from '../../src/utils/hash';
 import {isNode} from '../../src/utils/node';
@@ -40,22 +39,22 @@ import Singleton from '../../src/utils/Singleton';
 import StaticClass from '../../src/utils/StaticClass';
 import Uuid from '../../src/utils/uuid';
 
-test('fnv32b hashes properly', t => {
-  t.is(fnv32b('MapCreator'), 'f6a48d4e');
+test('fnv32b hashes properly', () => {
+  expect(fnv32b('MapCreator')).toEqual('f6a48d4e');
 });
 
-test('objects are correctly hashed', t => {
+test('objects are correctly hashed', () => {
   const obj1 = {c: 8, b: [{z: 6, y: 5, x: 4}, 7], a: 3};
   const obj2 = {a: 3, c: 8, b: [{z: 6, y: 5, x: 4}, 7]};
 
-  t.is(hashObject(obj1), hashObject(obj2));
+  expect(hashObject(obj1)).toEqual(hashObject(obj2));
 });
 
-test('nodejs is correctly detected', t => {
-  t.true(isNode());
+test('nodejs is correctly detected', () => {
+  expect(isNode()).toBeTruthy();
 });
 
-test('isParentOf correctly detects inheritance', t => {
+test('isParentOf correctly detects inheritance', () => {
   class A {
   }
 
@@ -65,24 +64,24 @@ test('isParentOf correctly detects inheritance', t => {
   class C extends B {
   }
 
-  t.true(isParentOf(A, C));
-  t.true(isParentOf(A, B));
-  t.true(isParentOf(B, C));
-  t.true(isParentOf(C, C));
-  t.false(isParentOf(B, A));
-  t.false(isParentOf(C, A));
-  t.false(isParentOf(C, B));
+  expect(isParentOf(A, C)).toBeTruthy();
+  expect(isParentOf(A, B)).toBeTruthy();
+  expect(isParentOf(B, C)).toBeTruthy();
+  expect(isParentOf(C, C)).toBeTruthy();
+  expect(isParentOf(B, A)).toBeFalsy();
+  expect(isParentOf(C, A)).toBeFalsy();
+  expect(isParentOf(C, B)).toBeFalsy();
 });
 
-test('getTypeName correctly returns the name', t => {
+test('getTypeName correctly returns the name', () => {
   class FooBar {
   }
 
-  t.is(getTypeName(FooBar), 'FooBar');
-  t.is(getTypeName(new FooBar()), 'FooBar');
+  expect(getTypeName(FooBar)).toEqual('FooBar');
+  expect(getTypeName(new FooBar())).toEqual('FooBar');
 });
 
-test('encodeQueryString works correctly', t => {
+test('encodeQueryString works correctly', () => {
   const data = {
     foo: 'bar',
     beer: '🍻',
@@ -92,33 +91,33 @@ test('encodeQueryString works correctly', t => {
 
   const query = 'arr[0]=1&arr[1]=2&arr[2]=3&arr[3]=4&beer=%F0%9F%8D%BB&foo=bar&obj[hello]=world!';
 
-  t.is(encodeQueryString(data), query);
+  expect(encodeQueryString(data)).toEqual(query);
 });
 
-test('singleton returns same instance', t => {
+test('singleton returns same instance', () => {
   class Foo extends Singleton {
 
   }
 
-  t.is(new Foo(), new Foo());
+  expect(new Foo()).toEqual(new Foo());
 
   const foo = new Foo();
 
   foo.bar = Math.random();
 
-  t.is((new Foo()).bar, foo.bar);
+  expect((new Foo()).bar).toEqual(foo.bar);
 });
 
 
-test('static class can\'t be Instantiated', t => {
+test('static class can\'t be Instantiated', () => {
   class Foo extends StaticClass {
 
   }
 
-  t.throws(() => new Foo());
+  expect(() => new Foo()).toThrow(Error);
 });
 
-test('uuid4 returns a new random uuid', t => {
+test('uuid4 returns a new random uuid', () => {
   const iterations = 1000;
   const data = [];
 
@@ -134,14 +133,14 @@ test('uuid4 returns a new random uuid', t => {
     return out;
   }, []);
 
-  t.deepEqual(duplicates, []);
+  expect(duplicates).toEqual([]);
 });
 
-test('uuid0 returns a null uuid', t => {
-  t.is(Uuid.nil(), '0000000-0000-0000-0000-000000000000');
+test('uuid0 returns a null uuid', () => {
+  expect(Uuid.nil()).toEqual('0000000-0000-0000-0000-000000000000');
 });
 
-test('Traits work correctly', t => {
+test('Traits work correctly', () => {
   const uuid4 = Uuid.uuid4();
 
   class Foo extends Trait {
@@ -167,11 +166,11 @@ test('Traits work correctly', t => {
   const instance = new Baz();
   const cocktail = Object.getPrototypeOf(Baz);
 
-  t.is(instance.foo(), uuid4);
-  t.is(cocktail.name, 'Cocktail_5d296402');
+  expect(instance.foo()).toEqual(uuid4);
+  expect(cocktail.name).toEqual('Cocktail_5d296402');
 });
 
-test('Mixing can only be done with Traits', t => {
+test('Mixing can only be done with Traits', () => {
   class Foo {
   }
 
@@ -181,11 +180,11 @@ test('Mixing can only be done with Traits', t => {
   class Baz extends Trait {
   }
 
-  t.throws(() => mix(Foo, Bar));
-  t.is(typeof mix(Foo, Baz), 'function');
+  expect(() => mix(Foo, Bar)).toThrow(TypeError);
+  expect(typeof mix(Foo, Baz)).toEqual('function');
 });
 
-test('getTypeName correctly gets the type name', t => {
-  t.is(getTypeName(Date), 'Date');
-  t.is(getTypeName(new Date()), 'Date');
+test('getTypeName correctly gets the type name', () => {
+  expect(getTypeName(Date)).toEqual('Date');
+  expect(getTypeName(new Date())).toEqual('Date');
 });

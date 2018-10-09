@@ -30,29 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import test from 'ava';
 import StateContainer from '../../../src/oauth/StateContainer';
 
-test.before(t => {
+beforeAll(() => {
   StateContainer.clean();
 
-  t.deepEqual(StateContainer.list(), {});
+  expect(StateContainer.list()).toEqual({});
 });
 
 // We can just test everything in here
-test('StateContainer validates tokens', t => {
+test('StateContainer validates tokens', () => {
   const token = StateContainer.generate();
 
-  t.true(StateContainer.validate(token, false)); // Token shouldn't be purged
-  t.true(StateContainer.validate(token)); // Token should be purged
-  t.false(StateContainer.validate(token)); // Token should not be found anymore
+  expect(StateContainer.validate(token, false)).toEqual(true); // Token shouldn't be purged
+  expect(StateContainer.validate(token)).toEqual(true); // Token should be purged
+  expect(StateContainer.validate(token)).toEqual(false); // Token should not be found anymore
 });
 
-test.serial('StateContainer should list all keys', t => {
+test('StateContainer should list all keys', () => {
   const tokens = [];
-
-  StateContainer.clean();
-  t.deepEqual(StateContainer.list(), {});
 
   for (let i = 0; i < 100; i++) {
     tokens.push(StateContainer.generate());
@@ -63,15 +59,5 @@ test.serial('StateContainer should list all keys', t => {
     .keys(StateContainer.list())
     .filter(x => !tokens.includes(x));
 
-  t.deepEqual(out, []);
-
-  StateContainer.clean();
-  t.deepEqual(StateContainer.list(), {});
-});
-
-
-test.after('cleanup', t => {
-  StateContainer.clean();
-
-  t.deepEqual(StateContainer.list(), {});
+  expect(out).toEqual([]);
 });

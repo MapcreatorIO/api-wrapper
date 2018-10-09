@@ -30,57 +30,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import test from 'ava';
 import {DeletedState} from '../../src/enums';
 import RequestParameters from '../../src/RequestParameters';
 
 RequestParameters.resetDefaults();
 const cleanParams = new RequestParameters();
 
-test('RequestParameters should use defaults', t => {
-  t.plan(RequestParameters.keys().length);
+test('RequestParameters should use defaults', () => {
+  expect.assertions(RequestParameters.keys().length);
 
   const params = new RequestParameters();
 
   RequestParameters.keys().forEach(key => {
-    t.deepEqual(params[key], RequestParameters[key]);
+    expect(params[key]).toEqual(RequestParameters[key]);
   });
 });
 
 
-test.serial('RequestParameters should be able to reset defaults', t => {
+test('RequestParameters should be able to reset defaults', () => {
   const newPage = Math.round(Math.random() * 100000);
 
   RequestParameters.page = newPage;
-  t.is(RequestParameters.page, newPage);
+  expect(RequestParameters.page).toEqual(newPage);
 
   RequestParameters.resetDefaults();
-  t.is(RequestParameters.page, 1);
+  expect(RequestParameters.page).toEqual(1);
 });
 
-test('RequestParameters can generate cache tokens', t => {
+test('RequestParameters can generate cache tokens', () => {
   const params = cleanParams.copy();
 
-  t.is(params.token(), 'd243d801'); // Default token
+  expect(params.token()).toEqual('d243d801'); // Default token
 
   // Page and perPage shouldn't affect the token
   params.page = Math.round(Math.random() * 100000);
   params.perPage = Math.round(Math.random() * 50);
 
-  t.is(params.token(), 'd243d801');
+  expect(params.token()).toEqual('d243d801');
 
   params.sort = 'quick,-brown,fox';
 
-  t.is(params.token(), 'a900b290');
+  expect(params.token()).toEqual('a900b290');
 });
 
 const validationTests = {
   page: {
-    good: [-1, 1, 2, 3, 4, 100],
-    bad: [new Date(), {}, [], '1', 13.37],
+    good: [1, 2, 3, 4, 100],
+    bad: [new Date(), {}, [], '1', 13.37, -1],
   },
   perPage: {
-    good: [[-1, 1], 1, 2, 3, 4, [100, 50]],
+    good: [1, 2, 3, 4, [100, 50]],
     bad: [new Date(), {}, [], '1', 13.37],
   },
   offset: {
@@ -123,36 +122,36 @@ const validationTests = {
 };
 
 for (const key of Object.keys(validationTests)) {
-  test(`RequestParameters validation for ${key}`, t => {
+  test(`RequestParameters validation for ${key}`, () => {
     const params = cleanParams.copy();
     const target = validationTests[key];
 
     target.good.forEach(input => {
       if (input instanceof Array) {
         params[key] = input[0];
-        t.deepEqual(params[key], input[1]);
+        expect(params[key]).toEqual(input[1]);
       } else {
         params[key] = input;
-        t.deepEqual(params[key], input);
+        expect(params[key]).toEqual(input);
       }
     });
 
     target.bad.forEach(input => {
-      t.throws(() => {
+      expect(() => {
         params[key] = input;
-      });
+      }).toThrow(TypeError);
     });
   });
 }
 
-test('issue #93', t => {
+test('issue #93', () => {
   const params = new RequestParameters({sort: '-name'});
 
-  t.deepEqual(params.toObject().sort, ['-name']);
-  t.is(params.encode(), 'deleted=none&page=1&per_page=12&sort=-name');
+  expect(params.toObject().sort).toEqual(['-name']);
+  expect(params.encode()).toEqual('deleted=none&page=1&per_page=12&sort=-name');
 });
 
-test('extra parameters overwrite others', t => {
+test('extra parameters overwrite others', () => {
   const params = new RequestParameters({
     deleted: 'none',
     extra: {
@@ -161,32 +160,32 @@ test('extra parameters overwrite others', t => {
     },
   });
 
-  t.is(params.toObject().deleted, 'none');
-  t.is(params.toParameterObject().deleted, 'some');
-  t.is(params.encode(), 'deleted=some&page=1&per_page=12&pirateFlag=cool&sort=');
+  expect(params.toObject().deleted).toEqual('none');
+  expect(params.toParameterObject().deleted).toEqual('some');
+  expect(params.encode()).toEqual('deleted=some&page=1&per_page=12&pirateFlag=cool&sort=');
 });
 
-test('encoded search keys must be snake_case', t => {
+test('encoded search keys must be snake_case', () => {
   const params = cleanParams.copy();
 
   params.search = {
     'fooBar,Baz': 'test',
   };
 
-  t.is(params.encode(), 'deleted=none&page=1&per_page=12&search[foo_bar,baz]=test&sort='.replace(',', '%2C'));
+  expect(params.encode()).toEqual('deleted=none&page=1&per_page=12&search[foo_bar,baz]=test&sort='.replace(',', '%2C'));
 });
 
-test('null is properly encoded', t => {
+test('null is properly encoded', () => {
   const params = cleanParams.copy();
 
   params.extra = {
     foo: null,
   };
 
-  t.is(params.encode(), 'deleted=none&foo&page=1&per_page=12&sort='.replace(',', '%2C'));
+  expect(params.encode()).toEqual('deleted=none&foo&page=1&per_page=12&sort=');
 });
 
-test('RequestParameters can have properties applied to it', t => {
+test('RequestParameters can have properties applied to it', () => {
   const params = cleanParams.copy();
 
   params.apply({
@@ -200,7 +199,7 @@ test('RequestParameters can have properties applied to it', t => {
     _deleted: 'only',
   });
 
-  t.is(params.deleted, 'none');
-  t.is(params.toParameterObject().pirateFlag, 'cool');
-  t.is(params.foo, undefined);
+  expect(params.deleted).toEqual('none');
+  expect(params.toParameterObject().pirateFlag).toEqual('cool');
+  expect(params.foo).toEqual(undefined);
 });
