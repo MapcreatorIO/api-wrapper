@@ -57,7 +57,7 @@
     "clean": "rm -fr dist docs build || true",
     "all": "./scripts/all.sh",
     "test": "npx jest",
-    "test-ci": "npx jest --coverage --ci"
+    "test-ci": "npx jest --coverage --ci || true"
   },
   "contributors": [
     "Bas Bieling <b.bieling@mapcreator.eu> (https://GitHub.com/Mechazawa)"
