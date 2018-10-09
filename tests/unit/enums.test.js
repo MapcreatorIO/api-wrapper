@@ -30,23 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import test from 'ava';
 import {Enum} from '../../src/enums';
 
-test('Enum should be numeric by default', t => {
+test('Enum should be numeric by default', () => {
   const values = ['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE'];
   const Colors = new Enum(values);
 
-  t.plan(values.length + 1);
+  expect.assertions(values.length + 1);
 
   for (const color of values) {
-    t.is(typeof Colors[color], 'number');
+    expect(typeof Colors[color]).toEqual('number');
   }
 
-  t.deepEqual(Colors.keys(), values);
+  expect(Colors.keys()).toEqual(values);
 });
 
-test('Enum should accept dictionaries', t => {
+test('Enum should accept dictionaries', () => {
   const ANSWER = new Enum({
     YES: true,
     NO: false,
@@ -55,8 +54,8 @@ test('Enum should accept dictionaries', t => {
     MAYBE: () => !Math.round(Math.random()),
   });
 
-  t.true(ANSWER.YES);
-  t.false(ANSWER.NO);
+  expect(ANSWER.YES).toEqual(true);
+  expect(ANSWER.NO).toEqual(false);
 
   let aggr = [];
 
@@ -66,17 +65,18 @@ test('Enum should accept dictionaries', t => {
 
   aggr = aggr.filter((v, i, s) => s.indexOf(v) === i).sort();
 
-  t.deepEqual(aggr, [false, true]);
+  expect(aggr).toEqual([false, true]);
 });
 
-test('Enum::values should only return unique values', t => {
+test('Enum::values should only return unique values', () => {
   const Test = new Enum({
     ME: 'CRESCENT_FRESH',
     YOU: 'CRESCENT_FRESH',
     RUDE_DUDE: 'NOT_CRESCENT_FRESH',
   });
 
-  t.is(Test.keys().length, 3);
-  t.is(Test.values().length, 2);
-  t.deepEqual(Test.values(), ['CRESCENT_FRESH', 'NOT_CRESCENT_FRESH']);
+  expect(Test.keys()).toHaveLength(3)
+  expect(Test.values()).toHaveLength(2)
+
+  expect(Test.values()).toEqual(['CRESCENT_FRESH', 'NOT_CRESCENT_FRESH']);
 });

@@ -7,7 +7,7 @@ def git_push(branch, args) {
 	}
 }
 
-node('npm && yarn') {
+node('npm') {
 	if (!isUnix()) {
 		error 'Only compatible with UNIX systems.'
 	}
@@ -18,13 +18,13 @@ node('npm && yarn') {
 	}
 
 	stage('initialize') {
-		sh 'yarn --no-emoji --non-interactive --no-progress'
+		sh 'npm install'
 		sh 'rm -r dist docs .env || true'
 	sh 'git checkout -- "*"'
 	}
 
 	stage('linter') {
-		sh 'yarn run lint'
+		sh 'npm run lint'
 		checkstyle pattern: 'build/checkstyle.xml'
 	}
 
@@ -45,15 +45,15 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		sh 'yarn run build'
+		sh 'npm run build'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
 	stage('test') {
-		sh 'yarn run test-ci'
+		sh 'npm run test-ci'
 		publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
 		step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
-		step([$class: "TapPublisher", testResults: "build/ava.tap"])
+		junit 'build/junit.xml'
 	}
 
 	stage('publish') {
@@ -76,7 +76,7 @@ node('npm && yarn') {
 	}
 
 	stage('docs') {
-		sh 'yarn run docs'
+		sh 'npm run docs'
 
 		if (SHOULD_TAG) {
 			sh './scripts/docs-commit.sh'

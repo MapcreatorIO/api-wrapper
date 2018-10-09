@@ -30,45 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import test from 'ava';
 import PasswordFlow from '../../../src/oauth/PasswordFlow';
 import {startWebserver, stopWebserver} from '../util';
 
 let port = 0;
 let host = 'http://localhost:' + port;
 
-test.before('start webserver', () => {
+beforeAll(() => {
   port = startWebserver('tests/scripts');
   host = 'http://localhost:' + port;
 });
 
-test('PasswordFlow should auth', t => {
+test('PasswordFlow should auth', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
   flow.path = '/oauth/passwordFlow.php';
-  t.is(flow.path, '/oauth/passwordFlow.php');
+  expect(flow.path).toEqual('/oauth/passwordFlow.php');
 
   flow.host = host;
-  t.is(flow.host, host);
+  expect(flow.host).toEqual(host);
 
-  return flow.authenticate().then(token => {
-    return !token.expired;
-  });
+  const token = await flow.authenticate()
+
+  expect(token.expired).toEqual(false);
 });
 
-test('PasswordFlow should catch errors', t => {
+test('PasswordFlow should catch errors', () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
   flow.path = '/oauth/passwordFlow.php?error=mock';
   flow.host = host;
 
-  t.plan(1);
+  expect.assertions(1);
 
   return flow
     .authenticate()
-    .catch(e => t.is('mock_error', e._error));
+    .catch(e => expect(e._error).toEqual('mock_error'));
 });
 
-test.after.always('shutdown webserver', () => {
+afterAll(() => {
   stopWebserver(port);
 });

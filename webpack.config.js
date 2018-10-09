@@ -5,6 +5,7 @@ const exec = require('child_process').execSync;
 const Dotenv = require('dotenv-webpack');
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const merge = require('webpack-merge');
 
 const version = exec('git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').toString().trim();
 const license = fs.readFileSync('LICENSE', 'ascii');
@@ -15,61 +16,28 @@ if (!fs.existsSync('.env')) {
 }
 
 
-const config = {
+const common = {
   mode: 'none',
-  target: 'web', // output is fine for nodejs usage
-  entry: {
-    'bundle': './src/index.js',
-    'bundle.min': './src/index.js',
-  },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
 
     library: 'maps4news',
-    libraryTarget: 'umd',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
         include: /(src)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['env', {
-                targets: {
-                  node: '8.11',
-                },
-              }],
-            ],
-            cacheDirectory: true,
-            plugins: [
-              'transform-export-extensions',
-              ['transform-runtime', {
-                'helpers': true,
-                'polyfill': false,
-                'regenerator': true,
-                'moduleName': 'babel-runtime',
-              }],
-            ],
-            sourceMap: true,
-            env: {
-              production: {
-                presets: [
-                  '@ava/stage-4',
-                ],
-              },
-            },
-          },
-        },
+        exclude: /node_modules/,
+        loader: 'babel-loader',
       },
     ],
   },
   optimization: {
     minimize: true,
+    concatenateModules: true,
+    occurrenceOrder: true,
 
     minimizer: [
       new UglifyJsPlugin({
@@ -80,7 +48,6 @@ const config = {
     ],
   },
   node: false,
-  externals: [nodeExternals()],
   devtool: 'source-map',
   plugins: [
     new Dotenv({
@@ -97,22 +64,33 @@ const config = {
   ],
 };
 
-const browserConfig = Object.assign({}, config, {
-  entry: {
-    'bundle.browser': './src/index.js',
-    'bundle.browser.min': './src/index.js',
-  },
-  externals: [],
-  plugins: [
-    new webpack.BannerPlugin('This bundle contains the following packages:\n' + exec('$(npm bin)/licensecheck')),
-    ...config.plugins,
-  ],
-});
+module.exports = [
+  // Browser
+  merge(common, {
+    target: 'web',
+    output: {
+      libraryTarget: 'umd',
+    },
+    externals: [],
+    entry: {
+      'bundle.browser': './src/index.js',
+      'bundle.browser.min': './src/index.js',
+    },
+    plugins: [
+      new webpack.BannerPlugin('This bundle contains the following packages:\n' + exec('$(npm bin)/licensecheck')),
+    ],
+  }),
 
-browserConfig.module.rules[0].use.options.presets[0] = ['env', {
-  targets: {
-    browsers: require('./package.json').browserslist,
-  },
-}];
-
-module.exports = [config, browserConfig];
+  // Node
+  merge(common, {
+    target: 'node',
+    output: {
+      libraryTarget: 'commonjs',
+    },
+    externals: [nodeExternals()],
+    entry: {
+      'bundle': './src/index.js',
+      'bundle.min': './src/index.js',
+    },
+  }),
+];

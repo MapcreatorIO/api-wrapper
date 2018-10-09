@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, MapCreator
+ * Copyright (c) 2018, MapCreator
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,12 +30,63 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import DataStoreContract from './DataStoreContract';
+
 /**
- * Test if the application is running under nodejs
- * @returns {boolean} - Is the application running under node?
- * @see https://nodejs.org
+ * Used for storing data during tests
  * @private
  */
-export function isNode() {
-  return typeof window === 'undefined' && typeof global !== 'undefined' || process.env;
+export default class DummyDriver extends DataStoreContract {
+  static _data = {};
+
+  /**
+   * @inheritDoc
+   */
+  static get available() {
+    return (process.env || {}).NODE_ENV === 'test';
+  }
+
+  /**
+   * If the storage is secure
+   * @returns {boolean} - Secure storage
+   */
+  static get secure() {
+    return true;
+  }
+
+  /**
+   * Store a value in the storage
+   * @param {String} name - value name
+   * @param {*} value - value
+   * @returns {void}
+   */
+  set(name, value) {
+    this.constructor._data[name] = value;
+  }
+
+  /**
+   * Get a value from the store
+   * @param {String} name - value name
+   * @returns {*} - value
+   */
+  get(name) {
+    return this.constructor._data[name];
+  }
+
+  /**
+   * Remove a value from the store
+   * @param {String} name - value name
+   * @returns {void}
+   */
+  remove(name) {
+    delete this.constructor._data[name];
+  }
+
+  /**
+   * Storage keys
+   * @returns {Array<String>} - Stored keys
+   */
+  keys() {
+    return Object.keys(this.constructor._data);
+  }
 }

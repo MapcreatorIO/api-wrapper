@@ -6,9 +6,6 @@ if [[ $(basename $(pwd)) == "scripts" ]]; then
   cd ..
 fi
 
-mkdir -pv build
+mkdir -pv build/{coverage}
 
-#temporary
-touch .m4n
-
-npx nyc --all --report-dir build/coverage --clean -n 'src/**.js' -r html -r cobertura npx ava -t | tee build/ava.tap
+npx jest --coverage --ci --clearCache
