@@ -44,7 +44,7 @@ export default class JobType extends mix(CrudBase, OwnableResource) {
     return '/jobs/types/{id}';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'job-types';
   }
 }

@@ -31,9 +31,11 @@
  */
 
 import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
+import ApiError from '../errors/ApiError';
+import OAuthError from '../errors/OAuthError';
+import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
-import StorageManager from '../storage/StorageManager';
 
 /**
  * OAuth base class
@@ -86,6 +88,46 @@ export default class OAuth {
     StorageManager.secure.remove(OAuthToken.storageName);
 
     this.token = null;
+  }
+
+  /**
+   * Invalidates the session token
+   * @async
+   * @returns {Promise<void>} - Promise that resolves with no value
+   * @throws {OAuthError} - If de-authentication fails
+   * @throws {ApiError} - If the api returns errors
+   */
+  async logout() {
+    if (!this.token) {
+      return;
+    }
+
+    const url = this.host + '/oauth/logout';
+    const init = {
+      method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': this.token.toString(),
+      },
+    };
+
+    try {
+      const response = await fetch(url, init);
+      const body = await response.text();
+      const data = JSON.parse(body);
+
+      if (!data.success) {
+        throw new ApiError(data.error.type, data.error.message, response.status);
+      }
+
+      if (!response.ok) {
+        throw new OAuthError('logout_fail', 'Logout failed:\n' + body);
+      }
+    } finally {
+      this.forget();
+    }
   }
 
   /**

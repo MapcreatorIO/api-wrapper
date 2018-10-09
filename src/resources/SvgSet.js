@@ -45,7 +45,7 @@ export default class SvgSet extends mix(CrudSetBase, OwnableResource) {
     return '/svgs/sets/{id}';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'svg-sets';
   }
 

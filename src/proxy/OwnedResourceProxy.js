@@ -43,7 +43,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {constructor} Target - target constructor
    */
   constructor(api, parent, Target) {
-    const resource = (new Target(api)).resourceName.replace(/s+$/, '');
+    const resource = Target.resourceName.replace(/s+$/, '');
     const url = `${parent.url}/${resource}s`;
 
     super(api, Target, url);

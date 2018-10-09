@@ -137,7 +137,7 @@ export default class PasswordFlow extends OAuth {
    * @throws {OAuthError} - Thrown if anything goes wrong during authentication
    */
   async authenticate() {
-    const url = this.host + this._path;
+    const url = this.host + this.path;
     const query = {
       'grant_type': 'password',
       'client_id': this.clientId,
@@ -157,7 +157,7 @@ export default class PasswordFlow extends OAuth {
       },
     };
 
-    const data = fetch(url, init).then(response => response.json());
+    const data = await fetch(url, init).then(response => response.json());
 
     if (data.error) {
       throw new OAuthError(data.error, data.message);

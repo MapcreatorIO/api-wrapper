@@ -48,7 +48,7 @@ export default class JobMonitorRow extends JobResult {
     return super._guessType(name, value);
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'job-monitor';
   }
 

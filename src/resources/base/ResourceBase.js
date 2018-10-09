@@ -115,7 +115,7 @@ export default class ResourceBase {
    * @todo move to constructor
    */
   get resourcePath() {
-    return `/${this.resourceName}/{id}`;
+    return `/${this.constructor.resourceName}/{id}`;
   }
 
   /**
@@ -124,7 +124,7 @@ export default class ResourceBase {
    * @todo move to constructor
    * @abstract
    */
-  get resourceName() {
+  static get resourceName() {
     throw new AbstractError();
   }
 
@@ -410,7 +410,7 @@ export default class ResourceBase {
    */
   _proxyResourceList(Target, url = null, seedData = {}) {
     if (!url) {
-      const resource = (new Target(this.api)).resourceName.replace(/s+$/, '');
+      const resource = Target.resourceName.replace(/s+$/, '');
 
       url = `${this.url}/${resource}s`;
     }

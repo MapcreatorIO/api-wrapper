@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, MapCreator
+ * Copyright (c) 2018, MapCreator
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,17 +30,63 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Enum from './Enum';
+import DataStoreContract from './DataStoreContract';
 
 /**
- * Enum containing the possible different values for {@link RequestParameters#deleted}
- * @enum {string}
- * @property {string}
- * @readonly
+ * Used for storing data during tests
+ * @private
  */
-export const ImageSize = new Enum({
-  SMALL: 'small', // 64x64
-  MEDIUM: 'medium', // 128x128
-  LARGE: 'large', // 256x256
-  ACTUAL: '',
-});
+export default class DummyDriver extends DataStoreContract {
+  static _data = {};
+
+  /**
+   * @inheritDoc
+   */
+  static get available() {
+    return (process.env || {}).NODE_ENV === 'test';
+  }
+
+  /**
+   * If the storage is secure
+   * @returns {boolean} - Secure storage
+   */
+  static get secure() {
+    return true;
+  }
+
+  /**
+   * Store a value in the storage
+   * @param {String} name - value name
+   * @param {*} value - value
+   * @returns {void}
+   */
+  set(name, value) {
+    this.constructor._data[name] = value;
+  }
+
+  /**
+   * Get a value from the store
+   * @param {String} name - value name
+   * @returns {*} - value
+   */
+  get(name) {
+    return this.constructor._data[name];
+  }
+
+  /**
+   * Remove a value from the store
+   * @param {String} name - value name
+   * @returns {void}
+   */
+  remove(name) {
+    delete this.constructor._data[name];
+  }
+
+  /**
+   * Storage keys
+   * @returns {Array<String>} - Stored keys
+   */
+  keys() {
+    return Object.keys(this.constructor._data);
+  }
+}

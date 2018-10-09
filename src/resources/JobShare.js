@@ -55,7 +55,7 @@ export default class JobShare extends CrudBase {
     return '/jobs/shares/{id}';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'job-shares';
   }
 }

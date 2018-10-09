@@ -39,7 +39,7 @@ import CrudSetItemBase from './base/CrudSetItemBase';
  * @extends {HandlesImages}
  */
 export default class Mapstyle extends mix(CrudSetItemBase, HandlesImages) {
-  get resourceName() {
+  static get resourceName() {
     return 'mapstyles';
   }
 }

@@ -119,7 +119,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Sync, attach or unlink resources
    * @param {Array<Organisation>|Array<Number>} items - List of items to sync or attach
    * @param {String} method - Http method to use
-   * @param {ResourceBase} Type - Resource type
+   * @param {function(new:ResourceBase)} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
    * @async
    * @returns {void}
@@ -128,7 +128,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    */
   async _modifyLink(items, method, Type, path = null) {
     if (!path) {
-      const resource = (new Type(this.api)).resourceName.replace(/s+$/, '');
+      const resource = Type.resourceName.replace(/s+$/, '');
 
       path = `${resource}s`;
     }

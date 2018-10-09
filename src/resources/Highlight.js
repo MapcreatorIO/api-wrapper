@@ -33,7 +33,7 @@
 import ResourceBase from './base/ResourceBase';
 
 export default class Highlight extends ResourceBase {
-  get resourceName() {
+  static get resourceName() {
     return 'highlights';
   }
 }

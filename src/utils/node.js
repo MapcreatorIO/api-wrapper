@@ -37,7 +37,5 @@
  * @private
  */
 export function isNode() {
-  return typeof window === 'undefined'
-    && typeof module !== 'undefined'
-    && typeof module.exports !== 'undefined';
+  return typeof window === 'undefined' && typeof global !== 'undefined' || process.env;
 }

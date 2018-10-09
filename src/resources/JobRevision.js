@@ -45,7 +45,7 @@ export default class JobRevision extends CrudBase {
     return '/jobs/{job_id}/revisions/{revision}';
   }
 
-  get resourceName() {
+  static get resourceName() {
     return 'job-revisions';
   }
 

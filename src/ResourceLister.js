@@ -342,7 +342,7 @@ export default class ResourceLister extends EventEmitter {
 
       this._keys.push(row[this._key]);
 
-      if (autoMaxRows && this.maxRows + 1 === this._realData.length) {
+      if (autoMaxRows) {
         this.maxRows++;
 
         this._data.push(row);

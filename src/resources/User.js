@@ -50,7 +50,7 @@ import Role from './Role';
 import SvgSet from './SvgSet';
 
 export default class User extends CrudBase {
-  get resourceName() {
+  static get resourceName() {
     return 'users';
   }
 

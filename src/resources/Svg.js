@@ -33,7 +33,7 @@
 import CrudSetItemBase from './base/CrudSetItemBase';
 
 export default class Svg extends CrudSetItemBase {
-  get resourceName() {
+  static get resourceName() {
     return 'svgs';
   }
 }

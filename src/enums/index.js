@@ -34,4 +34,3 @@ export Enum from './Enum';
 export {DeletedState} from './DeletedState';
 export {JobMonitorFilter} from './JobMonitorFilter';
 export {ResultStatus} from './ResultStatus';
-export {ImageSize} from './ImageSize';
