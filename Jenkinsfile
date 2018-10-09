@@ -7,7 +7,7 @@ def git_push(branch, args) {
 	}
 }
 
-node('npm && yarn') {
+node('npm') {
 	if (!isUnix()) {
 		error 'Only compatible with UNIX systems.'
 	}
@@ -18,20 +18,21 @@ node('npm && yarn') {
 	}
 
 	stage('initialize') {
-		sh 'yarn --no-emoji --non-interactive --no-progress'
+		sh 'npm install'
 		sh 'rm -r dist docs .env || true'
 	sh 'git checkout -- "*"'
 	}
 
 	stage('linter') {
-		sh 'yarn run lint'
+		sh 'npm run lint'
 		checkstyle pattern: 'build/checkstyle.xml'
 	}
 
 	SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
-	stage('tag') {
-		if (SHOULD_TAG) {
+
+	if (SHOULD_TAG) {
+		stage('tag') {
 			VERSION_LOG = sh(returnStdout: true, script: 'git log --no-merges --format=oneline $(git describe --abbrev=0 --tags)...HEAD | sed s/[a-z0-9]\\*\\ /\\ -\\ /')
 
 			if (BRANCH_NAME == 'master') {
@@ -45,15 +46,15 @@ node('npm && yarn') {
 	}
 
 	stage('build') {
-		sh 'yarn run build'
+		sh 'npm run build'
 		archiveArtifacts artifacts: 'dist/*', fingerprint: true
 	}
 
 	stage('test') {
-		sh 'yarn run test-ci'
+		sh 'npm run test-ci'
 		publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
 		step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
-		step([$class: "TapPublisher", testResults: "build/ava.tap"])
+		junit 'build/junit.xml'
 	}
 
 	stage('publish') {
@@ -76,7 +77,7 @@ node('npm && yarn') {
 	}
 
 	stage('docs') {
-		sh 'yarn run docs'
+		sh 'npm run docs'
 
 		if (SHOULD_TAG) {
 			sh './scripts/docs-commit.sh'
