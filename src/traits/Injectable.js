@@ -39,7 +39,6 @@ import Trait from './Trait';
  * Adds the possibility to inject proxies/methods
  *
  * @mixin
- * @todo write more docs
  */
 export default class Injectable extends Trait {
   initializer() {
@@ -57,7 +56,7 @@ export default class Injectable extends Trait {
   }
 
   /**
-   * Inject a proxy property into the instance
+   * Inject a proxy property into future instances
    *
    * @param {string|object} name - Name of the property
    * @param {function?} value - Either a resource or a function that returns a proxy
@@ -87,10 +86,10 @@ export default class Injectable extends Trait {
   }
 
   /**
-   * Inject a proxy property into the instance
+   * Inject a property into future instances
    *
    * @param {string|object} name - Name of the property
-   * @param {function?} value - Either a resource or a function that returns a proxy
+   * @param {function?} value - Any function that does not return a proxy
    *
    * @returns {void}
    */
@@ -109,12 +108,21 @@ export default class Injectable extends Trait {
     }
   }
 
+  /**
+   * Prevent a property from being injected
+   * @param {string} name - Name of the property
+   */
   static uninject(name) {
     if (typeof this._injectable !== 'undefined') {
       delete this._injectable[name];
     }
   }
 
+  /**
+   * Inject a proxy
+   * @param {string} name - Name of the property
+   * @param {function?} value - Either a resource or a function that returns a proxy
+   */
   injectProxy(name, value) {
     if (!value) {
       // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
@@ -128,6 +136,14 @@ export default class Injectable extends Trait {
     }
   }
 
+  /**
+   * Inject a property into the instance
+   *
+   * @param {string|object} name - Name of the property
+   * @param {function?} value - Any function that does not return a proxy
+   *
+   * @returns {void}
+   */
   inject(name, value) {
     this._inject(name, value, false);
   }
