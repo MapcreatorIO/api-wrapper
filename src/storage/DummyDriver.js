@@ -44,7 +44,7 @@ export default class DummyDriver extends DataStoreContract {
    * @inheritDoc
    */
   static get available() {
-    return isNode() && (process.env || {}).NODE_ENV === 'test';
+    return isNode() && process.env.NODE_ENV === 'test';
   }
 
   /**

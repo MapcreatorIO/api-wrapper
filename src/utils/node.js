@@ -37,5 +37,9 @@
  * @private
  */
 export function isNode() {
-  return typeof window === 'undefined' || typeof global !== 'undefined';
+  try {
+    return Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
+  } catch {
+    return false;
+  }
 }
