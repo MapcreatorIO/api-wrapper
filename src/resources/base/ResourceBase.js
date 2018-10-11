@@ -57,9 +57,7 @@ export default class ResourceBase extends mix(null, Injectable) {
       throw new AbstractClassError();
     }
 
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
-    }
+    this.api = api;
 
     // Normalize keys to snake_case
     // Fix data types
@@ -110,6 +108,18 @@ export default class ResourceBase extends mix(null, Injectable) {
    */
   get api() {
     return this._api;
+  }
+
+  /**
+   * Set the api instance
+   * @param {Maps4News} value - Api instance
+   */
+  set api(value) {
+    if (!isParentOf(Maps4News, value)) {
+      throw new TypeError('Expected api to be of type Maps4News or null');
+    }
+
+    this._api = value;
   }
 
   /**
