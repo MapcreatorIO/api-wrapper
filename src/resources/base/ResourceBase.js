@@ -134,7 +134,6 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Resource name
    * @returns {String} - Resource name
-   * @todo move to constructor
    * @abstract
    */
   static get resourceName() {
@@ -151,11 +150,10 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Protected read-only fields
-   * @returns {Array<string>} - Array containing the protected fields
-   * @todo move to constructor
+   * @returns {Array<string>} - Array containing protected read-only fields
    * @protected
    */
-  get _protectedFields() {
+  static get protectedFields() {
     return ['id', 'created_at', 'updated_at', 'deleted_at'];
   }
 
@@ -290,7 +288,7 @@ export default class ResourceBase extends mix(null, Injectable) {
       },
     };
 
-    if (!this._protectedFields.includes(key) && !this.constructor.readonly) {
+    if (!this.constructor.protectedFields.includes(key) && !this.constructor.readonly) {
       desc.set = (val) => {
         this._properties[key] = ResourceBase._guessType(key, val);
         delete this._url; // Clears url cache
