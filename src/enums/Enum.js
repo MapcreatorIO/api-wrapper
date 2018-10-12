@@ -63,7 +63,7 @@ export default class Enum extends Unobservable {
   constructor(enums, auto = false) {
     super();
 
-    const isArray = enums instanceof Array;
+    const isArray = Array.isArray(enums);
 
     if (auto && !isArray) {
       throw new TypeError(`Expected enums to be of type "Array" got "${getTypeName(enums)}"`);
