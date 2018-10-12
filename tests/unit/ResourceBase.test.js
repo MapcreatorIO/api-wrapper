@@ -34,7 +34,9 @@ import Maps4News from '../../src/Maps4News';
 import ResourceBase from '../../src/resources/base/ResourceBase';
 
 class DummyResource extends ResourceBase {
-
+  static get resourceName() {
+    return 'dummy';
+  }
 }
 
 test('::toObject(false) should return snake_case keys', () => {
@@ -70,5 +72,135 @@ test('::toObject(true) should return camelCase keys', () => {
   const resource = new DummyResource(api, input);
 
   expect(resource.toObject(true)).toEqual(output);
+});
+
+test('keys are normalized', () => {
+  const input = {
+    helloWorld: 123,
+    'foo_bar': 456,
+  };
+
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, input);
+
+  expect(resource.helloWorld).toEqual(input.helloWorld);
+  expect(resource.fooBar).toEqual(input['foo_bar']);
+});
+
+test('if deleted_at is present deleted should also exist', () => {
+  const api = new Maps4News('token', 'example.com');
+
+  const resource1 = new DummyResource(api, {'deleted_at': null});
+  const resource2 = new DummyResource(api, {'deleted_at': new Date()});
+
+  expect(resource1.deleted).toEqual(false);
+  expect(resource2.deleted).toEqual(true);
+});
+
+test('protected fields should not be writable', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {id: 123});
+
+  expect(resource.id).toEqual(123);
+
+  expect(() => {
+    resource.id = 456;
+  }).toThrow(TypeError);
+
+  expect(resource.id).toEqual(123);
+});
+
+test('sanitize should commit updates locally', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {'foo_bar': 0});
+
+  expect(resource.fooBar).toEqual(0);
+
+  resource.fooBar = 123;
+
+  expect(resource.fooBar).toEqual(123);
+  expect(resource._properties['foo_bar']).toEqual(123);
+
+  resource.sanitize();
+
+  expect(resource.fooBar).toEqual(123);
+  expect(resource._baseProperties['foo_bar']).toEqual(123);
+});
+
+test('_updateProperties should move properties', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {});
+
+  expect(resource.fooBar).toBeUndefined();
+
+  resource.fooBar = 123;
+
+  expect(resource.fooBar).toEqual(123);
+  expect(resource._properties['foo_bar']).toBeUndefined();
+
+  resource._updateProperties();
+
+  expect(resource.fooBar).toEqual(123);
+  expect(resource._properties['foo_bar']).toEqual(123);
+});
+
+test('reset should reset all fields', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {foo: 1, bar: 2, baz: 3});
+
+  expect(resource.foo).toEqual(1);
+  expect(resource.bar).toEqual(2);
+  expect(resource.baz).toEqual(3);
+
+  resource.foo *= 10;
+  resource.bar *= 10;
+  resource.baz *= 10;
+
+  expect(resource.foo).toEqual(10);
+  expect(resource.bar).toEqual(20);
+  expect(resource.baz).toEqual(30);
+
+  resource.reset();
+
+  expect(resource.foo).toEqual(1);
+  expect(resource.bar).toEqual(2);
+  expect(resource.baz).toEqual(3);
+});
+
+test('reset(field) should reset a single field', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {foo: 1, bar: 2, baz: 3});
+
+  expect(resource.foo).toEqual(1);
+  expect(resource.bar).toEqual(2);
+  expect(resource.baz).toEqual(3);
+
+  resource.foo *= 10;
+  resource.bar *= 10;
+  resource.baz *= 10;
+
+  expect(resource.foo).toEqual(10);
+  expect(resource.bar).toEqual(20);
+  expect(resource.baz).toEqual(30);
+
+  resource.reset('foo');
+
+  expect(resource.foo).toEqual(1);
+  expect(resource.bar).toEqual(20);
+  expect(resource.baz).toEqual(30);
+});
+
+test('url should bind instance variables', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {id: 123});
+
+  expect(resource.url).toEqual('example.com/v1/dummy/123');
+});
+
+test('fieldNames should return a list of all fields', () => {
+  const api = new Maps4News('token', 'example.com');
+  const resource = new DummyResource(api, {foo: 1, bar: 2, baz: 3});
+
+  expect(resource.fieldNames).toEqual(['foo', 'bar', 'baz']);
 });
 

@@ -59,6 +59,9 @@ export default class ResourceBase extends mix(null, Injectable) {
 
     this.api = api;
 
+    // De-reference
+    data = Object.assign({}, data);
+
     // Normalize keys to snake_case
     // Fix data types
     for (const key of Object.keys(data)) {
@@ -253,19 +256,17 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
-  refresh(updateSelf = true) {
-    return this._api
-      .request(this.url)
-      .then(data => {
-        if (updateSelf) {
-          this._properties = {};
-          this._baseProperties = data;
+  async refresh(updateSelf = true) {
+    const data = await this._api.request(this.url);
 
-          this._updateProperties();
-        }
+    if (updateSelf) {
+      this._properties = {};
+      this._baseProperties = data;
 
-        return new this.constructor(this._api, data);
-      });
+      this._updateProperties();
+    }
+
+    return new this.constructor(this._api, data);
   }
 
   /**
@@ -373,9 +374,12 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @returns {Array<String>} - A list of fields
    */
   get fieldNames() {
-    return Object
-      .keys(this._baseProperties)
-      .map(camelCase);
+    const keys = unique([
+      ...Object.keys(this._baseProperties),
+      ...Object.keys(this._properties),
+    ]);
+
+    return keys.map(camelCase);
   }
 
   /**
