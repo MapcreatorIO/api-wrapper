@@ -39,7 +39,7 @@
 export function isNode() {
   try {
     return Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
-  } catch {
+  } catch (_) {
     return false;
   }
 }
