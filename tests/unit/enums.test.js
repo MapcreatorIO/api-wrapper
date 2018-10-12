@@ -91,3 +91,9 @@ test('Enum should be able to automatically map values', () => {
     REGULAR: 'regular',
   });
 });
+
+test('Enum should throw exception if values can not be mapped', () => {
+  expect(() => {
+    new Enum('example', true);
+  }).toThrow(TypeError);
+});
