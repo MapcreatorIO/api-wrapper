@@ -399,7 +399,7 @@ export default class ResourceBase extends mix(null, Injectable) {
     const out = Object.assign({}, this._baseProperties, this._properties);
 
     if (camelCaseKeys) {
-      for (const key in Object.keys(out)) {
+      for (const key of Object.keys(out)) {
         const ccKey = camelCase(key);
 
         if (key !== ccKey) {
