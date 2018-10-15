@@ -347,6 +347,7 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Static proxy generation
    * @param {string|function} Target - Constructor or url
+   * @param {function?} Constructor - Constructor for a resource that the results should be cast to
    * @returns {ResourceProxy} - A proxy for accessing the resource
    * @example
    * api.static('/custom/resource/path/{id}/').get(123);
@@ -362,24 +363,30 @@ export default class Maps4News extends mix(null, Injectable) {
    *   .get(1)
    *   .then(console.log);
    */
-  static(Target) {
+  static(Target, Constructor = ResourceBase) {
     if (isParentOf(ResourceBase, Target)) {
       return new ResourceProxy(this, Target);
     }
 
-    const Constructor = class AnonymousResource extends ResourceBase {
-      static get resourceName() {
-        return 'anonymous';
-      }
+    if (typeof Target === 'string') {
+      Target = class AnonymousResource extends Constructor {
+        static get resourceName() {
+          return Object.getPrototypeOf(this).resourceName || 'anonymous';
+        }
 
-      get resourcePath() {
-        return String(Target);
-      }
-    };
+        get resourcePath() {
+          return String(Target);
+        }
+      };
 
-    Object.defineProperty(Constructor, 'name', {value: `AnonymousResource_${fnv32b(String(Target))}`});
+      Object.defineProperty(Constructor, 'name', {value: `AnonymousResource_${fnv32b(String(Target))}`});
+    }
 
-    return this.static(Constructor);
+    if (typeof Target === 'function') {
+      return this.static(Target);
+    }
+
+    throw new TypeError('Expected Target to be of type string and Constructor to be a constructor')
   }
 
   /**
