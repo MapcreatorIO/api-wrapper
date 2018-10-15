@@ -364,29 +364,30 @@ export default class Maps4News extends mix(null, Injectable) {
    *   .then(console.log);
    */
   static(Target, Constructor = ResourceBase) {
-    if (isParentOf(ResourceBase, Target)) {
-      return new ResourceProxy(this, Target);
-    }
-
     if (typeof Target === 'string') {
+      const path = Target;
+      const name = Constructor.name || 'AnonymousResource';
+
       Target = class AnonymousResource extends Constructor {
         static get resourceName() {
           return Object.getPrototypeOf(this).resourceName || 'anonymous';
         }
 
         get resourcePath() {
-          return String(Target);
+          return path;
         }
       };
 
-      Object.defineProperty(Constructor, 'name', {value: `AnonymousResource_${fnv32b(String(Target))}`});
+      Object.defineProperty(Target, 'name', {
+        value: name + '_' + fnv32b(path),
+      });
     }
 
     if (typeof Target === 'function') {
-      return this.static(Target);
+      return new ResourceProxy(this, Target);
     }
 
-    throw new TypeError('Expected Target to be of type string and Constructor to be a constructor')
+    throw new TypeError('Expected Target to be of type string and Constructor to be a constructor');
   }
 
   /**
