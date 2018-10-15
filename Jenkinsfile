@@ -18,7 +18,7 @@ node('npm') {
 	}
 
 	stage('initialize') {
-		sh 'npm install'
+		sh 'npm ci'
 		sh 'rm -r dist docs .env || true'
 	sh 'git checkout -- "*"'
 	}
