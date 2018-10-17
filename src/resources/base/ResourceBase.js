@@ -455,7 +455,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    *   .get(1)
    *   .then(console.log);
    *
-   *
+   * @todo ownable resources
    */
   static(Target, Constructor = ResourceBase) {
     if (typeof Target === 'string') {
