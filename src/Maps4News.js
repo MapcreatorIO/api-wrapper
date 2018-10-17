@@ -362,6 +362,8 @@ export default class Maps4News extends mix(null, Injectable) {
    * api.static(FooBar)
    *   .get(1)
    *   .then(console.log);
+   *
+   * api.static('/foo-bar-custom', FooBar).lister();
    */
   static(Target, Constructor = ResourceBase) {
     if (typeof Target === 'string') {
@@ -383,11 +385,11 @@ export default class Maps4News extends mix(null, Injectable) {
       });
     }
 
-    if (typeof Target === 'function') {
+    if (isParentOf(ResourceBase, Target)) {
       return new ResourceProxy(this, Target);
     }
 
-    throw new TypeError('Expected Target to be of type string and Constructor to be a constructor');
+    throw new TypeError('Expected Target to be of type string and Constructor to be a ResourceBase constructor');
   }
 
   /**
