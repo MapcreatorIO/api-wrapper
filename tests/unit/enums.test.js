@@ -75,8 +75,25 @@ test('Enum::values should only return unique values', () => {
     RUDE_DUDE: 'NOT_CRESCENT_FRESH',
   });
 
-  expect(Test.keys()).toHaveLength(3)
-  expect(Test.values()).toHaveLength(2)
+  expect(Test.keys()).toHaveLength(3);
+  expect(Test.values()).toHaveLength(2);
 
   expect(Test.values()).toEqual(['CRESCENT_FRESH', 'NOT_CRESCENT_FRESH']);
+});
+
+test('Enum should be able to automatically map values', () => {
+  const FontStyles = new Enum(['italic', 'bold', 'underline', 'regular'], true);
+
+  expect(Object.assign({}, FontStyles)).toEqual({
+    ITALIC: 'italic',
+    BOLD: 'bold',
+    UNDERLINE: 'underline',
+    REGULAR: 'regular',
+  });
+});
+
+test('Enum should throw exception if values can not be mapped', () => {
+  expect(() => {
+    new Enum('example', true);
+  }).toThrow(TypeError);
 });

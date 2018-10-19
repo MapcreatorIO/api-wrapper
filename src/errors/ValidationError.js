@@ -49,20 +49,30 @@ export default class ValidationError extends ApiError {
 
   /**
    * Any validation errors
-   * @returns {Object.<String, Array.<String>>} - Object containing arrays of validation errors where the field is stored in the key
+   * @returns {Object.<String, Array<String>>} - Object containing arrays of validation errors where the field is stored in the key
    */
   get validationErrors() {
     return this._validationErrors;
   }
 
   /**
+   * Get validation error messages
+   * @returns {Array<String>} - All validation messages
+   */
+  get messages() {
+    const out = [];
+
+    for (const key of Object.keys(this.validationErrors)) {
+      out.push(...this.validationErrors[key]);
+    }
+
+    return out;
+  }
+
+  /**
    * @inheritDoc
    */
   toString() {
-    const errors = Object
-      .keys(this.validationErrors)
-      .map(x => this.validationErrors[x]);
-
-    return `There were some validation errors: ${errors.join(' ')}`;
+    return `There were some validation errors: ${this.messages.join(', ')}`;
   }
 }

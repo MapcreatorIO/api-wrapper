@@ -59,7 +59,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get fontFamilies() {
-    return this._proxyBuilder(FontFamily);
+    return new OwnedResourceProxy(this.api, this, FontFamily);
   }
 
   /**
@@ -67,7 +67,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets() {
-    return this._proxyBuilder(DimensionSet);
+    return new OwnedResourceProxy(this.api, this, DimensionSet);
   }
 
   /**
@@ -75,7 +75,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get mapstyleSets() {
-    return this._proxyBuilder(MapstyleSet);
+    return new OwnedResourceProxy(this.api, this, MapstyleSet);
   }
 
   /**
@@ -83,7 +83,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get svgSets() {
-    return this._proxyBuilder(SvgSet);
+    return new OwnedResourceProxy(this.api, this, SvgSet);
   }
 
   /**
@@ -91,7 +91,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get colors() {
-    return this._proxyBuilder(Color);
+    return new OwnedResourceProxy(this.api, this, Color);
   }
 
   /**
@@ -99,7 +99,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get tags() {
-    return this._proxyBuilder(Tag);
+    return new OwnedResourceProxy(this.api, this, Tag);
   }
 
   /**
@@ -107,7 +107,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get features() {
-    return this._proxyBuilder(Feature);
+    return new OwnedResourceProxy(this.api, this, Feature);
   }
 
   /**
@@ -115,7 +115,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get layers() {
-    return this._proxyBuilder(Layer);
+    return new OwnedResourceProxy(this.api, this, Layer);
   }
 
   /**
@@ -131,7 +131,7 @@ export default class Organisation extends CrudBase {
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
   get jobTypes() {
-    return this._proxyBuilder(JobType);
+    return new OwnedResourceProxy(this.api, this, JobType);
   }
 
   /**
@@ -192,15 +192,5 @@ export default class Organisation extends CrudBase {
     node.children = node.children.map(child => this._parseTree(child));
 
     return node;
-  }
-
-  /**
-   * Builds OwnedResourceProxy instance
-   * @param {constructor} Target - target class
-   * @returns {OwnedResourceProxy} - proxy instance
-   * @private
-   */
-  _proxyBuilder(Target) {
-    return new OwnedResourceProxy(this.api, this, Target);
   }
 }

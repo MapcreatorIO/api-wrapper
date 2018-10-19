@@ -34,7 +34,8 @@ import {camel as camelCase, snake as snakeCase} from 'case';
 import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
-import {isParentOf} from '../../utils/reflection';
+import Injectable from '../../traits/Injectable';
+import {isParentOf, mix} from '../../utils/reflection';
 
 function unique(input) {
   return input.filter((v, i) => input.findIndex(vv => vv === v) === i);
@@ -44,19 +45,22 @@ function unique(input) {
  * Resource base
  * @abstract
  */
-export default class ResourceBase {
+export default class ResourceBase extends mix(null, Injectable) {
   /**
    * @param {Maps4News} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor(api, data = {}) {
+    super();
+
     if (this.constructor === ResourceBase) {
       throw new AbstractClassError();
     }
 
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
-    }
+    this.api = api;
+
+    // De-reference
+    data = Object.assign({}, data);
 
     // Normalize keys to snake_case
     // Fix data types
@@ -110,6 +114,18 @@ export default class ResourceBase {
   }
 
   /**
+   * Set the api instance
+   * @param {Maps4News} value - Api instance
+   */
+  set api(value) {
+    if (!isParentOf(Maps4News, value)) {
+      throw new TypeError('Expected api to be of type Maps4News or null');
+    }
+
+    this._api = value;
+  }
+
+  /**
    * Resource path template
    * @returns {String} - Path template
    * @todo move to constructor
@@ -121,7 +137,6 @@ export default class ResourceBase {
   /**
    * Resource name
    * @returns {String} - Resource name
-   * @todo move to constructor
    * @abstract
    */
   static get resourceName() {
@@ -138,11 +153,10 @@ export default class ResourceBase {
 
   /**
    * Protected read-only fields
-   * @returns {Array<string>} - Array containing the protected fields
-   * @todo move to constructor
+   * @returns {Array<string>} - Array containing protected read-only fields
    * @protected
    */
-  get _protectedFields() {
+  static get protectedFields() {
     return ['id', 'created_at', 'updated_at', 'deleted_at'];
   }
 
@@ -242,19 +256,17 @@ export default class ResourceBase {
    * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
    */
-  refresh(updateSelf = true) {
-    return this._api
-      .request(this.url)
-      .then(data => {
-        if (updateSelf) {
-          this._properties = {};
-          this._baseProperties = data;
+  async refresh(updateSelf = true) {
+    const data = await this._api.request(this.url);
 
-          this._updateProperties();
-        }
+    if (updateSelf) {
+      this._properties = {};
+      this._baseProperties = data;
 
-        return new this.constructor(this._api, data);
-      });
+      this._updateProperties();
+    }
+
+    return new this.constructor(this._api, data);
   }
 
   /**
@@ -277,7 +289,7 @@ export default class ResourceBase {
       },
     };
 
-    if (!this._protectedFields.includes(key) && !this.constructor.readonly) {
+    if (!this.constructor.protectedFields.includes(key) && !this.constructor.readonly) {
       desc.set = (val) => {
         this._properties[key] = ResourceBase._guessType(key, val);
         delete this._url; // Clears url cache
@@ -362,9 +374,12 @@ export default class ResourceBase {
    * @returns {Array<String>} - A list of fields
    */
   get fieldNames() {
-    return Object
-      .keys(this._baseProperties)
-      .map(camelCase);
+    const keys = unique([
+      ...Object.keys(this._baseProperties),
+      ...Object.keys(this._properties),
+    ]);
+
+    return keys.map(camelCase);
   }
 
   /**
@@ -386,7 +401,7 @@ export default class ResourceBase {
     const out = Object.assign({}, this._baseProperties, this._properties);
 
     if (camelCaseKeys) {
-      for (const key in Object.keys(out)) {
+      for (const key of Object.keys(out)) {
         const ccKey = camelCase(key);
 
         if (key !== ccKey) {

@@ -52,7 +52,7 @@
     "no-sparse-arrays": 1,
     "no-unreachable": 1,
     "use-isnan": 2,
-    "valid-jsdoc": 1,
+    "valid-jsdoc": [1, {"requireReturn": false}],
     "valid-typeof": 1,
     "no-unexpected-multiline": 1,
     "consistent-return": 1,

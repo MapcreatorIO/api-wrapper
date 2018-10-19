@@ -37,8 +37,8 @@ import Mapstyle from './Mapstyle';
 
 /**
  * Mapstyle set
- * @extends {CrudSetBase}
- * @extends {OwnableResource}
+ * @extends CrudSetBase
+ * @mixes OwnableResource
  */
 export default class MapstyleSet extends mix(CrudSetBase, OwnableResource) {
   get resourcePath() {

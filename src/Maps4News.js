@@ -46,7 +46,6 @@ import {
   Contract,
   Dimension,
   DimensionSet,
-  Domain,
   Faq,
   Feature,
   Font,
@@ -71,21 +70,26 @@ import {
   User,
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
+import Injectable from './traits/Injectable';
 import {fnv32b} from './utils/hash';
 import Logger from './utils/Logger';
 import {isNode} from './utils/node';
-import {isParentOf} from './utils/reflection';
+import {isParentOf, mix} from './utils/reflection';
 import {fetch, FormData, Headers} from './utils/requests';
 
 /**
  * Base API class
+ *
+ * @mixes Injectable
  */
-export default class Maps4News {
+export default class Maps4News extends mix(null, Injectable) {
   /**
    * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
    */
   constructor(auth = new DummyFlow(), host = process.env.HOST) {
+    super();
+
     if (typeof auth === 'string') {
       const token = auth;
 
@@ -430,15 +434,6 @@ export default class Maps4News {
    */
   get dimensionSets() {
     return this.static(DimensionSet);
-  }
-
-  /**
-   * Domain accessor
-   * @see {@link Domain}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get domains() {
-    return this.static(Domain);
   }
 
   /**

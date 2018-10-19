@@ -85,7 +85,7 @@ module.exports = [
   merge(common, {
     target: 'node',
     output: {
-      libraryTarget: 'commonjs',
+      libraryTarget: 'commonjs2',
     },
     externals: [nodeExternals()],
     entry: {

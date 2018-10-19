@@ -33,14 +33,12 @@
 /**
  * Trait interface
  * @interface
+ * @mixin
  */
 export default class Trait {
   /**
    * Optional initialization method
    * @returns {void}
-   * @abstract
    */
-  initializer() {
-
-  }
+  initializer() { }
 }

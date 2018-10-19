@@ -36,8 +36,8 @@ import {mix} from '../utils/reflection';
 
 /**
  * Tag resource
- * @extends {CrudBase}
- * @extends {OwnableResource}
+ * @extends CrudBase
+ * @mixes OwnableResource
  */
 export default class Tag extends mix(CrudBase, OwnableResource) {
   static get resourceName() {
