@@ -429,7 +429,7 @@ export default class ResourceBase extends mix(null, Injectable) {
       url = Target.resourceName.replace(/s+$/, '') + 's';
     }
 
-    if (typeof url === 'string' && !url.startsWith('/')) {
+    if (typeof url === 'string' && !url.startsWith('/') && !url.match(/https?:/)) {
       url = this.url + '/' + url;
     }
 
@@ -440,6 +440,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Static proxy generation
    * @param {string|function} Target - Constructor or url
    * @param {function?} Constructor - Constructor for a resource that the results should be cast to
+   * @param {Object<string, *>} seedData - Optional data to seed the resolved resources
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    * @example
    * user.static('jobs').lister();
@@ -454,12 +455,12 @@ export default class ResourceBase extends mix(null, Injectable) {
    * api.static(FooBar)
    *   .get(1)
    *   .then(console.log);
-   *
-   * @todo ownable resources
    */
-  static(Target, Constructor = ResourceBase) {
+  static(Target, Constructor = ResourceBase, seedData = {}) {
+    let url;
+
     if (typeof Target === 'string') {
-      const path = this.url + '/' + Target;
+      url = this.url + '/' + Target;
       const name = Constructor.name || 'AnonymousResource';
 
       Target = class AnonymousResource extends Constructor {
@@ -468,19 +469,19 @@ export default class ResourceBase extends mix(null, Injectable) {
         }
 
         get resourcePath() {
-          return path;
+          return url;
         }
       };
 
       Object.defineProperty(Target, 'name', {
-        value: name + '_' + fnv32b(path),
+        value: name + '_' + fnv32b(url),
       });
     }
 
-    if (isParentOf(ResourceBase, Target)) {
-      return this._proxyResourceList(Target);
+    if (!isParentOf(ResourceBase, Target)) {
+      throw new TypeError('Expected Target to be of type String or ResourceBase constructor');
     }
 
-    throw new TypeError('Expected Target to be of type String or ResourceBase constructor');
+    return this._proxyResourceList(Target, url, seedData);
   }
 }
