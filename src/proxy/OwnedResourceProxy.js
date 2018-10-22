@@ -54,8 +54,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
    * @async
    * @returns {void}
-   * @throws {ApiError}
-   * @throws {TypeError} If the provided items are not of the same type as the proxy target
+   * @throws ApiError
+   * @throws TypeError If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
    */
   async sync(items) {
@@ -67,8 +67,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
    * @async
    * @returns {void}
-   * @throws {ApiError}
-   * @throws {TypeError} - If the provided items are not of the same type as the proxy target
+   * @throws ApiError
+   * @throws TypeError - If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
    */
   async attach(items) {
@@ -80,8 +80,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
    * @async
    * @returns {void}
-   * @throws {ApiError}
-   * @throws {TypeError} If the provided items are not of the same type as the proxy target
+   * @throws ApiError
+   * @throws TypeError If the provided items are not of the same type as the proxy target
    * @see http://es6-features.org/#PromiseCombination
    */
   async detach(items) {
@@ -92,7 +92,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Attach parent resource to all organisations
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async attachAll() {
     const url = this.baseUrl + '/all';
@@ -104,7 +104,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Detach parent resource to all organisations
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async detachAll() {
     const url = this.baseUrl + '/all';
@@ -117,8 +117,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {string} method - http method
    * @async
    * @returns {void}
-   * @throws {ApiError}
-   * @throws {TypeError} - If the provided items are not of the same type as the proxy target
+   * @throws ApiError
+   * @throws TypeError - If the provided items are not of the same type as the proxy target
    * @private
    */
   async _modifyResourceLink(items, method) {

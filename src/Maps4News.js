@@ -203,7 +203,7 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Authenticate with the api using the authentication method provided.
    * @returns  {Promise<Maps4News>}
-   * @throws {OAuthError}
+   * @throws OAuthError
    */
   authenticate() {
     return this.auth.authenticate().then(() => this);

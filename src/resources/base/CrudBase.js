@@ -75,7 +75,7 @@ export default class CrudBase extends ResourceBase {
   /**
    * Save item. This will create a new item if `id` is unset
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
+   * @throws ApiError
    */
   save() {
     return !this.id ? this._create() : this._update();
@@ -84,7 +84,7 @@ export default class CrudBase extends ResourceBase {
   /**
    * Store new item
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
+   * @throws ApiError
    * @private
    */
   async _create() {
@@ -100,7 +100,7 @@ export default class CrudBase extends ResourceBase {
   /**
    * Update existing item
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
+   * @throws ApiError
    * @private
    */
   async _update() {

@@ -57,7 +57,7 @@ export default class User extends CrudBase {
   /**
    * Get all known ips
    * @returns {Promise<Array<string>>} - Array containing all the ip addresses of a user
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async ips() {
     const url = `${this.url}/ips`;
@@ -70,7 +70,7 @@ export default class User extends CrudBase {
   /**
    * Get the user's organisation
    * @returns  {Promise<Organisation>}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   organisation() {
     return (new ResourceProxy(this.api, Organisation)).get(this.organisationId);
@@ -79,7 +79,7 @@ export default class User extends CrudBase {
   /**
    * Get the user's language
    * @returns  {Promise<Language>}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   language() {
     return (new ResourceProxy(this.api, Language)).get(this.languageCode);

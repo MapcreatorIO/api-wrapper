@@ -77,7 +77,7 @@ export default class ImageHandler {
   /**
    * Delete image
    * @async
-   * @throws {ApiError} - When the api returns an error
+   * @throws ApiError - When the api returns an error
    * @returns {void}
    */
   async delete() {
@@ -87,7 +87,7 @@ export default class ImageHandler {
   /**
    * Get image base64 representation
    * @returns  {Promise<String>} - A blob reference to the image
-   * @throws {ApiError}
+   * @throws ApiError
    * @example
    * // Browser
    * layer.imageHandler.download().then(url => {
@@ -125,7 +125,7 @@ export default class ImageHandler {
    * Upload new image
    * @param {File|Buffer} image - Image file
    * @async
-   * @throws {ApiError} - When the api returns an error
+   * @throws ApiError - When the api returns an error
    * @returns {void}
    */
   async upload(image) {

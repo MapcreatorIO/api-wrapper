@@ -94,7 +94,7 @@ export default class ImplicitFlow extends OAuth {
    * Authenticate
    * @async
    * @returns {OAuthToken} - The resolved token
-   * @throws {OAuthError} - Thrown if anything goes wrong during authentication
+   * @throws OAuthError - Thrown if anything goes wrong during authentication
    */
   async authenticate() {
     if (this.authenticated) {
@@ -211,7 +211,7 @@ export default class ImplicitFlow extends OAuth {
   /**
    * Get and return the error in the anchor
    * @returns {OAuthError} - OAuthError object
-   * @throws {Error} - If no error could be fetched from the anchor
+   * @throws Error - If no error could be fetched from the anchor
    * @protected
    */
   _getError() {

@@ -61,7 +61,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Array<Organisation|number>} organisations - List of items to sync
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async sync(organisations) {
     await this._modifyLink(organisations, 'PATCH', this.Target);
@@ -73,7 +73,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Array<Organisation|number>} organisations - List of items to attach
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async attach(organisations) {
     await this._modifyLink(organisations, 'POST', this.Target);
@@ -85,7 +85,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Array<Organisation|number>} organisations - List of items to detach
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async detach(organisations) {
     await this._modifyLink(organisations, 'DELETE', this.Target);
@@ -95,7 +95,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Attach all organisations to the parent resource
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async attachAll() {
     const url = this.baseUrl + '/all';
@@ -107,7 +107,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Detach all organisations from the parent resource
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async detachAll() {
     const url = this.baseUrl + '/all';
@@ -123,7 +123,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {?String} path - Optional appended resource path, will guess if null
    * @async
    * @returns {void}
-   * @throws {ApiError}
+   * @throws ApiError
    * @protected
    */
   async _modifyLink(items, method, Type, path = null) {

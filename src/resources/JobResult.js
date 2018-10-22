@@ -85,7 +85,7 @@ export default class JobResult extends ResourceBase {
   /**
    * Get the remote output url
    * @returns  {Promise<String>} - The url to the output
-   * @throws {ApiError}
+   * @throws ApiError
    */
   getOutputUrl() {
     return this.api.request(this.outputUrlUrl).then(x => x.url);
@@ -102,7 +102,7 @@ export default class JobResult extends ResourceBase {
   /**
    * Get log blob url
    * @returns  {Promise<String>} - A blob reference to the archive
-   * @throws {ApiError}
+   * @throws ApiError
    */
   downloadLog() {
     return downloadFile(this.logUrl, this._getDownloadHeaders()).then(data => data.blob);
@@ -119,7 +119,7 @@ export default class JobResult extends ResourceBase {
   /**
    * Get image blob url representation
    * @returns  {Promise<String>} - A blob reference to the image
-   * @throws {ApiError}
+   * @throws ApiError
    */
   downloadPreview() {
     return downloadFile(`${this.previewUrl}`, this._getDownloadHeaders()).then(data => data.blob);

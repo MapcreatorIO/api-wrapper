@@ -51,7 +51,7 @@ export default class DummyFlow extends OAuth {
    * Authenticate
    * @async
    * @returns {OAuthToken} - Usable OAuthToken
-   * @throws {OAuthError} - If no token was found
+   * @throws OAuthError - If no token was found
    */
   async authenticate() {
     if (this.authenticated) {

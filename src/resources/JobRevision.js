@@ -64,7 +64,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Get the job result
    * @returns {Promise<JobResult>} - Job result
-   * @throws {ApiError}
+   * @throws ApiError
    */
   async result() {
     const url = `${this.url}/result`;
@@ -96,10 +96,11 @@ export default class JobRevision extends CrudBase {
    * Save updated job revision
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
-   * @returns {Promise} - Resolves with a new {@link JobRevision} instance and rejects with {@link ApiError}
+   * @returns {Promise<JobRevision>} - Resolves with a new {@link JobRevision} instance and rejects with {@link ApiError}
+   * @throws ApiError
    * @throws TypeError
    */
-  save(object = {}, layers = null) {
+  async save(object = {}, layers = null) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -118,15 +119,15 @@ export default class JobRevision extends CrudBase {
       data.layers = layers;
     }
 
-    return this.api
-      .request(this.baseUrl, 'POST', data)
-      .then(data => new JobRevision(this.api, data));
+    const newRevisionData = await this.api.request(this.baseUrl, 'POST', data);
+
+    return new JobRevision(this.api, newRevisionData);
   }
 
   /**
    * Get job object
    * @returns  {Promise<Object>} - The map object
-   * @throws {ApiError}
+   * @throws ApiError
    * @todo document object format
    */
   object() {
@@ -161,7 +162,7 @@ export default class JobRevision extends CrudBase {
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @returns  {Promise<String>} - The share link
-   * @throws {ApiError}
+   * @throws ApiError
    */
   share(visibility = JobShare.visibility.PRIVATE) {
     visibility = visibility.toLowerCase();

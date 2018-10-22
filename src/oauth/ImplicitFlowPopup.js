@@ -73,7 +73,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * Authenticate
    * @async
    * @returns {OAuthToken} - The resolved token
-   * @throws {OAuthError} - Thrown if anything goes wrong during authentication
+   * @throws OAuthError - Thrown if anything goes wrong during authentication
    */
   async authenticate() {
     if (window.name === ImplicitFlowPopup.popupWindowName) {
