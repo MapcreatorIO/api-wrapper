@@ -74,15 +74,8 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Save item. This will create a new item if `id` is unset
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
-   * .catch(reject)
-   * .then(data => {
-   *        this._properties = {};
-   *        this._baseProperties = data;
-   *
-   *        this._updateProperties();
-   *        resolve(this);
-   *      });
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
    */
   save() {
     return !this.id ? this._create() : this._update();
@@ -90,27 +83,27 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Store new item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
    * @private
    */
-  _create() {
-    return this.api
-      .request(this.baseUrl, 'POST', this._buildCreateData())
-      .then(data => {
-        this._properties = {};
-        this._baseProperties = data;
+  async _create() {
+    const data = await this.api.request(this.baseUrl, 'POST', this._buildCreateData());
 
-        this._updateProperties();
-        return this;
-      });
+    this._properties = {};
+    this._baseProperties = data;
+
+    this._updateProperties();
+    return this;
   }
 
   /**
    * Update existing item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
    * @private
    */
-  _update() {
+  async _update() {
     this._updateProperties();
 
     // We'll just fake it, no need to bother the server
@@ -119,53 +112,47 @@ export default class CrudBase extends ResourceBase {
       return new Promise(resolve => resolve(this));
     }
 
-    return this.api
-      .request(this.url, 'PATCH', this._properties)
-      .then(() => {
-        if (this.api.defaults.autoUpdateSharedCache) {
-          this.api.cache.update(this);
-        }
+    await this.api.request(this.url, 'PATCH', this._properties);
 
-        return this;
-      });
+    if (this.api.defaults.autoUpdateSharedCache) {
+      this.api.cache.update(this);
+    }
+
+    return this;
   }
 
   /**
    * Delete item
    * @param {Boolean} [updateSelf=true] - Update current instance
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @return {Promise}
    */
-  delete(updateSelf = true) {
-    return this.api
-      .request(this.url, 'DELETE')
-      .then(data => {
-        if (updateSelf) {
-          this._baseProperties['deleted_at'] = new Date();
-        }
+  async delete(updateSelf = true) {
+    await this.api.request(this.url, 'DELETE');
 
-        return data;
-      });
+    if (updateSelf) {
+      this._baseProperties['deleted_at'] = new Date();
+    }
   }
 
   /**
    * Restore item
    * @param {Boolean} [updateSelf=true] - Update current instance
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<CrudBase>} - Restored instance
    */
-  restore(updateSelf = true) {
-    return this.api
-      .request(this.url, 'PUT')
-      .then(data => {
-        const instance = new this.constructor(this.api, data);
+  async restore(updateSelf = true) {
+    const data = await this.api.request(this.url, 'PUT');
 
-        if (updateSelf) {
-          this._properties = {};
-          this._baseProperties = data;
+    const instance = new this.constructor(this.api, data);
 
-          this._updateProperties();
-        }
+    if (updateSelf) {
+      this._properties = {};
+      this._baseProperties = data;
 
-        return instance;
-      });
+      this._updateProperties();
+
+      return this;
+    }
+
+    return instance;
   }
 }

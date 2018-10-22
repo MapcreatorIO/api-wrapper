@@ -56,14 +56,15 @@ export default class User extends CrudBase {
 
   /**
    * Get all known ips
-   * @returns {Promise} - Resolves with {@link array<string>} instance and rejects with {@link ApiError}
+   * @returns {Promise<Array<string>>} - Array containing all the ip addresses of a user
+   * @throws {ApiError}
    */
-  ips() {
+  async ips() {
     const url = `${this.url}/ips`;
 
-    return this.api
-      .request(url)
-      .then(data => data.map(row => row['ip_address']));
+    const data = await this.api.request(url);
+
+    return data.map(row => row['ip_address']);
   }
 
   /**
@@ -186,6 +187,5 @@ export default class User extends CrudBase {
   get roles() {
     return new OwnedResourceProxy(this.api, this, Role);
   }
-
   // endregion
 }
