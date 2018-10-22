@@ -115,36 +115,30 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
  * @returns {PromiseLike<{filename: string, blob: string}>} - Filename and blob
  * @private
  */
-export function downloadFile(url, headers = {}) {
-  const out = {};
+export async function downloadFile(url, headers = {}) {
+  const res = await fetch(url, {headers});
 
-  return fetch(url, {headers})
-    .then(res => {
-      if (res.ok) {
-        const disposition = res.headers.get('Content-Disposition');
+  if (!res.ok) {
+    const data = await res.json();
+    const err = data.error;
 
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-          const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+    throw new ApiError(err.type, err.message, res.status, err.trace);
+  }
 
-          if (matches != null && matches[1]) {
-            out.filename = matches[1].replace(/['"]/g, '');
-          }
-        } else {
-          out.filename = 'Unknown Filename.zip';
-        }
+  const out = {
+    filename: 'Unknown Filename.zip',
+    blob: (window.URL || window.webkitURL).createObjectURL(await res.blob()),
+  };
 
-        return res.blob();
-      }
+  const disposition = res.headers.get('Content-Disposition');
 
-      return res.json().then(data => {
-        const err = data.error;
+  if (disposition && disposition.indexOf('attachment') !== -1) {
+    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
 
-        throw new ApiError(err.type, err.message, res.status, err.trace);
-      });
-    })
-    .then(blob => {
-      out.blob = (window.URL || window.webkitURL).createObjectURL(blob);
+    if (matches != null && matches[1]) {
+      out.filename = matches[1].replace(/['"]/g, '');
+    }
+  }
 
-      return out;
-    });
+  return out;
 }

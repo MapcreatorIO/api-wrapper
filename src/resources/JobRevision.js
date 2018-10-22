@@ -96,7 +96,7 @@ export default class JobRevision extends CrudBase {
    * Save updated job revision
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
-   * @returns {Promise<JobRevision>} - Resolves with a new {@link JobRevision} instance and rejects with {@link ApiError}
+   * @returns {Promise<JobRevision>} - New job revision
    * @throws ApiError
    * @throws TypeError
    */

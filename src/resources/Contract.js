@@ -44,7 +44,7 @@ export default class Contract extends CrudBase {
    * @inheritDoc
    * @override
    */
-  _update() {
+  async _update() {
     this._updateProperties();
 
     // We'll just fake it, no need to bother the server
@@ -71,22 +71,20 @@ export default class Contract extends CrudBase {
       data['date_end'] = this._formatDate(data['date_end']);
     }
 
-    return this.api
-      .request(this.url, 'PATCH', data)
-      .then(() => {
-        if (this.api.defaults.autoUpdateSharedCache) {
-          this.api.cache.update(this);
-        }
+    await this.api.request(this.url, 'PATCH', data);
 
-        return this;
-      });
+    if (this.api.defaults.autoUpdateSharedCache) {
+      this.api.cache.update(this);
+    }
+
+    return this;
   }
 
   /**
    * @inheritDoc
    * @override
    */
-  _create() {
+  async _create() {
     const createData = this._buildCreateData();
 
     if (createData['date_start'] instanceof Date) {
@@ -97,15 +95,13 @@ export default class Contract extends CrudBase {
       createData['date_end'] = this._formatDate(createData['date_end']);
     }
 
-    return this.api
-      .request(this.baseUrl, 'POST', createData)
-      .then(data => {
-        this._properties = {};
-        this._baseProperties = data;
+    const data = await this.api.request(this.baseUrl, 'POST', createData);
 
-        this._updateProperties();
-        return this;
-      });
+    this._properties = {};
+    this._baseProperties = data;
+
+    this._updateProperties();
+    return this;
   }
 
   /**

@@ -142,15 +142,15 @@ export default class JobResult extends ResourceBase {
    * This method is for internal use for our support team.
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
-   * @returns {Promise} - A promise that resolves with no data
+   * @returns {Promise<boolean>} - If the result has been dealt with
    */
-  dealWith(value = true) {
+  async dealWith(value = true) {
     const method = value ? 'POST' : 'DELETE';
 
-    return this.api.request(this.url + '/deal-with', method).then(() => {
-      this.dealtWith = value;
+    await this.api.request(this.url + '/deal-with', method);
 
-      return value;
-    });
+    this.dealtWith = value;
+
+    return value;
   }
 }
