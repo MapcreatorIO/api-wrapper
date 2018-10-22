@@ -110,8 +110,8 @@ export default class Contract extends CrudBase {
 
   /**
    * Convert Date into server format
-   * @param {Date} date - target
-   * @returns {String} - formatted date
+   * @param {Date} date - Target
+   * @returns {String} - Formatted date
    * @private
    */
   _formatDate(date) {

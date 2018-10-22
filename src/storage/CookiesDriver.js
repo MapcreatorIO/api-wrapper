@@ -69,8 +69,8 @@ export default class CookiesDriver extends DataStoreContract {
 
   /**
    * Store a value in the storage
-   * @param {String} name - value name
-   * @param {*} value - value
+   * @param {String} name - Value name
+   * @param {*} value - Value
    * @param {Date|String} [expires=2050-01-01] - Expiration date
    * @returns {void}
    */
@@ -126,7 +126,7 @@ export default class CookiesDriver extends DataStoreContract {
 
   /**
    * Extract cookies and turn them into a object
-   * @returns {Object} - cookies
+   * @returns {Object} - Cookies
    * @private
    */
   _toObject() {

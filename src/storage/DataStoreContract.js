@@ -66,8 +66,8 @@ export default class DataStoreContract {
 
   /**
    * Store a value in the storage
-   * @param {String} name - value name
-   * @param {*} value - value
+   * @param {String} name - Value name
+   * @param {*} value - Value
    * @returns {void}
    * @abstract
    */
@@ -77,8 +77,8 @@ export default class DataStoreContract {
 
   /**
    * Get a value from the store
-   * @param {String} name - value name
-   * @returns {String} - value
+   * @param {String} name - Value name
+   * @returns {String} - Value
    * @abstract
    */
   get(name) {
@@ -87,7 +87,7 @@ export default class DataStoreContract {
 
   /**
    * Remove a value from the store
-   * @param {String} name - value name
+   * @param {String} name - Value name
    * @returns {void}
    * @abstract
    */

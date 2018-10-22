@@ -58,8 +58,8 @@ export const FormData = getFormData();
 
 /**
  * Encodes an object to a http query string with support for recursion
- * @param {object<string, *>} paramsObject - data to be encoded
- * @returns {string} - encoded http query string
+ * @param {object<string, *>} paramsObject - Data to be encoded
+ * @returns {string} - Encoded http query string
  *
  * @private
  */
@@ -72,9 +72,9 @@ export function encodeQueryString(paramsObject) {
 
 /**
  * Encodes an object to a http query string with support for recursion
- * @param {Object<string, *>} paramsObject - data to be encoded
+ * @param {Object<string, *>} paramsObject - Data to be encoded
  * @param {Array<string>} _basePrefix - Used internally for tracking recursion
- * @returns {string} - encoded http query string
+ * @returns {string} - Encoded http query string
  *
  * @see http://stackoverflow.com/a/39828481
  * @private
@@ -112,7 +112,7 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
 /**
  * @param {string} url - Target url
  * @param {object<string, string>} headers - Request headers
- * @returns {PromiseLike<{filename: string, blob: string}>} - filename and blob
+ * @returns {PromiseLike<{filename: string, blob: string}>} - Filename and blob
  * @private
  */
 export function downloadFile(url, headers = {}) {

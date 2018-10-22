@@ -61,7 +61,7 @@ export default class OAuth {
 
   /**
    * If the current instance has a valid token
-   * @returns {Boolean} - if a valid token is availble
+   * @returns {Boolean} - If a valid token is availble
    */
   get authenticated() {
     return this.token !== null && !this.token.expired;
@@ -133,8 +133,8 @@ export default class OAuth {
   /**
    * Manually import OAuthToken, usefull for debugging
    * @param {String} token - OAuth token
-   * @param {String} [type=Bearer] - token type
-   * @param {Date|Number} [expires=5 days] - expire time in seconds or Date
+   * @param {String} [type=Bearer] - Token type
+   * @param {Date|Number} [expires=5 days] - Expire time in seconds or Date
    * @param {Array<string>} [scopes=[]] - Any scopes
    * @returns {void}
    */

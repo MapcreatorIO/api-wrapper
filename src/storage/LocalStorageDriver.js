@@ -55,8 +55,8 @@ export default class LocalStorageDriver extends DataStoreContract {
 
   /**
    * Store a value in the storage
-   * @param {String} name - value name
-   * @param {*} value - value
+   * @param {String} name - Value name
+   * @param {*} value - Value
    * @returns {void}
    */
   set(name, value) {
@@ -67,7 +67,7 @@ export default class LocalStorageDriver extends DataStoreContract {
 
   /**
    * Get a value from the store
-   * @param {String} name - value name
+   * @param {String} name - Value name
    * @returns {void}
    */
   get(name) {
@@ -78,7 +78,7 @@ export default class LocalStorageDriver extends DataStoreContract {
 
   /**
    * Remove a value from the store
-   * @param {String} name - value name
+   * @param {String} name - Value name
    * @returns {void}
    */
   remove(name) {

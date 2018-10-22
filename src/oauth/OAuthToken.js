@@ -39,8 +39,8 @@ import {encodeQueryString} from '../utils/requests';
 export default class OAuthToken {
   /**
    * @param {String} token - OAuth token
-   * @param {String} [type=Bearer] - token type
-   * @param {Date|Number} [expires=5 days] - expire time in seconds or Date
+   * @param {String} [type=Bearer] - Token type
+   * @param {Date|Number} [expires=5 days] - Expire time in seconds or Date
    * @param {Array<string>} [scopes=[]] - Any scopes
    */
   constructor(token, type = 'Bearer', expires = 432000, scopes = []) {
@@ -89,7 +89,7 @@ export default class OAuthToken {
 
   /**
    * If the token has expired
-   * @returns {Boolean} - expired
+   * @returns {Boolean} - Expired
    */
   get expired() {
     return new Date() > this.expires;
@@ -97,7 +97,7 @@ export default class OAuthToken {
 
   /**
    * Internal storage key name
-   * @returns {String} - storage name
+   * @returns {String} - Storage name
    * @constant
    */
   static get storageName() {
@@ -106,7 +106,7 @@ export default class OAuthToken {
 
   /**
    * Build instance from response object
-   * @param {String|Object} data - object or JSON string
+   * @param {String|Object} data - Object or JSON string
    * @returns {OAuthToken} - New OAuthToken instance
    */
   static fromResponseObject(data) {
@@ -133,7 +133,7 @@ export default class OAuthToken {
 
   /**
    * Store the token for later recovery. Token will be stored in HTTPS cookie if possible.
-   * @param {String} name - db key name
+   * @param {String} name - Db key name
    * @returns {void}
    * @see OAuthToken#recover
    */
@@ -152,7 +152,7 @@ export default class OAuthToken {
   /**
    * Recover a token by looking through the HTTPS cookies and localStorage
    * @param {String} name - Storage key name
-   * @returns {OAuthToken|null} - null if none could be recovered
+   * @returns {OAuthToken|null} - Null if none could be recovered
    * @see OAuthToken#save
    */
   static recover(name = OAuthToken.storageName) {

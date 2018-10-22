@@ -54,7 +54,7 @@ export default class JobMonitorRow extends JobResult {
 
   /**
    * Returns if the resource is readonly
-   * @returns {boolean} - readonly
+   * @returns {boolean} - Readonly
    */
   static get readonly() {
     return true;

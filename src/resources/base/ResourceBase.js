@@ -162,7 +162,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Returns if the resource is readonly
-   * @returns {boolean} - readonly
+   * @returns {boolean} - Readonly
    */
   static get readonly() {
     return false;
@@ -254,7 +254,8 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
-   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
+   * @returns  {Promise<ResourceBase>}
+   * @throws {ApiError}
    */
   async refresh(updateSelf = true) {
     const data = await this._api.request(this.url);
@@ -271,7 +272,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Create proxy for property
-   * @param {string} key - property key
+   * @param {string} key - Property key
    * @returns {void}
    * @private
    */
@@ -392,8 +393,8 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Transform instance to object
-   * @param {boolean} [camelCaseKeys=false] - camelCase object keys
-   * @returns {{}} - object
+   * @param {boolean} [camelCaseKeys=false] - CamelCase object keys
+   * @returns {{}} - Object
    */
   toObject(camelCaseKeys = false) {
     this._updateProperties();

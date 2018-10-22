@@ -86,7 +86,8 @@ export default class ImageHandler {
 
   /**
    * Get image base64 representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * @returns  {Promise<String>} - A blob reference to the image
+   * @throws {ApiError}
    * @example
    * // Browser
    * layer.imageHandler.download().then(url => {

@@ -86,7 +86,8 @@ export default class Job extends CrudBase {
 
   /**
    * Get image blob url representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * @returns  {Promise<String>} - a blob reference to the image
+   * @throws {ApiError}
    */
   downloadPreview() {
     return downloadFile(`${this.url}/preview`, this._getDownloadHeaders()).then(data => data.blob);
@@ -102,7 +103,8 @@ export default class Job extends CrudBase {
 
   /**
    * Get the remote output url
-   * @returns {Promise} -  Resolves with a {@link String} containing the url to the output and rejects with {@link ApiError}
+   * @returns  {Promise<String>} - the url to the output
+   * @throws {ApiError}
    */
   getOutputUrl() {
     return this.api.request(`${this.url}/output-url`).then(x => x.url);

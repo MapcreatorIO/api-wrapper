@@ -52,7 +52,7 @@ import {encodeQueryString} from './utils/requests';
 export default class RequestParameters extends EventEmitter {
   /**
    * RequestParameters constructor
-   * @param {Object} object - properties
+   * @param {Object} object - Properties
    */
   constructor(object = {}) {
     super();
@@ -615,7 +615,7 @@ export default class RequestParameters extends EventEmitter {
 
   /**
    * Different parameters
-   * @returns {Array<String>} - keys
+   * @returns {Array<String>} - Keys
    */
   static keys() {
     // enumeration is disabled for properties
@@ -654,7 +654,7 @@ export default class RequestParameters extends EventEmitter {
 
   /**
    * Apply parameters from object
-   * @param {object|RequestParameters} params - parameters
+   * @param {object|RequestParameters} params - Parameters
    * @returns {Object[]} - Array containing the updated values
    * @todo update JSDoc
    */

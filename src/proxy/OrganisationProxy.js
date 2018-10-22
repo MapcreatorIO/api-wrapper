@@ -36,7 +36,7 @@ import SimpleResourceProxy from './SimpleResourceProxy';
 export default class OrganisationProxy extends SimpleResourceProxy {
   /**
    * @param {Maps4News} api - Instance of the api
-   * @param {ResourceBase} parent - parent instance
+   * @param {ResourceBase} parent - Parent instance
    */
   constructor(api, parent) {
     // Fixes dependency issue
@@ -49,7 +49,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
   /**
    * Returns parent instance
-   * @returns {ResourceBase} - parent instance
+   * @returns {ResourceBase} - Parent instance
    */
   get parent() {
     return this._parent;

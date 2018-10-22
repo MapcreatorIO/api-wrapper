@@ -38,8 +38,8 @@ import SimpleResourceProxy from './SimpleResourceProxy';
 export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * OwnedResourceProxy Constructor
-   * @param {Maps4News} api - api instance
-   * @param {ResourceBase} parent - parent instance
+   * @param {Maps4News} api - Api instance
+   * @param {ResourceBase} parent - Parent instance
    * @param {constructor} Target - target constructor
    */
   constructor(api, parent, Target) {

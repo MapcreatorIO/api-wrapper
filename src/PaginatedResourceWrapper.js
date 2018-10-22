@@ -176,7 +176,7 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Set the current page number
-   * @param {Number} value - page number
+   * @param {Number} value - Page number
    */
   set currentPage(value) {
     this._currentPage = Math.max(1, value);
@@ -184,7 +184,7 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Get the route of the resource
-   * @returns {String} - route
+   * @returns {String} - Route
    */
   get route() {
     return this._last.route;
@@ -192,7 +192,7 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Override the resource route
-   * @param {String} value - route
+   * @param {String} value - Route
    */
   set route(value) {
     this._route = value;
@@ -220,7 +220,7 @@ export default class PaginatedResourceWrapper {
    * @throws TypeError
    * @default {}
    * @see {@link ResourceProxy#search}
-   * @returns {Object<String, String|Array<String>>} - query
+   * @returns {Object<String, String|Array<String>>} - Query
    */
   query(value = null) {
     if (!value || value === this.query()) {

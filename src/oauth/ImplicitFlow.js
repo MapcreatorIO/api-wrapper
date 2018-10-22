@@ -45,11 +45,11 @@ export default class ImplicitFlow extends OAuth {
   /**
    * Implicit authentication flow
    * @param {String} clientId - OAuth client id
-   * @param {String} callbackUrl - callbackUrl for obtaining the token. This should be a
+   * @param {String} callbackUrl - CallbackUrl for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {Array<String>} scopes - A list of required scopes
-   * @param {Boolean} useState - use state verification
+   * @param {Boolean} useState - Use state verification
    * @returns {void}
    */
   constructor(clientId, callbackUrl = '', scopes = ['*'], useState = true) {
@@ -187,7 +187,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Test if the anchor contains an OAuth response
-   * @returns {Boolean} - if anchor tested positive for containing an OAuth response
+   * @returns {Boolean} - If anchor tested positive for containing an OAuth response
    * @protected
    */
   _anchorContainsOAuthResponse() {
@@ -201,7 +201,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Test if the anchor contains an OAuth error
-   * @returns {Boolean} - if anchor tested positive for containing an OAuth error
+   * @returns {Boolean} - If anchor tested positive for containing an OAuth error
    * @protected
    */
   _anchorContainsError() {

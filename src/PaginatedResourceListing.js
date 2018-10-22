@@ -78,7 +78,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Target route
-   * @returns {String} - url
+   * @returns {String} - Url
    */
   get route() {
     return this._route;
@@ -86,7 +86,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Override the target route
-   * @param {String} value - route
+   * @param {String} value - Route
    */
   set route(value) {
     if (!value.startsWith('https://') && !value.startsWith('http://')) {
@@ -225,9 +225,10 @@ export default class PaginatedResourceListing {
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @returns {Promise<PaginatedResourceListing>} - Target page
+   * @throws {ApiError}
    */
-  getPage(page = this.page, perPage = this.perPage) {
+  async getPage(page = this.page, perPage = this.perPage) {
     const query = this.parameters.copy();
 
     query.page = page;
@@ -236,24 +237,22 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + query.encode();
 
-    return this.api.request(url, 'GET', {}, {}, true)
-      .then(output => {
-        const headers = output.response.headers;
+    const output = await this.api.request(url, 'GET', {}, {}, true);
+    const headers = output.response.headers;
 
-        const getOrDefault = (x, y) => headers.has(x) ? headers.get(x) : y;
+    const getOrDefault = (x, y) => headers.has(x) ? headers.get(x) : y;
 
-        const rowCount = Number(getOrDefault('X-Paginate-Total', output.data.length));
-        const totalPages = Number(getOrDefault('X-Paginate-Pages', 1));
-        const parameters = this.parameters.copy();
+    const rowCount = Number(getOrDefault('X-Paginate-Total', output.data.length));
+    const totalPages = Number(getOrDefault('X-Paginate-Pages', 1));
+    const parameters = this.parameters.copy();
 
-        parameters.page = page;
+    parameters.page = page;
 
-        return new PaginatedResourceListing(
-          this.api, this.route, this._Target,
-          parameters, totalPages, rowCount,
-          output.data.map(row => new this._Target(this.api, row)),
-        );
-      });
+    return new PaginatedResourceListing(
+      this.api, this.route, this._Target,
+      parameters, totalPages, rowCount,
+      output.data.map(row => new this._Target(this.api, row)),
+    );
   }
 
   /**
@@ -284,7 +283,8 @@ export default class PaginatedResourceListing {
 
   /**
    * Get next page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @returns  {Promise<PaginatedResourceListing>}
+   * @throws {ApiError}
    */
   next() {
     return this.getPage(this.page + 1);
@@ -292,7 +292,8 @@ export default class PaginatedResourceListing {
 
   /**
    * Get previous page
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @returns  {Promise<PaginatedResourceListing>}
+   * @throws {ApiError}
    */
   previous() {
     return this.getPage(this.page - 1);

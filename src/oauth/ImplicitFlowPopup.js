@@ -42,12 +42,12 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
   /**
    * Implicit pop-up authentication flow
    * @param {String} clientId - OAuth client id
-   * @param {String} callbackUrl - callbackUrl for obtaining the token. This should be a
+   * @param {String} callbackUrl - CallbackUrl for obtaining the token. This should be a
    *                               page with this script on it. If left empty the current
    *                               url will be used.
    * @param {Array<String>} scopes - A list of required scopes
-   * @param {Boolean} useState - use state verification
-   * @param {String} windowOptions - optional window options for the pop-up window
+   * @param {Boolean} useState - Use state verification
+   * @param {String} windowOptions - Optional window options for the pop-up window
    * @returns {void}
    */
   constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
@@ -62,7 +62,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
 
   /**
    * Popup window name
-   * @returns {String} - window.name of the created pop-up
+   * @returns {String} - Window.name of the created pop-up
    * @constant
    */
   static get popupWindowName() {

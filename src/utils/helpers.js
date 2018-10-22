@@ -78,7 +78,7 @@ export function getPaginatedRange(page, start = 1, stop) {
 
 /**
  * Quickly check if the window contains a variable
- * @param {string} str - target variable
+ * @param {string} str - Target variable
  * @returns {boolean} - If the window contains the variable
  * @private
  */

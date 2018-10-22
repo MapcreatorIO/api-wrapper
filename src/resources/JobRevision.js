@@ -63,19 +63,18 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get the job result
-   * @returns {Promise} - Resolves with a {@link JobResult} instance and rejects with {@link ApiError}
+   * @returns {Promise<JobResult>} - Job result
+   * @throws {ApiError}
    */
-  result() {
+  async result() {
     const url = `${this.url}/result`;
 
-    return this.api
-      .request(url)
-      .then(data => {
-        data.jobId = this.jobId;
-        data.revision = this.revision;
+    const data = await this.api.request(url);
 
-        return new JobResult(this.api, data);
-      });
+    data.jobId = this.jobId;
+    data.revision = this.revision;
+
+    return new JobResult(this.api, data);
   }
 
   /**
@@ -126,7 +125,8 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get job object
-   * @returns {Promise} - Resolves with {@link Object} instance containing the map object and rejects with {@link ApiError}
+   * @returns  {Promise<Object>} - The map object
+   * @throws {ApiError}
    * @todo document object format
    */
   object() {
@@ -160,7 +160,8 @@ export default class JobRevision extends CrudBase {
   /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
-   * @returns {Promise} - Resolves with a {@link String} containing the share link and rejects with {@link ApiError}
+   * @returns  {Promise<String>} - The share link
+   * @throws {ApiError}
    */
   share(visibility = JobShare.visibility.PRIVATE) {
     visibility = visibility.toLowerCase();

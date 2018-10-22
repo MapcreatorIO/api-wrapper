@@ -42,7 +42,7 @@ import Uuid from '../utils/uuid';
 export default class StateContainer extends StaticClass {
   /**
    * LocalStorage key prefix
-   * @returns {String} - prefix
+   * @returns {String} - Prefix
    * @constant
    */
   static get prefix() {
@@ -51,7 +51,7 @@ export default class StateContainer extends StaticClass {
 
   /**
    * Generate and store a state that can be checked at a later point
-   * @returns {string} - state
+   * @returns {string} - State
    */
   static generate() {
     const uuid = Uuid.uuid4();
@@ -63,9 +63,9 @@ export default class StateContainer extends StaticClass {
 
   /**
    * Validate a state
-   * @param {String} state - state to validate
-   * @param {Boolean} purge - remove from state db after validation
-   * @returns {Boolean} - if the state is valid
+   * @param {String} state - State to validate
+   * @param {Boolean} purge - Remove from state db after validation
+   * @returns {Boolean} - If the state is valid
    */
   static validate(state, purge = true) {
     const storage = StorageManager.best;

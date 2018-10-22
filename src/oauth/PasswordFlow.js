@@ -68,7 +68,7 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * it's a secret :o (client secret)
-   * @returns {String} - secret
+   * @returns {String} - Secret
    */
   get secret() {
     return this._secret;
@@ -76,7 +76,7 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * Set client secret
-   * @param {String} value - secret
+   * @param {String} value - Secret
    */
   set secret(value) {
     this._secret = value;
@@ -108,7 +108,7 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * Set the password
-   * @param {String} value - password
+   * @param {String} value - Password
    */
   set password(value) {
     this._password = value;
@@ -157,7 +157,8 @@ export default class PasswordFlow extends OAuth {
       },
     };
 
-    const data = await fetch(url, init).then(response => response.json());
+    const response = await fetch(url, init);
+    const data = await response.json();
 
     if (data.error) {
       throw new OAuthError(data.error, data.message);

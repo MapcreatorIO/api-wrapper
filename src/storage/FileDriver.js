@@ -49,7 +49,7 @@ export default class FileDriver extends DataStoreContract {
 
   /**
    * File storage path
-   * @returns {String} - path
+   * @returns {String} - Path
    */
   get path() {
     return this._path;
@@ -57,7 +57,7 @@ export default class FileDriver extends DataStoreContract {
 
   /**
    * File storage path
-   * @param {String} value - path
+   * @param {String} value - Path
    */
   set path(value) {
     if (typeof value !== 'string') {
@@ -170,7 +170,7 @@ export default class FileDriver extends DataStoreContract {
 
   /**
    * Get fs instance
-   * @returns {fs} - fs instance
+   * @returns {fs} - Fs instance
    * @private
    */
   get _fs() {

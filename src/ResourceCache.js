@@ -91,7 +91,7 @@ export default class ResourceCache extends Unobservable {
 
   /**
    * Delete from cache using cacheId
-   * @param {String|Array<String>} ids - cache ids
+   * @param {String|Array<String>} ids - Cache ids
    * @returns {void}
    */
   _deleteCacheIds(ids) {
@@ -157,7 +157,7 @@ export default class ResourceCache extends Unobservable {
 
   /**
    * Collect relevant cached pages
-   * @param {String} resourceUrl - resource url
+   * @param {String} resourceUrl - Resource url
    * @param {String} cacheToken - Cache token
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array<PaginatedResourceListing>} - Relevant cached pages
@@ -273,7 +273,7 @@ export default class ResourceCache extends Unobservable {
   /**
    * Update records in the cache manually lazily. Any matching instance found will be updated.
    * @param {ResourceBase|Array<ResourceBase>} rows - Data to be updated
-   * @returns {void} - nothing
+   * @returns {void} - Nothing
    */
   update(rows) {
     if (!(rows instanceof Array)) {
@@ -340,7 +340,7 @@ export default class ResourceCache extends Unobservable {
 
   /**
    * Get a usable timestamp
-   * @returns {number} - timestamp
+   * @returns {number} - Timestamp
    * @private
    */
   get _timestamp() {

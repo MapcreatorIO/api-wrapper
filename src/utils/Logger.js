@@ -79,7 +79,7 @@ export default class Logger {
 
   /**
    * Get the current log level
-   * @returns {string} - log level
+   * @returns {string} - Log level
    */
   get logLevel() {
     return this._logLevel;
@@ -87,7 +87,7 @@ export default class Logger {
 
   /**
    * Set the current log level
-   * @param {string} value - log level
+   * @param {string} value - Log level
    * @see Logger#getLogLevels
    */
   set logLevel(value) {

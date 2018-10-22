@@ -75,7 +75,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get if there are more resources to fetch. It indicates if the maxRows can be increased.
-   * @returns {boolean} - if more rows are available
+   * @returns {boolean} - If more rows are available
    */
   get hasMore() {
     return typeof this.availableRows === 'undefined' || this.availableRows > this.maxRows;
@@ -83,7 +83,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get if the instance is waiting for data
-   * @returns {boolean} - waiting for data
+   * @returns {boolean} - Waiting for data
    */
   get waiting() {
     return this._waiting;
@@ -91,7 +91,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the request parameters
-   * @returns {RequestParameters} - parameters
+   * @returns {RequestParameters} - Parameters
    */
   get parameters() {
     return this._parameters;
@@ -103,7 +103,7 @@ export default class ResourceLister extends EventEmitter {
    * If you set {@link ResourceLister#autoUpdate} to true then {@link ResourceLister#update}
    * will automatically be called when the parameters are updated.
    * @see ResourceLister#autoUpdate
-   * @param {RequestParameters} object - parameters
+   * @param {RequestParameters} object - Parameters
    */
   set parameters(object) {
     this.parameters.apply(object);
@@ -111,7 +111,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Resource constructor accessor, used for building the resource instance
-   * @returns {Constructor<ResourceBase>} - resource constructor
+   * @returns {Constructor<ResourceBase>} - Resource constructor
    */
   get Resource() {
     return this._Resource;
@@ -119,7 +119,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the route (url)
-   * @returns {string} - route
+   * @returns {string} - Route
    */
   get route() {
     return this._route;
@@ -127,7 +127,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the data
-   * @returns {Array<ResourceLister.Resource>} - data
+   * @returns {Array<ResourceLister.Resource>} - Data
    */
   get data() {
     return this._data;
@@ -135,7 +135,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the api instance
-   * @returns {Maps4News} - api instance
+   * @returns {Maps4News} - Api instance
    */
   get api() {
     return this._api;
@@ -145,7 +145,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the row count
    *
    * @see {ResourceLister.data}
-   * @returns {number} - row count
+   * @returns {number} - Row count
    */
   get rowCount() {
     return this.data.length;
@@ -153,7 +153,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the maximum amount of rows allowed
-   * @returns {number} - max rows
+   * @returns {number} - Max rows
    */
   get maxRows() {
     return this._maxRows;
@@ -161,7 +161,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Set the maximum amount of rows allowed
-   * @param {number} value - max rows
+   * @param {number} value - Max rows
    */
   set maxRows(value) {
     value = Number(value);
@@ -180,7 +180,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the number of rows the server has available
-   * @returns {number} - number of rows
+   * @returns {number} - Number of rows
    */
   get availableRows() {
     return this._availableRows;
@@ -191,7 +191,7 @@ export default class ResourceLister extends EventEmitter {
    *
    * @see ResourceLister#update
    * @see ResourceLister#parameters
-   * @param {boolean} value - auto update
+   * @param {boolean} value - Auto update
    */
   set autoUpdate(value) {
     value = Boolean(value);
@@ -310,7 +310,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Returns the iterable
-   * @returns {Iterator} - iterator
+   * @returns {Iterator} - Iterator
    */
   [Symbol.iterator]() {
     return this.data[Symbol.iterator]();
@@ -320,7 +320,7 @@ export default class ResourceLister extends EventEmitter {
    * Push a row to the data collection
    *
    * This will append the row or update an existing row based on the key. If autoMaxRows is set to true and maxRows only needs to be increased by one for the new resource to show up it will
-   * @param {ResourceLister.Resource} row - resource
+   * @param {ResourceLister.Resource} row - Resource
    * @param {boolean} autoMaxRows - Increase maxRows if needed
    * @returns {void}
    */

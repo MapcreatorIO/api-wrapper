@@ -283,7 +283,7 @@ export default class JobMonitor {
   /**
    * If internal users should be hidden. Updating this value won't take
    * effect until the {@link JobMonitor#update} method has been called.
-   * @param {boolean} [value=false] - hide internal users
+   * @param {boolean} [value=false] - Hide internal users
    */
   set hideInternal(value) {
     value = Boolean(value);
@@ -297,7 +297,7 @@ export default class JobMonitor {
 
   /**
    * If internal users should be hidden in the data
-   * @returns {boolean} - hide internal users
+   * @returns {boolean} - Hide internal users
    */
   get hideInternal() {
     return this._hideInternal || false;

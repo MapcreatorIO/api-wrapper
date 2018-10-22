@@ -55,7 +55,7 @@ export default class StorageManager extends StaticClass {
 
   /**
    * Get LocalStorageDriver instance
-   * @returns {LocalStorageDriver} - instance
+   * @returns {LocalStorageDriver} - Instance
    */
   static get localStorage() {
     return new LocalStorageDriver();
@@ -63,7 +63,7 @@ export default class StorageManager extends StaticClass {
 
   /**
    * Get CookiesDriver instance
-   * @returns {CookiesDriver} - instance
+   * @returns {CookiesDriver} - Instance
    */
   static get cookies() {
     return new CookiesDriver();
@@ -71,7 +71,7 @@ export default class StorageManager extends StaticClass {
 
   /**
    * Get FileDriver instance
-   * @returns {FileDriver} - instance
+   * @returns {FileDriver} - Instance
    */
   static get file() {
     return new FileDriver();
@@ -79,7 +79,7 @@ export default class StorageManager extends StaticClass {
 
   /**
    * Get DummyDriver instance
-   * @returns {DummyDriver} - instance
+   * @returns {DummyDriver} - Instance
    */
   static get dummy() {
     return new DummyDriver();
