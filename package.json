@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.1.2",
+    "axios": "^0.18.0",
     "case": "^1.5.3",
     "fetch-ponyfill": "^6.0.2",
     "formdata-polyfill": "^3.0.12",

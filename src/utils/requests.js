@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import axios from 'axios';
 import fetchPonyfill from 'fetch-ponyfill';
 import ApiError from '../errors/ApiError';
 import {windowTest} from './helpers';

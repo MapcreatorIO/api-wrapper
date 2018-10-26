@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import axios from 'axios';
 import {Enum} from './enums';
 
 import ApiError from './errors/ApiError';
@@ -209,6 +210,45 @@ export default class Maps4News extends mix(null, Injectable) {
   }
 
   /**
+   * Pre-configured Axios instance
+   * @return {AxiosInstance} - Axios instance
+   */
+  get axios() {
+    const instance = axios.create({
+      baseURL: `${this.host}/${this.version}/`,
+      responseType: 'json',
+      responseEncoding: 'utf8',
+      timeout: 30,
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    instance.defaults.headers.post['Content-Type'] = 'application/json';
+    instance.defaults.headers.put['Content-Type'] = 'application/json';
+    instance.defaults.headers.patch['Content-Type'] = 'application/json';
+
+    if (this.authenticated) {
+      instance.defaults.headers.common['Authorization'] = this.auth.token.toString();
+    }
+
+    // Retry requests if rate limiter is hit
+    instance.interceptors.response.use(null, error => {
+      if (!error.config || !error.response || error.response.status !== 429) {
+        Promise.reject(error);
+      }
+
+      const delay = error.response.headers['x-ratelimit-reset'] * 1000 || 500;
+
+      error.config.transformRequest = [data => data];
+
+      return new Promise(resolve => setTimeout(() => resolve(axios(error.config)), delay));
+    });
+
+    return instance;
+  }
+
+  /**
    * Request an url using the API token (if available)
    * @param {string} url - Relative or absolute url, api version will be prepended to relative urls
    * @param {string} method - Http method
@@ -219,22 +259,6 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {Promise} - Resolves with either an object, blob, buffer or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
    */
   request(url, method = 'GET', data = {}, headers = {}, bundleResponse = false) {
-    if (!url.startsWith('http')) {
-      // Removes '/' at the start of the string (if any)
-      url = url.replace(/(^\/+)/g, () => '');
-      url = `${this._host}/${this.version}/${url}`;
-    }
-
-    method = method.toUpperCase();
-
-    if (!(headers instanceof Headers)) {
-      headers = new Headers(headers);
-    }
-
-    if (this.authenticated) {
-      headers.set('Authorization', this.auth.token.toString());
-    }
-
     // Automatically detect possible content-type header
     const isFormData = data instanceof FormData;
 
