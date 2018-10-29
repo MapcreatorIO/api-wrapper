@@ -225,9 +225,10 @@ export default class PaginatedResourceListing {
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @returns {Promise<PaginatedResourceListing>} - Target page
+   * @throws ApiError
    */
-  getPage(page = this.page, perPage = this.perPage) {
+  async getPage(page = this.page, perPage = this.perPage) {
     const query = this.parameters.copy();
 
     query.page = page;
@@ -236,24 +237,19 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + query.encode();
 
-    return this.api.request(url, 'GET', {}, {}, true)
-      .then(output => {
-        const headers = output.response.headers;
+    const {data: {data}, headers} = await this.api.axios.get(url);
 
-        const getOrDefault = (x, y) => headers.has(x) ? headers.get(x) : y;
+    const rowCount = Number(headers['X-Paginate-Total'] || data.length);
+    const totalPages = Number(headers['X-Paginate-Pages'] || 1);
+    const parameters = this.parameters.copy();
 
-        const rowCount = Number(getOrDefault('X-Paginate-Total', output.data.length));
-        const totalPages = Number(getOrDefault('X-Paginate-Pages', 1));
-        const parameters = this.parameters.copy();
+    parameters.page = page;
 
-        parameters.page = page;
-
-        return new PaginatedResourceListing(
-          this.api, this.route, this._Target,
-          parameters, totalPages, rowCount,
-          output.data.map(row => new this._Target(this.api, row)),
-        );
-      });
+    return new PaginatedResourceListing(
+      this.api, this.route, this._Target,
+      parameters, totalPages, rowCount,
+      data.map(row => new this._Target(this.api, row)),
+    );
   }
 
   /**

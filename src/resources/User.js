@@ -56,14 +56,15 @@ export default class User extends CrudBase {
 
   /**
    * Get all known ips
-   * @returns {Promise} - Resolves with {@link array<string>} instance and rejects with {@link ApiError}
+   * @returns {Promise<string[]>} - List of ip addresses
+   * @throws ApiError
    */
-  ips() {
+  async ips() {
     const url = `${this.url}/ips`;
 
-    return this.api
-      .request(url)
-      .then(data => data.map(row => row['ip_address']));
+    const {data: {data}} = await this.api.axios.get(url);
+
+    return data.map(row => row['ip_address']);
   }
 
   /**

@@ -52,63 +52,57 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * Sync items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
-   * @throws TypeError If the provided items are not of the same type as the proxy target
-   * @see http://es6-features.org/#PromiseCombination
+   * @throws TypeError
+   * @throws ApiError
    */
-  sync(items) {
-    return this._modifyResourceLink(items, 'PATCH');
+  async sync(items) {
+    await this._modifyResourceLink(items, 'PATCH');
   }
 
   /**
    * Attach items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
-   * @throws TypeErrorIf the provided items are not of the same type as the proxy target
-   * @see http://es6-features.org/#PromiseCombination
+   * @throws TypeError
+   * @throws ApiError
    */
-  attach(items) {
-    return this._modifyResourceLink(items, 'POST');
+  async attach(items) {
+    await this._modifyResourceLink(items, 'POST');
   }
 
   /**
    * Detach items from the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with an {@link ApiError} instance.
-   * @throws TypeError If the provided items are not of the same type as the proxy target
-   * @see http://es6-features.org/#PromiseCombination
+   * @throws TypeError
+   * @throws ApiError
    */
-  detach(items) {
-    return this._modifyResourceLink(items, 'DELETE');
+  async detach(items) {
+    await this._modifyResourceLink(items, 'DELETE');
   }
 
   /**
    * Attach parent resource to all organisations
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  attachAll() {
-    const url = this.baseUrl + '/all';
-
-    return this.api.request(url, 'POST');
+  async attachAll() {
+    await this.api.axios.post(`${this.baseUrl}/all`);
   }
 
   /**
    * Detach parent resource to all organisations
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  detachAll() {
-    const url = this.baseUrl + '/all';
-
-    return this.api.request(url, 'DELETE');
+  async detachAll() {
+    await this.api.axios.delete(`${this.baseUrl}/all`);
   }
 
   /**
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync, attach or detach
    * @param {string} method - http method
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
+   * @throws TypeError
    * @private
    */
-  _modifyResourceLink(items, method) {
+  async _modifyResourceLink(items, method) {
     if (!(items instanceof Array)) {
       items = [items];
     }
@@ -122,6 +116,10 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
       throw new TypeError('Expected items to be of type Array<ResourceBase>, Array<number>, ResourceBase or number}');
     }
 
-    return this.api.request(this.baseUrl, method, {keys});
+    await this.api.axios.request({
+      url: this.baseUrl,
+      method,
+      data: {keys},
+    });
   }
 }

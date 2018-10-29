@@ -59,50 +59,46 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Sync organisations to the parent resource
    * The organisations attached to the target resource will be replaced with the organisations provided in the request.
    * @param {Array<Organisation|number>} organisations - List of items to sync
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  sync(organisations) {
-    return this._modifyLink(organisations, 'PATCH', this.Target);
+  async sync(organisations) {
+    await this._modifyLink(organisations, 'PATCH', this.Target);
   }
 
   /**
    * Attach organisations to the parent resource
    * The provided organisations will be attached to the resource if they're not already attached
    * @param {Array<Organisation|number>} organisations - List of items to attach
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  attach(organisations) {
-    return this._modifyLink(organisations, 'POST', this.Target);
+  async attach(organisations) {
+    await this._modifyLink(organisations, 'POST', this.Target);
   }
 
   /**
    * Detach organisations from the parent resource
    * The provided organisations will be detached from the resource
    * @param {Array<Organisation|number>} organisations - List of items to detach
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  detach(organisations) {
-    return this._modifyLink(organisations, 'DELETE', this.Target);
+  async detach(organisations) {
+    await this._modifyLink(organisations, 'DELETE', this.Target);
   }
 
   /**
    * Attach all organisations to the parent resource
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  attachAll() {
-    const url = this.baseUrl + '/all';
-
-    return this.api.request(url, 'POST');
+  async attachAll() {
+    await this.api.axios.post(`${this.baseUrl}/all`);
   }
 
   /**
    * Detach all organisations from the parent resource
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    */
-  detachAll() {
-    const url = this.baseUrl + '/all';
-
-    return this.api.request(url, 'DELETE');
+  async detachAll() {
+    await this.api.axios.delete(`${this.baseUrl}/all`);
   }
 
   /**
@@ -111,10 +107,10 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {String} method - Http method to use
    * @param {function(new:ResourceBase)} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
-   * @returns {Promise} - Promise will resolve with no value and reject with an {@link ApiError} instance.
+   * @throws ApiError
    * @protected
    */
-  _modifyLink(items, method, Type, path = null) {
+  async _modifyLink(items, method, Type, path = null) {
     if (!path) {
       const resource = Type.resourceName.replace(/s+$/, '');
 
@@ -129,7 +125,8 @@ export default class OrganisationProxy extends SimpleResourceProxy {
     }
 
     const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
+    const url = `${this.parent.url}/${path}`;
 
-    return this.api.request(`${this.parent.url}/${path}`, method, {keys});
+    await this.api.axios.request({url, method, data: {keys}});
   }
 }

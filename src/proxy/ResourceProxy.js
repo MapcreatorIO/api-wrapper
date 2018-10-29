@@ -76,18 +76,19 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * Get target resource
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @param {String} deleted - Determains if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<ResourceBase>} - Target resource
+   * @throws ApiError
    */
-  get(id, deleted = RequestParameters.deleted) {
+  async get(id, deleted = RequestParameters.deleted) {
     const data = Object.assign({}, this._seedData, this._parseSelector(id));
     let url = this.new(data).url;
     const glue = url.includes('?') ? '&' : '?';
 
     url += glue + encodeQueryString({deleted});
 
-    return this._api
-      .request(url)
-      .then(result => this.new(result));
+    const {data: {data: result}} = await this.api.axios.get(url);
+
+    return this.new(result);
   }
 
   /**

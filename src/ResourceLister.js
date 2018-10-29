@@ -277,8 +277,8 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Fetch more data from the server
-   * @returns {Promise<void>} - Resolves when _availableRows has been updated
    * @private
+   * @todo refactor fetching code, needs simplification
    */
   async _fetchMore() {
     const startPage = 1 + Math.floor(this.rowCount / this.parameters.perPage);
@@ -294,7 +294,7 @@ export default class ResourceLister extends EventEmitter {
 
       const url = this.route + glue + parameters.encode();
 
-      const promise = this.api.request(url, 'GET', {}, {}, true);
+      const promise = this.api.axios.get(url).then(x => x.data);
 
       promises.push(promise);
     }

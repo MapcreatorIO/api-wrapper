@@ -254,10 +254,11 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
-   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<ResourceBase>} - Refreshed instance
+   * @throws ApiError
    */
   async refresh(updateSelf = true) {
-    const data = await this._api.request(this.url);
+    const {data: {data}} = await this.api.axios.get(this.url);
 
     if (updateSelf) {
       this._properties = {};

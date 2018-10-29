@@ -107,9 +107,10 @@ export default class ImageHandler {
    *     });
    *   });
    * });
+   * @todo fix nodejs support
    */
   async download() {
-    const data = await this.api.request(this.url);
+    const {data} = await this.api.axios.get(this.url, {responseType: 'blob'});
 
     if (isNode()) {
       return data;
