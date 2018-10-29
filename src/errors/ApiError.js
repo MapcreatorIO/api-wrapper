@@ -35,20 +35,52 @@
  */
 export default class ApiError {
   /**
-   * @param {String} type - Error type
-   * @param {String} message - Error message
-   * @param {Number} code - Http error code
-   * @param {String|null} trace - Stack trace
+   * @param {AxiosError} error - Axios error
+   * @param {AxiosRequestConfig} error.config - Request config
+   * @param {XMLHttpRequest|ClientRequest} request - Request
+   * @param {AxiosResponse} response - Response
    */
-  constructor(type, message, code, trace = null) {
+  constructor({config, request, response}) {
+    this._config = config;
+    this._response = response;
+    this._request = request;
+
+    this._code = response.status;
+
+    const {type, message, trace} = response.data.error;
+
     this._type = type;
     this._message = message;
-    this._code = code;
     this._trace = [];
 
+    // Only available when the api is in debug mode
     if (typeof trace === 'string') {
       this._trace = ApiError._parseTrace(trace);
     }
+  }
+
+  /**
+   * Get the request config
+   * @return {AxiosRequestConfig} - Request config
+   */
+  get config() {
+    return this._config;
+  }
+
+  /**
+   * Get the axios response
+   * @return {AxiosResponse} - Axios response
+   */
+  get response() {
+    return this._response;
+  }
+
+  /**
+   * Get the axios request
+   * @return {Object} - Request object
+   */
+  get request() {
+    return this._request;
   }
 
   /**
@@ -77,6 +109,7 @@ export default class ApiError {
 
   /**
    * Returns if the error contained a stacktrace that has been parsed
+   * This should only be true if the API is in debug mode.
    * @returns {boolean} - If the Error contains a stacktrace
    */
   get hasTrace() {

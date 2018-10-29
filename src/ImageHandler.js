@@ -76,10 +76,10 @@ export default class ImageHandler {
 
   /**
    * Delete image
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @throws ApiError
    */
-  delete() {
-    return this._api.request(this.url, 'DELETE');
+  async delete() {
+    await this.api.axios.delete(this.url);
   }
 
   /**
@@ -109,7 +109,7 @@ export default class ImageHandler {
    * });
    */
   async download() {
-    const data = await this.api.request(`${this.url}`);
+    const data = await this.api.request(this.url);
 
     if (isNode()) {
       return data;
@@ -120,20 +120,18 @@ export default class ImageHandler {
 
   /**
    * Upload new image
-   * @param {File|Buffer} image - Image file
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @param {ArrayBuffer|ArrayBufferView|File|Blob|Stream|Buffer} image - Image file
+   * @todo test nodejs support
    */
-  upload(image) {
-    const Type = isNode() ? Buffer : File;
+  async upload(image) {
+    if (!isNode()) {
+      const data = new FormData();
 
-    if (!isParentOf(Type, image)) {
-      throw new TypeError('Expected image to be of type File');
+      data.set('image', image);
+
+      await this.api.axios.post(this.url, data);
+    } else {
+      await this.api.axios.post(this.url, {image});
     }
-
-    const formData = new FormData();
-
-    formData.append('image', image);
-
-    return this.api.request(this.url, 'POST', formData);
   }
 }

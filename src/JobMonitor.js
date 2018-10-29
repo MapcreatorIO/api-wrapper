@@ -94,6 +94,7 @@ export default class JobMonitor {
   /**
    * Update the job list
    * @returns {Promise<Number, ApiError>} - Resolves with the number of updated rows
+   * @todo refactor
    */
   update() {
     if (this.waiting || this._lastUpdate === this._getTimestamp()) {
@@ -145,7 +146,10 @@ export default class JobMonitor {
 
       const url = this._baseUrl + '&' + encodeQueryString(params);
 
-      requests.push(this.api.request(url).then(data => data.map(x => new JobMonitorRow(this.api, x))));
+      const request = this.api.axios.get(url)
+        .then(response => response.data.data.map(x => new JobMonitorRow(this.api, x)));
+
+      requests.push(request);
 
       requestedRowCount += perPage;
       rowCountDiff -= perPage;
@@ -184,8 +188,9 @@ export default class JobMonitor {
 
     this._lastUpdate = this._getTimestamp();
 
-    out.push(this.api
-      .request(url)
+    out.push(this.api.axios
+      .get(url)
+      .then(response => response.data.data)
       .then(data => data.map(x => new JobMonitorRow(this.api, x)))
       .then(data => {
         const lookup = data.map(x => x.id);

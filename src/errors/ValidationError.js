@@ -37,14 +37,15 @@ import ApiError from './ApiError';
  */
 export default class ValidationError extends ApiError {
   /**
-   * @param {String} type - Error type
-   * @param {String} message - Error message
-   * @param {Number} code - Http error code
-   * @param {Object<String, Array<String>>} validationErrors - Any validation errors
+   * @param {AxiosError} error - Axios error
+   * @param {AxiosRequestConfig} error.config - Request config
+   * @param {XMLHttpRequest|ClientRequest} request - Request
+   * @param {AxiosResponse} response - Response
    */
-  constructor(type, message, code, validationErrors) {
-    super(type, message, code);
-    this._validationErrors = validationErrors;
+  constructor({config, request, response}) {
+    super({config, request, response});
+
+    this._validationErrors = response.data.error['validation_errors'];
   }
 
   /**

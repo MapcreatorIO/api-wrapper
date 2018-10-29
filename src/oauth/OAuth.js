@@ -92,8 +92,8 @@ export default class OAuth {
    * Invalidates the session token
    * @async
    * @returns {Promise<void>} - Promise that resolves with no value
-   * @throws {OAuthError} - If de-authentication fails
-   * @throws {ApiError} - If the api returns errors
+   * @throws OAuthError - If de-authentication fails
+   * @throws ApiError - If the api returns errors
    */
   async logout() {
     if (!this.token) {

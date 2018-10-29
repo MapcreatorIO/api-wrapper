@@ -63,19 +63,16 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get the job result
-   * @returns {Promise} - Resolves with a {@link JobResult} instance and rejects with {@link ApiError}
+   * @returns {Promise<JobResult>} - The associated job result
+   * @throws ApiError
    */
-  result() {
-    const url = `${this.url}/result`;
+  async result() {
+    const {data: {data}} = await this.api.axios.get(`${this.url}/result`);
 
-    return this.api
-      .request(url)
-      .then(data => {
-        data.jobId = this.jobId;
-        data.revision = this.revision;
+    data.jobId = this.jobId;
+    data.revision = this.revision;
 
-        return new JobResult(this.api, data);
-      });
+    return new JobResult(this.api, data);
   }
 
   /**
@@ -97,10 +94,11 @@ export default class JobRevision extends CrudBase {
    * Save updated job revision
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
-   * @returns {Promise} - Resolves with a new {@link JobRevision} instance and rejects with {@link ApiError}
+   * @returns {Promise<JobRevision>} - New job revision
    * @throws TypeError
+   * @throws ApiError
    */
-  save(object = {}, layers = null) {
+  async save(object = {}, layers = null) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -119,50 +117,46 @@ export default class JobRevision extends CrudBase {
       data.layers = layers;
     }
 
-    return this.api
-      .request(this.baseUrl, 'POST', data)
-      .then(data => new JobRevision(this.api, data));
-  }
+    const response = await this.api.axios.post(this.baseUrl, data);
+
+    return new JobRevision(this.api, response.data.data);
+}
 
   /**
    * Get job object
-   * @returns {Promise} - Resolves with {@link Object} instance containing the map object and rejects with {@link ApiError}
+   * @returns {Promise<Object>} - The map object
+   * @throws ApiError
    * @todo document object format
    */
-  object() {
-    const url = `${this.url}/object`;
+  async object() {
+    const {data: {data}} = await this.api.axios.get(`${this.url}/object`);
 
-    return this.api.request(url);
+    return data;
   }
 
   /**
    * Build the revision
-   * @param {String} callbackUrl - Optional callback url for when the job completes
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @param {String} callback - Optional callback url for when the job completes
+   * @throws ApiError
    */
-  build(callbackUrl) {
-    const url = `${this.url}/build`;
-    const data = {callback: callbackUrl};
-
-    return this.api.request(url, 'POST', data);
+  async build(callback) {
+    await this.api.axios.post(`${this.url}/build`, {callback});
   }
 
   /**
    * Cancels a running job
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
    */
-  cancel() {
-    const url = `${this.url}/cancel`;
-
-    return this.api.request(url, 'POST');
+  async cancel() {
+    await this.api.axios.post(`${this.url}/cancel`);
   }
 
   /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
-   * @returns {Promise} - Resolves with a {@link String} containing the share link and rejects with {@link ApiError}
+   * @returns {Promise<String>} - the share link
+   * @throws ApiError
    */
-  share(visibility = JobShare.visibility.PRIVATE) {
+  async share(visibility = JobShare.visibility.PRIVATE) {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
@@ -170,18 +164,16 @@ export default class JobRevision extends CrudBase {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
-    const url = `${this.url}/share`;
+    const {data: {data}} = await this.api.axios.post(`${this.url}/share`, {visibility});
 
-    return this.api.request(url, 'POST', {visibility});
+    return data.url;
   }
 
   /**
    * Clones a job revision to the user requesting it
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @throws ApiError
    */
-  clone() {
-    const url = `${this.url}/clone`;
-
-    return this.api.request(url, 'POST');
+  async clone() {
+    await this.api.axios.post(`${this.url}/clone`);
   }
 }

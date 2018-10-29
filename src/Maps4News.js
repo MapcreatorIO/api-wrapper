@@ -76,7 +76,7 @@ import {fnv32b} from './utils/hash';
 import Logger from './utils/Logger';
 import {isNode} from './utils/node';
 import {isParentOf, mix} from './utils/reflection';
-import {fetch, FormData, Headers} from './utils/requests';
+import {fetch, FormData, retry429ResponseInterceptor, transformAxiosErrors} from './utils/requests';
 
 /**
  * Base API class
@@ -218,7 +218,7 @@ export default class Maps4News extends mix(null, Injectable) {
       baseURL: `${this.host}/${this.version}/`,
       responseType: 'json',
       responseEncoding: 'utf8',
-      timeout: 30,
+      timeout: 30000, // 30 seconds
       headers: {
         'Accept': 'application/json',
       },
@@ -233,17 +233,10 @@ export default class Maps4News extends mix(null, Injectable) {
     }
 
     // Retry requests if rate limiter is hit
-    instance.interceptors.response.use(null, error => {
-      if (!error.config || !error.response || error.response.status !== 429) {
-        Promise.reject(error);
-      }
+    instance.interceptors.response.use(null, retry429ResponseInterceptor);
 
-      const delay = error.response.headers['x-ratelimit-reset'] * 1000 || 500;
-
-      error.config.transformRequest = [data => data];
-
-      return new Promise(resolve => setTimeout(() => resolve(axios(error.config)), delay));
-    });
+    // Transform errors
+    instance.interceptors.response.use(null, transformAxiosErrors);
 
     return instance;
   }
@@ -661,19 +654,26 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Get SVG set types
    * @see {@link SvgSet}
-   * @returns {Promise} - Resolves with a new {@link Enum} instance and rejects with {@link ApiError}
+   * @returns {Promise<Enum>} - Contains all the possible SVG set types
+   * @throws ApiError
+   * @todo make function name plural
    */
-  getSvgSetType() {
-    return this.request('/svgs/sets/types').then(data => new Enum(data, true));
+  async getSvgSetType() {
+    const {data: {data}} = await this.axios.get('/svgs/sets/types');
+
+    return new Enum(data, true);
   }
 
   /**
    * Get font styles
    * @see {@link Font}
-   * @returns {Promise} - Resolves with a new {@link Enum} instance and rejects with {@link ApiError}
+   * @returns {Promise<Enum>} - Contains all the possible font styles
+   * @throws ApiError
    */
-  getFontStyles() {
-    return this.request('/fonts/styles').then(data => new Enum(data, true));
+  async getFontStyles() {
+    const {data: {data}} = await this.axios.get('/fonts/styles');
+
+    return new Enum(data, true);
   }
 
   /**

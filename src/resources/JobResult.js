@@ -84,10 +84,13 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get the remote output url
-   * @returns {Promise} -  Resolves with a {@link String} containing the url to the output and rejects with {@link ApiError}
+   * @returns {Promise<string>} - The url to the output
+   * @throws ApiError
    */
-  getOutputUrl() {
-    return this.api.request(this.outputUrlUrl).then(x => x.url);
+  async getOutputUrl() {
+    const {data: {data}} = await this.api.axios.get(this.outputUrlUrl);
+
+    return data.url;
   }
 
   /**
@@ -139,15 +142,15 @@ export default class JobResult extends ResourceBase {
    * This method is for internal use for our support team.
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
-   * @returns {Promise} - A promise that resolves with no data
    */
-  dealWith(value = true) {
+  async dealWith(value = true) {
+    value = Boolean(value);
+
     const method = value ? 'POST' : 'DELETE';
+    const url = this.url + '/deal-with';
 
-    return this.api.request(this.url + '/deal-with', method).then(() => {
-      this.dealtWith = value;
+    await this.api.axios.request({method, url});
 
-      return value;
-    });
+    this.dealtWith = value;
   }
 }

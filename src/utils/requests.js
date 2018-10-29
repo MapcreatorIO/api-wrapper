@@ -33,6 +33,7 @@
 import axios from 'axios';
 import fetchPonyfill from 'fetch-ponyfill';
 import ApiError from '../errors/ApiError';
+import ValidationError from '../errors/ValidationError';
 import {windowTest} from './helpers';
 import {isNode} from './node';
 
@@ -148,4 +149,44 @@ export function downloadFile(url, headers = {}) {
 
       return out;
     });
+}
+
+export function retry429ResponseInterceptor(error) {
+  if (!error.config || !error.response || error.response.status !== 429) {
+    window.z = error;
+
+    return Promise.reject(error);
+  }
+
+  const delay = error.response.headers['x-ratelimit-reset'] * 1000 || 500;
+
+  error.config.transformRequest = [data => data];
+
+  return new Promise(resolve => setTimeout(() => resolve(axios(error.config)), delay));
+}
+
+export function transformAxiosErrors(error) {
+  const data = error.response.data;
+
+  if (typeof data !== 'object' || data.success !== false) {
+    return Promise.reject(error);
+  }
+
+  if (data.error['validation_errors']) {
+    return Promise.reject(new ValidationError(error));
+  } else {
+    return Promise.reject(new ApiError(error));
+  }
+
+  // if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
+  //   this.logger.warn('Lost Maps4News session, please re-authenticate');
+  //
+  //   if (this.autoLogout) {
+  //     this.logout();
+  //   }
+  // }
+}
+
+export function stripAuthorizationOnRedirect() {
+
 }
