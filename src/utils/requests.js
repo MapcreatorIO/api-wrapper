@@ -184,7 +184,3 @@ export function transformAxiosErrors(error) {
   //   }
   // }
 }
-
-export function stripAuthorizationOnRedirect() {
-
-}

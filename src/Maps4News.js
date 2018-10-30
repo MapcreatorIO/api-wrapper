@@ -76,7 +76,7 @@ import {fnv32b} from './utils/hash';
 import Logger from './utils/Logger';
 import {isNode} from './utils/node';
 import {isParentOf, mix} from './utils/reflection';
-import {fetch, FormData, retry429ResponseInterceptor, transformAxiosErrors} from './utils/requests';
+import {custom3xxHandler, fetch, FormData, retry429ResponseInterceptor, transformAxiosErrors} from './utils/requests';
 
 /**
  * Base API class
@@ -221,6 +221,7 @@ export default class Maps4News extends mix(null, Injectable) {
       timeout: 30000, // 30 seconds
       headers: {
         'Accept': 'application/json',
+        'X-No-CDN-Redirect': 'true',
       },
     });
 
