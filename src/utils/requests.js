@@ -153,8 +153,6 @@ export function downloadFile(url, headers = {}) {
 
 export function retry429ResponseInterceptor(error) {
   if (!error.config || !error.response || error.response.status !== 429) {
-    window.z = error;
-
     return Promise.reject(error);
   }
 

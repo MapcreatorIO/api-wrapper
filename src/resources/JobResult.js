@@ -147,7 +147,7 @@ export default class JobResult extends ResourceBase {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';
-    const url = this.url + '/deal-with';
+    const url = `${this.url}/deal-with`;
 
     await this.api.axios.request({method, url});
 
