@@ -36,12 +36,15 @@ import {startWebserver, stopWebserver} from '../util';
 let port = 0;
 let host = 'http://localhost:' + port;
 
+const isWin = process.platform === 'win32';
+const _test = isWin ? xtest : test; // Makes sure tests are skipped if we're running windows
+
 beforeAll(() => {
   port = startWebserver('tests/scripts');
   host = 'http://localhost:' + port;
 });
 
-test('PasswordFlow should auth', async () => {
+_test('PasswordFlow should auth', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
   flow.path = '/oauth/passwordFlow.php';
@@ -50,12 +53,12 @@ test('PasswordFlow should auth', async () => {
   flow.host = host;
   expect(flow.host).toEqual(host);
 
-  const token = await flow.authenticate()
+  const token = await flow.authenticate();
 
   expect(token.expired).toEqual(false);
 });
 
-test('PasswordFlow should catch errors', () => {
+_test('PasswordFlow should catch errors', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
   flow.path = '/oauth/passwordFlow.php?error=mock';
@@ -63,9 +66,11 @@ test('PasswordFlow should catch errors', () => {
 
   expect.assertions(1);
 
-  return flow
-    .authenticate()
-    .catch(e => expect(e._error).toEqual('mock_error'));
+  try {
+    await flow.authenticate();
+  } catch (err) {
+    expect(err.error).toEqual('mock_error');
+  }
 });
 
 afterAll(() => {
