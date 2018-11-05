@@ -33,7 +33,6 @@
 import axios from 'axios';
 import OAuthError from '../errors/OAuthError';
 import {isNode} from '../utils/node';
-import {encodeQueryString, fetch} from '../utils/requests';
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 

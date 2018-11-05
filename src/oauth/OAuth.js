@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import axios from 'axios';
 import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
 import ApiError from '../errors/ApiError';
 import OAuthError from '../errors/OAuthError';
@@ -101,20 +102,14 @@ export default class OAuth {
     }
 
     const url = this.host + '/oauth/logout';
-    const init = {
-      method: 'POST',
-      mode: 'cors',
-      redirect: 'follow',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': this.token.toString(),
-      },
-    };
 
     try {
-      const response = await fetch(url, init);
-      const body = await response.text();
-      const data = JSON.parse(body);
+      const {data} = await axios.post(url, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': this.token.toString(),
+        },
+      });
 
       if (!data.success) {
         throw new ApiError(data.error.type, data.error.message, response.status);
