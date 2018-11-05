@@ -35,6 +35,7 @@ import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
 import Injectable from '../../traits/Injectable';
+import {fnv32b} from '../../utils/hash';
 import {isParentOf, mix} from '../../utils/reflection';
 
 function unique(input) {
@@ -418,7 +419,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Macro for resource listing
-   * @param {ResourceBase} Target - Target object
+   * @param {string|function} Target - Target object
    * @param {?String} url - Target url, if null it will guess
    * @param {object} seedData - Internal use, used for seeding SimpleResourceProxy::new
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
@@ -426,11 +427,62 @@ export default class ResourceBase extends mix(null, Injectable) {
    */
   _proxyResourceList(Target, url = null, seedData = {}) {
     if (!url) {
-      const resource = Target.resourceName.replace(/s+$/, '');
+      url = Target.resourceName.replace(/s+$/, '') + 's';
+    }
 
-      url = `${this.url}/${resource}s`;
+    if (typeof url === 'string' && !url.startsWith('/') && !url.match(/https?:/)) {
+      url = this.url + '/' + url;
     }
 
     return new SimpleResourceProxy(this.api, Target, url, seedData);
+  }
+
+  /**
+   * Static proxy generation
+   * @param {string|function} Target - Constructor or url
+   * @param {function?} Constructor - Constructor for a resource that the results should be cast to
+   * @param {Object<string, *>} seedData - Optional data to seed the resolved resources
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   * @example
+   * user.static('jobs').lister();
+   *
+   * @example
+   * class FooBar extends ResourceBase {
+   *    static get resourceName() {
+   *      return 'custom';
+   *    }
+   * }
+   *
+   * api.static(FooBar)
+   *   .get(1)
+   *   .then(console.log);
+   */
+  static(Target, Constructor = ResourceBase, seedData = {}) {
+    let url;
+
+    if (typeof Target === 'string') {
+      url = this.url + '/' + Target;
+      const name = Constructor.name || 'AnonymousResource';
+
+      Target = class AnonymousResource extends Constructor {
+        static get resourceName() {
+          return Object.getPrototypeOf(this).resourceName || 'anonymous';
+        }
+
+        get resourcePath() {
+          return url;
+        }
+      };
+
+      Object.defineProperty(Target, 'name', {
+        value: name + '_' + fnv32b(url),
+      });
+    }
+
+    if (!isParentOf(ResourceBase, Target)) {
+      throw new TypeError('Expected Target to be of type String or ResourceBase constructor');
+    }
+
+    return this._proxyResourceList(Target, url, seedData);
   }
 }
