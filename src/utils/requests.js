@@ -118,6 +118,8 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
  * @private
  */
 export function downloadFile(url, headers = {}) {
+  headers['X-No-CDN-Redirect'] = 'true';
+
   const out = {};
 
   return fetch(url, {headers})
