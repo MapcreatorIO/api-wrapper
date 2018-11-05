@@ -31,10 +31,8 @@
  */
 
 import axios from 'axios';
-import {Enum} from './enums';
 
-import ApiError from './errors/ApiError';
-import ValidationError from './errors/ValidationError';
+import {Enum} from './enums';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
 import OAuthToken from './oauth/OAuthToken';
@@ -74,9 +72,8 @@ import ResourceBase from './resources/base/ResourceBase';
 import Injectable from './traits/Injectable';
 import {fnv32b} from './utils/hash';
 import Logger from './utils/Logger';
-import {isNode} from './utils/node';
 import {isParentOf, mix} from './utils/reflection';
-import {custom3xxHandler, fetch, FormData, retry429ResponseInterceptor, transformAxiosErrors} from './utils/requests';
+import {custom3xxHandler, retry429ResponseInterceptor, transformAxiosErrors} from './utils/requests';
 
 /**
  * Base API class
@@ -240,126 +237,6 @@ export default class Maps4News extends mix(null, Injectable) {
     instance.interceptors.response.use(null, transformAxiosErrors);
 
     return instance;
-  }
-
-  /**
-   * Request an url using the API token (if available)
-   * @param {string} url - Relative or absolute url, api version will be prepended to relative urls
-   * @param {string} method - Http method
-   * @param {string|object} data - Raw string or object. If an object is passed it will be encoded
-   *                               and the content-type will be set to `application/json`
-   * @param {object} headers - Any headers that should be set for the request
-   * @param {boolean} bundleResponse - When set to true the promise will resolve with an object {response: {@link Response}, data: *}
-   * @returns {Promise} - Resolves with either an object, blob, buffer or the raw data by checking the `Content-Type` header and rejects with {@link ApiError}
-   */
-  request(url, method = 'GET', data = {}, headers = {}, bundleResponse = false) {
-    // Automatically detect possible content-type header
-    const isFormData = data instanceof FormData;
-
-    if (typeof data === 'object' && !isFormData) {
-      data = JSON.stringify(data);
-
-      if (!headers.has('Content-Type')) {
-        headers.set('Content-Type', 'application/json');
-      }
-    } else if (data && !headers.has('Content-Type') && !isFormData) {
-      // headers.set('Content-Type', 'application/x-www-form-urlencoded');
-    }
-
-    if (!headers.has('Accept')) {
-      headers.set('Accept', 'application/json');
-    }
-
-    if (['GET', 'HEAD'].includes(method)) {
-      // eslint-disable-next-line no-undefined
-      data = undefined;
-    }
-
-    const init = {
-      headers, method,
-      redirect: 'follow',
-      mode: 'cors',
-    };
-
-    if (data) {
-      init.body = data;
-    }
-
-    return this._fetch(url, init, bundleResponse);
-  }
-
-  _fetch(url, init, bundleResponse) {
-    return fetch(url, init).then(response => {
-      const respond = data => !bundleResponse ? data : {response, data};
-
-      if (response.status === 429) {
-        const resetTimestamp = Number(response.headers.get('X-RateLimit-Reset')) * 1000;
-        const waitTime = resetTimestamp - Date.now();
-
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            this._fetch(url, init, bundleResponse).then(resolve).catch(reject);
-          }, waitTime);
-        });
-      }
-
-      // Check if there is an error response and parse it
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw this._parseErrorResponse(data, response.status);
-        });
-      }
-
-      if (response.headers.has('Content-Type')) {
-        const contentType = response.headers.get('Content-Type').toLowerCase();
-
-        // Any type of text
-        if (contentType.startsWith('text/')) {
-          return response.text().then(respond);
-        }
-
-        // Response data
-        if (contentType === 'application/json') {
-          return response.json()
-            .then(x => {
-              // Just in case, code path should in theory never be reached
-              if (typeof x.success === 'boolean' && !x.success) {
-                throw this._parseErrorResponse(x, response.status);
-              }
-
-              return x;
-            })
-            .then(x => x.data ? x.data : {})
-            .then(respond);
-        }
-      }
-
-      if (isNode()) {
-        return response.buffer().then(respond);
-      }
-
-      return response.blob().then(respond);
-    });
-  }
-
-  _parseErrorResponse(data, status) {
-    const err = data.error;
-
-    if (!err['validation_errors']) {
-      const apiError = new ApiError(err.type, err.message, status, err.trace);
-
-      if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
-        this.logger.warn('Lost Maps4News session, please re-authenticate');
-
-        if (this.autoLogout) {
-          this.logout();
-        }
-      }
-
-      return apiError;
-    }
-
-    return new ValidationError(err.type, err.message, status, err['validation_errors']);
   }
 
   /**
