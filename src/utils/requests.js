@@ -166,6 +166,10 @@ export function retry429ResponseInterceptor(error) {
 }
 
 export function transformAxiosErrors(error) {
+  if (!error || !error.response || !error.response.data) {
+    return Promise.reject(error);
+  }
+
   const data = error.response.data;
 
   if (typeof data !== 'object' || data.success !== false) {

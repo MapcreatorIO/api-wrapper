@@ -253,7 +253,6 @@ test('axios transforms validation errors', async () => {
   }
 });
 
-// @todo 429 test
-test('axios retries http 429 response', async () => {
-
+xtest('axios retries http 429 response', async () => {
+  // @todo
 });
