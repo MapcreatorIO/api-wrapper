@@ -218,6 +218,37 @@ test('axios transforms errors', async () => {
   }
 });
 
+test('axios transforms validation errors', async () => {
+  const api = new Maps4News('');
+
+  const response = {
+    success: false,
+    error: {
+      type: 'ValidationException',
+      message: 'The given data was invalid.',
+      'validation_errors': {
+        name: ['The name field is required.'],
+      },
+    },
+  };
+
+  moxios.wait(function () {
+    const request = moxios.requests.mostRecent();
+
+    request.respondWith({
+      status: 422, response,
+    });
+  });
+
+  try {
+    api.users.new({}).save();
+  } catch (err) {
+    expect(err.error).toEqual(response.error.type);
+    expect(err.message).toEqual(response.error.message);
+    expect(err.messages).toEqual(response.error['validation_errors'].name);
+  }
+});
+
 // test('axios retries http 429 response', () => {
 //
 // });
