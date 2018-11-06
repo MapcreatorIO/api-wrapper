@@ -16,4 +16,7 @@ module.exports = {
     'default',
     ['jest-junit', {outputDirectory: 'build'}],
   ],
+  setupFiles: [
+    '<rootDir>/tests/setup.js',
+  ],
 };

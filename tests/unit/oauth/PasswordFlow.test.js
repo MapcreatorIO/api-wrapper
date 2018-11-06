@@ -36,15 +36,6 @@ import PasswordFlow from '../../../src/oauth/PasswordFlow';
 const isWin = process.platform === 'win32';
 const _test = isWin ? xtest : test; // Makes sure tests are skipped if we're running windows
 
-beforeAll(() => {
-  moxios.install();
-});
-
-afterAll(() => {
-  moxios.uninstall();
-});
-
-
 _test('PasswordFlow should auth', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 

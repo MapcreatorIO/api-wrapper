@@ -30,6 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import moxios from 'moxios';
+import Maps4News from '../../src/Maps4News';
 import Trait from '../../src/traits/Trait';
 import {fnv32b, hashObject} from '../../src/utils/hash';
 import {isNode} from '../../src/utils/node';
@@ -188,3 +190,34 @@ test('getTypeName correctly gets the type name', () => {
   expect(getTypeName(Date)).toEqual('Date');
   expect(getTypeName(new Date())).toEqual('Date');
 });
+
+test('axios transforms errors', async () => {
+  const api = new Maps4News('');
+
+  const response = {
+    success: false,
+    error: {
+      type: 'ModelNotFoundException',
+      message: 'No query results for model [App\\Models\\Database\\User] 123',
+    },
+  };
+
+  moxios.wait(function () {
+    const request = moxios.requests.mostRecent();
+
+    request.respondWith({
+      status: 404, response,
+    });
+  });
+
+  try {
+    api.users.get(123);
+  } catch (err) {
+    expect(err.error).toEqual(response.error.type);
+    expect(err.message).toEqual(response.error.message);
+  }
+});
+
+// test('axios retries http 429 response', () => {
+//
+// });
