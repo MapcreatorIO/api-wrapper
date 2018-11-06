@@ -218,7 +218,6 @@ export default class Maps4News extends mix(null, Injectable) {
       timeout: 30000, // 30 seconds
       headers: {
         'Accept': 'application/json',
-        'X-No-CDN-Redirect': 'true',
       },
     });
 
