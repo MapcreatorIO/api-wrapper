@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, MapCreator
+ * Copyright (c) 2018, MapCreator
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,6 +91,6 @@ _test('PasswordFlow should catch errors', async () => {
   try {
     await flow.authenticate();
   } catch (err) {
-    expect(err.error).toEqual('mock_error');
+    expect(err._error).toEqual('mock_error');
   }
 });
