@@ -202,7 +202,7 @@ test('axios transforms errors', async () => {
     },
   };
 
-  moxios.wait(function () {
+  moxios.wait(() => {
     const request = moxios.requests.mostRecent();
 
     request.respondWith({
@@ -210,8 +210,10 @@ test('axios transforms errors', async () => {
     });
   });
 
+  expect.assertions(2);
+
   try {
-    api.users.get(123);
+    await api.users.get(123);
   } catch (err) {
     expect(err.error).toEqual(response.error.type);
     expect(err.message).toEqual(response.error.message);
@@ -232,7 +234,7 @@ test('axios transforms validation errors', async () => {
     },
   };
 
-  moxios.wait(function () {
+  moxios.wait(() => {
     const request = moxios.requests.mostRecent();
 
     request.respondWith({
@@ -240,8 +242,10 @@ test('axios transforms validation errors', async () => {
     });
   });
 
+  expect.assertions(3);
+
   try {
-    api.users.new({}).save();
+    await api.users.new({}).save();
   } catch (err) {
     expect(err.error).toEqual(response.error.type);
     expect(err.message).toEqual(response.error.message);
@@ -249,6 +253,7 @@ test('axios transforms validation errors', async () => {
   }
 });
 
-// test('axios retries http 429 response', () => {
-//
-// });
+// @todo 429 test
+test('axios retries http 429 response', async () => {
+
+});

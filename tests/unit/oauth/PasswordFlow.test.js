@@ -39,7 +39,7 @@ test('PasswordFlow should auth', async () => {
   flow.path = '/oauth/passwordFlow.php';
   expect(flow.path).toEqual('/oauth/passwordFlow.php');
 
-  moxios.wait(function () {
+  moxios.wait(() => {
     const request = moxios.requests.mostRecent();
 
     request.respondWith({
@@ -64,7 +64,7 @@ test('PasswordFlow should catch errors', async () => {
 
   expect.assertions(1);
 
-  moxios.wait(function () {
+  moxios.wait(() => {
     const request = moxios.requests.mostRecent();
 
     request.respondWith({
