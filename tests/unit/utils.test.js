@@ -215,7 +215,7 @@ test('axios transforms errors', async () => {
   try {
     await api.users.get(123);
   } catch (err) {
-    expect(err.error).toEqual(response.error.type);
+    expect(err.type).toEqual(response.error.type);
     expect(err.message).toEqual(response.error.message);
   }
 });
@@ -247,7 +247,7 @@ test('axios transforms validation errors', async () => {
   try {
     await api.users.new({}).save();
   } catch (err) {
-    expect(err.error).toEqual(response.error.type);
+    expect(err.type).toEqual(response.error.type);
     expect(err.message).toEqual(response.error.message);
     expect(err.messages).toEqual(response.error['validation_errors'].name);
   }
