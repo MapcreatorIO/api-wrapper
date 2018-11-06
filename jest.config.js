@@ -7,6 +7,10 @@ module.exports = {
   coverageReporters: [
     'html', 'cobertura',
   ],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/src/errors/',
+  ],
   coverageDirectory: 'build/coverage',
   reporters: [
     'default',

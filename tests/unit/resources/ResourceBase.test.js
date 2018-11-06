@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Maps4News from '../../src/Maps4News';
-import ResourceBase from '../../src/resources/base/ResourceBase';
+import Maps4News from '../../../src/Maps4News';
+import ResourceBase from '../../../src/resources/base/ResourceBase';
 
 class DummyResource extends ResourceBase {
   static get resourceName() {
@@ -142,6 +142,7 @@ test('_updateProperties should move properties', () => {
 
   expect(resource.fooBar).toEqual(123);
   expect(resource._properties['foo_bar']).toEqual(123);
+  expect(resource._knownFields).toContain('foo_bar');
 });
 
 test('reset should reset all fields', () => {
