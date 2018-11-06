@@ -33,10 +33,7 @@
 import moxios from 'moxios';
 import PasswordFlow from '../../../src/oauth/PasswordFlow';
 
-const isWin = process.platform === 'win32';
-const _test = isWin ? xtest : test; // Makes sure tests are skipped if we're running windows
-
-_test('PasswordFlow should auth', async () => {
+test('PasswordFlow should auth', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
   flow.path = '/oauth/passwordFlow.php';
@@ -60,7 +57,7 @@ _test('PasswordFlow should auth', async () => {
   expect(token.expired).toEqual(false);
 });
 
-_test('PasswordFlow should catch errors', async () => {
+test('PasswordFlow should catch errors', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
   flow.path = '/oauth/passwordFlow.php';
