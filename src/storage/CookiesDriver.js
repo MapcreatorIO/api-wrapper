@@ -104,15 +104,7 @@ export default class CookiesDriver extends DataStoreContract {
    * @inheritDoc
    */
   remove(name) {
-    name = encodeURIComponent(this._prefix + name);
-
-    let cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
-
-    if (CookiesDriver.secure) {
-      cookie += ';secure';
-    }
-
-    document.cookie = cookie;
+    this.set(name, '', new Date(1970));
   }
 
   /**
