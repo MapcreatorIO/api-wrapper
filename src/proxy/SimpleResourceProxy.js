@@ -194,7 +194,7 @@ export default class SimpleResourceProxy {
    * @throws ApiError
    */
   async all(parameters = {}) {
-    let page = await this.list(parameters);
+    const page = await this.list(parameters);
     const promises = [];
 
     for (let i = 2; i <= page.pageCount; i++) {
