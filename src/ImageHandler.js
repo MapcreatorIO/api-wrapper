@@ -109,7 +109,8 @@ export default class ImageHandler {
    * });
    */
   async download() {
-    const data = await this.api.request(`${this.url}`);
+    // const data = await this.api.request(`${this.url}`);
+    const data = await this.api.request(`${this.url}`, 'GET', {}, { 'X-No-CDN-Redirect': true });
 
     if (isNode()) {
       return data;
