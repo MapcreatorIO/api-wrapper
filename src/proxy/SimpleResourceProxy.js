@@ -185,6 +185,28 @@ export default class SimpleResourceProxy {
     return new ResourceLister(this.api, this.baseUrl, this.Target, parameters, maxRows, this.Target.resourceUrlKey);
   }
 
+  // @todo disabled for now due to it promoting bad practices
+  // /**
+  //  * Get all the resources
+  //  * Please note that you might hit the rate limiter if you use this method. Make sure to cache it's result.
+  //  *
+  //  * @param {object|RequestParameters} parameters - parameters
+  //  * @returns {Promise<ResourceBase[]>} - All the resources
+  //  * @throws ApiError
+  //  */
+  // async all(parameters = {}) {
+  //   const page = await this.list(parameters);
+  //   const promises = [];
+  //
+  //   for (let i = 2; i <= page.pageCount; i++) {
+  //     promises.push(page.getPage(i));
+  //   }
+  //
+  //   const results = await Promise.all(promises);
+  //
+  //   return results.reduce((a, v) => a.concat(v.data), [...page.data]);
+  // }
+
   _buildResolver(params = {}) {
     const paramType = typeof params;
     const url = this.baseUrl;
