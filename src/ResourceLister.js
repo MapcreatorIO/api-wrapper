@@ -48,7 +48,7 @@ export default class ResourceLister extends EventEmitter {
    *
    * @param {Maps4News} api - Api instance
    * @param {string} route - Resource url route
-   * @param {Constructor<ResourceBase>} Resource - Resource constructor
+   * @param {constructor<ResourceBase>} Resource - Resource constructor
    * @param {?RequestParameters} parameters - Request parameters
    * @param {number} [maxRows=50] - Initial max rows
    * @param {string} [key=id] - Key
@@ -111,7 +111,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Resource constructor accessor, used for building the resource instance
-   * @returns {Constructor<ResourceBase>} - resource constructor
+   * @returns {constructor<ResourceBase>} - resource constructor
    */
   get Resource() {
     return this._Resource;
@@ -224,7 +224,6 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Reset the instance
    *
-   * @returns {void}
    * @private
    */
   _reset() {
@@ -239,9 +238,6 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Update the server data
-   *
-   * @returns {Promise<void>} - Resolves when the data has been updated
-   * @async
    */
   async update() {
     if (this.waiting) {

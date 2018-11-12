@@ -127,10 +127,9 @@ export function mix(baseClass, ...mixins) {
 }
 
 /**
- * Copy properties from target to source
+ * Copy properties from source to target
  * @param {object} target - Object for the properties to be copied to
  * @param {object} source - Object containing properties to be copied
- * @returns {object} - Resulting object with properties from both parameters
  */
 function copyProps(target, source) {
   Object

@@ -178,9 +178,9 @@ export function transformAxiosErrors(error) {
 
   if (data.error['validation_errors']) {
     return Promise.reject(new ValidationError(error));
-  } else {
-    return Promise.reject(new ApiError(error));
   }
+  return Promise.reject(new ApiError(error));
+
 
   // if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
   //   this.logger.warn('Lost Maps4News session, please re-authenticate');

@@ -32,8 +32,6 @@
 
 import axios from 'axios';
 import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
-import ApiError from '../errors/ApiError';
-import OAuthError from '../errors/OAuthError';
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
@@ -92,8 +90,6 @@ export default class OAuth {
   /**
    * Invalidates the session token
    * @async
-   * @returns {Promise<void>} - Promise that resolves with no value
-   * @throws OAuthError - If de-authentication fails
    * @throws ApiError - If the api returns errors
    */
   async logout() {
@@ -103,24 +99,14 @@ export default class OAuth {
 
     const url = this.host + '/oauth/logout';
 
-    try {
-      const {data} = await axios.post(url, {
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': this.token.toString(),
-        },
-      });
+    await axios.post(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': this.token.toString(),
+      },
+    });
 
-      if (!data.success) {
-        throw new ApiError(data.error.type, data.error.message, response.status);
-      }
-
-      if (!response.ok) {
-        throw new OAuthError('logout_fail', 'Logout failed:\n' + body);
-      }
-    } finally {
-      this.forget();
-    }
+    this.forget();
   }
 
   /**

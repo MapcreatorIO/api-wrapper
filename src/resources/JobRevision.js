@@ -120,7 +120,7 @@ export default class JobRevision extends CrudBase {
     const response = await this.api.axios.post(this.baseUrl, data);
 
     return new JobRevision(this.api, response.data.data);
-}
+  }
 
   /**
    * Get job object

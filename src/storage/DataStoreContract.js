@@ -53,7 +53,7 @@ export default class DataStoreContract {
    * @returns {boolean} - Driver availability
    */
   static get available() {
-    throw new AbstractMethodError();
+    return false;
   }
 
   /**
