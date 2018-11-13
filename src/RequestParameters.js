@@ -622,6 +622,7 @@ export default class RequestParameters extends EventEmitter {
     return [
       'page',
       'perPage',
+      'offset',
       'search',
       'sort',
       'deleted',

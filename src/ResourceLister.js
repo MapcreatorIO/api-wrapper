@@ -274,34 +274,30 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Fetch more data from the server
    * @private
-   * @todo refactor fetching code, needs simplification
    */
   async _fetchMore() {
-    const startPage = 1 + Math.floor(this.rowCount / this.parameters.perPage);
-    const endPage = Math.ceil(this.maxRows / this.parameters.perPage);
     const glue = this.route.includes('?') ? '&' : '?';
+    const parameters = this.parameters.copy();
 
+    parameters.offset += this.rowCount;
+
+    const endPage = Math.ceil((this.maxRows - this.rowCount) / this.parameters.perPage);
     const promises = [];
 
-    for (let page = startPage; page <= endPage; page++) {
-      const parameters = this.parameters.copy();
-
-      parameters.page = page;
-
+    for (; parameters.page <= endPage; parameters.page++) {
       const url = this.route + glue + parameters.encode();
-
-      const promise = this.api.axios.get(url).then(x => x.data);
+      const promise = this.api.axios.get(url);
 
       promises.push(promise);
     }
 
-    // Wait for responses and flatten data
     const responses = await Promise.all(promises);
-    const data = [].concat(...responses.map(x => x.data));
 
-    this._availableRows = Number(responses[0].response.headers.get('X-Paginate-Total')) || 0;
+    for (const {data: {data}, request: {headers}} of responses) {
+      data.forEach(row => this.push(row, false));
 
-    data.forEach(row => this.push(row, false));
+      this._availableRows = Number(headers['x-paginate-total']) + parameters.offset;
+    }
   }
 
   /**
@@ -315,7 +311,9 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Push a row to the data collection
    *
-   * This will append the row or update an existing row based on the key. If autoMaxRows is set to true and maxRows only needs to be increased by one for the new resource to show up it will
+   * This will append the row or update an existing row based on the key. If
+   * autoMaxRows is set to true and maxRows only needs to be increased by one
+   * for the new resource to show up it will
    * @param {ResourceLister.Resource} row - resource
    * @param {boolean} autoMaxRows - Increase maxRows if needed
    * @returns {void}
