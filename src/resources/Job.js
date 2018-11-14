@@ -31,6 +31,7 @@
  */
 
 import ResourceProxy from '../proxy/ResourceProxy';
+import {isNode} from '../utils/node';
 import {downloadFile} from '../utils/requests';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
@@ -85,19 +86,31 @@ export default class Job extends CrudBase {
   }
 
   /**
-   * Get image blob url representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the job preview
+   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
+   * @returns {Promise<Blob|Buffer>} - Job preview
+   * @todo decide how mimetypes are handled
    */
-  downloadPreview() {
-    return downloadFile(`${this.url}/preview`, this._getDownloadHeaders()).then(data => data.blob);
+  async downloadPreview() {
+    const {data} = await this.api.axios.get(`${this.url}/preview`, {
+      responseType: isNode() ? 'arraybuffer' : 'blob',
+    });
+
+    return data;
   }
 
   /**
    * Get archive blob url
-   * @returns {PromiseLike<{filename: string, blob: string}>} - Resolves with a blob reference and it's filename and rejects with {@link ApiError}
+   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
+   * @returns {Promise<Blob|Buffer>} - Job result output file
+   * @todo decide how mimetypes are handled
    */
-  downloadOutput() {
-    return downloadFile(`${this.url}/output`, this._getDownloadHeaders());
+  async downloadOutput() {
+    const {data} = await this.api.axios.get(this.url, {
+      responseType: isNode() ? 'arraybuffer' : 'blob',
+    });
+
+    return data;
   }
 
   /**
@@ -109,17 +122,5 @@ export default class Job extends CrudBase {
     const {data: {data}} = await this.api.axios.get(`${this.url}/output-url`);
 
     return data.url;
-  }
-
-  /**
-   * Get headers for downloading resources
-   * @returns {{Accept: string, Authorization: string}} - Request headers
-   * @private
-   */
-  _getDownloadHeaders() {
-    return {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
   }
 }

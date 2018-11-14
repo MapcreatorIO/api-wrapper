@@ -31,15 +31,9 @@
  */
 
 import axios from 'axios';
-import fetchPonyfill from 'fetch-ponyfill';
 import ApiError from '../errors/ApiError';
 import ValidationError from '../errors/ValidationError';
 import {windowTest} from './helpers';
-
-/**
- * @private
- */
-export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window : fetchPonyfill({Promise});
 
 function getFormData() {
   if (windowTest('FormData')) {
@@ -105,46 +99,6 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
 
       return out;
     }).join('&');
-}
-
-/**
- * @param {string} url - Target url
- * @param {object<string, string>} headers - Request headers
- * @returns {PromiseLike<{filename: string, blob: string}>} - filename and blob
- * @private
- */
-export function downloadFile(url, headers = {}) {
-  const out = {};
-
-  return fetch(url, {headers})
-    .then(res => {
-      if (res.ok) {
-        const disposition = res.headers.get('Content-Disposition');
-
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-          const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
-
-          if (matches != null && matches[1]) {
-            out.filename = matches[1].replace(/['"]/g, '');
-          }
-        } else {
-          out.filename = 'Unknown Filename.zip';
-        }
-
-        return res.blob();
-      }
-
-      return res.json().then(data => {
-        const err = data.error;
-
-        throw new ApiError(err.type, err.message, res.status, err.trace);
-      });
-    })
-    .then(blob => {
-      out.blob = (window.URL || window.webkitURL).createObjectURL(blob);
-
-      return out;
-    });
 }
 
 export function retry429ResponseInterceptor(error) {

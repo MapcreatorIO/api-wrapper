@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {downloadFile} from '../utils/requests';
+import {isNode} from '../utils/node';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
@@ -68,10 +68,16 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get archive blob url
-   * @returns {PromiseLike<{filename: string, blob: string}>} - Resolves with a blob reference and it's filename and rejects with {@link ApiError}
+   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
+   * @returns {Promise<Blob|Buffer>} - Job result output file
+   * @todo decide how mimetypes are handled
    */
-  downloadOutput() {
-    return downloadFile(this.outputUrl, this._getDownloadHeaders());
+  async downloadOutput() {
+    const {data} = await this.api.axios.get(this.url, {
+      responseType: isNode() ? 'arraybuffer' : 'blob',
+    });
+
+    return data;
   }
 
   /**
@@ -102,11 +108,13 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
-   * Get log blob url
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   * Download the job result log
+   * @returns {Promise<string>} - job result log
    */
-  downloadLog() {
-    return downloadFile(this.logUrl, this._getDownloadHeaders()).then(data => data.blob);
+  async downloadLog() {
+    const {data} = await this.api.axios.get(this.logUrl, {responseType: 'text'});
+
+    return data;
   }
 
   /**
@@ -118,23 +126,17 @@ export default class JobResult extends ResourceBase {
   }
 
   /**
-   * Get image blob url representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the job preview
+   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
+   * @returns {Promise<Blob|Buffer>} - Job preview
+   * @todo decide how mimetypes are handled
    */
-  downloadPreview() {
-    return downloadFile(`${this.previewUrl}`, this._getDownloadHeaders()).then(data => data.blob);
-  }
+  async downloadPreview() {
+    const {data} = await this.api.axios.get(this.url, {
+      responseType: isNode() ? 'arraybuffer' : 'blob',
+    });
 
-  /**
-   * Get headers for downloading resources
-   * @returns {{Accept: string, Authorization: string}} - Request headers
-   * @private
-   */
-  _getDownloadHeaders() {
-    return {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
+    return data;
   }
 
   /**

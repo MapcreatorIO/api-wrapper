@@ -14,7 +14,6 @@
     "@babel/runtime": "^7.1.2",
     "axios": "^0.18.0",
     "case": "^1.5.3",
-    "fetch-ponyfill": "^6.0.2",
     "form-data": "^2.3.3",
     "json-stable-stringify": "^1.0.1",
     "mitt": "^1.1.2"
