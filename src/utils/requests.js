@@ -35,7 +35,6 @@ import fetchPonyfill from 'fetch-ponyfill';
 import ApiError from '../errors/ApiError';
 import ValidationError from '../errors/ValidationError';
 import {windowTest} from './helpers';
-import {isNode} from './node';
 
 /**
  * @private
@@ -45,12 +44,9 @@ export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window 
 function getFormData() {
   if (windowTest('FormData')) {
     return window.FormData;
-  } else if (!isNode()) {
-    return require('formdata-polyfill');
   }
 
-  // @todo find nodejs polyfill
-  return null;
+  return require('form-data');
 }
 
 /**

@@ -111,7 +111,7 @@ export default class ImageHandler {
    */
   async download() {
     const {data} = await this.api.axios.get(this.url, {
-      responseType: 'blob',
+      responseType: isNode() ? 'arraybuffer' : 'blob',
     });
 
     if (isNode()) {
@@ -123,18 +123,13 @@ export default class ImageHandler {
 
   /**
    * Upload new image
-   * @param {ArrayBuffer|ArrayBufferView|File|Blob|Stream|Buffer} image - Image file
-   * @todo test nodejs support
+   * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
    */
   async upload(image) {
-    if (!isNode()) {
-      const data = new FormData();
+    const form = new FormData();
 
-      data.set('image', image);
+    form.append('image', image, 'image');
 
-      await this.api.axios.post(this.url, data);
-    } else {
-      await this.api.axios.post(this.url, {image});
-    }
+    await this.api.axios.post(this.url, form, {headers: form.getHeaders()});
   }
 }
