@@ -151,6 +151,32 @@ export default class Injectable extends Trait {
     this._inject(name, value, false);
   }
 
+  /**
+   * Revert a proxy injection in instance, won't delete non-injected properties
+   *
+   * @param {string} name - property name
+   * @throws Error when the property was not injected
+   */
+  uninject(name) {
+    const descriptor = Object.getOwnPropertyDescriptor(this, name);
+    const value = descriptor.value || descriptor.get || {};
+
+    if (!value.injected) {
+      throw new Error(`Property "${name}" was not injected, can't un-inject`);
+    }
+
+    if (value.original) {
+      Object.defineProperty(this, name, value.original);
+    } else {
+      Object.defineProperty(this, name, {
+        // eslint-disable-next-line no-undefined
+        value: undefined,
+        enumerable: false,
+        writable: true,
+      });
+    }
+  }
+
   _injectProxy(name, value) {
     if (name === value.name) {
       name = name.replace(/^\w/, c => c.toLowerCase()) + 's';
@@ -179,11 +205,21 @@ export default class Injectable extends Trait {
   }
 
   _inject(name, value, getter = true) {
+    const func = (...args) => value.apply(this, args);
+    const original = Object.getOwnPropertyDescriptor(this, name);
+
+    func.injected = true;
+
+    // Store the original property descriptor if available
+    if (original) {
+      func.original = original;
+    }
+
     Object.defineProperty(this, name, {
       enumerable: false,
-      configurable: false,
+      configurable: true,
 
-      [getter ? 'get' : 'value']: value,
+      [getter ? 'get' : 'value']: func,
     });
   }
 }
