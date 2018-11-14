@@ -573,6 +573,10 @@ export default class RequestParameters extends EventEmitter {
       snakeCase(x).replace(/^_/, '-'),
     ).join(',');
 
+    if (data['offset'] === 0) {
+      delete data['offset'];
+    }
+
     // Fix column names for search
     for (const key of Object.keys(data.search)) {
       const snakeKey = key.split(',').map(snakeCase).join(',');
