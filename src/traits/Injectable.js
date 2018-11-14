@@ -41,6 +41,9 @@ import Trait from './Trait';
  * @mixin
  */
 export default class Injectable extends Trait {
+  /**
+   * Inject proxies and methods during the constructor
+   */
   initializer() {
     const injectable = this.constructor._injectable || {};
 
