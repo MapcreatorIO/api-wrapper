@@ -118,8 +118,6 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
  * @private
  */
 export function downloadFile(url, headers = {}) {
-  headers['X-No-CDN-Redirect'] = 'true';
-
   const out = {};
 
   return fetch(url, {headers})
@@ -154,15 +152,17 @@ export function downloadFile(url, headers = {}) {
 }
 
 export function retry429ResponseInterceptor(error) {
-  if (!error.config || !error.response || error.response.status !== 429) {
+  const {response, config} = error;
+
+  if (!config || !response || response.status !== 429) {
     return Promise.reject(error);
   }
 
-  const delay = error.response.headers['x-ratelimit-reset'] * 1000 || 500;
+  const delay = response.headers['x-ratelimit-reset'] * 1000 || 500;
 
-  error.config.transformRequest = [data => data];
+  config.transformRequest = [data => data];
 
-  return new Promise(resolve => setTimeout(() => resolve(axios(error.config)), delay));
+  return new Promise(resolve => setTimeout(() => resolve(axios.request(config)), delay));
 }
 
 export function transformAxiosErrors(error) {
@@ -179,8 +179,8 @@ export function transformAxiosErrors(error) {
   if (data.error['validation_errors']) {
     return Promise.reject(new ValidationError(error));
   }
-  return Promise.reject(new ApiError(error));
 
+  return Promise.reject(new ApiError(error));
 
   // if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
   //   this.logger.warn('Lost Maps4News session, please re-authenticate');
@@ -189,4 +189,36 @@ export function transformAxiosErrors(error) {
   //     this.logout();
   //   }
   // }
+}
+
+export function custom3xxHandler(error) {
+  const {response, config} = error;
+
+  // Do nothing with non-3xx responses
+  if (response.status < 300 || response.status >= 400) {
+    return error;
+  }
+
+  let redirectUrl = response.headers.location;
+
+  // Absolute urls on the same domain
+  if (redirectUrl.startsWith('/')) {
+    const regex = /^(\w+:\/\/[^/]+)/;
+
+    redirectUrl = config.baseURL.match(regex)[1] + redirectUrl;
+  }
+
+  // Drop authorization header
+  if (!redirectUrl.startsWith(config.baseUrl)) {
+    config.transformRequest = [(data, headers) => {
+      delete headers.common['Authorization'];
+      delete headers['Authorization'];
+
+      return data;
+    }, ...Object.values(config.transformRequest)];
+  }
+
+  config.url = redirectUrl;
+
+  return axios.request(config);
 }

@@ -112,7 +112,6 @@ export default class ImageHandler {
   async download() {
     const {data} = await this.api.axios.get(this.url, {
       responseType: 'blob',
-      headers: {'X-No-CDN-Redirect': true},
     });
 
     if (isNode()) {

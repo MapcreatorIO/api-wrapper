@@ -219,6 +219,7 @@ export default class Maps4News extends mix(null, Injectable) {
       headers: {
         'Accept': 'application/json',
       },
+      maxRedirects: 0,
     });
 
     instance.defaults.headers.post['Content-Type'] = 'application/json';
@@ -229,11 +230,18 @@ export default class Maps4News extends mix(null, Injectable) {
       instance.defaults.headers.common['Authorization'] = this.auth.token.toString();
     }
 
+    if (instance.defaults.adapter.name === 'xhrAdapter') {
+      instance.defaults.headers.common['X-No-CDN-Redirect'] = 'true';
+    }
+
     // Retry requests if rate limiter is hit
     instance.interceptors.response.use(null, retry429ResponseInterceptor);
 
     // Transform errors
     instance.interceptors.response.use(null, transformAxiosErrors);
+
+    // Intercept 3xx redirects and rewrite headers (node)
+    instance.interceptors.response.use(null, custom3xxHandler);
 
     return instance;
   }
