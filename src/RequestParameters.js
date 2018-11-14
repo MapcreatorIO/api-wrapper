@@ -661,7 +661,14 @@ export default class RequestParameters extends EventEmitter {
    * Apply parameters from object
    * @param {object|RequestParameters} params - parameters
    * @returns {Object[]} - Array containing the updated values
-   * @todo update JSDoc
+   * @example
+   * const params = new RequestParameters({perPage: 12});
+   *
+   * params.perPage === 12;
+   *
+   * params.apply({perPage: 50});
+   *
+   * params.perPage === 50;
    */
   apply(params) {
     if (params instanceof RequestParameters) {

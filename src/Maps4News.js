@@ -551,9 +551,20 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link SvgSet}
    * @returns {Promise<Enum>} - Contains all the possible SVG set types
    * @throws ApiError
-   * @todo make function name plural
+   * @deprecated Use getSvgSetTypes
+   * @todo Remove
    */
   async getSvgSetType() {
+    return await this.getSvgSetTypes();
+  }
+
+  /**
+   * Get SVG set types
+   * @see {@link SvgSet}
+   * @returns {Promise<Enum>} - Contains all the possible SVG set types
+   * @throws ApiError
+   */
+  async getSvgSetTypes() {
     const {data: {data}} = await this.axios.get('/svgs/sets/types');
 
     return new Enum(data, true);
