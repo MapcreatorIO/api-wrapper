@@ -217,7 +217,7 @@ export default class PaginatedResourceWrapper {
   /**
    * Set the request params and submit
    * @param {?Object<String, *>} value - Query
-   * @throws TypeError
+   * @throws {TypeError}
    * @default {}
    * @see {@link ResourceProxy#search}
    * @returns {Object<String, String|Array<String>>} - query

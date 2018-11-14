@@ -89,7 +89,7 @@ export default class JobResult extends ResourceBase {
   /**
    * Get the remote output url
    * @returns {Promise<string>} - The url to the output
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async getOutputUrl() {
     const {data: {data}} = await this.api.axios.get(this.outputUrlUrl);

@@ -52,8 +52,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * Sync items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
-   * @throws TypeError
-   * @throws ApiError
+   * @throws {TypeError}
+   * @throws {ApiError}
    */
   async sync(items) {
     await this._modifyResourceLink(items, 'PATCH');
@@ -62,8 +62,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * Attach items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
-   * @throws TypeError
-   * @throws ApiError
+   * @throws {TypeError}
+   * @throws {ApiError}
    */
   async attach(items) {
     await this._modifyResourceLink(items, 'POST');
@@ -72,8 +72,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * Detach items from the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
-   * @throws TypeError
-   * @throws ApiError
+   * @throws {TypeError}
+   * @throws {ApiError}
    */
   async detach(items) {
     await this._modifyResourceLink(items, 'DELETE');
@@ -81,7 +81,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Attach parent resource to all organisations
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async attachAll() {
     await this.api.axios.post(`${this.baseUrl}/all`);
@@ -89,7 +89,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Detach parent resource to all organisations
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async detachAll() {
     await this.api.axios.delete(`${this.baseUrl}/all`);
@@ -98,8 +98,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync, attach or detach
    * @param {string} method - http method
-   * @throws ApiError
-   * @throws TypeError
+   * @throws {ApiError}
+   * @throws {TypeError}
    * @private
    */
   async _modifyResourceLink(items, method) {

@@ -129,7 +129,7 @@ export default class SimpleResourceProxy {
    * @param {Number} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
    * @returns {Promise<PaginatedResourceListing>} - paginated resource
-   * @throws ApiError
+   * @throws {ApiError}
    * @example
    * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
    * // See Api documentation for search query syntax
@@ -193,7 +193,7 @@ export default class SimpleResourceProxy {
   //  *
   //  * @param {object|RequestParameters} parameters - parameters
   //  * @returns {Promise<ResourceBase[]>} - All the resources
-  //  * @throws ApiError
+  //  * @throws {ApiError}
   //  */
   // async all(parameters = {}) {
   //   const page = await this.list(parameters);

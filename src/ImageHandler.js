@@ -77,7 +77,7 @@ export default class ImageHandler {
 
   /**
    * Delete image
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async delete() {
     await this.api.axios.delete(this.url);

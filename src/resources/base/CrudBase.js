@@ -75,8 +75,8 @@ export default class CrudBase extends ResourceBase {
   /**
    * Save item. This will create a new item if `id` is unset
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws ApiError
-   * @throws ValidationError
+   * @throws {ApiError}
+   * @throws {ValidationError}
    */
   save() {
     return !this.id ? this._create() : this._update();
@@ -85,8 +85,8 @@ export default class CrudBase extends ResourceBase {
   /**
    * Store new item
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws ApiError
-   * @throws ValidationError
+   * @throws {ApiError}
+   * @throws {ValidationError}
    * @private
    */
   async _create() {
@@ -103,8 +103,8 @@ export default class CrudBase extends ResourceBase {
   /**
    * Update existing item
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws ApiError
-   * @throws ValidationError
+   * @throws {ApiError}
+   * @throws {ValidationError}
    * @private
    */
   async _update() {
@@ -133,8 +133,8 @@ export default class CrudBase extends ResourceBase {
    * Delete item
    * @param {Boolean} [updateSelf=true] - Update current instance (set the deletedAt property)
    * @returns {Promise<CrudBase>} - Current instance
-   * @throws ApiError
-   * @throws ValidationError
+   * @throws {ApiError}
+   * @throws {ValidationError}
    */
   async delete(updateSelf = true) {
     await this.api.axios.delete(this.url);
@@ -150,8 +150,8 @@ export default class CrudBase extends ResourceBase {
    * Restore item
    * @param {Boolean} [updateSelf=true] - Update current instance (unset the deletedAt property)
    * @returns {Promise<CrudBase>} - New restored instance
-   * @throws ApiError
-   * @throws ValidationError
+   * @throws {ApiError}
+   * @throws {ValidationError}
    */
   async restore(updateSelf = true) {
     const {data: {data}} = await this.api.axios.put(this.url);

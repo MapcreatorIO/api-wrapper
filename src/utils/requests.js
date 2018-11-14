@@ -33,7 +33,7 @@
 import axios from 'axios';
 import ApiError from '../errors/ApiError';
 import ValidationError from '../errors/ValidationError';
-import {windowTest} from './helpers';
+import {windowTest} from './node';
 
 function getFormData() {
   if (windowTest('FormData')) {
@@ -101,6 +101,13 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
     }).join('&');
 }
 
+
+/**
+ * Retry request that respond with a 429 error at a later time
+ * @private
+ * @param {*} error - Axios error
+ * @returns {Promise|*} - error or retried request
+ */
 export function retry429ResponseInterceptor(error) {
   const {response, config} = error;
 
@@ -115,6 +122,12 @@ export function retry429ResponseInterceptor(error) {
   return new Promise(resolve => setTimeout(() => resolve(axios.request(config)), delay));
 }
 
+/**
+ * Transform Axios errors into ApiErrors
+ * @private
+ * @param {*} error - Axios error
+ * @returns {Promise<ApiError|ValidationError|*>} - Resolved error
+ */
 export function transformAxiosErrors(error) {
   if (!error || !error.response || !error.response.data) {
     return Promise.reject(error);
@@ -141,6 +154,12 @@ export function transformAxiosErrors(error) {
   // }
 }
 
+/**
+ * Handle http 300 redirects manually, strip Authorization header for cross domain requests
+ * @param {*} error - Axios error
+ * @returns {Promise<*>} - Axios request or original error
+ * @private
+ */
 export function custom3xxHandler(error) {
   const {response, config} = error;
 

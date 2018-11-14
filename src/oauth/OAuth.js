@@ -69,7 +69,7 @@ export default class OAuth {
   /**
    * Authenticate
    * @returns {Promise<OAuthToken>} - authentication token
-   * @throws OAuthError
+   * @throws {OAuthError}
    * @abstract
    */
   authenticate() {
@@ -91,7 +91,7 @@ export default class OAuth {
   /**
    * Invalidates the session token
    * @async
-   * @throws ApiError - If the api returns errors
+   * @throws {ApiError} - If the api returns errors
    */
   async logout() {
     if (!this.token) {

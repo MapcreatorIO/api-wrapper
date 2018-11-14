@@ -116,6 +116,7 @@ export default class DownloadedResource {
    * Create a object url
    * The URL lifetime is tied to the document in the window on which it
    * was created. The new object URL represents the resource.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
    * @return {string} - object url
    */
   createObjectURL() {

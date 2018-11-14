@@ -102,7 +102,7 @@ export default class ResourceLister extends EventEmitter {
    *
    * If you set {@link ResourceLister#autoUpdate} to true then {@link ResourceLister#update}
    * will automatically be called when the parameters are updated.
-   * @see ResourceLister#autoUpdate
+   * @throws {ResourceLister#autoUpdate}
    * @param {RequestParameters} object - parameters
    */
   set parameters(object) {
@@ -189,8 +189,8 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Set if {@link ResourceLister#update} should be called when {@link ResourceLister#parameters} is updated
    *
-   * @see ResourceLister#update
-   * @see ResourceLister#parameters
+   * @throws {ResourceLister#update}
+   * @throws {ResourceLister#parameters}
    * @param {boolean} value - auto update
    */
   set autoUpdate(value) {
@@ -214,8 +214,8 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Get if {@link ResourceLister#update} should be called when {@link ResourceLister#parameters} is updated
    *
-   * @see ResourceLister#update
-   * @see ResourceLister#parameters
+   * @throws {ResourceLister#update}
+   * @throws {ResourceLister#parameters}
    */
   get autoUpdate() {
     return this._autoUpdate;

@@ -36,7 +36,7 @@
  * @param {?Number} [start=1] - Start page
  * @param {?Number} [stop] - Stop page, defaults to the page count if not filled in.
  * @returns {Promise<Array<ResourceBase>>} - multiple pages
- * @throws ApiError
+ * @throws {ApiError}
  * @example
  * import { helpers } from "@mapcreator/maps4news";
  *
@@ -77,12 +77,3 @@ export function getPaginatedRange(page, start = 1, stop) {
   });
 }
 
-/**
- * Quickly check if the window contains a variable
- * @param {string} str - target variable
- * @returns {boolean} - If the window contains the variable
- * @private
- */
-export function windowTest(str) {
-  return typeof window !== 'undefined' && typeof window[str] !== 'undefined';
-}

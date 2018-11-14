@@ -70,7 +70,7 @@ export default class Job extends CrudBase {
    * Get the most up to date preview url
    * @returns {string} - Last preview url
    * @deprecated
-   * @see Job#previewUrl
+   * @throws {Job#previewUrl}
    */
   get lastPreviewUrl() {
     return `${this.url}/revisions/last/result/archive`;
@@ -119,7 +119,7 @@ export default class Job extends CrudBase {
   /**
    * Get the remote output url
    * @returns {Promise<string>} - The url to the output
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async getOutputUrl() {
     const {data: {data}} = await this.api.axios.get(`${this.url}/output-url`);

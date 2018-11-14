@@ -84,7 +84,7 @@ export default class JobMonitor {
    * Update maxRows and run update()
    * @param {number} [count=50] - Amount to increase maxRows by
    * @returns {Promise<Number>} - number of updated rows
-   * @throws ApiError
+   * @throws {ApiError}
    */
   loadMore(count = 50) {
     this.maxRows += count;
@@ -95,7 +95,7 @@ export default class JobMonitor {
   /**
    * Update the job list
    * @returns {Promise<Number>} - number of updated rows
-   * @throws ApiError
+   * @throws {ApiError}
    * @todo refactor
    */
   update() {
@@ -358,7 +358,7 @@ export default class JobMonitor {
   /**
    * Returns the time the ::update method was called for the last time.
    * @returns {Date} - Last update
-   * @see JobMonitor#update
+   * @throws {JobMonitor#update}
    */
   get lastUpdate() {
     return new Date(this._lastUpdate * 1000);

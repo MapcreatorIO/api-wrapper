@@ -201,8 +201,8 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Authenticate with the api using the authentication method provided.
    * @returns {Promise<Maps4News>} - current instance
-   * @throws OAuthError
-   * @throws ApiError
+   * @throws {OAuthError}
+   * @throws {ApiError}
    */
   authenticate() {
     return this.auth.authenticate().then(() => this);
@@ -552,7 +552,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Get SVG set types
    * @see {@link SvgSet}
    * @returns {Promise<Enum>} - Contains all the possible SVG set types
-   * @throws ApiError
+   * @throws {ApiError}
    * @deprecated Use getSvgSetTypes
    * @todo Remove
    */
@@ -564,7 +564,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Get SVG set types
    * @see {@link SvgSet}
    * @returns {Promise<Enum>} - Contains all the possible SVG set types
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async getSvgSetTypes() {
     const {data: {data}} = await this.axios.get('/svgs/sets/types');
@@ -576,7 +576,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Get font styles
    * @see {@link Font}
    * @returns {Promise<Enum>} - Contains all the possible font styles
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async getFontStyles() {
     const {data: {data}} = await this.axios.get('/fonts/styles');

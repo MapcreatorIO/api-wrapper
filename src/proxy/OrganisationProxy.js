@@ -59,7 +59,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Sync organisations to the parent resource
    * The organisations attached to the target resource will be replaced with the organisations provided in the request.
    * @param {Array<Organisation|number>} organisations - List of items to sync
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async sync(organisations) {
     await this._modifyLink(organisations, 'PATCH', this.Target);
@@ -69,7 +69,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Attach organisations to the parent resource
    * The provided organisations will be attached to the resource if they're not already attached
    * @param {Array<Organisation|number>} organisations - List of items to attach
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async attach(organisations) {
     await this._modifyLink(organisations, 'POST', this.Target);
@@ -79,7 +79,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Detach organisations from the parent resource
    * The provided organisations will be detached from the resource
    * @param {Array<Organisation|number>} organisations - List of items to detach
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async detach(organisations) {
     await this._modifyLink(organisations, 'DELETE', this.Target);
@@ -87,7 +87,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
   /**
    * Attach all organisations to the parent resource
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async attachAll() {
     await this.api.axios.post(`${this.baseUrl}/all`);
@@ -95,7 +95,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
   /**
    * Detach all organisations from the parent resource
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async detachAll() {
     await this.api.axios.delete(`${this.baseUrl}/all`);
@@ -107,7 +107,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {String} method - Http method to use
    * @param {function(new:ResourceBase)} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
-   * @throws ApiError
+   * @throws {ApiError}
    * @protected
    */
   async _modifyLink(items, method, Type, path = null) {

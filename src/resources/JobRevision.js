@@ -64,7 +64,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Get the job result
    * @returns {Promise<JobResult>} - The associated job result
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async result() {
     const {data: {data}} = await this.api.axios.get(`${this.url}/result`);
@@ -95,8 +95,8 @@ export default class JobRevision extends CrudBase {
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
    * @returns {Promise<JobRevision>} - New job revision
-   * @throws TypeError
-   * @throws ApiError
+   * @throws {TypeError}
+   * @throws {ApiError}
    */
   async save(object = {}, layers = null) {
     if (layers && layers.length > 0) {
@@ -125,7 +125,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Get job object
    * @returns {Promise<Object>} - The map object
-   * @throws ApiError
+   * @throws {ApiError}
    * @todo document object format
    */
   async object() {
@@ -137,7 +137,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Build the revision
    * @param {String} callback - Optional callback url for when the job completes
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async build(callback) {
     await this.api.axios.post(`${this.url}/build`, {callback});
@@ -154,7 +154,7 @@ export default class JobRevision extends CrudBase {
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @returns {Promise<String>} - the share link
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async share(visibility = JobShare.visibility.PRIVATE) {
     visibility = visibility.toLowerCase();
@@ -171,7 +171,7 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Clones a job revision to the user requesting it
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async clone() {
     await this.api.axios.post(`${this.url}/clone`);

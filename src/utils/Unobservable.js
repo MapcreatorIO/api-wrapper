@@ -42,6 +42,6 @@ export default class Unobservable {
    */
   get [Symbol.toStringTag]() {
     // Anything can go here really as long as it's not 'Object'
-    return 'ObjectNoObserve';
+    return this.constructor.name;
   }
 }

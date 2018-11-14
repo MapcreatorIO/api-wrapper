@@ -120,7 +120,7 @@ export default class Logger {
   /**
    * Set the current log level
    * @param {string} value - log level
-   * @see Logger#getLogLevels
+   * @throws {Logger#getLogLevels}
    */
   set logLevel(value) {
     value = value.toLowerCase();

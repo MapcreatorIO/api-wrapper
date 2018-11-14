@@ -36,7 +36,7 @@ export default class JobShare extends CrudBase {
   /**
    * Unsupported method implemented due to CrudBase abstraction
    * @returns {void}
-   * @throws Error
+   * @throws {Error}
    * @private
    */
   save() {

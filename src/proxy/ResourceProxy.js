@@ -77,7 +77,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @param {String} deleted - Determains if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<ResourceBase>} - Target resource
-   * @throws ApiError
+   * @throws {ApiError}
    */
   async get(id, deleted = RequestParameters.deleted) {
     const data = Object.assign({}, this._seedData, this._parseSelector(id));

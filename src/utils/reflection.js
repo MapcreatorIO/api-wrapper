@@ -148,6 +148,7 @@ function copyProps(target, source) {
  * @param {Function|Object} Subject - Instance or class
  * @param {Function} Trait - Trait to check for
  * @returns {boolean} - If the subject has the trait
+ * @private
  */
 export function hasTrait(Subject, Trait) {
   Subject = typeof Subject === 'function' ? Subject : Subject.constructor;

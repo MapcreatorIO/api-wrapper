@@ -135,7 +135,7 @@ export default class OAuthToken {
    * Store the token for later recovery. Token will be stored in HTTPS cookie if possible.
    * @param {String} name - db key name
    * @returns {void}
-   * @see OAuthToken#recover
+   * @throws {OAuthToken#recover}
    */
   save(name = OAuthToken.storageName) {
     const data = {
@@ -153,7 +153,7 @@ export default class OAuthToken {
    * Recover a token by looking through the HTTPS cookies and localStorage
    * @param {String} name - Storage key name
    * @returns {OAuthToken|null} - null if none could be recovered
-   * @see OAuthToken#save
+   * @throws {OAuthToken#save}
    */
   static recover(name = OAuthToken.storageName) {
     const data = StorageManager.secure.get(name);

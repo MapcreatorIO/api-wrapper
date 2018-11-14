@@ -69,7 +69,7 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Get page number
    * @returns {Number} - Page number
-   * @throws TypeError
+   * @throws {TypeError}
    */
   get page() {
     return this._resolve('page');
@@ -78,7 +78,7 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Get rows per page
    * @returns {Number} - Per page
-   * @throws TypeError
+   * @throws {TypeError}
    */
   get perPage() {
     return this._resolve('perPage');
@@ -87,7 +87,7 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Get pagination offset
    * @returns {Number} - Offset
-   * @throws TypeError
+   * @throws {TypeError}
    */
   get offset() {
     return this._resolve('offset');
@@ -96,7 +96,7 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Search query
    * @returns {Object<String, String|Array<String>>} - Query
-   * @throws TypeError
+   * @throws {TypeError}
    */
   get search() {
     return this._resolve('search');
@@ -105,7 +105,7 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Get sort options
    * @returns {Array<String>} - Per page
-   * @throws TypeError
+   * @throws {TypeError}
    */
   get sort() {
     return this._resolve('sort');
