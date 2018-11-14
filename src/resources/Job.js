@@ -31,8 +31,7 @@
  */
 
 import ResourceProxy from '../proxy/ResourceProxy';
-import {isNode} from '../utils/node';
-import {downloadFile} from '../utils/requests';
+import DownloadedResource from '../utils/DownloadedResource';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobRevision from './JobRevision';
@@ -87,30 +86,26 @@ export default class Job extends CrudBase {
 
   /**
    * Download the job preview
-   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
-   * @returns {Promise<Blob|Buffer>} - Job preview
-   * @todo decide how mimetypes are handled
+   * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview() {
-    const {data} = await this.api.axios.get(`${this.url}/preview`, {
-      responseType: isNode() ? 'arraybuffer' : 'blob',
+    const response = await this.api.axios.get(`${this.url}/preview`, {
+      responseType: 'arraybuffer',
     });
 
-    return data;
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
    * Get archive blob url
-   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
-   * @returns {Promise<Blob|Buffer>} - Job result output file
-   * @todo decide how mimetypes are handled
+   * @returns {Promise<DownloadedResource>} - Job result output
    */
   async downloadOutput() {
-    const {data} = await this.api.axios.get(this.url, {
-      responseType: isNode() ? 'arraybuffer' : 'blob',
+    const response = await this.api.axios.get(this.url, {
+      responseType: 'arraybuffer',
     });
 
-    return data;
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**

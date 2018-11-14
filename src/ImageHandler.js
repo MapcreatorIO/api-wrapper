@@ -32,6 +32,7 @@
 
 import Maps4News from './Maps4News';
 import ResourceBase from './resources/base/ResourceBase';
+import DownloadedResource from './utils/DownloadedResource';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {FormData} from './utils/requests';
@@ -83,29 +84,27 @@ export default class ImageHandler {
   }
 
   /**
-   * Get image base64 representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the image
+   * @returns {Promise<DownloadedResource>} - image
    * @example
    * // Browser
-   * layer.imageHandler.download().then(url => {
-   *   $('img').src = url;
+   * layer.imageHandler.download().then(image => {
+   *   $('img').src = image.createObjectURL();
    * });
    *
    * // NodeJs
-   * layer.imageHandler.download().then(b => {
-   *   fs.writeFileSync('image.png', b);
+   * layer.imageHandler.download().then({fileName, data} => {
+   *   fs.writeFileSync(fileName, data);
    * });
    */
   async download() {
-    const {data} = await this.api.axios.get(this.url, {
-      responseType: isNode() ? 'arraybuffer' : 'blob',
+    const response = await this.api.axios.get(this.url, {
+      responseType: 'arraybuffer',
     });
 
-    if (isNode()) {
-      return data;
-    }
+    console.dir(response);
 
-    return (window.URL || window.webkitURL).createObjectURL(data);
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**

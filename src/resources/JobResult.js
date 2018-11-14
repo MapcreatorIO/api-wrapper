@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isNode} from '../utils/node';
+import DownloadedResource from '../utils/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
@@ -68,16 +68,14 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get archive blob url
-   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
-   * @returns {Promise<Blob|Buffer>} - Job result output file
-   * @todo decide how mimetypes are handled
+   * @returns {Promise<DownloadedResource>} - Job result output
    */
   async downloadOutput() {
-    const {data} = await this.api.axios.get(this.url, {
-      responseType: isNode() ? 'arraybuffer' : 'blob',
+    const response = await this.api.axios.get(this.url, {
+      responseType: 'arraybuffer',
     });
 
-    return data;
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
@@ -127,16 +125,14 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Download the job preview
-   * In Nodejs it will response with a {@link Buffer} and in the browser it will respond with a {@link Blob}
-   * @returns {Promise<Blob|Buffer>} - Job preview
-   * @todo decide how mimetypes are handled
+   * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview() {
-    const {data} = await this.api.axios.get(this.url, {
-      responseType: isNode() ? 'arraybuffer' : 'blob',
+    const response = await this.api.axios.get(this.url, {
+      responseType: 'arraybuffer',
     });
 
-    return data;
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
