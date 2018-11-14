@@ -53,12 +53,12 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "build": "./scripts/build.sh",
+    "build": "npx webpack",
     "watch": "npx webpack --progress --watch",
     "docs": "npx esdoc",
     "lint": "npx eslint --no-color --max-warnings 5 --format checkstyle --output-file build/checkstyle.xml src",
     "clean": "rm -fr dist docs build || true",
-    "all": "./scripts/all.sh",
+    "all": "npm run clean && npm run lint && npm run build && npm run test && npm run docs",
     "test": "npx jest",
     "test-ci": "npx jest --coverage --ci || true"
   },
