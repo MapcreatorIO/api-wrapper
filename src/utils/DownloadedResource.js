@@ -30,6 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {isNode} from './node';
+
 /**
  * Downloaded resource from the api
  */
@@ -118,7 +120,7 @@ export default class DownloadedResource {
    */
   createObjectURL() {
     if (isNode()) {
-      throw new Exception('Object urls are not supported by Node');
+      throw new Error('Object urls are not supported by Node');
     }
 
     const blob = new Blob([this.data], {type: this.type});

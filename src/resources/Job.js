@@ -73,6 +73,14 @@ export default class Job extends CrudBase {
    * @see Job#previewUrl
    */
   get lastPreviewUrl() {
+    return `${this.url}/revisions/last/result/archive`;
+  }
+
+  /**
+   * Get the most up to date preview url
+   * @returns {string} - Preview url
+   */
+  get previewUrl() {
     return `${this.url}/preview`;
   }
 
@@ -81,7 +89,7 @@ export default class Job extends CrudBase {
    * @returns {string} - Last archive url
    */
   get lastArchiveUrl() {
-    return `${this.url}/revisions/last/result/archive`;
+    return `${this.url}/output`;
   }
 
   /**
@@ -89,7 +97,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview() {
-    const response = await this.api.axios.get(`${this.url}/preview`, {
+    const response = await this.api.axios.get(this.previewUrl, {
       responseType: 'arraybuffer',
     });
 
@@ -101,7 +109,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<DownloadedResource>} - Job result output
    */
   async downloadOutput() {
-    const response = await this.api.axios.get(this.url, {
+    const response = await this.api.axios.get(this.lastArchiveUrl, {
       responseType: 'arraybuffer',
     });
 
