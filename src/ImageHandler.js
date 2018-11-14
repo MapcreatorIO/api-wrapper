@@ -92,22 +92,9 @@ export default class ImageHandler {
    * });
    *
    * // NodeJs
-   * layer.imageHandler.download().then(buffer => {
-   *   fs.open(path, 'w', function(err, fd) {
-   *     if (err) {
-   *         throw 'could not open file: ' + err;
-   *     }
-   *
-   *     // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
-   *     fs.write(fd, buffer, 0, buffer.length, null, function(err) {
-   *       if (err) throw 'error writing file: ' + err;
-   *       fs.close(fd, function() {
-   *         console.log('wrote the file successfully');
-   *       });
-   *     });
-   *   });
+   * layer.imageHandler.download().then(b => {
+   *   fs.writeFileSync('image.png', b);
    * });
-   * @todo fix nodejs support
    */
   async download() {
     const {data} = await this.api.axios.get(this.url, {
@@ -130,6 +117,12 @@ export default class ImageHandler {
 
     form.append('image', image, 'image');
 
-    await this.api.axios.post(this.url, form, {headers: form.getHeaders()});
+    const headers = {};
+
+    if (form.getHeaders) {
+      Object.assign(headers, form.getHeaders());
+    }
+
+    await this.api.axios.post(this.url, form, {headers});
   }
 }
