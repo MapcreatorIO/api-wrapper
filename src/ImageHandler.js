@@ -102,8 +102,6 @@ export default class ImageHandler {
       responseType: 'arraybuffer',
     });
 
-    console.dir(response);
-
     return DownloadedResource.fromAxiosResponse(response);
   }
 

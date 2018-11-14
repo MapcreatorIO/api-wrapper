@@ -54,8 +54,6 @@ export default class DownloadedResource {
   static fromAxiosResponse(axiosResponse) {
     const {data, headers} = axiosResponse;
 
-    global.response = axiosResponse;
-
     // Find mimeType
     let mimeType;
     const contentType = headers['content-type'];
@@ -66,12 +64,15 @@ export default class DownloadedResource {
 
     // Extract file name
     let fileName;
-    const contentDisposition = headers['content-disposition']
+    const contentDisposition = headers['content-disposition'];
 
     if (contentDisposition) {
       const regex = /filename[^;=\n]*=((['"])(.*?)\2|([^;\s]*))/i;
+      const matches = regex.exec(contentDisposition);
 
-      fileName = regex.exec(contentDisposition)[3];
+      if (matches) {
+        fileName = matches[3];
+      }
     }
 
     return new DownloadedResource(data, mimeType, fileName);
