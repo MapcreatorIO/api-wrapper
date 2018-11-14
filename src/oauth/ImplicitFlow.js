@@ -91,8 +91,7 @@ export default class ImplicitFlow extends OAuth {
   }
 
   /**
-   * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @inheritDoc
    */
   authenticate() {
     return new Promise((resolve, reject) => {

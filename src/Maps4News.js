@@ -200,7 +200,9 @@ export default class Maps4News extends mix(null, Injectable) {
 
   /**
    * Authenticate with the api using the authentication method provided.
-   * @returns {Promise} - Resolves with {@link Maps4News} instance and rejects with {@link OAuthError}
+   * @returns {Promise<Maps4News>} - current instance
+   * @throws OAuthError
+   * @throws ApiError
    */
   authenticate() {
     return this.auth.authenticate().then(() => this);

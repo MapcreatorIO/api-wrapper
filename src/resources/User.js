@@ -69,7 +69,8 @@ export default class User extends CrudBase {
 
   /**
    * Get the user's organisation
-   * @returns {Promise} - Resolves with {@link Organisation} instance and rejects with {@link ApiError}
+   * @returns {Promise<Organisation>} - user's organisation
+   * @throws ApiError
    */
   organisation() {
     return (new ResourceProxy(this.api, Organisation)).get(this.organisationId);
@@ -77,7 +78,8 @@ export default class User extends CrudBase {
 
   /**
    * Get the user's language
-   * @returns {Promise} - Resolves with {@link Language} instance and rejects with {@link ApiError}
+   * @returns {Promise<Language>} - user's language
+   * @throws ApiError
    */
   language() {
     return (new ResourceProxy(this.api, Language)).get(this.languageCode);

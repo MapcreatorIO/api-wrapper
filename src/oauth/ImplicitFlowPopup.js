@@ -54,7 +54,6 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
     super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
-    this._storage = StorageManager.best;
 
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       throw new Error('We\'re a flow popup');
@@ -71,8 +70,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
   }
 
   /**
-   * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @inheritDoc
    */
   authenticate() {
     if (window.name === ImplicitFlowPopup.popupWindowName) {

@@ -68,7 +68,8 @@ export default class OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise} - Promise resolves with OAuthToken and rejects with OAuthError
+   * @returns {Promise<OAuthToken>} - authentication token
+   * @throws OAuthError
    * @abstract
    */
   authenticate() {
