@@ -31,7 +31,7 @@
  */
 
 import ResourceProxy from '../proxy/ResourceProxy';
-import DownloadedResource from '../utils/DownloadedResource';
+import DownloadedResource from './base/DownloadedResource';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobRevision from './JobRevision';

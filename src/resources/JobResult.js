@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import DownloadedResource from '../utils/DownloadedResource';
+import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {

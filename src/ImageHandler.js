@@ -32,7 +32,7 @@
 
 import Maps4News from './Maps4News';
 import ResourceBase from './resources/base/ResourceBase';
-import DownloadedResource from './utils/DownloadedResource';
+import DownloadedResource from './resources/base/DownloadedResource';
 import {isNode} from './utils/node';
 import {isParentOf} from './utils/reflection';
 import {FormData} from './utils/requests';

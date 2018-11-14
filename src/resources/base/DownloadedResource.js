@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isNode} from './node';
+import {isNode} from '../../utils/node';
 
 /**
  * Downloaded resource from the api
