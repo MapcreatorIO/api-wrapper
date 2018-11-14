@@ -31,7 +31,6 @@
  */
 
 import OAuthError from '../errors/OAuthError';
-import StorageManager from '../storage/StorageManager';
 import ImplicitFlow from './ImplicitFlow';
 import OAuthToken from './OAuthToken';
 
