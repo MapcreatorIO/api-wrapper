@@ -41,7 +41,7 @@ import Font from './Font';
  * @mixes OwnableResource
  */
 export default class FontFamily extends mix(CrudSetBase, OwnableResource) {
-  get resourcePath() {
+  static get resourcePath() {
     return '/fonts/families/{id}';
   }
 

@@ -41,7 +41,7 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class SvgSet extends mix(CrudSetBase, OwnableResource) {
-  get resourcePath() {
+  static get resourcePath() {
     return '/svgs/sets/{id}';
   }
 

@@ -129,10 +129,9 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Resource path template
    * @returns {String} - Path template
-   * @todo move to constructor
    */
-  get resourcePath() {
-    return `/${this.constructor.resourceName}/{id}`;
+  static get resourcePath() {
+    return `/${this.resourceName}/{id}`;
   }
 
   /**
@@ -350,7 +349,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    */
   get url() {
     if (!this._url) {
-      let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
+      let url = `${this._api.host}/${this._api.version}${this.constructor.resourcePath}`;
 
       // Find and replace any keys
       url = url.replace(/{(\w+)}/g, (match, key) => this[camelCase(key)]);
@@ -366,7 +365,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @returns {string} - Resource base url
    */
   get baseUrl() {
-    const basePath = this.resourcePath.match(/^(\/[^{]+\b)/)[1];
+    const basePath = this.constructor.resourcePath.match(/^(\/[^{]+\b)/)[1];
 
     return `${this._api.host}/${this._api.version}${basePath}`;
   }
@@ -469,7 +468,7 @@ export default class ResourceBase extends mix(null, Injectable) {
           return Object.getPrototypeOf(this).resourceName || 'anonymous';
         }
 
-        get resourcePath() {
+        static get resourcePath() {
           return url;
         }
       };

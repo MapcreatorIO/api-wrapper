@@ -37,7 +37,7 @@ export default class Language extends CrudBase {
     return 'languages';
   }
 
-  get resourcePath() {
+  static get resourcePath() {
     return `/${this.constructor.resourceName}/{code}`;
   }
 

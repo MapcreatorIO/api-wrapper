@@ -277,7 +277,7 @@ export default class Maps4News extends mix(null, Injectable) {
           return Object.getPrototypeOf(this).resourceName || 'anonymous';
         }
 
-        get resourcePath() {
+        static get resourcePath() {
           return path;
         }
       };

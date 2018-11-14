@@ -34,7 +34,7 @@ import {isNode} from '../utils/node';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
-  get resourcePath() {
+  static get resourcePath() {
     return '/jobs/{job_id}/revisions/{revision}/result';
   }
 

@@ -51,7 +51,7 @@ export default class JobShare extends CrudBase {
     return JobShareVisibility;
   }
 
-  get resourcePath() {
+  static get resourcePath() {
     return '/jobs/shares/{id}';
   }
 

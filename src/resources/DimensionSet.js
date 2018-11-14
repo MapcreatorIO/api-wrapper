@@ -42,7 +42,7 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class DimensionSet extends mix(CrudSetBase, OwnableResource) {
-  get resourcePath() {
+  static get resourcePath() {
     return '/dimensions/sets/{id}';
   }
 
