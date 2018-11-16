@@ -119,7 +119,7 @@ export default class DownloadedResource {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
    * @return {string} - object url
    */
-  createObjectURL() {
+  createObjectUrl() {
     if (isNode()) {
       throw new Error('Object urls are not supported by Node');
     }
