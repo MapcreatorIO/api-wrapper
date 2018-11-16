@@ -37,14 +37,14 @@ import ApiError from './ApiError';
  * Normally thrown when a job object is invalid.
  *
  * @typedef {Object} SchemaError
- * @property {string} property -
- * @property {string} pointer -
- * @property {string} message -
- * @property {number} context -
+ * @property {string} property - json property
+ * @property {string} pointer - json pointer
+ * @property {string} message - error message
+ * @property {number} context - 
  * @property {Object} constraint -
- * @property {Object<string, string>} constraint.params -
+ * @property {Object<string, string>} constraint.params - 
  * @property {string} constraint.name -
- *
+ * @see {@link https://github.com/justinrainbow/json-schema}
  * @example
  * {
  *   property: "data.meta",
