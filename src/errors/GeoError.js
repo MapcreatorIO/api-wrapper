@@ -30,11 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export * from './AbstractError';
-export ApiError from './ApiError';
-export NodeError from './NodeError';
-export OAuthError from './OAuthError';
-export StaticClassError from './StaticClassError';
-export UnsupportedCrudError from './UnsupportedCrudError';
-export ValidationError from './ValidationError';
-export * from './GeoError';
+/**
+ * Thrown when an error occurs during geo processing
+ */
+export class GeoError extends Error {
+  /**
+   * GeoError construcotr
+   * @param {String} message - Error message
+   */
+  constructor(message) {
+    // noinspection JSCheckFunctionSignatures
+    super(message);
+  }
+}
