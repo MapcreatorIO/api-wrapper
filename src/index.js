@@ -59,9 +59,11 @@ export * as resources from './resources';
 // Helpers
 export * as helpers from './utils/helpers';
 export ResourceLister from './ResourceLister';
+export * as geo from './utils/geo';
 
 // Errors
 export * as errors from './errors';
+
 
 /**
  * Package version

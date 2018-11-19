@@ -40,9 +40,9 @@ import ApiError from './ApiError';
  * @property {string} property - json property
  * @property {string} pointer - json pointer
  * @property {string} message - error message
- * @property {number} context - 
+ * @property {number} context -
  * @property {Object} constraint -
- * @property {Object<string, string>} constraint.params - 
+ * @property {Object<string, string>} constraint.params -
  * @property {string} constraint.name -
  * @see {@link https://github.com/justinrainbow/json-schema}
  * @example
