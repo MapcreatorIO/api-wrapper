@@ -341,7 +341,7 @@ export default class Maps4News extends mix(null, Injectable) {
       return apiError;
     }
 
-    return new ValidationError(err.type, err.message, status, err['validation_errors']);
+    return new ValidationError(err.type, err.message, status, err['validation_errors'], err['schema_errors']);
   }
 
   /**
