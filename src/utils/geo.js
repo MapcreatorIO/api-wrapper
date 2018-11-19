@@ -31,11 +31,7 @@
  */
 
 
-import {GeoError} from '../errors/GeoError';
-
-function readonly() {
-
-}
+import GeoError from '../errors/GeoError';
 
 /**
  * A geographical point
@@ -47,30 +43,57 @@ export class GeoPoint {
    * @param {Number} lng - longitude
    */
   constructor(lat, lng) {
-    if (lat > 90 || lat < -90) {
-      throw new GeoError(`Invalid latitude: ${lat}`);
-    }
-
-    if (lng > 180 || lng < -180) {
-      throw new GeoError(`Invalid longitude: ${lng}`);
-    }
-
     this.lat = lat;
     this.lng = lng;
   }
 
   /**
-   * Latitude
-   * @type {Number}
+   * Get latitude
+   * @returns {number} - latitude
    */
-  @readonly
-  lat;
+  get lat() {
+    return this._lat;
+  }
 
   /**
-   * Longitude
-   * @type {Number}
+   * Set latitude
+   * @param {Number} value - latitude
    */
-  lng;
+  set lat(value) {
+    value = Number(value);
+
+    if (!Number.isFinite(value) || value > 90 || value < -90) {
+      throw new GeoError(`Invalid latitude: ${value}`);
+    }
+
+    this._lat = value;
+  }
+
+  /**
+   * Get longitude
+   * @returns {Number} - longitude
+   */
+  get lng() {
+    return this._lng;
+  }
+
+  /**
+   * Set longitude
+   * @param {Number} value - longitude
+   */
+  set lng(value) {
+    value = Number(value);
+
+    if (!Number.isFinite(value) || value > 180 || value < -180) {
+      throw new GeoError(`Invalid longitude: ${value}`);
+    }
+
+    this._lng = value;
+  }
+
+  toJSON() {
+    return {lat: this.lat, lng: this.lng};
+  }
 }
 
 /**
