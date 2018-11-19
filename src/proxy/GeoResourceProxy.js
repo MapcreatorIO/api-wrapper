@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ApiError from '../errors/ApiError';
 import RequestParameters from '../RequestParameters';
 import {GeoBoundary} from '../utils/geo';
 import ResourceProxy from './ResourceProxy';
@@ -77,15 +76,22 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Object} boundary.bottomRight - bottom right corner of the boundary
    * @param {Number} boundary.bottomRight.lat - bottom right corner latitude
    * @param {Number} boundary.bottomRight.lng - bottom right corner longitude
-   * @param {Number} count - Amount of results, can't be larger then RequestParameters.maxPerPage
+   * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
    * @returns {Promise<ResourceBase[]>} - target resource for boundary
+   * @throws TypeError
    * @todo use hasForBoundary
    */
-  async forBoundary({topLeft, bottomRight}, count = RequestParameters.perPage) {
+  async forBoundary({topLeft, bottomRight}, limit = RequestParameters.perPage) {
     const boundary = new GeoBoundary(topLeft, bottomRight);
 
+    if (limit > RequestParameters.maxPerPage) {
+      throw new TypeError(`Invalid resource limit ${limit}, maximum allowed is ${RequestParameters.maxPerPage}`);
+    }
 
+    const url = this.new().baseUrl + '/for-bounds';
+
+    const data = await this.api.request(url, 'POST', {limit, ...boundary});
+
+    return data.map(r => this.new(r));
   }
-
-
 }
