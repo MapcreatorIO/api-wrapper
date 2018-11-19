@@ -49,7 +49,7 @@ export class GeoPoint {
 
   /**
    * Get latitude
-   * @returns {number} - latitude
+   * @returns {Number} - latitude
    */
   get lat() {
     return this._lat;
@@ -91,6 +91,10 @@ export class GeoPoint {
     this._lng = value;
   }
 
+  /**
+   * Get data to be JSON encoded
+   * @returns {{lat: Number, lng: Number}} - data
+   */
   toJSON() {
     return {lat: this.lat, lng: this.lng};
   }
