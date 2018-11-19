@@ -399,7 +399,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get choropleths() {
-    return new GeoResourceProxy(this.api, Choropleth, null, {}, {hasForPoint: false});
+    return new GeoResourceProxy(this, Choropleth, null, {}, {hasForPoint: false});
   }
 
   /**
@@ -498,7 +498,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get highlights() {
-    return new GeoResourceProxy(this.api, Highlight, null, {}, {hasForBoundary: false});
+    return new GeoResourceProxy(this, Highlight, null, {}, {hasForBoundary: false});
   }
 
   /**
@@ -507,7 +507,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get insetMaps() {
-    return new GeoResourceProxy(this.api, InsetMap, null, {}, {hasForPoint: false});
+    return new GeoResourceProxy(this, InsetMap, null, {}, {hasForPoint: false});
   }
 
   /**

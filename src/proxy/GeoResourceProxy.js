@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import GeoError from '../errors/GeoError';
 import RequestParameters from '../RequestParameters';
-import {GeoBoundary} from '../utils/geo';
+import {GeoBoundary, GeoPoint} from '../utils/geo';
 import ResourceProxy from './ResourceProxy';
 
 export default class GeoResourceProxy extends ResourceProxy {
@@ -79,9 +80,12 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
    * @returns {Promise<ResourceBase[]>} - target resource for boundary
    * @throws TypeError
-   * @todo use hasForBoundary
+   * @throws GeoError
    */
   async forBoundary({topLeft, bottomRight}, limit = RequestParameters.perPage) {
+    if (!this.hasForBoundary) {
+      throw new GeoError(`${this.Target.name} does not support the operation forBoundary`);
+    }
     const boundary = new GeoBoundary(topLeft, bottomRight);
 
     if (limit > RequestParameters.maxPerPage) {
@@ -91,6 +95,35 @@ export default class GeoResourceProxy extends ResourceProxy {
     const url = this.new().baseUrl + '/for-bounds';
 
     const data = await this.api.request(url, 'POST', {limit, ...boundary});
+
+    return data.map(r => this.new(r));
+  }
+
+  // noinspection JSCommentMatchesSignature
+  /**
+   * Get an array of results for point
+   * @param {Object} point - point to search at
+   * @param {Number} point.lat - top left corner latitude
+   * @param {Number} point.lng - top left corner longitude
+   * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
+   * @returns {Promise<ResourceBase[]>} - target resource for boundary
+   * @throws TypeError
+   * @throws GeoError
+   */
+  async forPoint({lat, lng}, limit = RequestParameters.perPage) {
+    if (!this.hasForPoint) {
+      throw new GeoError(`${this.Target.name} does not support the operation forPoint`);
+    }
+
+    const point = new GeoPoint(lat, lng);
+
+    if (limit > RequestParameters.maxPerPage) {
+      throw new TypeError(`Invalid resource limit ${limit}, maximum allowed is ${RequestParameters.maxPerPage}`);
+    }
+
+    const url = this.new().baseUrl + '/for-point';
+
+    const data = await this.api.request(url, 'POST', {limit, point});
 
     return data.map(r => this.new(r));
   }
