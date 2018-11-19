@@ -33,7 +33,7 @@
 /**
  * Thrown when an error occurs during geo processing
  */
-export class GeoError extends Error {
+export default class GeoError extends Error {
   /**
    * GeoError construcotr
    * @param {String} message - Error message

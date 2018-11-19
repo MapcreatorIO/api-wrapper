@@ -37,4 +37,4 @@ export OAuthError from './OAuthError';
 export StaticClassError from './StaticClassError';
 export UnsupportedCrudError from './UnsupportedCrudError';
 export ValidationError from './ValidationError';
-export * from './GeoError';
+export GeoError from './GeoError';
