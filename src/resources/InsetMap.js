@@ -30,10 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {fetch} from '../utils/requests';
 import ResourceBase from './base/ResourceBase';
 
 export default class InsetMap extends ResourceBase {
   static get resourceName() {
     return 'inset-maps';
+  }
+
+  /**
+   * Get the inset ma[ json
+   * @returns {Promise<Object>} - choropleth json
+   */
+  getJson() {
+    return fetch(this.url + '/json', {
+      headers: this._getDownloadHeaders(),
+    }).then(x => x.json());
   }
 }
