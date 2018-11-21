@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {downloadFile, fetch} from '../utils/requests';
 import ResourceBase from './base/ResourceBase';
 
 /**
@@ -38,5 +39,35 @@ import ResourceBase from './base/ResourceBase';
 export default class Choropleth extends ResourceBase {
   static get resourceName() {
     return 'choropleths';
+  }
+
+  /**
+   * Get the choropleth json
+   * @returns {Promise<Object>} - choropleth json
+   */
+  getJson() {
+    return fetch(this.url + '/json', {
+      headers: this._getDownloadHeaders(),
+    }).then(x => x.json());
+  }
+
+  /**
+   * Get image blob url representation
+   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   */
+  downloadPreview() {
+    return downloadFile(`${this.url}/preview`, this._getDownloadHeaders()).then(data => data.blob);
+  }
+
+  /**
+   * Get headers for downloading resources
+   * @returns {{Accept: string, Authorization: string}} - Request headers
+   * @private
+   */
+  _getDownloadHeaders() {
+    return {
+      Accept: 'application/json',
+      Authorization: this.api.auth.token.toString(),
+    };
   }
 }
