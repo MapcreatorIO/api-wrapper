@@ -37,6 +37,7 @@ import ValidationError from './errors/ValidationError';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
 import OAuthToken from './oauth/OAuthToken';
+import GeoResourceProxy from './proxy/GeoResourceProxy';
 import ResourceProxy from './proxy/ResourceProxy';
 import SimpleResourceProxy from './proxy/SimpleResourceProxy';
 import ResourceCache from './ResourceCache';
@@ -341,7 +342,7 @@ export default class Maps4News extends mix(null, Injectable) {
       return apiError;
     }
 
-    return new ValidationError(err.type, err.message, status, err['validation_errors']);
+    return new ValidationError(err.type, err.message, status, err['validation_errors'], err['schema_errors']);
   }
 
   /**
@@ -395,10 +396,10 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Choropleth accessor
    * @see {@link Choropleth}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
+   * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get choropleths() {
-    return this.static(Choropleth);
+    return new GeoResourceProxy(this, Choropleth, null, {}, {hasForPoint: false});
   }
 
   /**
@@ -494,19 +495,19 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Highlight accessor
    * @see {@link Highlight}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
+   * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get highlights() {
-    return this.static(Highlight);
+    return new GeoResourceProxy(this, Highlight, null, {}, {hasForBoundary: false});
   }
 
   /**
    * InsetMap accessor
    * @see {@link InsetMap}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
+   * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get insetMaps() {
-    return this.static(InsetMap);
+    return new GeoResourceProxy(this, InsetMap, null, {}, {hasForPoint: false});
   }
 
   /**

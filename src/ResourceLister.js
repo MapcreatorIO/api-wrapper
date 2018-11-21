@@ -239,9 +239,6 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Update the server data
-   *
-   * @returns {Promise<void>} - Resolves when the data has been updated
-   * @async
    */
   async update() {
     if (this.waiting) {
@@ -277,7 +274,6 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Fetch more data from the server
-   * @returns {Promise<void>} - Resolves when _availableRows has been updated
    * @private
    */
   async _fetchMore() {
