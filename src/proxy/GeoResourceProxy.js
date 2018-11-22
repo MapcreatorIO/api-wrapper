@@ -92,7 +92,7 @@ export default class GeoResourceProxy extends ResourceProxy {
       throw new TypeError(`Invalid resource limit ${limit}, maximum allowed is ${RequestParameters.maxPerPage}`);
     }
 
-    const url = this.new().baseUrl + '/for-bounds';
+    const url = this.new().baseUrl + '/for-boundary';
 
     const data = await this.api.request(url, 'POST', {limit, ...boundary});
 
