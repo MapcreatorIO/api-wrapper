@@ -94,7 +94,7 @@ export default class GeoResourceProxy extends ResourceProxy {
 
     const url = this.new().baseUrl + '/for-boundary';
 
-    const data = await this.api.request(url, 'POST', {limit, ...boundary});
+    const data = await this.api.request(url, 'POST', {limit, boundary});
 
     return data.map(r => this.new(r));
   }
