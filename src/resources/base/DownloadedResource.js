@@ -43,7 +43,7 @@ export default class DownloadedResource {
    * @param {string} [type=application/octet-stream] - mime-type
    * @param {string} [fileName=Untitled] - file name
    */
-  constructor(data, type = 'application/octet-stream', fileName = 'Untitled.zip') {
+  constructor(data, type = 'application/octet-stream', fileName = 'Untitled') {
     this._data = data;
     this._type = type;
     this._fileName = fileName;
