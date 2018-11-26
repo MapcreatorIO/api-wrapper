@@ -30,20 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ResourceBase from './base/ResourceBase';
-
-export default class InsetMap extends ResourceBase {
-  static get resourceName() {
-    return 'inset-maps';
-  }
-
+/**
+ * Thrown when an error occurs during geo processing
+ */
+export default class GeoError extends Error {
   /**
-   * Get the inset ma[ json
-   * @returns {Promise<Object>} - inset map json
+   * GeoError construcotr
+   * @param {String} message - Error message
    */
-  async getJson() {
-    const {data} = await this.api.axios.get(this.url + '/json');
-
-    return data;
+  constructor(message) {
+    // noinspection JSCheckFunctionSignatures
+    super(message);
   }
 }

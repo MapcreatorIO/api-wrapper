@@ -128,7 +128,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview() {
-    const response = await this.api.axios.get(this.url, {
+    const response = await this.api.axios.get(this.previewUrl, {
       responseType: 'arraybuffer',
     });
 

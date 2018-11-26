@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 
 /**
@@ -38,5 +39,27 @@ import ResourceBase from './base/ResourceBase';
 export default class Choropleth extends ResourceBase {
   static get resourceName() {
     return 'choropleths';
+  }
+
+  /**
+   * Get the inset ma[ json
+   * @returns {Promise<Object>} - choropleth json
+   */
+  async getJson() {
+    const {data} = await this.api.axios.get(this.url + '/json');
+
+    return data;
+  }
+
+  /**
+   * Download the choropleth preview
+   * @returns {Promise<DownloadedResource>} - choropleth preview
+   */
+  async downloadPreview() {
+    const response = await this.api.axios.get(this.url + '/preview', {
+      responseType: 'arraybuffer',
+    });
+
+    return DownloadedResource.fromAxiosResponse(response);
   }
 }

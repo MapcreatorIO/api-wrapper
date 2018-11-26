@@ -90,7 +90,7 @@ export default class OAuth {
 
   /**
    * Invalidates the session token
-   * @async
+   * @throws {OAuthError} - If de-authentication fails
    * @throws {ApiError} - If the api returns errors
    */
   async logout() {

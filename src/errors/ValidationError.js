@@ -33,6 +33,34 @@
 import ApiError from './ApiError';
 
 /**
+ * Contains schema errors.
+ * Normally thrown when a job object is invalid.
+ *
+ * @typedef {Object} SchemaError
+ * @property {string} property - json property
+ * @property {string} pointer - json pointer
+ * @property {string} message - error message
+ * @property {number} context -
+ * @property {Object} constraint -
+ * @property {Object<string, string>} constraint.params -
+ * @property {string} constraint.name -
+ * @see {@link https://github.com/justinrainbow/json-schema}
+ * @example
+ * {
+ *   property: "data.meta",
+ *   pointer: "/data/meta",
+ *   message: "The property meta is required",
+ *   constraint: {
+ *     name: "required",
+ *     params: {
+ *       property: "meta"
+ *     }
+ *   },
+ *   context: 1
+ * }
+ */
+
+/**
  * Extension of {@link ApiError} containing an extra field for validation errors
  */
 export default class ValidationError extends ApiError {
@@ -45,7 +73,10 @@ export default class ValidationError extends ApiError {
   constructor({config, request, response}) {
     super({config, request, response});
 
+    const schemaErrors = response.data.error['schema_errors'];
+    
     this._validationErrors = response.data.error['validation_errors'];
+    this._schemaErrors = Array.isArray(schemaErrors) ? schemaErrors : [];
   }
 
   /**
@@ -54,6 +85,63 @@ export default class ValidationError extends ApiError {
    */
   get validationErrors() {
     return this._validationErrors;
+  }
+
+  /**
+   * Get the schema errors if available
+   * @return {SchemaError[]} - Array containing schema errors
+   * @see {@link hasSchemaErrors}
+   * @example
+   *
+   * [
+   *   {
+   *     "property": "data.meta",
+   *     "pointer": "/data/meta",
+   *     "message": "The property meta is required",
+   *     "constraint": {
+   *       "name": "required",
+   *       "params": {
+   *         "property": "meta"
+   *       }
+   *     },
+   *     "context": 1
+   *   },
+   *    {
+   *     "property": "data.paper",
+   *     "pointer": "/data/paper",
+   *     "message": "The property paper is required",
+   *     "constraint": {
+   *       "name": "required",
+   *       "params": {
+   *         "property": "paper"
+   *       }
+   *     },
+   *     "context": 1
+   *   },
+   *    {
+   *     "property": "data.scaleDefinition",
+   *     "pointer": "/data/scaleDefinition",
+   *     "message": "The property scaleDefinition is required",
+   *     "constraint": {
+   *       "name": "required",
+   *       "params": {
+   *         "property": "scaleDefinition"
+   *       }
+   *     },
+   *     "context": 1
+   *   }
+   * ]
+   */
+  get schemaErrors() {
+    return this._schemaErrors;
+  }
+
+  /**
+   * True if the error contains schema errors
+   * @return {boolean} - Has schema errors
+   */
+  get hasSchemaErrors() {
+    return this.schemaErrors.length > 0;
   }
 
   /**

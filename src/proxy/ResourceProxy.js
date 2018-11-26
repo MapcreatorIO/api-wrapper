@@ -41,10 +41,7 @@ import SimpleResourceProxy from './SimpleResourceProxy';
  */
 export default class ResourceProxy extends SimpleResourceProxy {
   /**
-   * @param {Maps4News} api - Instance of the api
-   * @param {ResourceBase} Target - Target to wrap
-   * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
-   * @param {object} seedData - Internal use, used for seeding ::new
+   * @inheritDoc
    */
   constructor(api, Target, altUrl = null, seedData = {}) {
     super(api, Target, altUrl, seedData);
