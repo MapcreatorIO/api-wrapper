@@ -165,7 +165,7 @@ export function custom3xxHandler(error) {
 
   // Do nothing with non-3xx responses
   if (response.status < 300 || response.status >= 400) {
-    return error;
+    return Promise.reject(error);
   }
 
   let redirectUrl = response.headers.location;

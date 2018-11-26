@@ -239,11 +239,11 @@ export default class Maps4News extends mix(null, Injectable) {
     // Retry requests if rate limiter is hit
     instance.interceptors.response.use(null, retry429ResponseInterceptor);
 
-    // Transform errors
-    instance.interceptors.response.use(null, transformAxiosErrors);
-
     // Intercept 3xx redirects and rewrite headers (node)
     instance.interceptors.response.use(null, custom3xxHandler);
+
+    // Transform errors
+    instance.interceptors.response.use(null, transformAxiosErrors);
 
     return instance;
   }
