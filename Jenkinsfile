@@ -44,7 +44,7 @@ node('npm') {
       sh 'npm run lint'
       checkstyle pattern: 'build/checkstyle.xml'
     }
-  }, build {
+  }, build: {
     stage('build') {
         sh 'npm run build'
         archiveArtifacts artifacts: 'dist/*', fingerprint: true
