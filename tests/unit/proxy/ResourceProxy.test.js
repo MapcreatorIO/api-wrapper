@@ -30,14 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 import moxios from 'moxios';
-import PasswordFlow from '../../../src/oauth/PasswordFlow';
+import Maps4News from '../../../src/Maps4News';
 
-test('PasswordFlow should auth', async () => {
-  const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
-
-  flow.path = '/oauth/passwordFlow.php';
-  expect(flow.path).toEqual('/oauth/passwordFlow.php');
+test('get should return a result on success', async () => {
+  const api = new Maps4News('token', 'example.com');
 
   moxios.wait(() => {
     const request = moxios.requests.mostRecent();
@@ -45,40 +43,45 @@ test('PasswordFlow should auth', async () => {
     request.respondWith({
       status: 200,
       response: {
-        'token_type': 'bearer',
-        'expires_in': 86400,
-        'access_token': 'token',
+        success: true,
+        data: {
+          id: 123,
+          name: 'foo bar',
+        },
       },
     });
   });
 
-  const token = await flow.authenticate();
+  const user = await api.users.get(123);
 
-  expect(token.expired).toEqual(false);
+  expect(user.id).toEqual(123);
+  expect(user.name).toEqual('foo bar');
 });
 
-test('PasswordFlow should catch errors', async () => {
-  const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
-
-  flow.path = '/oauth/passwordFlow.php';
-
-  expect.assertions(1);
+test('get should throw an exception when an api call is unsuccessful', async () => {
+  const api = new Maps4News('token', 'example.com');
 
   moxios.wait(() => {
     const request = moxios.requests.mostRecent();
 
     request.respondWith({
-      status: 200,
+      status: 404,
       response: {
-        error: 'mock_error',
-        message: 'This is a mock error',
+        success: false,
+        error: {
+          type: 'ModelNotFoundException',
+          message: 'User with id 123 not found',
+        },
       },
     });
   });
 
+  expect.assertions(2);
+
   try {
-    await flow.authenticate();
-  } catch (err) {
-    expect(err.error).toEqual('mock_error');
+    await api.users.get(123);
+  } catch (error) {
+    expect(error.type).toEqual('ModelNotFoundException');
+    expect(error.message).toEqual('User with id 123 not found');
   }
 });
