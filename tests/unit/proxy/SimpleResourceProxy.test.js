@@ -31,74 +31,11 @@
  */
 
 
-import moxios from 'moxios';
 import Maps4News from '../../../src/Maps4News';
 
 const api = new Maps4News('token', 'https://example.com');
 
-test('get should return a result on success', async () => {
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 200,
-      response: {
-        success: true,
-        data: {
-          id: 123,
-          name: 'foo bar',
-        },
-      },
-    });
-  });
-
-  const user = await api.users.get(123);
-
-  expect(user.id).toEqual(123);
-  expect(user.name).toEqual('foo bar');
-  expect(user.constructor.name).toEqual('User');
-  expect(user.constructor.resourceName).toEqual('users');
-});
-
-test('get should throw an exception when an api call is unsuccessful', async () => {
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 404,
-      response: {
-        success: false,
-        error: {
-          type: 'ModelNotFoundException',
-          message: 'User with id 123 not found',
-        },
-      },
-    });
-  });
-
-  expect.assertions(2);
-
-  try {
-    await api.users.get(123);
-  } catch (error) {
-    expect(error.type).toEqual('ModelNotFoundException');
-    expect(error.message).toEqual('User with id 123 not found');
-  }
-});
-
-test('select returns a new instance', () => {
-  const user = api.users.select('me');
-
-  expect(user.id).toEqual('me');
-  expect(user.constructor.name).toEqual('User');
-  expect(user.constructor.resourceName).toEqual('users');
-});
-
-
-test('empty select returns a new instance', () => {
-  const user = api.users.select();
-
-  expect(user.toObject()).toEqual({});
-  expect(user.constructor.name).toEqual('User');
-  expect(user.constructor.resourceName).toEqual('users');
+test('baseUrl returns the proxy target url', () => {
+  expect(api.users.baseUrl).toEqual('https://example.com/v1/users');
+  expect(api.layers.select(100).organisations.baseUrl).toEqual('https://example.com/v1/layers/100/organisations');
 });

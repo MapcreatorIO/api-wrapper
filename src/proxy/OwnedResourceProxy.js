@@ -103,23 +103,33 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @private
    */
   async _modifyResourceLink(items, method) {
-    if (!(items instanceof Array)) {
+    if (!Array.isArray(items)) {
       items = [items];
     }
 
     const keys = items
-      .map(x => typeof x === 'object' && x.id ? x.id : x)
+      .map(x => this._getKeyValue(x))
       .map(Number)
       .filter(x => !Number.isNaN(x));
-
-    if (!keys.length === 0) {
-      throw new TypeError('Expected items to be of type Array<ResourceBase>, Array<number>, ResourceBase or number}');
-    }
 
     await this.api.axios.request({
       url: this.baseUrl,
       method,
       data: {keys},
     });
+  }
+
+  _getKeyValue(item) {
+    if (['number', 'string'].includes(typeof item)) {
+      return item;
+    }
+
+    const key = item.constructor.resourceUrlKey || 'id';
+
+    if (typeof item[key] !== 'undefined') {
+      return item[key];
+    }
+
+    throw new TypeError('Expected items to be of type Array<ResourceBase>, Array<number>, ResourceBase or number}');
   }
 }
