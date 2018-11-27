@@ -293,7 +293,7 @@ export default class ResourceLister extends EventEmitter {
 
     const responses = await Promise.all(promises);
 
-    for (const {data: {data}, request: {headers}} of responses) {
+    for (const {data: {data}, headers} of responses) {
       data.forEach(row => this.push(row, false));
 
       this._availableRows = Number(headers['x-paginate-total']) + parameters.offset;
