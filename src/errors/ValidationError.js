@@ -74,7 +74,7 @@ export default class ValidationError extends ApiError {
     super({config, request, response});
 
     const schemaErrors = response.data.error['schema_errors'];
-    
+
     this._validationErrors = response.data.error['validation_errors'];
     this._schemaErrors = Array.isArray(schemaErrors) ? schemaErrors : [];
   }
