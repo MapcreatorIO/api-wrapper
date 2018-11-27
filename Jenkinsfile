@@ -39,17 +39,19 @@ node('npm') {
     }
   }
 
-  stage('build') {
-    sh 'npm run build'
-    archiveArtifacts artifacts: 'dist/*', fingerprint: true
-  }
-
   parallel lint: {
     stage('linter') {
       sh 'npm run lint'
       checkstyle pattern: 'build/checkstyle.xml'
     }
-  }, test: {
+  }, build {
+    stage('build') {
+        sh 'npm run build'
+        archiveArtifacts artifacts: 'dist/*', fingerprint: true
+      }
+  }, failFast: true
+
+  parallel test: {
     stage('test') {
       timeout(activity: true, time: 2) {
         sh 'npm run test-ci'
