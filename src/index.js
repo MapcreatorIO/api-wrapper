@@ -70,9 +70,3 @@ export * as errors from './errors';
  * @private
  */
 export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;

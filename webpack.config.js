@@ -58,7 +58,6 @@ const common = {
 
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(version),
-      LICENSE: JSON.stringify(license),
     }),
   ],
 };
