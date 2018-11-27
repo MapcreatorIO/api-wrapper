@@ -23,11 +23,6 @@ node('npm') {
     sh 'git checkout -- "*"'
   }
 
-  stage('linter') {
-    sh 'npm run lint'
-    checkstyle pattern: 'build/checkstyle.xml'
-  }
-
   SHOULD_TAG = BRANCH_NAME in ['master', 'develop'] && sh(script: 'git describe --exact-match --tag HEAD', returnStatus: true) != 0
 
   if (SHOULD_TAG) {
@@ -49,15 +44,31 @@ node('npm') {
     archiveArtifacts artifacts: 'dist/*', fingerprint: true
   }
 
-  stage('test') {
-    timeout(activity: true, time: 2) {
-      sh 'npm run test-ci'
+  parallel lint: {
+    stage('linter') {
+      sh 'npm run lint'
+      checkstyle pattern: 'build/checkstyle.xml'
     }
+  }, test: {
+    stage('test') {
+      timeout(activity: true, time: 2) {
+        sh 'npm run test-ci'
+      }
 
-    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
-    step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
-    junit 'build/junit.xml'
-  }
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
+      step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
+      junit 'build/junit.xml'
+    }
+  }, docs: {
+    stage('docs') {
+      sh 'npm run docs'
+
+      if (SHOULD_TAG) {
+        sh './scripts/docs-commit.sh'
+        git_push('gh-pages', '--force')
+      }
+    }
+  }, failFast: true
 
   stage('publish') {
     if (SHOULD_TAG) {
@@ -75,15 +86,6 @@ node('npm') {
       println "Published package version ${PACKAGE_VERSION}"
 
       slackSend(color: 'good', message: "`@mapcreator/maps4news` version ${PACKAGE_VERSION} was just published, please run `npm install @mapcreator/maps4news${PACKAGE_VERSION.replace('v', '@')}`.", channel: '#api')
-    }
-  }
-
-  stage('docs') {
-    sh 'npm run docs'
-
-    if (SHOULD_TAG) {
-      sh './scripts/docs-commit.sh'
-      git_push('gh-pages', '--force')
     }
   }
 
