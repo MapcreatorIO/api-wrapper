@@ -108,7 +108,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
     }
 
     const keys = items
-      .map(x => this._getKeyValue(x))
+      .map(x => OwnedResourceProxy._getKeyValue(x))
       .map(Number)
       .filter(x => !Number.isNaN(x));
 
@@ -119,7 +119,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
     });
   }
 
-  _getKeyValue(item) {
+  static _getKeyValue(item) {
     if (['number', 'string'].includes(typeof item)) {
       return item;
     }
