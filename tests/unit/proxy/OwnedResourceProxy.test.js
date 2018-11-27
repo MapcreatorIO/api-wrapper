@@ -156,7 +156,7 @@ test('attachAll/detachAll items to the organisation', async () => {
   }
 
   moxios.wait(getHandler('post'));
-  await api.organisations.select('mine').colors.attaclhAll();
+  await api.organisations.select('mine').colors.attachAll();
 
   moxios.wait(getHandler('delete'));
   await api.organisations.select('mine').colors.detachAll();
