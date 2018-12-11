@@ -68,6 +68,7 @@ export default class Choropleth extends ResourceBase {
     return {
       Accept: 'application/json',
       Authorization: this.api.auth.token.toString(),
+      'X-No-CDN-Redirect': 'true',
     };
   }
 }

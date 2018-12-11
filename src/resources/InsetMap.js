@@ -47,4 +47,17 @@ export default class InsetMap extends ResourceBase {
       headers: this._getDownloadHeaders(),
     }).then(x => x.json());
   }
+
+  /**
+   * Get headers for downloading resources
+   * @returns {{Accept: string, Authorization: string}} - Request headers
+   * @private
+   */
+  _getDownloadHeaders() {
+    return {
+      Accept: 'application/json',
+      Authorization: this.api.auth.token.toString(),
+      'X-No-CDN-Redirect': 'true',
+    };
+  }
 }
