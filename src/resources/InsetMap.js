@@ -38,7 +38,7 @@ export default class InsetMap extends ResourceBase {
   }
 
   /**
-   * Get the inset ma[ json
+   * Get the inset map json
    * @returns {Promise<Object>} - inset map json
    */
   async getJson() {

@@ -95,7 +95,6 @@ export default class PaginatedResourceWrapper {
   /**
    * Manually fetch a page. This will change the current page.
    * @param {Number|Array<Number>} pageId - Page(s) to fetch
-   * @returns {void}
    */
   get(pageId) {
     if (pageId instanceof Array) {
@@ -110,7 +109,6 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Grab the next page
-   * @returns {void}
    */
   next() {
     this.get(++this.currentPage);
@@ -118,7 +116,6 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Grab the previous page
-   * @returns {void}
    */
   previous() {
     this.get(--this.currentPage);
@@ -126,7 +123,6 @@ export default class PaginatedResourceWrapper {
 
   /**
    * Manually rebuild the data
-   * @returns {void}
    */
   rebuild() {
     this.data = this.cache
@@ -139,7 +135,6 @@ export default class PaginatedResourceWrapper {
   /**
    * Updates the cached pages.
    * @param {Boolean} flush - Clear the cached route data
-   * @returns {void}
    * @example
    * function onRefresh() {
    *   if(wrapper.waiting) {
@@ -318,7 +313,6 @@ export default class PaginatedResourceWrapper {
    *
    * @param {string} type - Type of event to listen for, or `"*"` for all events.
    * @param {function(eventType: string, event: any): void|function(event: any): void} handler - Function to call in response to the given event.
-   * @returns {void}
    */
   on(type, handler) {
     this.cache.emitter.on(type, (t, e) => {
@@ -335,7 +329,6 @@ export default class PaginatedResourceWrapper {
    *
    * @param {string} type - Type of event to unregister `handler` from, or `"*"`
    * @param {function(event: any): void} handler - Handler function to remove.
-   * @returns {void}
    */
   off(type, handler) {
     this.cache.emitter.off(type, handler);

@@ -157,7 +157,6 @@ export default class FileDriver extends DataStoreContract {
   /**
    * Write data to file
    * @param {Object<String, String>} obj - Key, value object
-   * @returns {void}
    * @private
    */
   _write(obj) {

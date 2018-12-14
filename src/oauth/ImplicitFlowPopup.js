@@ -47,7 +47,6 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @param {Array<String>} scopes - A list of required scopes
    * @param {Boolean} useState - use state verification
    * @param {String} windowOptions - optional window options for the pop-up window
-   * @returns {void}
    */
   constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
     super(clientId, callbackUrl, scopes, useState);

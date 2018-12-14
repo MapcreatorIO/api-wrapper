@@ -316,7 +316,6 @@ export default class ResourceLister extends EventEmitter {
    * for the new resource to show up it will
    * @param {ResourceLister.Resource} row - resource
    * @param {boolean} autoMaxRows - Increase maxRows if needed
-   * @returns {void}
    */
   push(row, autoMaxRows = true) {
     if (!isParentOf(this.Resource, row)) {
@@ -347,7 +346,6 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Same as `this.maxRows += this.parameters.perPage`
    * @param {number} [rows=parameters.perPage] - Amount to increment maxRows with
-   * @returns {void}
    */
   loadMore(rows = this.parameters.perPage) {
     this.maxRows += rows;

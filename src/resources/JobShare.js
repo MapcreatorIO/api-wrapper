@@ -35,7 +35,6 @@ import CrudBase from './base/CrudBase';
 export default class JobShare extends CrudBase {
   /**
    * Unsupported method implemented due to CrudBase abstraction
-   * @returns {void}
    * @throws {Error}
    * @private
    */

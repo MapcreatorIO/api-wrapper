@@ -54,7 +54,6 @@ export default class ResourceCache extends Unobservable {
   /**
    * Push a page into the cache
    * @param {PaginatedResourceListing} page - Data to be cached
-   * @returns {void}
    */
   push(page) {
     if (page.rows === 0) {
@@ -92,7 +91,6 @@ export default class ResourceCache extends Unobservable {
   /**
    * Delete from cache using cacheId
    * @param {String|Array<String>} ids - cache ids
-   * @returns {void}
    */
   _deleteCacheIds(ids) {
     if (!(ids instanceof Array)) {
@@ -124,7 +122,6 @@ export default class ResourceCache extends Unobservable {
   /**
    * Revalidate all data and delete stale data
    * @param {String} resourceUrl - Resource url
-   * @returns {void}
    */
   revalidate(resourceUrl = null) {
     if (!resourceUrl) {
@@ -182,7 +179,6 @@ export default class ResourceCache extends Unobservable {
   /**
    * Clears the cache
    * @param {String} resourceUrl - Resource url
-   * @returns {void}
    */
   clear(resourceUrl = '') {
     if (!resourceUrl) {
@@ -273,7 +269,6 @@ export default class ResourceCache extends Unobservable {
   /**
    * Update records in the cache manually lazily. Any matching instance found will be updated.
    * @param {ResourceBase|Array<ResourceBase>} rows - Data to be updated
-   * @returns {void} - nothing
    */
   update(rows) {
     if (!(rows instanceof Array)) {

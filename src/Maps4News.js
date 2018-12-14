@@ -193,7 +193,6 @@ export default class Maps4News extends mix(null, Injectable) {
    * Saves the session token so that it can be recovered at a later time. The wrapper can
    * find the token most of the time if the name parameter is left blank.
    * @param {string?} name - name of the token
-   * @returns {void}
    */
   saveToken(name) {
     this.auth.token.save(name);
@@ -588,7 +587,6 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Forget the current session
    * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
-   * @returns {void}
    */
   logout() {
     this.auth.logout();

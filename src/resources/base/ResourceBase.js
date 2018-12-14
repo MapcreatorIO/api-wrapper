@@ -170,7 +170,6 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Moves new fields to this._properties and turns them into a getter/setter
-   * @returns {void}
    * @protected
    */
   _updateProperties() {
@@ -207,7 +206,6 @@ export default class ResourceBase extends mix(null, Injectable) {
    * This means that any changed fields will be marked
    * as unchanged whilst  keeping their new values. The
    * changes will not be saved.
-   * @returns {void}
    */
   sanitize() {
     this._updateProperties();
@@ -218,7 +216,6 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Resets model instance to it's original state
    * @param {Array<string>|string|null} [fields=null] - Fields to reset, defaults to all fields
-   * @returns {void}
    */
   reset(fields = null) {
     this._updateProperties();
@@ -273,7 +270,6 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Create proxy for property
    * @param {string} key - property key
-   * @returns {void}
    * @private
    */
   _applyProperty(key) {

@@ -41,7 +41,6 @@ export default class DummyFlow extends OAuth {
   /**
    * @param {String} [clientId=] - OAuth client id
    * @param {Array<String>} scopes - A list of required scopes
-   * @returns {void}
    */
   constructor(clientId = '', scopes = ['*']) {
     super(clientId, scopes);

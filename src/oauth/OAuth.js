@@ -44,7 +44,6 @@ export default class OAuth {
   /**
    * @param {String} clientId - OAuth client id
    * @param {Array<String>} scopes - A list of required scopes
-   * @returns {void}
    */
   constructor(clientId, scopes = ['*']) {
     if (this.constructor === OAuth) {
@@ -79,7 +78,6 @@ export default class OAuth {
   /**
    * Forget the current session
    * Empty the session token store and forget the api token
-   * @returns {void}
    */
   forget() {
     StateContainer.clean();
@@ -116,7 +114,6 @@ export default class OAuth {
    * @param {String} [type=Bearer] - token type
    * @param {Date|Number} [expires=5 days] - expire time in seconds or Date
    * @param {Array<string>} [scopes=[]] - Any scopes
-   * @returns {void}
    */
   importToken(token, type = 'Bearer', expires = 432000, scopes = []) {
     this.token = new OAuthToken(token, type, expires, scopes);

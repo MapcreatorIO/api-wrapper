@@ -60,7 +60,6 @@ export default class Logger {
    * Log a message
    * @param {string} message - Message to be logged
    * @param {string} level - Log level
-   * @returns {void}
    */
   log(message, level = 'info') {
     if (level === 'none') {
@@ -76,7 +75,6 @@ export default class Logger {
   /**
    * Log a debug message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
   debug(message) {
     this.log(message, 'debug');
@@ -85,7 +83,6 @@ export default class Logger {
   /**
    * Log an informative message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
   info(message) {
     this.log(message, 'info');
@@ -94,7 +91,6 @@ export default class Logger {
   /**
    * Log a warning message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
   warn(message) {
     this.log(message, 'warn');
@@ -103,7 +99,6 @@ export default class Logger {
   /**
    * Log an error message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
   error(message) {
     this.log(message, 'error');

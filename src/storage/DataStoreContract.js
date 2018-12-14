@@ -68,7 +68,6 @@ export default class DataStoreContract {
    * Store a value in the storage
    * @param {String} name - value name
    * @param {*} value - value
-   * @returns {void}
    * @abstract
    */
   set(name, value) {
@@ -88,7 +87,6 @@ export default class DataStoreContract {
   /**
    * Remove a value from the store
    * @param {String} name - value name
-   * @returns {void}
    * @abstract
    */
   remove(name) {
@@ -97,7 +95,6 @@ export default class DataStoreContract {
 
   /**
    * Clear storage
-   * @returns {void}
    */
   clear() {
     this.keys().map(key => this.remove(key));

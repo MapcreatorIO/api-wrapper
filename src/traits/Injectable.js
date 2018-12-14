@@ -64,7 +64,6 @@ export default class Injectable extends Trait {
    * @param {string|object} name - Name of the property
    * @param {function?} value - Either a resource or a function that returns a proxy
    *
-   * @returns {void}
    * @example
    *
    * Maps4News.injectProxy({Domain});
@@ -94,7 +93,6 @@ export default class Injectable extends Trait {
    * @param {string|object} name - Name of the property
    * @param {function?} value - Any function that does not return a proxy
    *
-   * @returns {void}
    */
   static inject(name, value) {
     if (!value) {
@@ -145,7 +143,6 @@ export default class Injectable extends Trait {
    * @param {string|object} name - Name of the property
    * @param {function?} value - Any function that does not return a proxy
    *
-   * @returns {void}
    */
   inject(name, value) {
     this._inject(name, value, false);

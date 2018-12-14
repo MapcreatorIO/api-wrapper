@@ -81,7 +81,6 @@ export default class StateContainer extends StaticClass {
 
   /**
    * Remove all states from the state db
-   * @returns {void}
    */
   static clean() {
     const tokens = Object.keys(this.list());

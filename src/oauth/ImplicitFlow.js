@@ -50,7 +50,6 @@ export default class ImplicitFlow extends OAuth {
    *                               url will be used.
    * @param {Array<String>} scopes - A list of required scopes
    * @param {Boolean} useState - use state verification
-   * @returns {void}
    */
   constructor(clientId, callbackUrl = '', scopes = ['*'], useState = true) {
     super(clientId, scopes);
@@ -166,7 +165,6 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Remove OAuth related anchor parameters
-   * @returns {void}
    * @protected
    */
   _cleanAnchorParams() {

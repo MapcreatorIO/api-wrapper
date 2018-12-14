@@ -649,7 +649,6 @@ export default class RequestParameters extends EventEmitter {
 
   /**
    * Resets all parameters back to default
-   * @returns {void}
    */
   static resetDefaults() {
     for (const key of RequestParameters.keys()) {

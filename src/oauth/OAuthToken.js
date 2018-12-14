@@ -134,7 +134,6 @@ export default class OAuthToken {
   /**
    * Store the token for later recovery. Token will be stored in HTTPS cookie if possible.
    * @param {String} name - db key name
-   * @returns {void}
    * @throws {OAuthToken#recover}
    */
   save(name = OAuthToken.storageName) {

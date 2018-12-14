@@ -72,7 +72,6 @@ export default class CookiesDriver extends DataStoreContract {
    * @param {String} name - value name
    * @param {*} value - value
    * @param {Date|String} [expires=2050-01-01] - Expiration date
-   * @returns {void}
    */
   set(name, value, expires = new Date('2050-01-01')) {
     name = encodeURIComponent(this._prefix + name);

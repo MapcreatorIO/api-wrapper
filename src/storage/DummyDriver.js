@@ -59,7 +59,6 @@ export default class DummyDriver extends DataStoreContract {
    * Store a value in the storage
    * @param {String} name - value name
    * @param {*} value - value
-   * @returns {void}
    */
   set(name, value) {
     this.constructor._data[name] = value;
@@ -77,7 +76,6 @@ export default class DummyDriver extends DataStoreContract {
   /**
    * Remove a value from the store
    * @param {String} name - value name
-   * @returns {void}
    */
   remove(name) {
     delete this.constructor._data[name];
