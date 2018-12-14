@@ -10,6 +10,9 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/src/errors/',
+
+    '<rootDir>/src/utils/base64.js',
+    '<rootDir>/src/utils/Unobservable.js',
   ],
   coverageDirectory: 'build/coverage',
   reporters: [
