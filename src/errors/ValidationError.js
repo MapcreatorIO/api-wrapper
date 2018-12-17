@@ -44,7 +44,7 @@ import ApiError from './ApiError';
  * @property {Object} constraint -
  * @property {Object<string, string>} constraint.params -
  * @property {string} constraint.name -
- * @see {@link https://github.com/justinrainbow/json-schema}
+ * @see https://github.com/justinrainbow/json-schema
  * @example
  * {
  *   property: "data.meta",

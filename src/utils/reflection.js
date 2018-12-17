@@ -84,7 +84,7 @@ export function getTypeName(value) {
 
 /**
  * Helper class for mix
- * @see mix
+ * @see {@link mix}
  */
 class Empty {}
 

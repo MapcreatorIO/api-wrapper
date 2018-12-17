@@ -313,7 +313,7 @@ export default class JobMonitor {
   /**
    * Set the filter for the job monitor
    * @param {string} value - Job monitor filter
-   * @see JobMonitorFilter
+   * @see {@link JobMonitorFilter}
    */
   set filterStatus(value) {
     value = value.toLowerCase();

@@ -134,7 +134,7 @@ export default class DownloadedResource {
 
   /**
    * Get base64-encoded data uri
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs}
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
    * @returns {string} - data uri
    */
   toDataUri() {

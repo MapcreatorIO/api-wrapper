@@ -36,7 +36,7 @@
  * @param {Buffer|ArrayBuffer} buffer - input buffer
  * @author Jon Leighton
  * @license MIT
- * @see {@link https://gist.github.com/jonleighton/958841}
+ * @see https://gist.github.com/jonleighton/958841
  * @returns {string} - base 64 encoded data
  */
 export function base64Encode(buffer) {
