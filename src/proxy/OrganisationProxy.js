@@ -103,7 +103,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
   /**
    * Sync, attach or unlink resources
-   * @param {Array<Organisation>|Array<Number>} items - List of items to sync or attach
+   * @param {Array<Organisation|Number>|Organisation|Number} items - List of items to sync or attach
    * @param {String} method - Http method to use
    * @param {function(new:ResourceBase)} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
@@ -111,20 +111,24 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @protected
    */
   async _modifyLink(items, method, Type, path = null) {
+    if (!Array.isArray(items)) {
+      items = [items];
+    }
+
     if (!path) {
       const resource = Type.resourceName.replace(/s+$/, '');
 
       path = `${resource}s`;
     }
 
-    const filter = x => !isParentOf(Type, x) && !isParentOf(Number, x);
-    const isValid = items.filter(filter).length === 0;
+    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
+    const filter = x => !isParentOf(Type, x) && !Number.isFinite(x);
+    const isValid = keys.filter(filter).length === 0;
 
     if (!isValid) {
       throw new TypeError(`Array must contain either Numbers (resource id) or "${Type.name}".`);
     }
 
-    const keys = items.map(x => typeof x === 'number' ? x : x.id).map(Number);
     const url = `${this.parent.url}/${path}`;
 
     await this.api.axios.request({url, method, data: {keys}});
