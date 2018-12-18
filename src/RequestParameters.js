@@ -31,7 +31,7 @@
  */
 
 
-import { camel as camelCase, pascal as pascalCase, snake as snakeCase, kebab as kebabCase } from 'case';
+import { camel as camelCase, pascal as pascalCase, snake as snakeCase } from 'case';
 import { EventEmitter } from 'events';
 import { DeletedState } from './enums';
 import { hashObject } from './utils/hash';
