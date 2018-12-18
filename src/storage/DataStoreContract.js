@@ -32,13 +32,13 @@
 
 /* eslint-disable no-unused-vars */
 
-import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
+import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError';
 
 /**
  * @private
  */
 export default class DataStoreContract {
-  constructor() {
+  constructor () {
     if (this.constructor === DataStoreContract) {
       throw new AbstractClassError();
     }
@@ -52,7 +52,7 @@ export default class DataStoreContract {
    * If the driver is currently available
    * @returns {boolean} - Driver availability
    */
-  static get available() {
+  static get available () {
     return false;
   }
 
@@ -60,7 +60,7 @@ export default class DataStoreContract {
    * If the storage is secure
    * @returns {boolean} - Secure storage
    */
-  static get secure() {
+  static get secure () {
     return false;
   }
 
@@ -70,7 +70,7 @@ export default class DataStoreContract {
    * @param {*} value - value
    * @abstract
    */
-  set(name, value) {
+  set (name, value) {
     throw new AbstractMethodError();
   }
 
@@ -80,7 +80,7 @@ export default class DataStoreContract {
    * @returns {String} - value
    * @abstract
    */
-  get(name) {
+  get (name) {
     throw new AbstractMethodError();
   }
 
@@ -89,14 +89,14 @@ export default class DataStoreContract {
    * @param {String} name - value name
    * @abstract
    */
-  remove(name) {
+  remove (name) {
     throw new AbstractMethodError();
   }
 
   /**
    * Clear storage
    */
-  clear() {
+  clear () {
     this.keys().map(key => this.remove(key));
   }
 
@@ -105,7 +105,7 @@ export default class DataStoreContract {
    * @returns {Array<String>} - Stored keys
    * @abstract
    */
-  keys() {
+  keys () {
     throw new AbstractMethodError();
   }
 }

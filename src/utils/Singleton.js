@@ -36,7 +36,7 @@
  * @private
  */
 export default class Singleton {
-  constructor() {
+  constructor () {
     if (!this.constructor.instance) {
       this.constructor.instance = this;
       this._instanceCount = 0;

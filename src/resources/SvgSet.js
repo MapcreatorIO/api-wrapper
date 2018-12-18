@@ -33,7 +33,7 @@
 import OwnableResource from '../traits/OwnableResource';
 import CrudSetBase from './base/CrudSetBase';
 import Svg from './Svg';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 
 /**
  * Svg set
@@ -41,15 +41,15 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class SvgSet extends mix(CrudSetBase, OwnableResource) {
-  static get resourcePath() {
+  static get resourcePath () {
     return '/svgs/sets/{id}';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'svg-sets';
   }
 
-  get _Child() {
+  get _Child () {
     return Svg;
   }
 }

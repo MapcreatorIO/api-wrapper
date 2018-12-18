@@ -30,29 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
-import CrudBase from './base/CrudBase';
-import Permission from './Permission';
-import User from './User';
+import Enum from './Enum';
 
-export default class Role extends CrudBase {
-  /**
-   * Get the list permissions linked to the role
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
-   */
-  get permissions () {
-    return new OwnedResourceProxy(this.api, this, Permission);
-  }
-
-  /**
-   * Get the list users linked to the role
-   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
-   */
-  get users () {
-    return new OwnedResourceProxy(this.api, this, User);
-  }
-
-  static get resourceName () {
-    return 'roles';
-  }
-}
+/**
+ * Enum containing the possible different visibilities for a {@link JobShare}
+ * @enum {string}
+ * @property {string} PRIVATE - A link is required to import the shared job
+ * @property {string} ORGANISATION - The job is shared across the organisation
+ * @readonly
+ */
+export const JobShareVisibility = new Enum(['private', 'organisation'], true);

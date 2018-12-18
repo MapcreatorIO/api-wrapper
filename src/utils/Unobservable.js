@@ -40,7 +40,7 @@ export default class Unobservable {
    * @returns {string} - type name
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag
    */
-  get [Symbol.toStringTag]() {
+  get [Symbol.toStringTag] () {
     // Anything can go here really as long as it's not 'Object'
     return this.constructor.name;
   }

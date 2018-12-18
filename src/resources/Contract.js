@@ -36,7 +36,7 @@ import CrudBase from './base/CrudBase';
  * Contract resource
  */
 export default class Contract extends CrudBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'contracts';
   }
 
@@ -44,7 +44,7 @@ export default class Contract extends CrudBase {
    * @inheritDoc
    * @override
    */
-  async _update() {
+  async _update () {
     this._updateProperties();
 
     // We'll just fake it, no need to bother the server
@@ -53,7 +53,7 @@ export default class Contract extends CrudBase {
       return new Promise(() => this);
     }
 
-    const data = Object.assign({}, this._properties);
+    const data = { ...this._properties };
 
     if (typeof data['date_start'] === 'undefined') {
       data['date_start'] = this.dateStart;
@@ -84,7 +84,7 @@ export default class Contract extends CrudBase {
    * @inheritDoc
    * @override
    */
-  async _create() {
+  async _create () {
     const createData = this._buildCreateData();
 
     if (createData['date_start'] instanceof Date) {
@@ -95,7 +95,7 @@ export default class Contract extends CrudBase {
       createData['date_end'] = this._formatDate(createData['date_end']);
     }
 
-    const {data: {data}} = await this.api.axios.post(this.baseUrl, createData);
+    const { data: { data } } = await this.api.axios.post(this.baseUrl, createData);
 
     this._properties = {};
     this._baseProperties = data;
@@ -111,8 +111,8 @@ export default class Contract extends CrudBase {
    * @returns {String} - formatted date
    * @private
    */
-  _formatDate(date) {
-    const pad = num => ('00' + num).slice(-Math.max(String(num).length, 2));
+  _formatDate (date) {
+    const pad = num => `00${num}`.slice(-Math.max(String(num).length, 2));
 
     let out = [
       date.getUTCFullYear(),
@@ -120,11 +120,11 @@ export default class Contract extends CrudBase {
       date.getUTCDate(),
     ].map(pad).join('-');
 
-    out += ' ' + [
+    out += ` ${[
       date.getUTCHours(),
       date.getUTCMinutes(),
       date.getUTCSeconds(),
-    ].map(pad).join(':');
+    ].map(pad).join(':')}`;
 
     return out;
   }

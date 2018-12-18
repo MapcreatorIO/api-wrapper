@@ -42,7 +42,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {ResourceBase} parent - parent instance
    * @param {constructor} Target - target constructor
    */
-  constructor(api, parent, Target) {
+  constructor (api, parent, Target) {
     const resource = Target.resourceName.replace(/s+$/, '');
     const url = `${parent.url}/${resource}s`;
 
@@ -55,7 +55,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {TypeError}
    * @throws {ApiError}
    */
-  async sync(items) {
+  async sync (items) {
     await this._modifyResourceLink(items, 'PATCH');
   }
 
@@ -65,7 +65,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {TypeError}
    * @throws {ApiError}
    */
-  async attach(items) {
+  async attach (items) {
     await this._modifyResourceLink(items, 'POST');
   }
 
@@ -75,7 +75,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {TypeError}
    * @throws {ApiError}
    */
-  async detach(items) {
+  async detach (items) {
     await this._modifyResourceLink(items, 'DELETE');
   }
 
@@ -83,7 +83,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Attach parent resource to all organisations
    * @throws {ApiError}
    */
-  async attachAll() {
+  async attachAll () {
     await this.api.axios.post(`${this.baseUrl}/all`);
   }
 
@@ -91,7 +91,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Detach parent resource to all organisations
    * @throws {ApiError}
    */
-  async detachAll() {
+  async detachAll () {
     await this.api.axios.delete(`${this.baseUrl}/all`);
   }
 
@@ -102,7 +102,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {TypeError}
    * @private
    */
-  async _modifyResourceLink(items, method) {
+  async _modifyResourceLink (items, method) {
     if (!Array.isArray(items)) {
       items = [items];
     }
@@ -115,11 +115,11 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
     await this.api.axios.request({
       url: this.baseUrl,
       method,
-      data: {keys},
+      data: { keys },
     });
   }
 
-  static _getKeyValue(item) {
+  static _getKeyValue (item) {
     if (['number', 'string'].includes(typeof item)) {
       return item;
     }

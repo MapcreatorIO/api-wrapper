@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isNode} from '../utils/node';
+import { isNode } from '../utils/node';
 import DataStoreContract from './DataStoreContract';
 
 /**
@@ -41,7 +41,7 @@ export default class FileDriver extends DataStoreContract {
    * @param {String} path - File storage path
    * @inheritDoc
    */
-  constructor(path = '.m4n') {
+  constructor (path = '.m4n') {
     super();
 
     this._path = path;
@@ -51,7 +51,7 @@ export default class FileDriver extends DataStoreContract {
    * File storage path
    * @returns {String} - path
    */
-  get path() {
+  get path () {
     return this._path;
   }
 
@@ -59,7 +59,7 @@ export default class FileDriver extends DataStoreContract {
    * File storage path
    * @param {String} value - path
    */
-  set path(value) {
+  set path (value) {
     if (typeof value !== 'string') {
       throw new TypeError('Expected "path" value to be of type "string"');
     }
@@ -67,7 +67,7 @@ export default class FileDriver extends DataStoreContract {
     this._path = value;
   }
 
-  get realPath() {
+  get realPath () {
     if (this.path.startsWith('/')) {
       return this.path;
     }
@@ -79,21 +79,21 @@ export default class FileDriver extends DataStoreContract {
   /**
    * @inheritDoc
    */
-  static get available() {
+  static get available () {
     return isNode();
   }
 
   /**
    * @inheritDoc
    */
-  static get secure() {
+  static get secure () {
     return true;
   }
 
   /**
    * @inheritDoc
    */
-  set(name, value) {
+  set (name, value) {
     const data = this._read();
 
     data[name] = value;
@@ -104,14 +104,14 @@ export default class FileDriver extends DataStoreContract {
   /**
    * @inheritDoc
    */
-  get(name) {
+  get (name) {
     return this._read()[name];
   }
 
   /**
    * @inheritDoc
    */
-  remove(name) {
+  remove (name) {
     const data = this._read();
 
     delete data[name];
@@ -122,14 +122,14 @@ export default class FileDriver extends DataStoreContract {
   /**
    * @inheritDoc
    */
-  clear() {
+  clear () {
     this._write({});
   }
 
   /**
    * @inheritDoc
    */
-  keys() {
+  keys () {
     return Object.keys(this._read());
   }
 
@@ -138,7 +138,7 @@ export default class FileDriver extends DataStoreContract {
    * @returns {Object<String, String>} - Key, value object
    * @private
    */
-  _read() {
+  _read () {
     let data;
 
     try {
@@ -159,7 +159,7 @@ export default class FileDriver extends DataStoreContract {
    * @param {Object<String, String>} obj - Key, value object
    * @private
    */
-  _write(obj) {
+  _write (obj) {
     const data = JSON.stringify(obj);
     const fd = this._fs.openSync(this.realPath, 'w');
 
@@ -172,7 +172,7 @@ export default class FileDriver extends DataStoreContract {
    * @returns {fs} - fs instance
    * @private
    */
-  get _fs() {
+  get _fs () {
     if (!this.__fs) {
       // eslint-disable-next-line no-eval
       this.__fs = eval('require("fs")');

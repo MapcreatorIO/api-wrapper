@@ -37,7 +37,7 @@ import ResourceBase from './base/ResourceBase';
  * Choropleth resource
  */
 export default class Choropleth extends ResourceBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'choropleths';
   }
 
@@ -45,8 +45,8 @@ export default class Choropleth extends ResourceBase {
    * Get the inset ma[ json
    * @returns {Promise<Object>} - choropleth json
    */
-  async getJson() {
-    const {data} = await this.api.axios.get(this.url + '/json');
+  async getJson () {
+    const { data } = await this.api.axios.get(`${this.url}/json`);
 
     return data;
   }
@@ -55,8 +55,8 @@ export default class Choropleth extends ResourceBase {
    * Download the choropleth preview
    * @returns {Promise<DownloadedResource>} - choropleth preview
    */
-  async downloadPreview() {
-    const response = await this.api.axios.get(this.url + '/preview', {
+  async downloadPreview () {
+    const response = await this.api.axios.get(`${this.url}/preview`, {
       responseType: 'arraybuffer',
     });
 

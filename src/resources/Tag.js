@@ -32,7 +32,7 @@
 
 import CrudBase from './base/CrudBase';
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 
 /**
  * Tag resource
@@ -40,7 +40,7 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class Tag extends mix(CrudBase, OwnableResource) {
-  static get resourceName() {
+  static get resourceName () {
     return 'tags';
   }
 }

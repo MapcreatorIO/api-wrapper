@@ -36,9 +36,9 @@
  * @see https://nodejs.org
  * @private
  */
-export function isNode() {
+export function isNode () {
   try {
-    return Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
+    return Object.prototype.toString.call(typeof process === 'undefined' ? 0 : process) === '[object process]';
   } catch (_) {
     return false;
   }
@@ -50,6 +50,6 @@ export function isNode() {
  * @returns {boolean} - If the window contains the variable
  * @private
  */
-export function windowTest(str) {
+export function windowTest (str) {
   return typeof window !== 'undefined' && typeof window[str] !== 'undefined';
 }

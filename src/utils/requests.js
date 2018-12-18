@@ -33,9 +33,9 @@
 import axios from 'axios';
 import ApiError from '../errors/ApiError';
 import ValidationError from '../errors/ValidationError';
-import {windowTest} from './node';
+import { windowTest } from './node';
 
-function getFormData() {
+function getFormData () {
   if (windowTest('FormData')) {
     return window.FormData;
   }
@@ -50,20 +50,6 @@ export const FormData = getFormData();
 
 /**
  * Encodes an object to a http query string with support for recursion
- * @param {object<string, *>} paramsObject - data to be encoded
- * @returns {string} - encoded http query string
- *
- * @private
- */
-export function encodeQueryString(paramsObject) {
-  const query = _encodeQueryString(paramsObject);
-
-  // Removes any extra unused &'s.
-  return query.replace(/^&*|&+(?=&)|&*$/g, '');
-}
-
-/**
- * Encodes an object to a http query string with support for recursion
  * @param {Object<string, *>} paramsObject - data to be encoded
  * @param {Array<string>} _basePrefix - Used internally for tracking recursion
  * @returns {string} - encoded http query string
@@ -71,7 +57,7 @@ export function encodeQueryString(paramsObject) {
  * @see http://stackoverflow.com/a/39828481
  * @private
  */
-function _encodeQueryString(paramsObject, _basePrefix = []) {
+function _encodeQueryString (paramsObject, _basePrefix = []) {
   return Object
     .keys(paramsObject)
     .sort()
@@ -94,13 +80,26 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
       const value = paramsObject[key];
 
       if (value !== null && typeof value !== 'undefined') {
-        out += '=' + encodeURIComponent(value); // value
+        out += `=${encodeURIComponent(value)}`; // value
       }
 
       return out;
     }).join('&');
 }
 
+/**
+ * Encodes an object to a http query string with support for recursion
+ * @param {object<string, *>} paramsObject - data to be encoded
+ * @returns {string} - encoded http query string
+ *
+ * @private
+ */
+export function encodeQueryString (paramsObject) {
+  const query = _encodeQueryString(paramsObject);
+
+  // Removes any extra unused &'s.
+  return query.replace(/^&*|&+(?=&)|&*$/g, '');
+}
 
 /**
  * Retry request that respond with a 429 error at a later time
@@ -108,8 +107,8 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
  * @param {*} error - Axios error
  * @returns {Promise|*} - error or retried request
  */
-export function retry429ResponseInterceptor(error) {
-  const {response, config} = error;
+export function retry429ResponseInterceptor (error) {
+  const { response, config } = error;
 
   if (!config || !response || response.status !== 429) {
     return Promise.reject(error);
@@ -128,7 +127,7 @@ export function retry429ResponseInterceptor(error) {
  * @param {*} error - Axios error
  * @returns {Promise<ApiError|ValidationError|*>} - Resolved error
  */
-export function transformAxiosErrors(error) {
+export function transformAxiosErrors (error) {
   if (!error || !error.response || !error.response.data) {
     return Promise.reject(error);
   }
@@ -160,8 +159,8 @@ export function transformAxiosErrors(error) {
  * @returns {Promise<*>} - Axios request or original error
  * @private
  */
-export function custom3xxHandler(error) {
-  const {response, config} = error;
+export function custom3xxHandler (error) {
+  const { response, config } = error;
 
   // Do nothing with non-3xx responses
   if (response.status < 300 || response.status >= 400) {
@@ -180,8 +179,8 @@ export function custom3xxHandler(error) {
   // Drop authorization header
   if (!redirectUrl.startsWith(config.baseUrl)) {
     config.transformRequest = [(data, headers) => {
-      delete headers.common['Authorization'];
-      delete headers['Authorization'];
+      delete headers.common.Authorization;
+      delete headers.Authorization;
 
       return data;
     }, ...Object.values(config.transformRequest)];

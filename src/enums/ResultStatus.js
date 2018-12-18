@@ -38,14 +38,12 @@ import Enum from './Enum';
  * @property {string} QUEUED - Job has been queued
  * @property {string} PROCESSING - Job is processing
  * @property {string} COMPLETED - Job has been completed
- * @property {string} CANCEL - Job has been canceled
+ * @property {string} CANCELED - Job has been canceled
  * @property {string} FAILED - Job has failed
  * @readonly
  */
-export const ResultStatus = new Enum({
-  QUEUED: 'queued',
-  PROCESSING: 'processing',
-  COMPLETED: 'completed',
-  CANCEL: 'canceled',
-  FAILED: 'failed',
-});
+export const ResultStatus = new Enum([
+  'queued', 'processing',
+  'completed', 'canceled',
+  'failed',
+], true);

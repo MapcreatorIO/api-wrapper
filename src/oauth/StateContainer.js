@@ -45,7 +45,7 @@ export default class StateContainer extends StaticClass {
    * @returns {String} - prefix
    * @constant
    */
-  static get prefix() {
+  static get prefix () {
     return 'oauth_state_';
   }
 
@@ -53,11 +53,12 @@ export default class StateContainer extends StaticClass {
    * Generate and store a state that can be checked at a later point
    * @returns {string} - state
    */
-  static generate() {
+  static generate () {
     const uuid = Uuid.uuid4();
     const key = StateContainer.prefix + uuid;
 
     StorageManager.best.set(key, Date.now());
+
     return uuid;
   }
 
@@ -67,7 +68,7 @@ export default class StateContainer extends StaticClass {
    * @param {Boolean} purge - remove from state db after validation
    * @returns {Boolean} - if the state is valid
    */
-  static validate(state, purge = true) {
+  static validate (state, purge = true) {
     const storage = StorageManager.best;
     const key = StateContainer.prefix + state;
     const found = typeof storage.get(key) !== 'undefined';
@@ -82,7 +83,7 @@ export default class StateContainer extends StaticClass {
   /**
    * Remove all states from the state db
    */
-  static clean() {
+  static clean () {
     const tokens = Object.keys(this.list());
 
     for (const token of tokens) {
@@ -94,7 +95,7 @@ export default class StateContainer extends StaticClass {
    * Get states with their corresponding state db key
    * @returns {Object<String, String>} - List of stored states
    */
-  static list() {
+  static list () {
     const storage = StorageManager.best;
 
     return storage

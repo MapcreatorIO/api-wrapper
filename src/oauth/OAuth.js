@@ -31,7 +31,7 @@
  */
 
 import axios from 'axios';
-import {AbstractClassError, AbstractMethodError} from '../errors/AbstractError';
+import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError';
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
@@ -41,27 +41,32 @@ import StateContainer from './StateContainer';
  * @abstract
  */
 export default class OAuth {
+  token = null;
+  path = '/';
+  host = process.env.HOST;
+
   /**
    * @param {String} clientId - OAuth client id
    * @param {Array<String>} scopes - A list of required scopes
    */
-  constructor(clientId, scopes = ['*']) {
+  constructor (clientId, scopes = ['*']) {
     if (this.constructor === OAuth) {
       throw new AbstractClassError();
     }
 
     this.clientId = String(clientId);
     this.scopes = scopes;
-    this.token = clientId !== null ? OAuthToken.recover() : null;
-    this.host = process.env.HOST;
-    this.path = '/';
+
+    if (this.clientId) {
+      this.token = OAuthToken.recover();
+    }
   }
 
   /**
    * If the current instance has a valid token
    * @returns {Boolean} - if a valid token is availble
    */
-  get authenticated() {
+  get authenticated () {
     return this.token !== null && !this.token.expired;
   }
 
@@ -71,7 +76,7 @@ export default class OAuth {
    * @throws {OAuthError}
    * @abstract
    */
-  authenticate() {
+  authenticate () {
     throw new AbstractMethodError();
   }
 
@@ -79,7 +84,7 @@ export default class OAuth {
    * Forget the current session
    * Empty the session token store and forget the api token
    */
-  forget() {
+  forget () {
     StateContainer.clean();
     StorageManager.secure.remove(OAuthToken.storageName);
 
@@ -91,17 +96,17 @@ export default class OAuth {
    * @throws {OAuthError} - If de-authentication fails
    * @throws {ApiError} - If the api returns errors
    */
-  async logout() {
+  async logout () {
     if (!this.token) {
       return;
     }
 
-    const url = this.host + '/oauth/logout';
+    const url = `${this.host}/oauth/logout`;
 
     await axios.post(url, {
       headers: {
-        'Accept': 'application/json',
-        'Authorization': this.token.toString(),
+        Accept: 'application/json',
+        Authorization: this.token.toString(),
       },
     });
 
@@ -115,7 +120,7 @@ export default class OAuth {
    * @param {Date|Number} [expires=5 days] - expire time in seconds or Date
    * @param {Array<string>} [scopes=[]] - Any scopes
    */
-  importToken(token, type = 'Bearer', expires = 432000, scopes = []) {
+  importToken (token, type = 'Bearer', expires = 432000, scopes = []) {
     this.token = new OAuthToken(token, type, expires, scopes);
   }
 }
