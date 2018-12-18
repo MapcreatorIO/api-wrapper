@@ -31,11 +31,10 @@
  */
 
 import Maps4News from './Maps4News';
-import ResourceBase from './resources/base/ResourceBase';
 import DownloadedResource from './resources/base/DownloadedResource';
-import {isNode} from './utils/node';
-import {isParentOf} from './utils/reflection';
-import {FormData} from './utils/requests';
+import ResourceBase from './resources/base/ResourceBase';
+import { isParentOf } from './utils/reflection';
+import { FormData } from './utils/requests';
 
 /**
  * Image resource handler
@@ -46,7 +45,7 @@ export default class ImageHandler {
    * @param {Maps4News} api - Api instance
    * @param {ResourceBase} target - Instance of target item
    */
-  constructor(api, target) {
+  constructor (api, target) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -63,7 +62,7 @@ export default class ImageHandler {
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -71,7 +70,7 @@ export default class ImageHandler {
    * Resource url, can be used in an image tag
    * @returns {string} - Resource url
    */
-  get url() {
+  get url () {
     return `${this._target.url}/image`;
   }
 
@@ -79,7 +78,7 @@ export default class ImageHandler {
    * Delete image
    * @throws {ApiError}
    */
-  async delete() {
+  async delete () {
     await this.api.axios.delete(this.url);
   }
 
@@ -97,7 +96,7 @@ export default class ImageHandler {
    *   fs.writeFileSync(fileName, data);
    * });
    */
-  async download() {
+  async download () {
     const response = await this.api.axios.get(this.url, {
       responseType: 'arraybuffer',
     });
@@ -109,7 +108,7 @@ export default class ImageHandler {
    * Upload new image
    * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
    */
-  async upload(image) {
+  async upload (image) {
     const form = new FormData();
 
     form.append('image', image, 'image');
@@ -120,6 +119,6 @@ export default class ImageHandler {
       Object.assign(headers, form.getHeaders());
     }
 
-    await this.api.axios.post(this.url, form, {headers});
+    await this.api.axios.post(this.url, form, { headers });
   }
 }

@@ -33,7 +33,7 @@
 import ResourceBase from './base/ResourceBase';
 
 export default class InsetMap extends ResourceBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'inset-maps';
   }
 
@@ -41,8 +41,8 @@ export default class InsetMap extends ResourceBase {
    * Get the inset map json
    * @returns {Promise<Object>} - inset map json
    */
-  async getJson() {
-    const {data} = await this.api.axios.get(this.url + '/json');
+  async getJson () {
+    const { data } = await this.api.axios.get(`${this.url}/json`);
 
     return data;
   }
@@ -52,10 +52,10 @@ export default class InsetMap extends ResourceBase {
    * @returns {{Accept: string, Authorization: string}} - Request headers
    * @private
    */
-  _getDownloadHeaders() {
+  _getDownloadHeaders () {
     return {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
+      'Accept': 'application/json',
+      'Authorization': this.api.auth.token.toString(),
       'X-No-CDN-Redirect': 'true',
     };
   }

@@ -40,12 +40,13 @@ const FNV1_32A_INIT = 0x811c9dc5;
  * @returns {string} - String representation of the hash
  * @private
  */
-export function fnv32b(str) {
+export function fnv32b (str) {
   let hash = str
     .split('')
     .map(x => x.charCodeAt(0))
     .reduce((sum, val) => {
       sum ^= val;
+
       return sum + (sum << 1) + (sum << 4) + (sum << 7) + (sum << 8) + (sum << 24);
     }, FNV1_32A_INIT);
 
@@ -57,7 +58,7 @@ export function fnv32b(str) {
   hash ^= hash << 25;
   hash += hash >> 6;
 
-  return ('0000000' + (hash >>> 0).toString(16)).substr(-8);
+  return `0000000${(hash >>> 0).toString(16)}`.substr(-8);
 }
 
 /**
@@ -66,6 +67,6 @@ export function fnv32b(str) {
  * @returns {string} - String reprisentation of the hash
  * @private
  */
-export function hashObject(data) {
+export function hashObject (data) {
   return fnv32b(stringify(data));
 }

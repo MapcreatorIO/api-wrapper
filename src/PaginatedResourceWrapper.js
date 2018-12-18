@@ -32,7 +32,7 @@
 
 import PaginatedResourceListing from './PaginatedResourceListing';
 import ResourceCache from './ResourceCache';
-import {hashObject} from './utils/hash';
+import { hashObject } from './utils/hash';
 
 /**
  * Used for wrapping {@link PaginatedResourceListing} to make it spa friendly
@@ -46,7 +46,7 @@ export default class PaginatedResourceWrapper {
    * @param {Maps4News} api - Instance of the api
    * @param {Boolean} shareCache - Share cache across instances
    */
-  constructor(listing, api = listing.api, shareCache = api.defaults.shareCache) {
+  constructor (listing, api = listing.api, shareCache = api.defaults.shareCache) {
 
     // Fields
     this._api = api;
@@ -71,7 +71,7 @@ export default class PaginatedResourceWrapper {
     this._promiseCallback(listing);
   }
 
-  get _promiseCallback() {
+  get _promiseCallback () {
     return result => {
       const query = this.query();
 
@@ -96,40 +96,43 @@ export default class PaginatedResourceWrapper {
    * Manually fetch a page. This will change the current page.
    * @param {Number|Array<Number>} pageId - Page(s) to fetch
    */
-  get(pageId) {
+  get (pageId) {
     if (pageId instanceof Array) {
       pageId.map(this.get);
     } else {
       this._waiting = true;
 
       this._inflight.push(pageId);
-      this._last.getPage(pageId).then(this._promiseCallback);
+
+      void (async () => {
+        this._promiseCallback(await this._last.getPage(pageId));
+      })();
     }
   }
 
   /**
    * Grab the next page
    */
-  next() {
+  next () {
     this.get(++this.currentPage);
   }
 
   /**
    * Grab the previous page
    */
-  previous() {
+  previous () {
     this.get(--this.currentPage);
   }
 
   /**
    * Manually rebuild the data
    */
-  rebuild() {
+  rebuild () {
     this.data = this.cache
       .resolve(this.route, this._last.cacheToken)
       .filter(value => typeof value !== 'undefined');
 
-    this.cache.emitter.emit('post-rebuild', {resourceUrl: this._last.route});
+    this.cache.emitter.emit('post-rebuild', { resourceUrl: this._last.route });
   }
 
   /**
@@ -149,7 +152,7 @@ export default class PaginatedResourceWrapper {
    * wrapper.on('post-rebuild', onRefresh);
    * wrapper.refresh();
    */
-  refresh(flush = false) {
+  refresh (flush = false) {
     if (flush) {
       this.cache.clear(this.route);
     }
@@ -165,7 +168,7 @@ export default class PaginatedResourceWrapper {
    * @see {@link PaginatedResourceWrapper#next}
    * @see {@link PaginatedResourceWrapper#previous}
    */
-  get currentPage() {
+  get currentPage () {
     return this._currentPage;
   }
 
@@ -173,7 +176,7 @@ export default class PaginatedResourceWrapper {
    * Set the current page number
    * @param {Number} value - page number
    */
-  set currentPage(value) {
+  set currentPage (value) {
     this._currentPage = Math.max(1, value);
   }
 
@@ -181,7 +184,7 @@ export default class PaginatedResourceWrapper {
    * Get the route of the resource
    * @returns {String} - route
    */
-  get route() {
+  get route () {
     return this._last.route;
   }
 
@@ -189,7 +192,7 @@ export default class PaginatedResourceWrapper {
    * Override the resource route
    * @param {String} value - route
    */
-  set route(value) {
+  set route (value) {
     this._route = value;
   }
 
@@ -197,7 +200,7 @@ export default class PaginatedResourceWrapper {
    * Row count
    * @returns {Number} - Row count
    */
-  get rows() {
+  get rows () {
     return this._last.rows;
   }
 
@@ -205,7 +208,7 @@ export default class PaginatedResourceWrapper {
    * Get the number of pages available
    * @returns {Number} - Page count
    */
-  get pageCount() {
+  get pageCount () {
     return this._last.pageCount;
   }
 
@@ -217,7 +220,7 @@ export default class PaginatedResourceWrapper {
    * @see {@link ResourceProxy#search}
    * @returns {Object<String, String|Array<String>>} - query
    */
-  query(value = null) {
+  query (value = null) {
     if (!value || value === this.query()) {
       return this._last.query;
     }
@@ -248,7 +251,7 @@ export default class PaginatedResourceWrapper {
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -256,7 +259,7 @@ export default class PaginatedResourceWrapper {
    * Get the active cache instance
    * @returns {ResourceCache} - Cache instance
    */
-  get cache() {
+  get cache () {
     return this.shareCache ? this.api.cache : this._localCache;
   }
 
@@ -264,7 +267,7 @@ export default class PaginatedResourceWrapper {
    * Get if the shared cache should be used
    * @returns {Boolean} - Should the shared cache be used
    */
-  get shareCache() {
+  get shareCache () {
     return this._shareCache;
   }
 
@@ -272,7 +275,7 @@ export default class PaginatedResourceWrapper {
    * Sets if the shared cache should be used
    * @param {Boolean} value - Should the shared cache be used
    */
-  set shareCache(value) {
+  set shareCache (value) {
     this._shareCache = Boolean(value);
   }
 
@@ -280,7 +283,7 @@ export default class PaginatedResourceWrapper {
    * If there is a next page
    * @returns {boolean} - If there is a next page
    */
-  get hasNext() {
+  get hasNext () {
     return this.inflight.length === 0 ? this._last.hasNext : this.currentPage < this.pageCount;
   }
 
@@ -288,7 +291,7 @@ export default class PaginatedResourceWrapper {
    * If there is a previous page
    * @returns {boolean} - If there is a previous page
    */
-  get hasPrevious() {
+  get hasPrevious () {
     return this._last.hasPrevious;
   }
 
@@ -296,7 +299,7 @@ export default class PaginatedResourceWrapper {
    * List of page numbers that are still mid-flight
    * @returns {Array} - Page numbers that are still mid-flight
    */
-  get inflight() {
+  get inflight () {
     return this._inflight;
   }
 
@@ -304,7 +307,7 @@ export default class PaginatedResourceWrapper {
    * Returns if there are still requests mid-flight
    * @returns {boolean} - Returns if the wrapper is waiting for requests to finish
    */
-  get waiting() {
+  get waiting () {
     return this._waiting;
   }
 
@@ -314,7 +317,7 @@ export default class PaginatedResourceWrapper {
    * @param {string} type - Type of event to listen for, or `"*"` for all events.
    * @param {function(eventType: string, event: any): void|function(event: any): void} handler - Function to call in response to the given event.
    */
-  on(type, handler) {
+  on (type, handler) {
     this.cache.emitter.on(type, (t, e) => {
       if (type === '*' && e.resourceUrl === this.route) {
         handler(t, e);
@@ -330,7 +333,7 @@ export default class PaginatedResourceWrapper {
    * @param {string} type - Type of event to unregister `handler` from, or `"*"`
    * @param {function(event: any): void} handler - Handler function to remove.
    */
-  off(type, handler) {
+  off (type, handler) {
     this.cache.emitter.off(type, handler);
   }
 }

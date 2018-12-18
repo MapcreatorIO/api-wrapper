@@ -41,7 +41,7 @@ export default class Job extends CrudBase {
    * Get the list of associated job results
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get results() {
+  get results () {
     return this._proxyResourceList(JobResult, `${this.url}/results`);
   }
 
@@ -49,7 +49,7 @@ export default class Job extends CrudBase {
    * Get the list job revisions
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get revisions() {
+  get revisions () {
     const data = {
       jobId: this.id,
     };
@@ -62,7 +62,7 @@ export default class Job extends CrudBase {
    * @returns {String} - Resource name
    * @abstract
    */
-  static get resourceName() {
+  static get resourceName () {
     return 'jobs';
   }
 
@@ -72,7 +72,7 @@ export default class Job extends CrudBase {
    * @deprecated
    * @throws {Job#previewUrl}
    */
-  get lastPreviewUrl() {
+  get lastPreviewUrl () {
     return `${this.url}/revisions/last/result/archive`;
   }
 
@@ -80,7 +80,7 @@ export default class Job extends CrudBase {
    * Get the most up to date preview url
    * @returns {string} - Preview url
    */
-  get previewUrl() {
+  get previewUrl () {
     return `${this.url}/preview`;
   }
 
@@ -88,7 +88,7 @@ export default class Job extends CrudBase {
    * Get the most up to date archive url
    * @returns {string} - Last archive url
    */
-  get lastArchiveUrl() {
+  get lastArchiveUrl () {
     return `${this.url}/output`;
   }
 
@@ -96,7 +96,7 @@ export default class Job extends CrudBase {
    * Download the job preview
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  async downloadPreview() {
+  async downloadPreview () {
     const response = await this.api.axios.get(this.previewUrl, {
       responseType: 'arraybuffer',
     });
@@ -108,7 +108,7 @@ export default class Job extends CrudBase {
    * Get archive blob url
    * @returns {Promise<DownloadedResource>} - Job result output
    */
-  async downloadOutput() {
+  async downloadOutput () {
     const response = await this.api.axios.get(this.lastArchiveUrl, {
       responseType: 'arraybuffer',
     });
@@ -121,8 +121,8 @@ export default class Job extends CrudBase {
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
    */
-  async getOutputUrl() {
-    const {data: {data}} = await this.api.axios.get(`${this.url}/output-url`);
+  async getOutputUrl () {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/output-url`);
 
     return data.url;
   }

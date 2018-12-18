@@ -36,7 +36,7 @@ import CrudSetItemBase from './base/CrudSetItemBase';
  * Dimension resource
  */
 export default class Dimension extends CrudSetItemBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'dimensions';
   }
 }

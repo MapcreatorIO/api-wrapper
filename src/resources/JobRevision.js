@@ -30,26 +30,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isParentOf} from '../utils/reflection';
+import { isParentOf } from '../utils/reflection';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobShare from './JobShare';
 import Layer from './Layer';
 
 export default class JobRevision extends CrudBase {
-  get baseUrl() {
+  get baseUrl () {
     return `/jobs/${this.jobId}/revisions`;
   }
 
-  static get resourcePath() {
+  static get resourcePath () {
     return '/jobs/{job_id}/revisions/{revision}';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'job-revisions';
   }
 
-  static get resourceUrlKey() {
+  static get resourceUrlKey () {
     return 'revision';
   }
 
@@ -57,7 +57,7 @@ export default class JobRevision extends CrudBase {
    * Get layers
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get layers() {
+  get layers () {
     return this._proxyResourceList(Layer);
   }
 
@@ -66,8 +66,8 @@ export default class JobRevision extends CrudBase {
    * @returns {Promise<JobResult>} - The associated job result
    * @throws {ApiError}
    */
-  async result() {
-    const {data: {data}} = await this.api.axios.get(`${this.url}/result`);
+  async result () {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/result`);
 
     data.jobId = this.jobId;
     data.revision = this.revision;
@@ -80,7 +80,7 @@ export default class JobRevision extends CrudBase {
    *
    * @returns {JobResult} - Empty job result used for
    */
-  get resultProxy() {
+  get resultProxy () {
     const data = {
       jobId: this.jobId,
       revision: this.revision,
@@ -98,7 +98,7 @@ export default class JobRevision extends CrudBase {
    * @throws {TypeError}
    * @throws {ApiError}
    */
-  async save(object = {}, layers = null) {
+  async save (object = {}, layers = null) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -108,9 +108,9 @@ export default class JobRevision extends CrudBase {
     }
 
     const data = {
-      'object': JSON.stringify(object),
-      'language_code': this.languageCode,
-      'mapstyle_set_id': this.mapstyleSetId,
+      object: JSON.stringify(object),
+      language_code: this.languageCode,
+      mapstyle_set_id: this.mapstyleSetId,
     };
 
     if (layers) {
@@ -128,25 +128,25 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @todo document object format
    */
-  async object() {
-    const {data: {data}} = await this.api.axios.get(`${this.url}/object`);
+  async object () {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/object`);
 
     return data;
   }
 
   /**
    * Build the revision
-   * @param {String} callback - Optional callback url for when the job completes
+   * @param {String} callbackUrl - Optional callback url for when the job completes
    * @throws {ApiError}
    */
-  async build(callback) {
-    await this.api.axios.post(`${this.url}/build`, {callback});
+  async build (callbackUrl) {
+    await this.api.axios.post(`${this.url}/build`, { callbackUrl });
   }
 
   /**
    * Cancels a running job
    */
-  async cancel() {
+  async cancel () {
     await this.api.axios.post(`${this.url}/cancel`);
   }
 
@@ -156,7 +156,7 @@ export default class JobRevision extends CrudBase {
    * @returns {Promise<String>} - the share link
    * @throws {ApiError}
    */
-  async share(visibility = JobShare.visibility.PRIVATE) {
+  async share (visibility = JobShare.visibility.PRIVATE) {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
@@ -164,7 +164,7 @@ export default class JobRevision extends CrudBase {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
-    const {data: {data}} = await this.api.axios.post(`${this.url}/share`, {visibility});
+    const { data: { data } } = await this.api.axios.post(`${this.url}/share`, { visibility });
 
     return data.url;
   }
@@ -173,7 +173,7 @@ export default class JobRevision extends CrudBase {
    * Clones a job revision to the user requesting it
    * @throws {ApiError}
    */
-  async clone() {
+  async clone () {
     await this.api.axios.post(`${this.url}/clone`);
   }
 }

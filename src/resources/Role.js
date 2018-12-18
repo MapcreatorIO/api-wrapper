@@ -40,7 +40,7 @@ export default class Role extends CrudBase {
    * Get the list permissions linked to the role
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get permissions() {
+  get permissions () {
     return new OwnedResourceProxy(this.api, this, Permission);
   }
 
@@ -48,11 +48,11 @@ export default class Role extends CrudBase {
    * Get the list users linked to the role
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get users() {
+  get users () {
     return new OwnedResourceProxy(this.api, this, User);
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'roles';
   }
 }

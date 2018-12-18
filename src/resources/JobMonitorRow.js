@@ -40,7 +40,7 @@ export default class JobMonitorRow extends JobResult {
    * @private
    * @returns {*} - Original or converted value
    */
-  static _guessType(name, value) {
+  static _guessType (name, value) {
     if (['dealt_with', 'bought'].includes(name)) {
       return Boolean(value);
     }
@@ -48,7 +48,7 @@ export default class JobMonitorRow extends JobResult {
     return super._guessType(name, value);
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'job-monitor';
   }
 
@@ -56,7 +56,7 @@ export default class JobMonitorRow extends JobResult {
    * Returns if the resource is readonly
    * @returns {boolean} - readonly
    */
-  static get readonly() {
+  static get readonly () {
     return true;
   }
 
@@ -64,7 +64,7 @@ export default class JobMonitorRow extends JobResult {
    * Get the related job
    * @returns {Promise<Job, ApiError>} - The job related to this row
    */
-  get user() {
+  get user () {
     return this.api.users.get(this.userId);
   }
 }

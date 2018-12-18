@@ -31,7 +31,7 @@
  */
 
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 import CrudSetBase from './base/CrudSetBase';
 import Font from './Font';
 
@@ -41,15 +41,15 @@ import Font from './Font';
  * @mixes OwnableResource
  */
 export default class FontFamily extends mix(CrudSetBase, OwnableResource) {
-  static get resourcePath() {
+  static get resourcePath () {
     return '/fonts/families/{id}';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'font-families';
   }
 
-  get _Child() {
+  get _Child () {
     return Font;
   }
 }

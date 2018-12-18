@@ -31,7 +31,7 @@
  */
 
 import RequestParameters from '../RequestParameters';
-import {encodeQueryString} from '../utils/requests';
+import { encodeQueryString } from '../utils/requests';
 import SimpleResourceProxy from './SimpleResourceProxy';
 
 /**
@@ -43,7 +43,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
   /**
    * @inheritDoc
    */
-  constructor(api, Target, altUrl = null, seedData = {}) {
+  constructor (api, Target, altUrl = null, seedData = {}) {
     super(api, Target, altUrl, seedData);
   }
 
@@ -53,7 +53,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @returns {Object} - Parsed selector
    * @private
    */
-  _parseSelector(id) {
+  _parseSelector (id) {
     if (id === '' || id === null) {
       return {};
     }
@@ -61,7 +61,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
     switch (typeof id) {
       case 'number':
       case 'string':
-        return {[this.Target.resourceUrlKey]: id};
+        return { [this.Target.resourceUrlKey]: id };
       case 'object':
         return id;
       default:
@@ -76,14 +76,14 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @returns {Promise<ResourceBase>} - Target resource
    * @throws {ApiError}
    */
-  async get(id, deleted = RequestParameters.deleted) {
-    const data = Object.assign({}, this._seedData, this._parseSelector(id));
+  async get (id, deleted = RequestParameters.deleted) {
+    const data = { ...this._seedData, ...this._parseSelector(id) };
     let url = this.new(data).url;
     const glue = url.includes('?') ? '&' : '?';
 
-    url += glue + encodeQueryString({deleted});
+    url += glue + encodeQueryString({ deleted });
 
-    const {data: {data: result}} = await this.api.axios.get(url);
+    const { data: { data: result } } = await this.api.axios.get(url);
 
     return this.new(result);
   }
@@ -95,8 +95,8 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @example
    * api.users.select('me').colors().then(doSomethingCool);
    */
-  select(id) {
-    const data = Object.assign({}, this._seedData, this._parseSelector(id));
+  select (id) {
+    const data = { ...this._seedData, ...this._parseSelector(id) };
 
     return this.new(data);
   }

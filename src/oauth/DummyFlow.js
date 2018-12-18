@@ -42,7 +42,7 @@ export default class DummyFlow extends OAuth {
    * @param {String} [clientId=] - OAuth client id
    * @param {Array<String>} scopes - A list of required scopes
    */
-  constructor(clientId = '', scopes = ['*']) {
+  constructor (clientId = '', scopes = ['*']) {
     super(clientId, scopes);
   }
 
@@ -51,7 +51,7 @@ export default class DummyFlow extends OAuth {
    * @returns {Promise<OAuthToken>>} - token
    * @throws {OAuthError}
    */
-  authenticate() {
+  authenticate () {
     return new Promise((resolve, reject) => {
       if (this.authenticated) {
         resolve(this.token);

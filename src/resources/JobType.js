@@ -32,7 +32,7 @@
 
 import CrudBase from './base/CrudBase';
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 
 /**
  * Job type
@@ -40,11 +40,11 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class JobType extends mix(CrudBase, OwnableResource) {
-  static get resourcePath() {
+  static get resourcePath () {
     return '/jobs/types/{id}';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'job-types';
   }
 }

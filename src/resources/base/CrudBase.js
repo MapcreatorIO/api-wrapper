@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractClassError} from '../../errors/AbstractError';
+import { AbstractClassError } from '../../errors/AbstractError';
 import ResourceBase from './ResourceBase';
 
 /**
@@ -42,7 +42,7 @@ export default class CrudBase extends ResourceBase {
    * @param {Maps4News} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
-  constructor(api, data = {}) {
+  constructor (api, data = {}) {
     super(api, data);
 
     if (this.constructor === CrudBase) {
@@ -55,7 +55,7 @@ export default class CrudBase extends ResourceBase {
    * @returns {Object<String, *>} - Create data
    * @protected
    */
-  _buildCreateData() {
+  _buildCreateData () {
     this._updateProperties();
 
     const out = {};
@@ -69,6 +69,7 @@ export default class CrudBase extends ResourceBase {
     }
 
     delete out.id;
+
     return out;
   }
 
@@ -78,8 +79,8 @@ export default class CrudBase extends ResourceBase {
    * @throws {ApiError}
    * @throws {ValidationError}
    */
-  save() {
-    return !this.id ? this._create() : this._update();
+  save () {
+    return this.id ? this._update() : this._create();
   }
 
   /**
@@ -89,8 +90,8 @@ export default class CrudBase extends ResourceBase {
    * @throws {ValidationError}
    * @private
    */
-  async _create() {
-    const {data: {data}} = await this.api.axios.post(this.baseUrl, this._buildCreateData());
+  async _create () {
+    const { data: { data } } = await this.api.axios.post(this.baseUrl, this._buildCreateData());
 
     this._properties = {};
     this._baseProperties = data;
@@ -107,7 +108,7 @@ export default class CrudBase extends ResourceBase {
    * @throws {ValidationError}
    * @private
    */
-  async _update() {
+  async _update () {
     this._updateProperties();
 
     // We'll just fake it, no need to bother the server
@@ -136,7 +137,7 @@ export default class CrudBase extends ResourceBase {
    * @throws {ApiError}
    * @throws {ValidationError}
    */
-  async delete(updateSelf = true) {
+  async delete (updateSelf = true) {
     await this.api.axios.delete(this.url);
 
     if (updateSelf) {
@@ -153,9 +154,8 @@ export default class CrudBase extends ResourceBase {
    * @throws {ApiError}
    * @throws {ValidationError}
    */
-  async restore(updateSelf = true) {
-    const {data: {data}} = await this.api.axios.put(this.url);
-
+  async restore (updateSelf = true) {
+    const { data: { data } } = await this.api.axios.put(this.url);
     const instance = new this.constructor(this.api, data);
 
     if (updateSelf) {

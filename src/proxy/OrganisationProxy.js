@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isParentOf} from '../utils/reflection';
+import { isParentOf } from '../utils/reflection';
 import SimpleResourceProxy from './SimpleResourceProxy';
 
 export default class OrganisationProxy extends SimpleResourceProxy {
@@ -38,7 +38,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Maps4News} api - Instance of the api
    * @param {ResourceBase} parent - parent instance
    */
-  constructor(api, parent) {
+  constructor (api, parent) {
     // Fixes dependency issue
     const Organisation = require('../resources/Organisation').default;
 
@@ -51,7 +51,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Returns parent instance
    * @returns {ResourceBase} - parent instance
    */
-  get parent() {
+  get parent () {
     return this._parent;
   }
 
@@ -61,7 +61,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Array<Organisation|number>} organisations - List of items to sync
    * @throws {ApiError}
    */
-  async sync(organisations) {
+  async sync (organisations) {
     await this._modifyLink(organisations, 'PATCH', this.Target);
   }
 
@@ -71,7 +71,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Array<Organisation|number>} organisations - List of items to attach
    * @throws {ApiError}
    */
-  async attach(organisations) {
+  async attach (organisations) {
     await this._modifyLink(organisations, 'POST', this.Target);
   }
 
@@ -81,7 +81,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {Array<Organisation|number>} organisations - List of items to detach
    * @throws {ApiError}
    */
-  async detach(organisations) {
+  async detach (organisations) {
     await this._modifyLink(organisations, 'DELETE', this.Target);
   }
 
@@ -89,7 +89,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Attach all organisations to the parent resource
    * @throws {ApiError}
    */
-  async attachAll() {
+  async attachAll () {
     await this.api.axios.post(`${this.baseUrl}/all`);
   }
 
@@ -97,7 +97,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Detach all organisations from the parent resource
    * @throws {ApiError}
    */
-  async detachAll() {
+  async detachAll () {
     await this.api.axios.delete(`${this.baseUrl}/all`);
   }
 
@@ -110,7 +110,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @throws {ApiError}
    * @protected
    */
-  async _modifyLink(items, method, Type, path = null) {
+  async _modifyLink (items, method, Type, path = null) {
     if (!Array.isArray(items)) {
       items = [items];
     }
@@ -131,6 +131,6 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
     const url = `${this.parent.url}/${path}`;
 
-    await this.api.axios.request({url, method, data: {keys}});
+    await this.api.axios.request({ url, method, data: { keys } });
   }
 }

@@ -34,11 +34,11 @@ import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
-  static get resourcePath() {
+  static get resourcePath () {
     return '/jobs/{job_id}/revisions/{revision}/result';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'job-result';
   }
 
@@ -46,7 +46,7 @@ export default class JobResult extends ResourceBase {
    * Get the related job
    * @returns {Promise<Job, ApiError>} - The job related to this row
    */
-  get job() {
+  get job () {
     return this.api.jobs.get(this.jobId);
   }
 
@@ -54,7 +54,7 @@ export default class JobResult extends ResourceBase {
    * Get the related job revision
    * @returns {Promise<JobRevision, ApiError>} - The job revision related to this row
    */
-  get jobRevision() {
+  get jobRevision () {
     return this.api.jobs.select(this.jobId).revisions.get(this.id);
   }
 
@@ -62,7 +62,7 @@ export default class JobResult extends ResourceBase {
    * Job result archive url
    * @returns {string} - Archive url
    */
-  get outputUrl() {
+  get outputUrl () {
     return `${this.url}/output`;
   }
 
@@ -70,7 +70,7 @@ export default class JobResult extends ResourceBase {
    * Get archive blob url
    * @returns {Promise<DownloadedResource>} - Job result output
    */
-  async downloadOutput() {
+  async downloadOutput () {
     const response = await this.api.axios.get(this.url, {
       responseType: 'arraybuffer',
     });
@@ -82,7 +82,7 @@ export default class JobResult extends ResourceBase {
    * Get the output url url
    * @returns {string} - Output url url
    */
-  get outputUrlUrl() {
+  get outputUrlUrl () {
     return `${this.url}/output-url`;
   }
 
@@ -91,8 +91,8 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
    */
-  async getOutputUrl() {
-    const {data: {data}} = await this.api.axios.get(this.outputUrlUrl);
+  async getOutputUrl () {
+    const { data: { data } } = await this.api.axios.get(this.outputUrlUrl);
 
     return data.url;
   }
@@ -101,7 +101,7 @@ export default class JobResult extends ResourceBase {
    * Job result log url
    * @returns {string} - log url
    */
-  get logUrl() {
+  get logUrl () {
     return `${this.url}/log`;
   }
 
@@ -109,8 +109,8 @@ export default class JobResult extends ResourceBase {
    * Download the job result log
    * @returns {Promise<string>} - job result log
    */
-  async downloadLog() {
-    const {data} = await this.api.axios.get(this.logUrl, {responseType: 'text'});
+  async downloadLog () {
+    const { data } = await this.api.axios.get(this.logUrl, { responseType: 'text' });
 
     return data;
   }
@@ -119,7 +119,7 @@ export default class JobResult extends ResourceBase {
    * Job result preview url, usable in an `<img>` tag
    * @returns {string} - Preview url
    */
-  get previewUrl() {
+  get previewUrl () {
     return `${this.url}/preview`;
   }
 
@@ -127,7 +127,7 @@ export default class JobResult extends ResourceBase {
    * Download the job preview
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  async downloadPreview() {
+  async downloadPreview () {
     const response = await this.api.axios.get(this.previewUrl, {
       responseType: 'arraybuffer',
     });
@@ -141,13 +141,13 @@ export default class JobResult extends ResourceBase {
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
    */
-  async dealWith(value = true) {
+  async dealWith (value = true) {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';
     const url = `${this.url}/deal-with`;
 
-    await this.api.axios.request({method, url});
+    await this.api.axios.request({ method, url });
 
     this.dealtWith = value;
   }

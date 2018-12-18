@@ -33,11 +33,11 @@
 import CrudSetItemBase from './base/CrudSetItemBase';
 
 export default class Font extends CrudSetItemBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'fonts';
   }
 
-  static get parentKey() {
+  static get parentKey () {
     return 'font_family_id';
   }
 }

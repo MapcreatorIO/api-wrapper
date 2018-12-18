@@ -31,9 +31,8 @@
  */
 
 import ResourceBase from '../resources/base/ResourceBase';
-import {hasTrait, isParentOf} from '../utils/reflection';
+import { hasTrait, isParentOf } from '../utils/reflection';
 import Trait from './Trait';
-
 
 /**
  * Adds the possibility to inject proxies/methods
@@ -44,11 +43,11 @@ export default class Injectable extends Trait {
   /**
    * Inject proxies and methods during the constructor
    */
-  initializer() {
+  initializer () {
     const injectable = this.constructor._injectable || {};
 
     for (const name of Object.keys(injectable)) {
-      const {value, isProxy} = injectable[name];
+      const { value, isProxy } = injectable[name];
 
       if (isProxy) {
         this.injectProxy(name, value);
@@ -72,18 +71,18 @@ export default class Injectable extends Trait {
    *
    * api.domains // returns proxy
    */
-  static injectProxy(name, value) {
-    if (!value) {
-      // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
-      for (const key of Object.keys(name)) {
-        this.inject(key, name[key]);
-      }
-    } else {
+  static injectProxy (name, value) {
+    if (value) {
       if (typeof this._injectable === 'undefined') {
         this._injectable = {};
       }
 
-      this._injectable[name] = {value, isProxy: true};
+      this._injectable[name] = { value, isProxy: true };
+    } else {
+      // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
+      for (const key of Object.keys(name)) {
+        this.inject(key, name[key]);
+      }
     }
   }
 
@@ -94,18 +93,18 @@ export default class Injectable extends Trait {
    * @param {function?} value - Any function that does not return a proxy
    *
    */
-  static inject(name, value) {
-    if (!value) {
-      // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
-      for (const key of Object.keys(name)) {
-        this.inject(key, name[key]);
-      }
-    } else {
+  static inject (name, value) {
+    if (value) {
       if (typeof this._injectable === 'undefined') {
         this._injectable = {};
       }
 
-      this._injectable[name] = {value, isProxy: false};
+      this._injectable[name] = { value, isProxy: false };
+    } else {
+      // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
+      for (const key of Object.keys(name)) {
+        this.inject(key, name[key]);
+      }
     }
   }
 
@@ -113,7 +112,7 @@ export default class Injectable extends Trait {
    * Prevent a property from being injected
    * @param {string} name - Name of the property
    */
-  static uninject(name) {
+  static uninject (name) {
     if (typeof this._injectable !== 'undefined') {
       delete this._injectable[name];
     }
@@ -124,7 +123,7 @@ export default class Injectable extends Trait {
    * @param {string} name - Name of the property
    * @param {function?} value - Either a resource or a function that returns a proxy
    */
-  injectProxy(name, value) {
+  injectProxy (name, value) {
     if (!value) {
       // Handle vue-style injections `.inject({ Foo, Bar, Baz })`
       for (const key of Object.keys(name)) {
@@ -144,7 +143,7 @@ export default class Injectable extends Trait {
    * @param {function?} value - Any function that does not return a proxy
    *
    */
-  inject(name, value) {
+  inject (name, value) {
     this._inject(name, value, false);
   }
 
@@ -154,7 +153,7 @@ export default class Injectable extends Trait {
    * @param {string} name - property name
    * @throws Error when the property was not injected
    */
-  uninject(name) {
+  uninject (name) {
     const descriptor = Object.getOwnPropertyDescriptor(this, name);
     const value = descriptor.value || descriptor.get || {};
 
@@ -174,9 +173,9 @@ export default class Injectable extends Trait {
     }
   }
 
-  _injectProxy(name, value) {
+  _injectProxy (name, value) {
     if (name === value.name) {
-      name = name.replace(/^\w/, c => c.toLowerCase()) + 's';
+      name = `${name.replace(/^\w/, c => c.toLowerCase())}s`;
     }
 
     const OwnableResource = require('./OwnableResource').default;
@@ -185,7 +184,7 @@ export default class Injectable extends Trait {
       const OwnedResourceProxy = require('../proxy/OwnedResourceProxy').default;
 
       this._inject(name, function () {
-        new OwnedResourceProxy(this.api, this, value);
+        return new OwnedResourceProxy(this.api, this, value);
       });
     } else if (isParentOf(ResourceBase, value) && this._proxyResourceList) {
       // returns a SimpleResourceProxy
@@ -201,7 +200,7 @@ export default class Injectable extends Trait {
     }
   }
 
-  _inject(name, value, getter = true) {
+  _inject (name, value, getter = true) {
     const func = (...args) => value.apply(this, args);
     const original = Object.getOwnPropertyDescriptor(this, name);
 

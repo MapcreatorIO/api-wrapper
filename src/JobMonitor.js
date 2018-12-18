@@ -30,11 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {JobMonitorFilter} from './enums';
+import { JobMonitorFilter } from './enums';
 import Maps4News from './Maps4News';
 import JobMonitorRow from './resources/JobMonitorRow';
-import {isParentOf} from './utils/reflection';
-import {encodeQueryString} from './utils/requests';
+import { isParentOf } from './utils/reflection';
+import { encodeQueryString } from './utils/requests';
 
 /**
  * Used for monitoring the job queue
@@ -46,7 +46,7 @@ export default class JobMonitor {
    * @param {number} [maxRows=100] - Default maximum amount of rows
    * @param {boolean} [longPoll=true] - Use long-polling instead of regular poling
    */
-  constructor(api, maxRows = Number(process.env.JOB_MONITOR_MAX_ROWS), longPoll = true) {
+  constructor (api, maxRows = Number(process.env.JOB_MONITOR_MAX_ROWS), longPoll = true) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -68,7 +68,7 @@ export default class JobMonitor {
    * Contains the current JobMonitor data
    * @returns {Array<JobMonitorRow>} - Job monitor rows
    */
-  get data() {
+  get data () {
     return this._data;
   }
 
@@ -76,7 +76,7 @@ export default class JobMonitor {
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -86,7 +86,7 @@ export default class JobMonitor {
    * @returns {Promise<Number>} - number of updated rows
    * @throws {ApiError}
    */
-  loadMore(count = 50) {
+  loadMore (count = 50) {
     this.maxRows += count;
 
     return this.update();
@@ -98,7 +98,7 @@ export default class JobMonitor {
    * @throws {ApiError}
    * @todo refactor
    */
-  update() {
+  update () {
     if (this.waiting || this._lastUpdate === this._getTimestamp()) {
       return new Promise(resolve => {
         resolve(0); // Still waiting for the other promise to resolve or we're sure there is no new data
@@ -124,17 +124,23 @@ export default class JobMonitor {
 
     let requestedRowCount = 0;
     const requests = [];
+
     const skipLongPoll = rowCountDiff > 0;
 
     while (rowCountDiff > 0) {
       // @todo Either always do 50 or calculate the correct page number and stuff which takes time...
-      const perPage = 50; // Math.min(rowCountDiff, 50);
+      const perPage = 50;
+      // Math.min(rowCountDiff, 50);
+
       const page = Math.floor((this.data.length + requestedRowCount) / perPage) + 1;
 
-      this.api.logger.debug(
-        `[JobMonitor] have ${this.data.length + requestedRowCount}, Diff: ${rowCountDiff},` +
-        `PerPage: ${perPage}, Page: ${page}, Target: ${perPage * page}`,
-      );
+      this.api.logger.debug([
+        `[JobMonitor] have ${this.data.length + requestedRowCount}`,
+        `Diff: ${rowCountDiff}`,
+        `PerPage: ${perPage}`,
+        `Page: ${page}`,
+        `Target: ${perPage * page}`,
+      ].join(', '));
 
       const params = {
         // eslint-disable-next-line
@@ -146,7 +152,7 @@ export default class JobMonitor {
         params.tags = this.filterTags;
       }
 
-      const url = this._baseUrl + '&' + encodeQueryString(params);
+      const url = `${this._baseUrl}&${encodeQueryString(params)}`;
 
       const request = this.api.axios.get(url)
         .then(response => response.data.data.map(x => new JobMonitorRow(this.api, x)));
@@ -171,9 +177,7 @@ export default class JobMonitor {
       const oldLength = this.data.length;
 
       // Remove duplicates
-      this._data = this.data.filter((thing, index, self) =>
-        index === self.findIndex((t) => t.id === thing.id),
-      );
+      this._data = this.data.filter((thing, index, self) => index === self.findIndex(t => t.id === thing.id));
 
       // We're no longer waiting
       this._waiting -= requests.length;
@@ -182,7 +186,7 @@ export default class JobMonitor {
     }));
 
     // Fetch updates
-    let url = this._baseUrl + '&timestamp=' + Math.floor(this._lastUpdate);
+    let url = `${this._baseUrl}&timestamp=${Math.floor(this._lastUpdate)}`;
 
     if (this.longPoll && !skipLongPoll) {
       url += '&long_poll';
@@ -190,7 +194,7 @@ export default class JobMonitor {
 
     this._lastUpdate = this._getTimestamp();
 
-    out.push(this.api.axios
+    const promise = this.api.axios
       .get(url)
       .then(response => response.data.data)
       .then(data => data.map(x => new JobMonitorRow(this.api, x)))
@@ -217,7 +221,9 @@ export default class JobMonitor {
         this._waiting--;
 
         return updateCount;
-      }));
+      });
+
+    out.push(promise);
 
     return Promise
       .all(out)
@@ -248,7 +254,7 @@ export default class JobMonitor {
    * resolve with false instantly while this is true.
    * @returns {Boolean} - Waiting for data
    */
-  get waiting() {
+  get waiting () {
     return this._waiting > 0;
   }
 
@@ -256,7 +262,7 @@ export default class JobMonitor {
    * Maximum number of rows to store
    * @returns {number} - Maximum number of rows
    */
-  get maxRows() {
+  get maxRows () {
     return this._maxRows || Number(process.env.JOB_MONITOR_MAX_ROWS) || 100;
   }
 
@@ -265,7 +271,7 @@ export default class JobMonitor {
    * effect until the {@link JobMonitor#update} method has been called.
    * @param {number} value - Maximum number of rows
    */
-  set maxRows(value) {
+  set maxRows (value) {
     value = Number(value);
     value = Math.max(1, value);
 
@@ -279,11 +285,11 @@ export default class JobMonitor {
   /**
    * Used to get internal reference max rows
    */
-  get realMaxRows() {
+  get realMaxRows () {
     return this._maxAvailible[this._baseUrl] || this.maxRows;
   }
 
-  get _baseUrl() {
+  get _baseUrl () {
     return `/jobs/monitor/${this.filterStatus}?internal=${!this.hideInternal}`;
   }
 
@@ -292,7 +298,7 @@ export default class JobMonitor {
    * effect until the {@link JobMonitor#update} method has been called.
    * @param {boolean} [value=false] - hide internal users
    */
-  set hideInternal(value) {
+  set hideInternal (value) {
     value = Boolean(value);
 
     if (this._hideInternal !== value) {
@@ -306,7 +312,7 @@ export default class JobMonitor {
    * If internal users should be hidden in the data
    * @returns {boolean} - hide internal users
    */
-  get hideInternal() {
+  get hideInternal () {
     return this._hideInternal || false;
   }
 
@@ -315,11 +321,11 @@ export default class JobMonitor {
    * @param {string} value - Job monitor filter
    * @see {@link JobMonitorFilter}
    */
-  set filterStatus(value) {
+  set filterStatus (value) {
     value = value.toLowerCase();
 
     if (!JobMonitorFilter.values().includes(value)) {
-      throw new TypeError('Expected value to be property of JobMonitorFilter. Possible options: ' + JobMonitorFilter.values().join(', '));
+      throw new TypeError(`Expected value to be property of JobMonitorFilter. Possible options: ${JobMonitorFilter.values().join(', ')}`);
     }
 
     if (this._filterStatus !== value) {
@@ -333,11 +339,11 @@ export default class JobMonitor {
    * get the filter for the job monitor
    * @returns {string} - Job monitor filter
    */
-  get filterStatus() {
+  get filterStatus () {
     return this._filterStatus;
   }
 
-  set filterTags(value) {
+  set filterTags (value) {
     if (Array.isArray('array')) {
       let valueType = value.toString();
 
@@ -351,7 +357,7 @@ export default class JobMonitor {
     this._filterTags = value;
   }
 
-  get filterTags() {
+  get filterTags () {
     return this._filterTags;
   }
 
@@ -360,7 +366,7 @@ export default class JobMonitor {
    * @returns {Date} - Last update
    * @throws {JobMonitor#update}
    */
-  get lastUpdate() {
+  get lastUpdate () {
     return new Date(this._lastUpdate * 1000);
   }
 
@@ -368,7 +374,7 @@ export default class JobMonitor {
    * Get if long polling should be used
    * @returns {boolean} - If long polling should be used
    */
-  get longPoll() {
+  get longPoll () {
     return this._longPoll;
   }
 
@@ -376,11 +382,11 @@ export default class JobMonitor {
    * Set if long polling should be used
    * @param {boolean} value - If long polling should be used
    */
-  set longPoll(value) {
+  set longPoll (value) {
     this._longPoll = Boolean(value);
   }
 
-  _getTimestamp() {
+  _getTimestamp () {
     return Date.now() / 1000;
   }
 }

@@ -36,7 +36,7 @@ import CrudBase from './base/CrudBase';
  * Domain resource
  */
 export default class Domain extends CrudBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'domains';
   }
 }

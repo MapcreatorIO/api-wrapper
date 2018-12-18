@@ -32,7 +32,7 @@
 
 import GeoError from '../errors/GeoError';
 import RequestParameters from '../RequestParameters';
-import {GeoBoundary, GeoPoint} from '../utils/geo';
+import { GeoBoundary, GeoPoint } from '../utils/geo';
 import ResourceProxy from './ResourceProxy';
 
 export default class GeoResourceProxy extends ResourceProxy {
@@ -45,7 +45,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {boolean} [options.hasForPoint=true] - If the endpoint supports for-point
    * @param {boolean} [options.hasForBoundary=true] - If the endpoint supports for-boundary
    */
-  constructor(api, Target, altUrl = null, seedData = {}, {hasForPoint = true, hasForBoundary = true}) {
+  constructor (api, Target, altUrl = null, seedData = {}, { hasForPoint = true, hasForBoundary = true }) {
     super(api, Target, altUrl, seedData);
     this._hasForPoint = hasForPoint;
     this._hasForBoundary = hasForBoundary;
@@ -55,7 +55,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * If the proxy supports for-point operations
    * @returns {boolean} - If it supports the operations
    */
-  get hasForPoint() {
+  get hasForPoint () {
     return this._hasForPoint;
   }
 
@@ -63,7 +63,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * If the proxy supports for-point operations
    * @returns {boolean} - If it supports the operations
    */
-  get hasForBoundary() {
+  get hasForBoundary () {
     return this._hasForBoundary;
   }
 
@@ -82,19 +82,20 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @throws TypeError
    * @throws GeoError
    */
-  async forBoundary({topLeft, bottomRight}, limit = RequestParameters.perPage) {
+  async forBoundary ({ topLeft, bottomRight }, limit = RequestParameters.perPage) {
     if (!this.hasForBoundary) {
       throw new GeoError(`${this.Target.name} does not support the operation forBoundary`);
     }
+
     const boundary = new GeoBoundary(topLeft, bottomRight);
 
     if (limit > RequestParameters.maxPerPage) {
       throw new TypeError(`Invalid resource limit ${limit}, maximum allowed is ${RequestParameters.maxPerPage}`);
     }
 
-    const url = this.new().baseUrl + '/for-boundary';
+    const url = `${this.new().baseUrl}/for-boundary`;
 
-    const {data: {data: result}} = await this.api.axios.post(url, {limit, boundary});
+    const { data: { data: result } } = await this.api.axios.post(url, { limit, boundary });
 
     return result.map(r => this.new(r));
   }
@@ -110,7 +111,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @throws TypeError
    * @throws GeoError
    */
-  async forPoint({lat, lng}, limit = RequestParameters.perPage) {
+  async forPoint ({ lat, lng }, limit = RequestParameters.perPage) {
     if (!this.hasForPoint) {
       throw new GeoError(`${this.Target.name} does not support the operation forPoint`);
     }
@@ -121,9 +122,8 @@ export default class GeoResourceProxy extends ResourceProxy {
       throw new TypeError(`Invalid resource limit ${limit}, maximum allowed is ${RequestParameters.maxPerPage}`);
     }
 
-    const url = this.new().baseUrl + '/for-point';
-
-    const {data: {data: result}} = await this.api.axios.post(url, {limit, point});
+    const url = `${this.new().baseUrl}/for-point`;
+    const { data: { data: result } } = await this.api.axios.post(url, { limit, point });
 
     return result.map(r => this.new(r));
   }

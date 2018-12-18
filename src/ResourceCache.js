@@ -41,7 +41,7 @@ import Uuid from './utils/uuid';
  * @todo Add periodic data refreshing while idle, most likely implemented in cache (maybe v1/resource?timestamp=123 where it will give modified records since)
  */
 export default class ResourceCache extends Unobservable {
-  constructor(cacheTime, dereference) {
+  constructor (cacheTime, dereference) {
     super();
 
     this.cacheTime = cacheTime;
@@ -55,12 +55,12 @@ export default class ResourceCache extends Unobservable {
    * Push a page into the cache
    * @param {PaginatedResourceListing} page - Data to be cached
    */
-  push(page) {
+  push (page) {
     if (page.rows === 0) {
       return; // Don't insert empty pages
     }
 
-    delete page['__ob__']; // Remove VueJs observer
+    delete page.__ob__; // Remove VueJs observer
 
     // Test if this is data we can actually work with by testing if there are any non-numeric ids (undefined etc)
     const invalidData = page.data.map(row => row.id).filter(x => typeof x !== 'number').length > 0;
@@ -70,7 +70,9 @@ export default class ResourceCache extends Unobservable {
     }
 
     const validThrough = this._timestamp + this.cacheTime;
+
     const cacheId = Uuid.uuid4();
+
     const data = {
       page, validThrough,
       id: cacheId,
@@ -84,17 +86,18 @@ export default class ResourceCache extends Unobservable {
 
     (storage[page.cacheToken] || (storage[page.cacheToken] = [])).push(data);
 
-    this.emitter.emit('push', {page, validThrough, resourceUrl: page.route});
-    this.emitter.emit('invalidate', {resourceUrl: page.route});
+    this.emitter.emit('push', { page, validThrough, resourceUrl: page.route });
+    this.emitter.emit('invalidate', { resourceUrl: page.route });
   }
 
   /**
    * Delete from cache using cacheId
    * @param {String|Array<String>} ids - cache ids
    */
-  _deleteCacheIds(ids) {
+  _deleteCacheIds (ids) {
     if (!(ids instanceof Array)) {
       this._deleteCacheIds([ids]);
+
       return;
     }
 
@@ -123,7 +126,7 @@ export default class ResourceCache extends Unobservable {
    * Revalidate all data and delete stale data
    * @param {String} resourceUrl - Resource url
    */
-  revalidate(resourceUrl = null) {
+  revalidate (resourceUrl = null) {
     if (!resourceUrl) {
       Object.keys(this._storage).map(x => this.revalidate(x));
     } else if (this._storage[resourceUrl]) {
@@ -142,12 +145,13 @@ export default class ResourceCache extends Unobservable {
 
       // Delete empty
       junk.forEach(key => delete storage[key]);
+
       if (Object.keys(storage).length === 0) {
         delete this._storage[resourceUrl];
       }
 
       if (junk.length > 0) {
-        this.emitter.emit('invalidate', {resourceUrl});
+        this.emitter.emit('invalidate', { resourceUrl });
       }
     }
   }
@@ -159,7 +163,7 @@ export default class ResourceCache extends Unobservable {
    * @see {@link PaginatedResourceListing#cacheToken}
    * @returns {Array<PaginatedResourceListing>} - Relevant cached pages
    */
-  collectPages(resourceUrl, cacheToken = '') {
+  collectPages (resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
 
     // Storage array or []
@@ -180,16 +184,16 @@ export default class ResourceCache extends Unobservable {
    * Clears the cache
    * @param {String} resourceUrl - Resource url
    */
-  clear(resourceUrl = '') {
-    if (!resourceUrl) {
+  clear (resourceUrl = '') {
+    if (resourceUrl) {
+      delete this._storage[resourceUrl];
+      this.emitter.emit('invalidate', { resourceUrl });
+    } else {
       Object.keys(this._storage).forEach(url => {
-        this.emitter.emit('invalidate', {resourceUrl: url});
+        this.emitter.emit('invalidate', { resourceUrl: url });
       });
 
       this._storage = {};
-    } else {
-      delete this._storage[resourceUrl];
-      this.emitter.emit('invalidate', {resourceUrl});
     }
   }
 
@@ -201,7 +205,7 @@ export default class ResourceCache extends Unobservable {
    * @returns {Array<ResourceBase>} - Indexed relevant data
    * @todo add page numbers or range as optional parameter
    */
-  resolve(resourceUrl, cacheToken = '') {
+  resolve (resourceUrl, cacheToken = '') {
     cacheToken = cacheToken.toLowerCase();
 
     // List ordered from old to new
@@ -270,14 +274,16 @@ export default class ResourceCache extends Unobservable {
    * Update records in the cache manually lazily. Any matching instance found will be updated.
    * @param {ResourceBase|Array<ResourceBase>} rows - Data to be updated
    */
-  update(rows) {
+  update (rows) {
     if (!(rows instanceof Array)) {
       this.update([rows]);
+
       return;
     }
 
     // Split up data into types
     const data = {};
+
     const ids = {};
 
     for (const row of rows) {
@@ -314,6 +320,7 @@ export default class ResourceCache extends Unobservable {
             }
 
             const index = ids[key].findIndex(x => x === row.id);
+
             const value = data[key][index];
 
             value.sanitize();
@@ -328,7 +335,7 @@ export default class ResourceCache extends Unobservable {
       }
 
       if (invalidate) {
-        this.emitter.emit('invalidate', {resourceUrl: resourceUrl});
+        this.emitter.emit('invalidate', { resourceUrl });
       }
     }
   }
@@ -338,7 +345,7 @@ export default class ResourceCache extends Unobservable {
    * @returns {number} - timestamp
    * @private
    */
-  get _timestamp() {
+  get _timestamp () {
     return Math.floor(Date.now() / 1000);
   }
 }

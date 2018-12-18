@@ -32,7 +32,7 @@
 
 import axios from 'axios';
 
-import {Enum} from './enums';
+import { Enum } from './enums';
 import DummyFlow from './oauth/DummyFlow';
 import OAuth from './oauth/OAuth';
 import OAuthToken from './oauth/OAuthToken';
@@ -71,10 +71,10 @@ import {
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
 import Injectable from './traits/Injectable';
-import {fnv32b} from './utils/hash';
+import { fnv32b } from './utils/hash';
 import Logger from './utils/Logger';
-import {isParentOf, mix} from './utils/reflection';
-import {custom3xxHandler, retry429ResponseInterceptor, transformAxiosErrors} from './utils/requests';
+import { isParentOf, mix } from './utils/reflection';
+import { custom3xxHandler, retry429ResponseInterceptor, transformAxiosErrors } from './utils/requests';
 
 /**
  * Base API class
@@ -86,7 +86,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
    */
-  constructor(auth = new DummyFlow(), host = process.env.HOST) {
+  constructor (auth = new DummyFlow(), host = process.env.HOST) {
     super();
 
     if (typeof auth === 'string') {
@@ -123,7 +123,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {string} - Api version
    * @constant
    */
-  get version() {
+  get version () {
     return 'v1';
   }
 
@@ -131,7 +131,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Get the shared cache instance
    * @returns {ResourceCache} - Shared cache instance
    */
-  get cache() {
+  get cache () {
     return this._cache;
   }
 
@@ -139,7 +139,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Get authentication provider instance
    * @returns {OAuth} - OAuth instance
    */
-  get auth() {
+  get auth () {
     return this._auth;
   }
 
@@ -147,7 +147,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Get logger instance
    * @returns {Logger} - Logger instance
    */
-  get logger() {
+  get logger () {
     return this._logger;
   }
 
@@ -155,7 +155,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Set authentication provider instance
    * @param {OAuth} value -- OAuth instance
    */
-  set auth(value) {
+  set auth (value) {
     if (!isParentOf(OAuth, value)) {
       throw new TypeError('auth must be an instance of OAuth');
     }
@@ -167,7 +167,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Test if the client is authenticated with the api and has a valid token
    * @returns {boolean} - If the client is authenticated with the api
    */
-  get authenticated() {
+  get authenticated () {
     return this.auth.authenticated;
   }
 
@@ -175,7 +175,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * The current host
    * @returns {string} - The current host
    */
-  get host() {
+  get host () {
     return this._host;
   }
 
@@ -183,7 +183,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * The remote host
    * @param {string} value - A valid url
    */
-  set host(value) {
+  set host (value) {
     value = value.replace(/\/+$/, '');
     this._host = value;
     this.auth.host = value;
@@ -194,7 +194,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * find the token most of the time if the name parameter is left blank.
    * @param {string?} name - name of the token
    */
-  saveToken(name) {
+  saveToken (name) {
     this.auth.token.save(name);
   }
 
@@ -204,22 +204,24 @@ export default class Maps4News extends mix(null, Injectable) {
    * @throws {OAuthError}
    * @throws {ApiError}
    */
-  authenticate() {
-    return this.auth.authenticate().then(() => this);
+  async authenticate () {
+    await this.auth.authenticate();
+
+    return this;
   }
 
   /**
    * Pre-configured Axios instance
    * @return {AxiosInstance} - Axios instance
    */
-  get axios() {
+  get axios () {
     const instance = axios.create({
       baseURL: `${this.host}/${this.version}/`,
       responseType: 'json',
       responseEncoding: 'utf8',
       timeout: 30000, // 30 seconds
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       maxRedirects: 0,
     });
@@ -229,7 +231,7 @@ export default class Maps4News extends mix(null, Injectable) {
     instance.defaults.headers.patch['Content-Type'] = 'application/json';
 
     if (this.authenticated) {
-      instance.defaults.headers.common['Authorization'] = this.auth.token.toString();
+      instance.defaults.headers.common.Authorization = this.auth.token.toString();
     }
 
     if (instance.defaults.adapter.name === 'xhrAdapter') {
@@ -269,23 +271,23 @@ export default class Maps4News extends mix(null, Injectable) {
    *
    * api.static('/foo-bar-custom', FooBar).lister();
    */
-  static(Target, Constructor = ResourceBase) {
+  static (Target, Constructor = ResourceBase) {
     if (typeof Target === 'string') {
       const path = Target;
       const name = Constructor.name || 'AnonymousResource';
 
       Target = class AnonymousResource extends Constructor {
-        static get resourceName() {
+        static get resourceName () {
           return Object.getPrototypeOf(this).resourceName || 'anonymous';
         }
 
-        static get resourcePath() {
+        static get resourcePath () {
           return path;
         }
       };
 
       Object.defineProperty(Target, 'name', {
-        value: name + '_' + fnv32b(path),
+        value: `${name}_${fnv32b(path)}`,
       });
     }
 
@@ -301,8 +303,8 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Choropleth}
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
-  get choropleths() {
-    return new GeoResourceProxy(this, Choropleth, null, {}, {hasForPoint: false});
+  get choropleths () {
+    return new GeoResourceProxy(this, Choropleth, null, {}, { hasForPoint: false });
   }
 
   /**
@@ -310,7 +312,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Color}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get colors() {
+  get colors () {
     return this.static(Color);
   }
 
@@ -319,7 +321,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Tag}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get tags() {
+  get tags () {
     return this.static(Tag);
   }
 
@@ -328,7 +330,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Contract}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get contracts() {
+  get contracts () {
     return this.static(Contract);
   }
 
@@ -337,7 +339,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Dimension}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get dimensions() {
+  get dimensions () {
     return this.static(Dimension);
   }
 
@@ -346,7 +348,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link DimensionSet}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get dimensionSets() {
+  get dimensionSets () {
     return this.static(DimensionSet);
   }
 
@@ -355,7 +357,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Faq}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get faqs() {
+  get faqs () {
     return this.static(Faq);
   }
 
@@ -364,7 +366,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Feature}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get features() {
+  get features () {
     return this.static(Feature);
   }
 
@@ -373,7 +375,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Job}
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get featuredMaps() {
+  get featuredMaps () {
     return new SimpleResourceProxy(this, Job, '/jobs/featured');
   }
 
@@ -382,7 +384,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Font}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get fonts() {
+  get fonts () {
     return this.static(Font);
   }
 
@@ -391,7 +393,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link FontFamily}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get fontFamilies() {
+  get fontFamilies () {
     return this.static(FontFamily);
   }
 
@@ -400,8 +402,8 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Highlight}
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
-  get highlights() {
-    return new GeoResourceProxy(this, Highlight, null, {}, {hasForBoundary: false});
+  get highlights () {
+    return new GeoResourceProxy(this, Highlight, null, {}, { hasForBoundary: false });
   }
 
   /**
@@ -409,8 +411,8 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link InsetMap}
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
-  get insetMaps() {
-    return new GeoResourceProxy(this, InsetMap, null, {}, {hasForPoint: false});
+  get insetMaps () {
+    return new GeoResourceProxy(this, InsetMap, null, {}, { hasForPoint: false });
   }
 
   /**
@@ -418,7 +420,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Job}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get jobs() {
+  get jobs () {
     return this.static(Job);
   }
 
@@ -427,7 +429,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link JobShare}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get jobShares() {
+  get jobShares () {
     return this.static(JobShare);
   }
 
@@ -436,7 +438,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link JobType}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get jobTypes() {
+  get jobTypes () {
     return this.static(JobType);
   }
 
@@ -445,7 +447,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Language}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get languages() {
+  get languages () {
     return this.static(Language);
   }
 
@@ -454,7 +456,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Layer}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get layers() {
+  get layers () {
     return this.static(Layer);
   }
 
@@ -463,7 +465,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Mapstyle}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get mapstyles() {
+  get mapstyles () {
     return this.static(Mapstyle);
   }
 
@@ -472,7 +474,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link MapstyleSet}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get mapstyleSets() {
+  get mapstyleSets () {
     return this.static(MapstyleSet);
   }
 
@@ -481,7 +483,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Notification}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get notifications() {
+  get notifications () {
     return this.static(Notification);
   }
 
@@ -490,7 +492,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Organisation}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get organisations() {
+  get organisations () {
     return this.static(Organisation);
   }
 
@@ -499,7 +501,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Permission}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get permissions() {
+  get permissions () {
     return this.static(Permission);
   }
 
@@ -508,7 +510,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Role}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get roles() {
+  get roles () {
     return this.static(Role);
   }
 
@@ -517,7 +519,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link PlaceName}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get placeNames() {
+  get placeNames () {
     return this.static(PlaceName);
   }
 
@@ -526,7 +528,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Svg}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get svgs() {
+  get svgs () {
     return this.static(Svg);
   }
 
@@ -535,7 +537,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link SvgSet}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get svgSets() {
+  get svgSets () {
     return this.static(SvgSet);
   }
 
@@ -544,20 +546,21 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link User}
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get users() {
+  get users () {
     return this.static(User);
   }
 
   /**
    * Get SVG set types
    * @see {@link SvgSet}
+   * @async
    * @returns {Promise<Enum>} - Contains all the possible SVG set types
    * @throws {ApiError}
    * @deprecated Use getSvgSetTypes
    * @todo Remove
    */
-  async getSvgSetType() {
-    return await this.getSvgSetTypes();
+  getSvgSetType () {
+    return this.getSvgSetTypes();
   }
 
   /**
@@ -566,8 +569,8 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {Promise<Enum>} - Contains all the possible SVG set types
    * @throws {ApiError}
    */
-  async getSvgSetTypes() {
-    const {data: {data}} = await this.axios.get('/svgs/sets/types');
+  async getSvgSetTypes () {
+    const { data: { data } } = await this.axios.get('/svgs/sets/types');
 
     return new Enum(data, true);
   }
@@ -578,8 +581,8 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {Promise<Enum>} - Contains all the possible font styles
    * @throws {ApiError}
    */
-  async getFontStyles() {
-    const {data: {data}} = await this.axios.get('/fonts/styles');
+  async getFontStyles () {
+    const { data: { data } } = await this.axios.get('/fonts/styles');
 
     return new Enum(data, true);
   }
@@ -588,7 +591,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * Forget the current session
    * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
    */
-  logout() {
+  logout () {
     this.auth.logout();
   }
 
@@ -597,7 +600,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {boolean} - Auto logout
    * @see {@link logout}
    */
-  get autoLogout() {
+  get autoLogout () {
     return this._autoLogout;
   }
 
@@ -606,7 +609,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @param {boolean} value - Auto logout
    * @see {@link logout}
    */
-  set autoLogout(value) {
+  set autoLogout (value) {
     this._autoLogout = Boolean(value);
   }
 }

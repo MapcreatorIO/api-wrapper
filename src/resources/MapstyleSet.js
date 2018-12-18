@@ -31,7 +31,7 @@
  */
 
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 import CrudSetBase from './base/CrudSetBase';
 import Mapstyle from './Mapstyle';
 
@@ -41,15 +41,15 @@ import Mapstyle from './Mapstyle';
  * @mixes OwnableResource
  */
 export default class MapstyleSet extends mix(CrudSetBase, OwnableResource) {
-  static get resourcePath() {
+  static get resourcePath () {
     return '/mapstyles/sets/{id}';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'mapstyle-sets';
   }
 
-  get _Child() {
+  get _Child () {
     return Mapstyle;
   }
 }

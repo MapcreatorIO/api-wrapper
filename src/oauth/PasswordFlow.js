@@ -32,7 +32,7 @@
 
 import axios from 'axios';
 import OAuthError from '../errors/OAuthError';
-import {isNode} from '../utils/node';
+import { isNode } from '../utils/node';
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 
@@ -48,7 +48,7 @@ export default class PasswordFlow extends OAuth {
    * @param {string} password - Valid password
    * @param {Array<string>} scopes - A list of required scopes
    */
-  constructor(clientId, secret, username, password, scopes = ['*']) {
+  constructor (clientId, secret, username, password, scopes = ['*']) {
     super(clientId, scopes);
 
     this._secret = secret;
@@ -71,7 +71,7 @@ export default class PasswordFlow extends OAuth {
    * it's a secret :o (client secret)
    * @returns {String} - secret
    */
-  get secret() {
+  get secret () {
     return this._secret;
   }
 
@@ -79,7 +79,7 @@ export default class PasswordFlow extends OAuth {
    * Set client secret
    * @param {String} value - secret
    */
-  set secret(value) {
+  set secret (value) {
     this._secret = value;
   }
 
@@ -87,7 +87,7 @@ export default class PasswordFlow extends OAuth {
    * Get the username for authentication
    * @returns {String} - Username (email)
    */
-  get username() {
+  get username () {
     return this._username;
   }
 
@@ -95,7 +95,7 @@ export default class PasswordFlow extends OAuth {
    * Get the username for authentication
    * @param {String} value - Username (email)
    */
-  set username(value) {
+  set username (value) {
     this._username = value;
   }
 
@@ -103,7 +103,7 @@ export default class PasswordFlow extends OAuth {
    * Get the password
    * @returns {String} - Password
    */
-  get password() {
+  get password () {
     return this._password;
   }
 
@@ -111,7 +111,7 @@ export default class PasswordFlow extends OAuth {
    * Set the password
    * @param {String} value - password
    */
-  set password(value) {
+  set password (value) {
     this._password = value;
   }
 
@@ -119,7 +119,7 @@ export default class PasswordFlow extends OAuth {
    * OAuth path
    * @returns {String} - OAuth path
    */
-  get path() {
+  get path () {
     return this._path;
   }
 
@@ -127,7 +127,7 @@ export default class PasswordFlow extends OAuth {
    * OAuth path
    * @param {String} value - OAuth path
    */
-  set path(value) {
+  set path (value) {
     this._path = value;
   }
 
@@ -136,18 +136,18 @@ export default class PasswordFlow extends OAuth {
    * @returns {Promise<OAuthToken>} - Response token
    * @throws {OAuthError}
    */
-  async authenticate() {
+  async authenticate () {
     const url = this.host + this.path;
     const query = {
-      'grant_type': 'password',
-      'client_id': this.clientId,
-      'client_secret': this._secret,
-      'username': this.username,
-      'password': this.password,
-      'scope': this.scopes.join(' '),
+      grant_type: 'password',
+      client_id: this.clientId,
+      client_secret: this._secret,
+      username: this.username,
+      password: this.password,
+      scope: this.scopes.join(' '),
     };
 
-    const {data} = await axios.post(url, query);
+    const { data } = await axios.post(url, query);
 
     if (data.error) {
       throw new OAuthError(data.error, data.message);

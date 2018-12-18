@@ -30,12 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {snake as snakeCase} from 'case';
-import {EventEmitter} from 'events';
+import { snake as snakeCase } from 'case';
+import { EventEmitter } from 'events';
 import Maps4News from './Maps4News';
 import RequestParameters from './RequestParameters';
 import ResourceBase from './resources/base/ResourceBase';
-import {isParentOf} from './utils/reflection';
+import { isParentOf } from './utils/reflection';
 
 /**
  * Paginated resource lister
@@ -53,7 +53,7 @@ export default class ResourceLister extends EventEmitter {
    * @param {number} [maxRows=50] - Initial max rows
    * @param {string} [key=id] - Key
    */
-  constructor(api, route, Resource = ResourceBase, parameters = null, maxRows = 50, key = 'id') {
+  constructor (api, route, Resource = ResourceBase, parameters = null, maxRows = 50, key = 'id') {
     super();
 
     if (!isParentOf(Maps4News, api)) {
@@ -63,7 +63,7 @@ export default class ResourceLister extends EventEmitter {
     this._api = api;
     this._Resource = Resource;
     this._route = route || (new this.Resource(api, {})).baseUrl;
-    this._parameters = new RequestParameters(parameters || {perPage: RequestParameters.maxPerPage});
+    this._parameters = new RequestParameters(parameters || { perPage: RequestParameters.maxPerPage });
     this._key = snakeCase(key);
     this._waiting = false;
 
@@ -77,7 +77,7 @@ export default class ResourceLister extends EventEmitter {
    * Get if there are more resources to fetch. It indicates if the maxRows can be increased.
    * @returns {boolean} - if more rows are available
    */
-  get hasMore() {
+  get hasMore () {
     return typeof this.availableRows === 'undefined' || this.availableRows > this.maxRows;
   }
 
@@ -85,7 +85,7 @@ export default class ResourceLister extends EventEmitter {
    * Get if the instance is waiting for data
    * @returns {boolean} - waiting for data
    */
-  get waiting() {
+  get waiting () {
     return this._waiting;
   }
 
@@ -93,7 +93,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the request parameters
    * @returns {RequestParameters} - parameters
    */
-  get parameters() {
+  get parameters () {
     return this._parameters;
   }
 
@@ -105,7 +105,7 @@ export default class ResourceLister extends EventEmitter {
    * @throws {ResourceLister#autoUpdate}
    * @param {RequestParameters} object - parameters
    */
-  set parameters(object) {
+  set parameters (object) {
     this.parameters.apply(object);
   }
 
@@ -113,7 +113,7 @@ export default class ResourceLister extends EventEmitter {
    * Resource constructor accessor, used for building the resource instance
    * @returns {constructor<ResourceBase>} - resource constructor
    */
-  get Resource() {
+  get Resource () {
     return this._Resource;
   }
 
@@ -121,7 +121,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the route (url)
    * @returns {string} - route
    */
-  get route() {
+  get route () {
     return this._route;
   }
 
@@ -129,7 +129,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the data
    * @returns {Array<ResourceLister.Resource>} - data
    */
-  get data() {
+  get data () {
     return this._data;
   }
 
@@ -137,7 +137,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the api instance
    * @returns {Maps4News} - api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -147,7 +147,7 @@ export default class ResourceLister extends EventEmitter {
    * @see {ResourceLister.data}
    * @returns {number} - row count
    */
-  get rowCount() {
+  get rowCount () {
     return this.data.length;
   }
 
@@ -155,7 +155,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the maximum amount of rows allowed
    * @returns {number} - max rows
    */
-  get maxRows() {
+  get maxRows () {
     return this._maxRows;
   }
 
@@ -163,7 +163,7 @@ export default class ResourceLister extends EventEmitter {
    * Set the maximum amount of rows allowed
    * @param {number} value - max rows
    */
-  set maxRows(value) {
+  set maxRows (value) {
     value = Number(value);
 
     if (Number.isNaN(value)) {
@@ -182,7 +182,7 @@ export default class ResourceLister extends EventEmitter {
    * Get the number of rows the server has available
    * @returns {number} - number of rows
    */
-  get availableRows() {
+  get availableRows () {
     return this._availableRows;
   }
 
@@ -193,7 +193,7 @@ export default class ResourceLister extends EventEmitter {
    * @throws {ResourceLister#parameters}
    * @param {boolean} value - auto update
    */
-  set autoUpdate(value) {
+  set autoUpdate (value) {
     value = Boolean(value);
 
     if (this.autoUpdate !== value) {
@@ -217,7 +217,7 @@ export default class ResourceLister extends EventEmitter {
    * @throws {ResourceLister#update}
    * @throws {ResourceLister#parameters}
    */
-  get autoUpdate() {
+  get autoUpdate () {
     return this._autoUpdate;
   }
 
@@ -226,7 +226,7 @@ export default class ResourceLister extends EventEmitter {
    *
    * @private
    */
-  _reset() {
+  _reset () {
     this._parameterToken = this.parameters.token();
 
     this._realData = [];
@@ -239,7 +239,7 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Update the server data
    */
-  async update() {
+  async update () {
     if (this.waiting) {
       return;
     }
@@ -275,7 +275,7 @@ export default class ResourceLister extends EventEmitter {
    * Fetch more data from the server
    * @private
    */
-  async _fetchMore() {
+  async _fetchMore () {
     const glue = this.route.includes('?') ? '&' : '?';
     const parameters = this.parameters.copy();
 
@@ -293,7 +293,7 @@ export default class ResourceLister extends EventEmitter {
 
     const responses = await Promise.all(promises);
 
-    for (const {data: {data}, headers} of responses) {
+    for (const { data: { data }, headers } of responses) {
       data.forEach(row => this.push(row, false));
 
       this._availableRows = Number(headers['x-paginate-total']) + parameters.offset;
@@ -304,7 +304,7 @@ export default class ResourceLister extends EventEmitter {
    * Returns the iterable
    * @returns {Iterator} - iterator
    */
-  [Symbol.iterator]() {
+  [Symbol.iterator] () {
     return this.data[Symbol.iterator]();
   }
 
@@ -317,7 +317,7 @@ export default class ResourceLister extends EventEmitter {
    * @param {ResourceLister.Resource} row - resource
    * @param {boolean} autoMaxRows - Increase maxRows if needed
    */
-  push(row, autoMaxRows = true) {
+  push (row, autoMaxRows = true) {
     if (!isParentOf(this.Resource, row)) {
       row = new this.Resource(this.api, row);
     }
@@ -347,7 +347,7 @@ export default class ResourceLister extends EventEmitter {
    * Same as `this.maxRows += this.parameters.perPage`
    * @param {number} [rows=parameters.perPage] - Amount to increment maxRows with
    */
-  loadMore(rows = this.parameters.perPage) {
+  loadMore (rows = this.parameters.perPage) {
     this.maxRows += rows;
   }
 }

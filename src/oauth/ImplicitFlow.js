@@ -33,9 +33,9 @@
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
-import {encodeQueryString} from '../utils/requests';
+import { encodeQueryString } from '../utils/requests';
 import OAuthError from '../errors/OAuthError';
-import {isNode} from '../utils/node';
+import { isNode } from '../utils/node';
 
 /**
  * Implicit OAuth flow using redirection
@@ -51,7 +51,7 @@ export default class ImplicitFlow extends OAuth {
    * @param {Array<String>} scopes - A list of required scopes
    * @param {Boolean} useState - use state verification
    */
-  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = true) {
+  constructor (clientId, callbackUrl = '', scopes = ['*'], useState = true) {
     super(clientId, scopes);
 
     if (isNode()) {
@@ -81,7 +81,7 @@ export default class ImplicitFlow extends OAuth {
 
       this._cleanAnchorParams();
 
-      if (this.useState && !StateContainer.validate(anchorParams['state'])) {
+      if (this.useState && !StateContainer.validate(anchorParams.state)) {
         throw Error('Invalid state in url');
       } else {
         this.token = OAuthToken.fromResponseObject(anchorParams);
@@ -92,7 +92,7 @@ export default class ImplicitFlow extends OAuth {
   /**
    * @inheritDoc
    */
-  authenticate() {
+  authenticate () {
     return new Promise((resolve, reject) => {
       if (this.authenticated) {
         resolve(this.token);
@@ -113,16 +113,16 @@ export default class ImplicitFlow extends OAuth {
    * @returns {String} - Redirect url
    * @protected
    */
-  _buildRedirectUrl() {
+  _buildRedirectUrl () {
     const queryParams = {
-      'client_id': this.clientId,
-      'redirect_uri': this.callbackUrl,
-      'response_type': 'token',
-      'scope': this.scopes.join(' '),
+      client_id: this.clientId,
+      redirect_uri: this.callbackUrl,
+      response_type: 'token',
+      scope: this.scopes.join(' '),
     };
 
     if (this.useState) {
-      queryParams['state'] = StateContainer.generate();
+      queryParams.state = StateContainer.generate();
     }
 
     return `${this.host + this.path}?${encodeQueryString(queryParams)}`;
@@ -134,7 +134,7 @@ export default class ImplicitFlow extends OAuth {
    * @returns {Object<String, String>} - Anchor parameters
    * @protected
    */
-  _getAnchorParams(query = window.location.hash) {
+  _getAnchorParams (query = window.location.hash) {
     const out = {};
 
     query = query.replace(/^#\/?/g, '');
@@ -154,11 +154,12 @@ export default class ImplicitFlow extends OAuth {
    * @returns {Object<String, String>} - List of OAuth anchor parameters
    * @protected
    */
-  _getOAuthAnchorParams(query = this._getAnchorParams()) {
+  _getOAuthAnchorParams (query = this._getAnchorParams()) {
     return Object.keys(query)
       .filter(key => this._anchorParams.includes(key))
       .reduce((obj, key) => {
         obj[key] = query[key];
+
         return obj;
       }, {});
   }
@@ -167,7 +168,7 @@ export default class ImplicitFlow extends OAuth {
    * Remove OAuth related anchor parameters
    * @protected
    */
-  _cleanAnchorParams() {
+  _cleanAnchorParams () {
     const anchorParams = this._getAnchorParams();
     const targets = this._anchorParams;
 
@@ -187,13 +188,11 @@ export default class ImplicitFlow extends OAuth {
    * @returns {Boolean} - if anchor tested positive for containing an OAuth response
    * @protected
    */
-  _anchorContainsOAuthResponse() {
+  _anchorContainsOAuthResponse () {
     const queryKeys = Object.keys(this._getOAuthAnchorParams());
 
     // Check if all the params are in the anchor
-    return this._anchorParams.reduce((output, key) => {
-      return output && queryKeys.includes(key);
-    }, true);
+    return this._anchorParams.reduce((output, key) => output && queryKeys.includes(key), true);
   }
 
   /**
@@ -201,8 +200,8 @@ export default class ImplicitFlow extends OAuth {
    * @returns {Boolean} - if anchor tested positive for containing an OAuth error
    * @protected
    */
-  _anchorContainsError() {
-    return Boolean(this._getAnchorParams()['error']);
+  _anchorContainsError () {
+    return Boolean(this._getAnchorParams().error);
   }
 
   /**
@@ -210,15 +209,13 @@ export default class ImplicitFlow extends OAuth {
    * @returns {OAuthError} - OAuthError object
    * @protected
    */
-  _getError() {
+  _getError () {
     if (!this._anchorContainsError()) {
       throw Error('No OAuthError found in anchor');
     }
 
     const params = this._getAnchorParams();
 
-    return new OAuthError(
-      params['error'], params['message']
-    );
+    return new OAuthError(params.error, params.message);
   }
 }

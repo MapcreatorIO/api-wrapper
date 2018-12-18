@@ -38,7 +38,7 @@ export class AbstractError extends Error {
    * AbstractError constructor
    * @param {?String} message - Error message
    */
-  constructor(message = 'Unimplemented') {
+  constructor (message = 'Unimplemented') {
     super(message);
   }
 }
@@ -55,7 +55,7 @@ export class AbstractError extends Error {
  * }
  */
 export class AbstractClassError extends AbstractError {
-  constructor() {
+  constructor () {
     super('Can not make an instance of an abstract class');
   }
 }
@@ -64,7 +64,7 @@ export class AbstractClassError extends AbstractError {
  * Thrown upon invocation of an abstract method
  */
 export class AbstractMethodError extends AbstractError {
-  constructor() {
+  constructor () {
     super('Can not call an abstract method');
   }
 }

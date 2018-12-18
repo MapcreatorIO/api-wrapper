@@ -48,7 +48,7 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @param {Boolean} useState - use state verification
    * @param {String} windowOptions - optional window options for the pop-up window
    */
-  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
+  constructor (clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
     super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
@@ -63,14 +63,14 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @returns {String} - window.name of the created pop-up
    * @constant
    */
-  static get popupWindowName() {
+  static get popupWindowName () {
     return 'm4n_api_auth';
   }
 
   /**
    * @inheritDoc
    */
-  authenticate() {
+  authenticate () {
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       return new Promise(() => {
       });

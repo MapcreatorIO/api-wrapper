@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {base64Encode} from '../../utils/base64';
-import {isNode} from '../../utils/node';
+import { base64Encode } from '../../utils/base64';
+import { isNode } from '../../utils/node';
 
 /**
  * Downloaded resource from the api
@@ -43,7 +43,7 @@ export default class DownloadedResource {
    * @param {string} [type=application/octet-stream] - mime-type
    * @param {string} [fileName=Untitled] - file name
    */
-  constructor(data, type = 'application/octet-stream', fileName = 'Untitled') {
+  constructor (data, type = 'application/octet-stream', fileName = 'Untitled') {
     this._data = data;
     this._type = type;
     this._fileName = fileName;
@@ -54,8 +54,8 @@ export default class DownloadedResource {
    * @param {AxiosResponse} axiosResponse - axios response
    * @returns {DownloadedResource} - instance
    */
-  static fromAxiosResponse(axiosResponse) {
-    const {data, headers} = axiosResponse;
+  static fromAxiosResponse (axiosResponse) {
+    const { data, headers } = axiosResponse;
 
     // Find mimeType
     let mimeType;
@@ -85,7 +85,7 @@ export default class DownloadedResource {
    * In Nodejs it will return a {@link Buffer} and in the browser it will respond with a {@link ArrayBuffer}
    * @returns {ArrayBuffer|Buffer} - resource data
    */
-  get data() {
+  get data () {
     return this._data;
   }
 
@@ -93,7 +93,7 @@ export default class DownloadedResource {
    * Resource mime-type
    * @return {string} - mime-type
    */
-  get type() {
+  get type () {
     return this._type;
   }
 
@@ -101,7 +101,7 @@ export default class DownloadedResource {
    * Resource file name, if available
    * @return {string} - file name
    */
-  get fileName() {
+  get fileName () {
     return this._fileName;
   }
 
@@ -109,7 +109,7 @@ export default class DownloadedResource {
    * Get the size of the data
    * @return {Number} - size in bytes
    */
-  get size() {
+  get size () {
     return this.data.length;
   }
 
@@ -122,12 +122,12 @@ export default class DownloadedResource {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL#Memory_management
    * @return {string} - object url
    */
-  createObjectUrl() {
+  createObjectUrl () {
     if (isNode()) {
       throw new Error('Object urls are not supported by Node');
     }
 
-    const blob = new Blob([this.data], {type: this.type});
+    const blob = new Blob([this.data], { type: this.type });
 
     return URL.createObjectURL(blob);
   }
@@ -137,7 +137,7 @@ export default class DownloadedResource {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
    * @returns {string} - data uri
    */
-  toDataUri() {
+  toDataUri () {
     return `data:${this.type};base64,${this.toBase64()}`;
   }
 
@@ -145,14 +145,14 @@ export default class DownloadedResource {
    * Base64 encode data
    * @returns {string} - base64 encoded data
    */
-  toBase64() {
+  toBase64 () {
     return base64Encode(this.data);
   }
 
   /**
    * @inheritDoc
    */
-  toString() {
+  toString () {
     return this.data.toString();
   }
 }

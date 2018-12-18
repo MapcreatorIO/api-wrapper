@@ -47,10 +47,10 @@
  *        .forEach(console.log) // Log the names and ids of every user
  * })
  */
-export function getPaginatedRange(page, start = 1, stop) {
+export async function getPaginatedRange (page, start = 1, stop) {
   // Resolve promise if any
   if (page instanceof Promise) {
-    return page.then(res => getPaginatedRange(res, start, stop));
+    page = await page;
   }
 
   const out = page.data;
@@ -64,16 +64,14 @@ export function getPaginatedRange(page, start = 1, stop) {
     start++;
   }
 
-  return new Promise((resolve, reject) => {
-    // Get all pages
-    for (let i = start; i <= stop; i++) {
-      promises.push(page.get(i));
-    }
+  // Get all pages
+  for (let i = start; i <= stop; i++) {
+    promises.push(page.get(i));
+  }
 
-    // Resolve
-    Promise.all(promises).then(rows => {
-      resolve(out.concat(...rows.map(x => x.data)));
-    }, reject);
-  });
+  // Resolve
+  const rows = await Promise.all(promises);
+
+  return out.concat(...rows.map(x => x.data));
 }
 
