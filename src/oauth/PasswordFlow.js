@@ -139,12 +139,12 @@ export default class PasswordFlow extends OAuth {
   async authenticate () {
     const url = this.host + this.path;
     const query = {
-      grant_type: 'password',
-      client_id: this.clientId,
-      client_secret: this._secret,
-      username: this.username,
-      password: this.password,
-      scope: this.scopes.join(' '),
+      'grant_type': 'password',
+      'client_id': this.clientId,
+      'client_secret': this._secret,
+      'username': this.username,
+      'password': this.password,
+      'scope': this.scopes.join(' '),
     };
 
     const { data } = await axios.post(url, query);

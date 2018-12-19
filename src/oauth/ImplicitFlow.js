@@ -115,10 +115,10 @@ export default class ImplicitFlow extends OAuth {
    */
   _buildRedirectUrl () {
     const queryParams = {
-      client_id: this.clientId,
-      redirect_uri: this.callbackUrl,
-      response_type: 'token',
-      scope: this.scopes.join(' '),
+      'client_id': this.clientId,
+      'redirect_uri': this.callbackUrl,
+      'response_type': 'token',
+      'scope': this.scopes.join(' '),
     };
 
     if (this.useState) {

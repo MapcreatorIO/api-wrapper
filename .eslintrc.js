@@ -145,7 +145,7 @@ module.exports = {
       { blankLine: 'always', prev: '*', next: 'return' },
     ],
     'prefer-object-spread': prod(),
-    'quote-props': [prod(), 'consistent-as-needed'],
+    'quote-props': [prod(), 'consistent'],
     'quotes': [prod(), 'single'],
     'semi': ['error', 'always'],
     'semi-spacing': prod(),

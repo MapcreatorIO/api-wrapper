@@ -108,9 +108,9 @@ export default class JobRevision extends CrudBase {
     }
 
     const data = {
-      object: JSON.stringify(object),
-      language_code: this.languageCode,
-      mapstyle_set_id: this.mapstyleSetId,
+      'object': JSON.stringify(object),
+      'language_code': this.languageCode,
+      'mapstyle_set_id': this.mapstyleSetId,
     };
 
     if (layers) {

@@ -143,8 +143,7 @@ export default class JobMonitor {
       ].join(', '));
 
       const params = {
-        // eslint-disable-next-line
-        per_page: perPage,
+        'per_page': perPage,
         page,
       };
 

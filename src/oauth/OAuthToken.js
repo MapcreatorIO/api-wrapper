@@ -74,10 +74,10 @@ export default class OAuthToken {
    */
   toResponseObject () {
     return {
-      access_token: this.token,
-      token_type: this.type.toLowerCase(),
-      expires_in: this.expires - Date.now(),
-      scope: this.scopes,
+      'access_token': this.token,
+      'token_type': this.type.toLowerCase(),
+      'expires_in': this.expires - Date.now(),
+      'scope': this.scopes,
     };
   }
 
