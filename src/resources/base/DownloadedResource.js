@@ -74,7 +74,7 @@ export default class DownloadedResource {
       const matches = regex.exec(contentDisposition);
 
       if (matches) {
-        fileName = matches[3];
+        fileName = matches[3] || matches[4];
       }
     }
 
