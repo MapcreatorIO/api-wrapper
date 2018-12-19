@@ -31,7 +31,6 @@
  */
 
 import OAuthError from '../errors/OAuthError';
-import StorageManager from '../storage/StorageManager';
 import ImplicitFlow from './ImplicitFlow';
 import OAuthToken from './OAuthToken';
 
@@ -48,13 +47,11 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @param {Array<String>} scopes - A list of required scopes
    * @param {Boolean} useState - use state verification
    * @param {String} windowOptions - optional window options for the pop-up window
-   * @returns {void}
    */
-  constructor(clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
+  constructor (clientId, callbackUrl = '', scopes = ['*'], useState = false, windowOptions = process.env.WINDOW_OPTIONS) {
     super(clientId, callbackUrl, scopes, useState);
 
     this.windowOptions = windowOptions;
-    this._storage = StorageManager.best;
 
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       throw new Error('We\'re a flow popup');
@@ -66,15 +63,14 @@ export default class ImplicitFlowPopup extends ImplicitFlow {
    * @returns {String} - window.name of the created pop-up
    * @constant
    */
-  static get popupWindowName() {
+  static get popupWindowName () {
     return 'm4n_api_auth';
   }
 
   /**
-   * Authenticate
-   * @returns {Promise} - Promise resolves with {@link OAuthToken} and rejects with {@link OAuthError}
+   * @inheritDoc
    */
-  authenticate() {
+  authenticate () {
     if (window.name === ImplicitFlowPopup.popupWindowName) {
       return new Promise(() => {
       });

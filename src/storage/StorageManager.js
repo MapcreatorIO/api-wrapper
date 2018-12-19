@@ -44,7 +44,7 @@ export default class StorageManager extends StaticClass {
    * Available storage drivers
    * @returns {Array.<function>} - Available storage drivers
    */
-  static get available() {
+  static get available () {
     return [
       DummyDriver,
       LocalStorageDriver,
@@ -57,7 +57,7 @@ export default class StorageManager extends StaticClass {
    * Get LocalStorageDriver instance
    * @returns {LocalStorageDriver} - instance
    */
-  static get localStorage() {
+  static get localStorage () {
     return new LocalStorageDriver();
   }
 
@@ -65,7 +65,7 @@ export default class StorageManager extends StaticClass {
    * Get CookiesDriver instance
    * @returns {CookiesDriver} - instance
    */
-  static get cookies() {
+  static get cookies () {
     return new CookiesDriver();
   }
 
@@ -73,7 +73,7 @@ export default class StorageManager extends StaticClass {
    * Get FileDriver instance
    * @returns {FileDriver} - instance
    */
-  static get file() {
+  static get file () {
     return new FileDriver();
   }
 
@@ -81,7 +81,7 @@ export default class StorageManager extends StaticClass {
    * Get DummyDriver instance
    * @returns {DummyDriver} - instance
    */
-  static get dummy() {
+  static get dummy () {
     return new DummyDriver();
   }
 
@@ -89,7 +89,7 @@ export default class StorageManager extends StaticClass {
    * Returns the best available storage driver. For a secure driver use {@link StorageManager#secure}
    * @returns {DataStoreContract} - Best available storage driver
    */
-  static get best() {
+  static get best () {
     return new this.available[0]();
   }
 
@@ -97,7 +97,7 @@ export default class StorageManager extends StaticClass {
    * Returns the a secure storage driver
    * @returns {DataStoreContract} - Secure storage driver
    */
-  static get secure() {
+  static get secure () {
     const C = this.available.filter(x => x.secure)[0];
 
     if (typeof C === 'undefined') {

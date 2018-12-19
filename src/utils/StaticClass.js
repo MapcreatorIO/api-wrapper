@@ -37,7 +37,7 @@ import StaticClassError from '../errors/StaticClassError';
  * @protected
  */
 export default class StaticClass {
-  constructor() {
+  constructor () {
     throw new StaticClassError();
   }
 }

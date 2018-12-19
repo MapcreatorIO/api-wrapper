@@ -30,45 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import fetchPonyfill from 'fetch-ponyfill';
+import axios from 'axios';
 import ApiError from '../errors/ApiError';
-import {windowTest} from './helpers';
-import {isNode} from './node';
+import ValidationError from '../errors/ValidationError';
+import { windowTest } from './node';
 
-/**
- * @private
- */
-export const {fetch, Request, Response, Headers} = windowTest('fetch') ? window : fetchPonyfill({Promise});
-
-function getFormData() {
+function getFormData () {
   if (windowTest('FormData')) {
     return window.FormData;
-  } else if (!isNode()) {
-    return require('formdata-polyfill');
   }
 
-  // @todo find nodejs polyfill
-  return null;
+  return require('form-data');
 }
 
 /**
  * @private
  */
 export const FormData = getFormData();
-
-/**
- * Encodes an object to a http query string with support for recursion
- * @param {object<string, *>} paramsObject - data to be encoded
- * @returns {string} - encoded http query string
- *
- * @private
- */
-export function encodeQueryString(paramsObject) {
-  const query = _encodeQueryString(paramsObject);
-
-  // Removes any extra unused &'s.
-  return query.replace(/^&*|&+(?=&)|&*$/g, '');
-}
 
 /**
  * Encodes an object to a http query string with support for recursion
@@ -79,7 +57,7 @@ export function encodeQueryString(paramsObject) {
  * @see http://stackoverflow.com/a/39828481
  * @private
  */
-function _encodeQueryString(paramsObject, _basePrefix = []) {
+function _encodeQueryString (paramsObject, _basePrefix = []) {
   return Object
     .keys(paramsObject)
     .sort()
@@ -102,7 +80,7 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
       const value = paramsObject[key];
 
       if (value !== null && typeof value !== 'undefined') {
-        out += '=' + encodeURIComponent(value); // value
+        out += `=${encodeURIComponent(value)}`; // value
       }
 
       return out;
@@ -110,43 +88,105 @@ function _encodeQueryString(paramsObject, _basePrefix = []) {
 }
 
 /**
- * @param {string} url - Target url
- * @param {object<string, string>} headers - Request headers
- * @returns {PromiseLike<{filename: string, blob: string}>} - filename and blob
+ * Encodes an object to a http query string with support for recursion
+ * @param {object<string, *>} paramsObject - data to be encoded
+ * @returns {string} - encoded http query string
+ *
  * @private
  */
-export function downloadFile(url, headers = {}) {
-  headers['X-No-CDN-Redirect'] = 'true';
+export function encodeQueryString (paramsObject) {
+  const query = _encodeQueryString(paramsObject);
 
-  const out = {};
+  // Removes any extra unused &'s.
+  return query.replace(/^&*|&+(?=&)|&*$/g, '');
+}
 
-  return fetch(url, {headers})
-    .then(res => {
-      if (res.ok) {
-        const disposition = res.headers.get('Content-Disposition');
+/**
+ * Retry request that respond with a 429 error at a later time
+ * @private
+ * @param {*} error - Axios error
+ * @returns {Promise|*} - error or retried request
+ */
+export function retry429ResponseInterceptor (error) {
+  const { response, config } = error;
 
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-          const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+  if (!config || !response || response.status !== 429) {
+    return Promise.reject(error);
+  }
 
-          if (matches != null && matches[1]) {
-            out.filename = matches[1].replace(/['"]/g, '');
-          }
-        } else {
-          out.filename = 'Unknown Filename.zip';
-        }
+  const delay = response.headers['x-ratelimit-reset'] * 1000 || 500;
 
-        return res.blob();
-      }
+  config.transformRequest = [data => data];
 
-      return res.json().then(data => {
-        const err = data.error;
+  return new Promise(resolve => setTimeout(() => resolve(axios.request(config)), delay));
+}
 
-        throw new ApiError(err.type, err.message, res.status, err.trace);
-      });
-    })
-    .then(blob => {
-      out.blob = (window.URL || window.webkitURL).createObjectURL(blob);
+/**
+ * Transform Axios errors into ApiErrors
+ * @private
+ * @param {*} error - Axios error
+ * @returns {Promise<ApiError|ValidationError|*>} - Resolved error
+ */
+export function transformAxiosErrors (error) {
+  if (!error || !error.response || !error.response.data) {
+    return Promise.reject(error);
+  }
 
-      return out;
-    });
+  const data = error.response.data;
+
+  if (typeof data !== 'object' || data.success !== false) {
+    return Promise.reject(error);
+  }
+
+  if (data.error['validation_errors']) {
+    return Promise.reject(new ValidationError(error));
+  }
+
+  return Promise.reject(new ApiError(error));
+
+  // if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
+  //   this.logger.warn('Lost Maps4News session, please re-authenticate');
+  //
+  //   if (this.autoLogout) {
+  //     this.logout();
+  //   }
+  // }
+}
+
+/**
+ * Handle http 300 redirects manually, strip Authorization header for cross domain requests
+ * @param {*} error - Axios error
+ * @returns {Promise<*>} - Axios request or original error
+ * @private
+ */
+export function custom3xxHandler (error) {
+  const { response, config } = error;
+
+  // Do nothing with non-3xx responses
+  if (response.status < 300 || response.status >= 400) {
+    return Promise.reject(error);
+  }
+
+  let redirectUrl = response.headers.location;
+
+  // Absolute urls on the same domain
+  if (redirectUrl.startsWith('/')) {
+    const regex = /^(\w+:\/\/[^/]+)/;
+
+    redirectUrl = config.baseURL.match(regex)[1] + redirectUrl;
+  }
+
+  // Drop authorization header
+  if (!redirectUrl.startsWith(config.baseUrl)) {
+    config.transformRequest = [(data, headers) => {
+      delete headers.common.Authorization;
+      delete headers.Authorization;
+
+      return data;
+    }, ...Object.values(config.transformRequest)];
+  }
+
+  config.url = redirectUrl;
+
+  return axios.request(config);
 }

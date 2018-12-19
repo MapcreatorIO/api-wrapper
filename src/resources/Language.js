@@ -33,19 +33,19 @@
 import CrudBase from './base/CrudBase';
 
 export default class Language extends CrudBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'languages';
   }
 
-  get resourcePath() {
+  static get resourcePath () {
     return `/${this.constructor.resourceName}/{code}`;
   }
 
-  toString() {
+  toString () {
     return `${this.constructor.name}(${this.code})`;
   }
 
-  static get resourceUrlKey() {
+  static get resourceUrlKey () {
     return 'code';
   }
 }

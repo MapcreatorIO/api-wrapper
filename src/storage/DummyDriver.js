@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isNode} from '../utils/node';
+import { isNode } from '../utils/node';
 import DataStoreContract from './DataStoreContract';
 
 /**
@@ -43,7 +43,7 @@ export default class DummyDriver extends DataStoreContract {
   /**
    * @inheritDoc
    */
-  static get available() {
+  static get available () {
     return isNode() && process.env.NODE_ENV === 'test';
   }
 
@@ -51,7 +51,7 @@ export default class DummyDriver extends DataStoreContract {
    * If the storage is secure
    * @returns {boolean} - Secure storage
    */
-  static get secure() {
+  static get secure () {
     return true;
   }
 
@@ -59,9 +59,8 @@ export default class DummyDriver extends DataStoreContract {
    * Store a value in the storage
    * @param {String} name - value name
    * @param {*} value - value
-   * @returns {void}
    */
-  set(name, value) {
+  set (name, value) {
     this.constructor._data[name] = value;
   }
 
@@ -70,16 +69,15 @@ export default class DummyDriver extends DataStoreContract {
    * @param {String} name - value name
    * @returns {*} - value
    */
-  get(name) {
+  get (name) {
     return this.constructor._data[name];
   }
 
   /**
    * Remove a value from the store
    * @param {String} name - value name
-   * @returns {void}
    */
-  remove(name) {
+  remove (name) {
     delete this.constructor._data[name];
   }
 
@@ -87,7 +85,7 @@ export default class DummyDriver extends DataStoreContract {
    * Storage keys
    * @returns {Array<String>} - Stored keys
    */
-  keys() {
+  keys () {
     return Object.keys(this.constructor._data);
   }
 }

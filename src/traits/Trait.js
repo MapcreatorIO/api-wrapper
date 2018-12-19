@@ -38,7 +38,6 @@
 export default class Trait {
   /**
    * Optional initialization method
-   * @returns {void}
    */
-  initializer() { }
+  initializer () { }
 }

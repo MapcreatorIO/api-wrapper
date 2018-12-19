@@ -32,7 +32,7 @@
 
 import CrudBase from './base/CrudBase';
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 
 
 /**
@@ -41,7 +41,7 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class Feature extends mix(CrudBase, OwnableResource) {
-  static get resourceName() {
+  static get resourceName () {
     return 'features';
   }
 }

@@ -36,7 +36,7 @@ import CrudBase from './base/CrudBase';
  * Faq resource
  */
 export default class Faq extends CrudBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'faqs';
   }
 }

@@ -30,15 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {camel as camelCase, snake as snakeCase} from 'case';
-import {AbstractClassError, AbstractError} from '../../errors/AbstractError';
+import { camel as camelCase, snake as snakeCase } from 'case';
+import { AbstractClassError, AbstractError } from '../../errors/AbstractError';
 import Maps4News from '../../Maps4News';
 import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
 import Injectable from '../../traits/Injectable';
-import {fnv32b} from '../../utils/hash';
-import {isParentOf, mix} from '../../utils/reflection';
+import { fnv32b } from '../../utils/hash';
+import { isParentOf, mix } from '../../utils/reflection';
 
-function unique(input) {
+function unique (input) {
   return input.filter((v, i) => input.findIndex(vv => vv === v) === i);
 }
 
@@ -51,7 +51,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @param {Maps4News} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
-  constructor(api, data = {}) {
+  constructor (api, data = {}) {
     super();
 
     if (this.constructor === ResourceBase) {
@@ -61,7 +61,7 @@ export default class ResourceBase extends mix(null, Injectable) {
     this.api = api;
 
     // De-reference
-    data = Object.assign({}, data);
+    data = { ...data };
 
     // Normalize keys to snake_case
     // Fix data types
@@ -92,9 +92,7 @@ export default class ResourceBase extends mix(null, Injectable) {
         enumerable: true,
         configurable: true,
 
-        get: () => {
-          return Boolean(this.deletedAt);
-        },
+        get: () => Boolean(this.deletedAt),
       });
     }
 
@@ -110,7 +108,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -118,7 +116,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Set the api instance
    * @param {Maps4News} value - Api instance
    */
-  set api(value) {
+  set api (value) {
     if (!isParentOf(Maps4News, value)) {
       throw new TypeError('Expected api to be of type Maps4News or null');
     }
@@ -129,10 +127,9 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Resource path template
    * @returns {String} - Path template
-   * @todo move to constructor
    */
-  get resourcePath() {
-    return `/${this.constructor.resourceName}/{id}`;
+  static get resourcePath () {
+    return `/${this.resourceName}/{id}`;
   }
 
   /**
@@ -140,7 +137,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @returns {String} - Resource name
    * @abstract
    */
-  static get resourceName() {
+  static get resourceName () {
     throw new AbstractError();
   }
 
@@ -148,7 +145,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Returns the url key of the resource
    * @returns {String} - Resource key
    */
-  static get resourceUrlKey() {
+  static get resourceUrlKey () {
     return 'id';
   }
 
@@ -157,7 +154,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @returns {Array<string>} - Array containing protected read-only fields
    * @protected
    */
-  static get protectedFields() {
+  static get protectedFields () {
     return ['id', 'created_at', 'updated_at', 'deleted_at'];
   }
 
@@ -165,16 +162,15 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Returns if the resource is readonly
    * @returns {boolean} - readonly
    */
-  static get readonly() {
+  static get readonly () {
     return false;
   }
 
   /**
    * Moves new fields to this._properties and turns them into a getter/setter
-   * @returns {void}
    * @protected
    */
-  _updateProperties() {
+  _updateProperties () {
     // Build a list of new fields
     let fields = Object.keys(this)
       .filter(x => x[0] !== '_')
@@ -208,9 +204,8 @@ export default class ResourceBase extends mix(null, Injectable) {
    * This means that any changed fields will be marked
    * as unchanged whilst  keeping their new values. The
    * changes will not be saved.
-   * @returns {void}
    */
-  sanitize() {
+  sanitize () {
     this._updateProperties();
     Object.assign(this._baseProperties, this._properties);
     this._properties = {};
@@ -219,9 +214,8 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Resets model instance to it's original state
    * @param {Array<string>|string|null} [fields=null] - Fields to reset, defaults to all fields
-   * @returns {void}
    */
-  reset(fields = null) {
+  reset (fields = null) {
     this._updateProperties();
 
     if (typeof fields === 'string') {
@@ -240,7 +234,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Clone the object
    * @returns {ResourceBase} - Exact clone of the object
    */
-  clone() {
+  clone () {
     this._updateProperties();
 
     const out = new this.constructor(this.api, this._baseProperties);
@@ -255,10 +249,11 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
-   * @returns {Promise} - Resolves with {@link ResourceBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<ResourceBase>} - Refreshed instance
+   * @throws {ApiError}
    */
-  async refresh(updateSelf = true) {
-    const data = await this._api.request(this.url);
+  async refresh (updateSelf = true) {
+    const { data: { data } } = await this.api.axios.get(this.url);
 
     if (updateSelf) {
       this._properties = {};
@@ -273,10 +268,9 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Create proxy for property
    * @param {string} key - property key
-   * @returns {void}
    * @private
    */
-  _applyProperty(key) {
+  _applyProperty (key) {
     const desc = {
       enumerable: true,
       configurable: true,
@@ -291,7 +285,7 @@ export default class ResourceBase extends mix(null, Injectable) {
     };
 
     if (!this.constructor.protectedFields.includes(key) && !this.constructor.readonly) {
-      desc.set = (val) => {
+      desc.set = val => {
         this._properties[key] = ResourceBase._guessType(key, val);
         delete this._url; // Clears url cache
       };
@@ -309,7 +303,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @private
    * @returns {*} - Original or converted value
    */
-  static _guessType(name, value) {
+  static _guessType (name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
     const match = regexp.exec(name);
     const idMacros = ['last', 'me', 'mine'];
@@ -339,7 +333,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * If the resource can be owned by an organisation
    * @returns {boolean} - Can be owned by an organisation
    */
-  get ownable() {
+  get ownable () {
     return false;
   }
 
@@ -347,9 +341,9 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Auto generated resource url
    * @returns {string} - Resource url
    */
-  get url() {
+  get url () {
     if (!this._url) {
-      let url = `${this._api.host}/${this._api.version}${this.resourcePath}`;
+      let url = `${this._api.host}/${this._api.version}${this.constructor.resourcePath}`;
 
       // Find and replace any keys
       url = url.replace(/{(\w+)}/g, (match, key) => this[camelCase(key)]);
@@ -364,8 +358,8 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Auto generated Resource base url
    * @returns {string} - Resource base url
    */
-  get baseUrl() {
-    const basePath = this.resourcePath.match(/^(\/[^{]+\b)/)[1];
+  get baseUrl () {
+    const basePath = this.constructor.resourcePath.match(/^(\/[^{]+\b)/)[1];
 
     return `${this._api.host}/${this._api.version}${basePath}`;
   }
@@ -374,7 +368,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * List fields that contain object data
    * @returns {Array<String>} - A list of fields
    */
-  get fieldNames() {
+  get fieldNames () {
     const keys = unique([
       ...Object.keys(this._baseProperties),
       ...Object.keys(this._properties),
@@ -387,7 +381,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * String representation of the resource, similar to Python's __repr__
    * @returns {string} - Resource name and id
    */
-  toString() {
+  toString () {
     return `${this.constructor.name}(${this[this.resourceUrlKey]})`;
   }
 
@@ -396,10 +390,10 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @param {boolean} [camelCaseKeys=false] - camelCase object keys
    * @returns {{}} - object
    */
-  toObject(camelCaseKeys = false) {
+  toObject (camelCaseKeys = false) {
     this._updateProperties();
 
-    const out = Object.assign({}, this._baseProperties, this._properties);
+    const out = { ...this._baseProperties, ...this._properties };
 
     if (camelCaseKeys) {
       for (const key of Object.keys(out)) {
@@ -424,13 +418,13 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    * @protected
    */
-  _proxyResourceList(Target, url = null, seedData = {}) {
+  _proxyResourceList (Target, url = null, seedData = {}) {
     if (!url) {
-      url = Target.resourceName.replace(/s+$/, '') + 's';
+      url = `${Target.resourceName.replace(/s+$/, '')}s`;
     }
 
     if (typeof url === 'string' && !url.startsWith('/') && !url.match(/https?:/)) {
-      url = this.url + '/' + url;
+      url = `${this.url}/${url}`;
     }
 
     return new SimpleResourceProxy(this.api, Target, url, seedData);
@@ -456,25 +450,26 @@ export default class ResourceBase extends mix(null, Injectable) {
    *   .get(1)
    *   .then(console.log);
    */
-  static(Target, Constructor = ResourceBase, seedData = {}) {
+  static (Target, Constructor = ResourceBase, seedData = {}) {
     let url;
 
     if (typeof Target === 'string') {
-      url = this.url + '/' + Target;
+      url = `${this.url}/${Target}`;
+
       const name = Constructor.name || 'AnonymousResource';
 
       Target = class AnonymousResource extends Constructor {
-        static get resourceName() {
+        static get resourceName () {
           return Object.getPrototypeOf(this).resourceName || 'anonymous';
         }
 
-        get resourcePath() {
+        static get resourcePath () {
           return url;
         }
       };
 
       Object.defineProperty(Target, 'name', {
-        value: name + '_' + fnv32b(url),
+        value: `${name}_${fnv32b(url)}`,
       });
     }
 

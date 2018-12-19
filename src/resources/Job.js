@@ -31,7 +31,7 @@
  */
 
 import ResourceProxy from '../proxy/ResourceProxy';
-import {downloadFile} from '../utils/requests';
+import DownloadedResource from './base/DownloadedResource';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobRevision from './JobRevision';
@@ -41,7 +41,7 @@ export default class Job extends CrudBase {
    * Get the list of associated job results
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get results() {
+  get results () {
     return this._proxyResourceList(JobResult, `${this.url}/results`);
   }
 
@@ -49,7 +49,7 @@ export default class Job extends CrudBase {
    * Get the list job revisions
    * @returns {ResourceProxy} - A proxy for accessing the resource
    */
-  get revisions() {
+  get revisions () {
     const data = {
       jobId: this.id,
     };
@@ -62,7 +62,7 @@ export default class Job extends CrudBase {
    * @returns {String} - Resource name
    * @abstract
    */
-  static get resourceName() {
+  static get resourceName () {
     return 'jobs';
   }
 
@@ -70,9 +70,17 @@ export default class Job extends CrudBase {
    * Get the most up to date preview url
    * @returns {string} - Last preview url
    * @deprecated
-   * @see Job#previewUrl
+   * @throws {Job#previewUrl}
    */
-  get lastPreviewUrl() {
+  get lastPreviewUrl () {
+    return `${this.url}/revisions/last/result/archive`;
+  }
+
+  /**
+   * Get the most up to date preview url
+   * @returns {string} - Preview url
+   */
+  get previewUrl () {
     return `${this.url}/preview`;
   }
 
@@ -80,43 +88,42 @@ export default class Job extends CrudBase {
    * Get the most up to date archive url
    * @returns {string} - Last archive url
    */
-  get lastArchiveUrl() {
-    return `${this.url}/revisions/last/result/archive`;
+  get lastArchiveUrl () {
+    return `${this.url}/output`;
   }
 
   /**
-   * Get image blob url representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the job preview
+   * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  downloadPreview() {
-    return downloadFile(`${this.url}/preview`, this._getDownloadHeaders()).then(data => data.blob);
+  async downloadPreview () {
+    const response = await this.api.axios.get(this.previewUrl, {
+      responseType: 'arraybuffer',
+    });
+
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
    * Get archive blob url
-   * @returns {PromiseLike<{filename: string, blob: string}>} - Resolves with a blob reference and it's filename and rejects with {@link ApiError}
+   * @returns {Promise<DownloadedResource>} - Job result output
    */
-  downloadOutput() {
-    return downloadFile(`${this.url}/output`, this._getDownloadHeaders());
+  async downloadOutput () {
+    const response = await this.api.axios.get(this.lastArchiveUrl, {
+      responseType: 'arraybuffer',
+    });
+
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
    * Get the remote output url
-   * @returns {Promise} -  Resolves with a {@link String} containing the url to the output and rejects with {@link ApiError}
+   * @returns {Promise<string>} - The url to the output
+   * @throws {ApiError}
    */
-  getOutputUrl() {
-    return this.api.request(`${this.url}/output-url`).then(x => x.url);
-  }
+  async getOutputUrl () {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/output-url`);
 
-  /**
-   * Get headers for downloading resources
-   * @returns {{Accept: string, Authorization: string}} - Request headers
-   * @private
-   */
-  _getDownloadHeaders() {
-    return {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
+    return data.url;
   }
 }

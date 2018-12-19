@@ -33,7 +33,7 @@
 import CrudSetBase from './base/CrudSetBase';
 import Dimension from './Dimension';
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 
 
 /**
@@ -42,15 +42,15 @@ import {mix} from '../utils/reflection';
  * @mixes OwnableResource
  */
 export default class DimensionSet extends mix(CrudSetBase, OwnableResource) {
-  get resourcePath() {
+  static get resourcePath () {
     return '/dimensions/sets/{id}';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'dimension-sets';
   }
 
-  get _Child() {
+  get _Child () {
     return Dimension;
   }
 }

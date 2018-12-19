@@ -30,45 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {downloadFile, fetch} from '../utils/requests';
+import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 
 /**
  * Choropleth resource
  */
 export default class Choropleth extends ResourceBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'choropleths';
   }
 
   /**
-   * Get the choropleth json
+   * Get the inset ma[ json
    * @returns {Promise<Object>} - choropleth json
    */
-  getJson() {
-    return fetch(this.url + '/json', {
-      headers: this._getDownloadHeaders(),
-    }).then(x => x.json());
+  async getJson () {
+    const { data } = await this.api.axios.get(`${this.url}/json`);
+
+    return data;
   }
 
   /**
-   * Get image blob url representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the choropleth preview
+   * @returns {Promise<DownloadedResource>} - choropleth preview
    */
-  downloadPreview() {
-    return downloadFile(`${this.url}/preview`, this._getDownloadHeaders()).then(data => data.blob);
-  }
+  async downloadPreview () {
+    const response = await this.api.axios.get(`${this.url}/preview`, {
+      responseType: 'arraybuffer',
+    });
 
-  /**
-   * Get headers for downloading resources
-   * @returns {{Accept: string, Authorization: string}} - Request headers
-   * @private
-   */
-  _getDownloadHeaders() {
-    return {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-      'X-No-CDN-Redirect': 'true',
-    };
+    return DownloadedResource.fromAxiosResponse(response);
   }
 }

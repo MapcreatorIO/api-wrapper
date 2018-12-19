@@ -49,7 +49,7 @@ import User from './User';
 
 
 export default class Organisation extends CrudBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'organisations';
   }
 
@@ -58,7 +58,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for font families linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get fontFamilies() {
+  get fontFamilies () {
     return new OwnedResourceProxy(this.api, this, FontFamily);
   }
 
@@ -66,7 +66,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for dimension sets linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get dimensionSets() {
+  get dimensionSets () {
     return new OwnedResourceProxy(this.api, this, DimensionSet);
   }
 
@@ -74,7 +74,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for mapstyle sets linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get mapstyleSets() {
+  get mapstyleSets () {
     return new OwnedResourceProxy(this.api, this, MapstyleSet);
   }
 
@@ -82,7 +82,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for svg sets linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get svgSets() {
+  get svgSets () {
     return new OwnedResourceProxy(this.api, this, SvgSet);
   }
 
@@ -90,7 +90,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for colors linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get colors() {
+  get colors () {
     return new OwnedResourceProxy(this.api, this, Color);
   }
 
@@ -98,7 +98,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for tags linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get tags() {
+  get tags () {
     return new OwnedResourceProxy(this.api, this, Tag);
   }
 
@@ -106,7 +106,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for features linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get features() {
+  get features () {
     return new OwnedResourceProxy(this.api, this, Feature);
   }
 
@@ -114,7 +114,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for layers linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get layers() {
+  get layers () {
     return new OwnedResourceProxy(this.api, this, Layer);
   }
 
@@ -122,7 +122,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for jobs linked to the organisation, also known as company maps
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get jobs() {
+  get jobs () {
     return this._proxyBuilder(Job);
   }
 
@@ -130,7 +130,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for job types linked to the organisation
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get jobTypes() {
+  get jobTypes () {
     return new OwnedResourceProxy(this.api, this, JobType);
   }
 
@@ -138,7 +138,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for job shares linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get jobShares() {
+  get jobShares () {
     return this._proxyResourceList(JobShare);
   }
 
@@ -146,7 +146,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for users linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get users() {
+  get users () {
     return this._proxyResourceList(User);
   }
 
@@ -154,7 +154,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for contracts linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get contracts() {
+  get contracts () {
     return this._proxyResourceList(Contract);
   }
 
@@ -162,7 +162,7 @@ export default class Organisation extends CrudBase {
    * Get a proxy for contracts linked to the organisation
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get domains() {
+  get domains () {
     return this._proxyResourceList(Domain);
   }
 
@@ -180,13 +180,13 @@ export default class Organisation extends CrudBase {
    *
    * organisation.getTree().then(printTree)
    */
-  async getTree() {
-    const data = await this._api.request(this.url + '/tree');
+  async getTree () {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/tree`);
 
     return data.map(root => this._parseTree(root));
   }
 
-  _parseTree(rawNode) {
+  _parseTree (rawNode) {
     const node = new this.constructor(this._api, rawNode);
 
     node.children = node.children.map(child => this._parseTree(child));

@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * BSD 3-Clause License
  *
  * Copyright (c) 2018, MapCreator
@@ -31,29 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Uuid4 generator
-function guidv4($data = null)
-{
-  if (!$data) {
-    $data = random_bytes(16);
-  }
+import Enum from './Enum';
 
-  assert(strlen($data) == 16);
-
-  $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
-  $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-
-  return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-}
-
-// Random string generator
-function generateRandomString($length = 10)
-{
-  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  $charactersLength = strlen($characters);
-  $randomString = '';
-  for ($i = 0; $i < $length; $i++) {
-    $randomString .= $characters[rand(0, $charactersLength - 1)];
-  }
-  return $randomString;
-}
+/**
+ * Enum containing the possible different visibilities for a {@link JobShare}
+ * @enum {string}
+ * @property {string} PRIVATE - A link is required to import the shared job
+ * @property {string} ORGANISATION - The job is shared across the organisation
+ * @readonly
+ */
+export const JobShareVisibility = new Enum(['private', 'organisation'], true);

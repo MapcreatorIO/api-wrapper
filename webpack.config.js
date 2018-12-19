@@ -15,6 +15,7 @@ if (!fs.existsSync('.env')) {
   console.log('Copied .env.example => .env');
 }
 
+const licenseBanner = new webpack.BannerPlugin(license + '\nhash:[hash], chunkhash:[chunkhash], name:[name], version:' + version);
 
 const common = {
   mode: 'none',
@@ -57,10 +58,7 @@ const common = {
 
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(version),
-      LICENSE: JSON.stringify(license),
     }),
-
-    new webpack.BannerPlugin(license + '\nhash:[hash], chunkhash:[chunkhash], name:[name], version:' + version),
   ],
 };
 
@@ -78,6 +76,8 @@ module.exports = [
     },
     plugins: [
       new webpack.BannerPlugin('This bundle contains the following packages:\n' + exec('$(npm bin)/licensecheck')),
+
+      licenseBanner,
     ],
   }),
 
@@ -92,5 +92,8 @@ module.exports = [
       'bundle': './src/index.js',
       'bundle.min': './src/index.js',
     },
+    plugins: [
+      licenseBanner,
+    ],
   }),
 ];

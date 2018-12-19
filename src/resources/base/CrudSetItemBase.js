@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractClassError} from '../../errors/AbstractError';
+import { AbstractClassError } from '../../errors/AbstractError';
 import CrudBase from './CrudBase';
 
 /**
@@ -42,7 +42,7 @@ export default class CrudSetItemBase extends CrudBase {
    * @param {Maps4News} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
-  constructor(api, data = {}) {
+  constructor (api, data = {}) {
     super(api, data);
 
     if (this.constructor === CrudBase) {
@@ -54,7 +54,7 @@ export default class CrudSetItemBase extends CrudBase {
    * Get the parent id
    * @returns {?number|undefined} - Parent number
    */
-  get parentId() {
+  get parentId () {
     if (this.hasParent) {
       return Number(this[this.constructor.parentKey]);
     }
@@ -66,7 +66,7 @@ export default class CrudSetItemBase extends CrudBase {
    * Get the parent key
    * @returns {string} - Parent key
    */
-  static get parentKey() {
+  static get parentKey () {
     return this.resourceName.replace(/s$/, '_set_id');
   }
 }

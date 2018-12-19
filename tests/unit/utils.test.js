@@ -30,6 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import moxios from 'moxios';
+import Maps4News from '../../src/Maps4News';
 import Trait from '../../src/traits/Trait';
 import {fnv32b, hashObject} from '../../src/utils/hash';
 import {isNode} from '../../src/utils/node';
@@ -187,4 +189,70 @@ test('Mixing can only be done with Traits', () => {
 test('getTypeName correctly gets the type name', () => {
   expect(getTypeName(Date)).toEqual('Date');
   expect(getTypeName(new Date())).toEqual('Date');
+});
+
+test('axios transforms errors', async () => {
+  const api = new Maps4News('');
+
+  const response = {
+    success: false,
+    error: {
+      type: 'ModelNotFoundException',
+      message: 'No query results for model [App\\Models\\Database\\User] 123',
+    },
+  };
+
+  moxios.wait(() => {
+    const request = moxios.requests.mostRecent();
+
+    request.respondWith({
+      status: 404, response,
+    });
+  });
+
+  expect.assertions(2);
+
+  try {
+    await api.users.get(123);
+  } catch (err) {
+    expect(err.type).toEqual(response.error.type);
+    expect(err.message).toEqual(response.error.message);
+  }
+});
+
+test('axios transforms validation errors', async () => {
+  const api = new Maps4News('');
+
+  const response = {
+    success: false,
+    error: {
+      type: 'ValidationException',
+      message: 'The given data was invalid.',
+      'validation_errors': {
+        name: ['The name field is required.'],
+      },
+    },
+  };
+
+  moxios.wait(() => {
+    const request = moxios.requests.mostRecent();
+
+    request.respondWith({
+      status: 422, response,
+    });
+  });
+
+  expect.assertions(3);
+
+  try {
+    await api.users.new({}).save();
+  } catch (err) {
+    expect(err.type).toEqual(response.error.type);
+    expect(err.message).toEqual(response.error.message);
+    expect(err.messages).toEqual(response.error['validation_errors'].name);
+  }
+});
+
+xtest('axios retries http 429 response', async () => {
+  // @todo
 });

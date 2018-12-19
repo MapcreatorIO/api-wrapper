@@ -50,35 +50,37 @@ import Role from './Role';
 import SvgSet from './SvgSet';
 
 export default class User extends CrudBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'users';
   }
 
   /**
    * Get all known ips
-   * @returns {Promise} - Resolves with {@link array<string>} instance and rejects with {@link ApiError}
+   * @returns {Promise<string[]>} - List of ip addresses
+   * @throws {ApiError}
    */
-  ips() {
+  async ips () {
     const url = `${this.url}/ips`;
+    const { data: { data } } = await this.api.axios.get(url);
 
-    return this.api
-      .request(url)
-      .then(data => data.map(row => row['ip_address']));
+    return data.map(row => row['ip_address']);
   }
 
   /**
    * Get the user's organisation
-   * @returns {Promise} - Resolves with {@link Organisation} instance and rejects with {@link ApiError}
+   * @returns {Promise<Organisation>} - user's organisation
+   * @throws {ApiError}
    */
-  organisation() {
+  organisation () {
     return (new ResourceProxy(this.api, Organisation)).get(this.organisationId);
   }
 
   /**
    * Get the user's language
-   * @returns {Promise} - Resolves with {@link Language} instance and rejects with {@link ApiError}
+   * @returns {Promise<Language>} - user's language
+   * @throws {ApiError}
    */
-  language() {
+  language () {
     return (new ResourceProxy(this.api, Language)).get(this.languageCode);
   }
 
@@ -87,7 +89,7 @@ export default class User extends CrudBase {
    * Get the list notifications linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get notifications() {
+  get notifications () {
     return this._proxyResourceList(Notification);
   }
 
@@ -95,7 +97,7 @@ export default class User extends CrudBase {
    * Get the list mapstyle sets linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get mapstyleSets() {
+  get mapstyleSets () {
     return this._proxyResourceList(MapstyleSet);
   }
 
@@ -103,7 +105,7 @@ export default class User extends CrudBase {
    * Get the list dimension sets linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get dimensionSets() {
+  get dimensionSets () {
     return this._proxyResourceList(DimensionSet);
   }
 
@@ -111,7 +113,7 @@ export default class User extends CrudBase {
    * Get the list font families linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get fontFamilies() {
+  get fontFamilies () {
     return this._proxyResourceList(FontFamily);
   }
 
@@ -119,7 +121,7 @@ export default class User extends CrudBase {
    * Get the list svg sets linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get svgSets() {
+  get svgSets () {
     return this._proxyResourceList(SvgSet);
   }
 
@@ -127,7 +129,7 @@ export default class User extends CrudBase {
    * Get the list colors linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get colors() {
+  get colors () {
     return this._proxyResourceList(Color);
   }
 
@@ -135,7 +137,7 @@ export default class User extends CrudBase {
    * Get the list jobs linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get jobs() {
+  get jobs () {
     return this._proxyResourceList(Job);
   }
 
@@ -143,7 +145,7 @@ export default class User extends CrudBase {
    * Get the list features linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get features() {
+  get features () {
     return this._proxyResourceList(Feature);
   }
 
@@ -151,7 +153,7 @@ export default class User extends CrudBase {
    * Get the list layers linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get layers() {
+  get layers () {
     return this._proxyResourceList(Layer);
   }
 
@@ -159,7 +161,7 @@ export default class User extends CrudBase {
    * Get the list job types linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get jobTypes() {
+  get jobTypes () {
     return this._proxyResourceList(JobType);
   }
 
@@ -167,7 +169,7 @@ export default class User extends CrudBase {
    * Get the list job shares linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get jobShares() {
+  get jobShares () {
     return this._proxyResourceList(JobShare);
   }
 
@@ -175,7 +177,7 @@ export default class User extends CrudBase {
    * Get the list permissions linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get permissions() {
+  get permissions () {
     return this._proxyResourceList(Permission);
   }
 
@@ -183,7 +185,7 @@ export default class User extends CrudBase {
    * Get the list roles linked to the user
    * @returns {OwnedResourceProxy} - A proxy for accessing the resource
    */
-  get roles() {
+  get roles () {
     return new OwnedResourceProxy(this.api, this, Role);
   }
 

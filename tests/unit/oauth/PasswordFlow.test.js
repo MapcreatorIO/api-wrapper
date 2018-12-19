@@ -1,4 +1,3 @@
-<?php
 /*
  * BSD 3-Clause License
  *
@@ -31,24 +30,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'util.php';
+import moxios from 'moxios';
+import PasswordFlow from '../../../src/oauth/PasswordFlow';
 
-// Use fallback redirect url if none found to prevent redirect loop
-$redirect = isset($_GET['redirect_uri']) ? $_GET['redirect_uri'] : '/callback.html';
+test('PasswordFlow should auth', async () => {
+  const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
 
-if (@$_GET['error'] === 'mock') {
-  $redirect .= '#error=mock_error&message=This%20is%20a%20mock%20error';
-} else {
-  $redirect .= '#token_type=bearer&expires_in=86400&access_token=' . md5(time());
+  flow.path = '/oauth/passwordFlow.php';
+  expect(flow.path).toEqual('/oauth/passwordFlow.php');
 
-  if (isset($_GET['state'])) {
-    if ($_GET['error'] === 'state') {
-      $redirect .= '&state=' . guidv4();
-    } else {
-      $redirect .= '&state=' . $_GET['state'];
-    }
+  moxios.wait(() => {
+    const request = moxios.requests.mostRecent();
+
+    request.respondWith({
+      status: 200,
+      response: {
+        'token_type': 'bearer',
+        'expires_in': 86400,
+        'access_token': 'token',
+      },
+    });
+  });
+
+  const token = await flow.authenticate();
+
+  expect(token.expired).toEqual(false);
+});
+
+test('PasswordFlow should catch errors', async () => {
+  const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
+
+  flow.path = '/oauth/passwordFlow.php';
+
+  expect.assertions(1);
+
+  moxios.wait(() => {
+    const request = moxios.requests.mostRecent();
+
+    request.respondWith({
+      status: 200,
+      response: {
+        error: 'mock_error',
+        message: 'This is a mock error',
+      },
+    });
+  });
+
+  try {
+    await flow.authenticate();
+  } catch (err) {
+    expect(err.error).toEqual('mock_error');
   }
-}
-
-http_response_code(302);
-header("Location: $redirect");
+});

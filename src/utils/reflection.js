@@ -31,7 +31,7 @@
  */
 
 import Trait from '../traits/Trait';
-import {fnv32b} from './hash';
+import { fnv32b } from './hash';
 
 /**
  * Tests if the parent is a parent of child
@@ -49,8 +49,8 @@ import {fnv32b} from './hash';
  * isParentOf(C, C) // true
  * isParentOf(B, A) // false
  */
-export function isParentOf(parent, child) {
-  if (parent == null || child == null) {
+export function isParentOf (parent, child) {
+  if (parent === null || child === null) {
     return false;
   }
 
@@ -75,7 +75,7 @@ export function isParentOf(parent, child) {
  * @private
  * @returns {string} - Value type name
  */
-export function getTypeName(value) {
+export function getTypeName (value) {
   value = typeof value === 'function' ? value : value.constructor;
 
   return value.name;
@@ -84,9 +84,25 @@ export function getTypeName(value) {
 
 /**
  * Helper class for mix
- * @see mix
+ * @see {@link mix}
  */
 class Empty {}
+
+/**
+ * Copy properties from source to target
+ * @param {object} target - Object for the properties to be copied to
+ * @param {object} source - Object containing properties to be copied
+ */
+function copyProps (target, source) {
+  Object
+    .getOwnPropertyNames(source)
+    .concat(Object.getOwnPropertySymbols(source))
+    .forEach(prop => {
+      if (!prop.match(/^(?:constructor|initializer|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
+        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
+      }
+    });
+}
 
 /**
  * Mix traits into the target class
@@ -95,9 +111,9 @@ class Empty {}
  * @returns {Function} - Constructor with any traits applied
  * @private
  */
-export function mix(baseClass, ...mixins) {
+export function mix (baseClass, ...mixins) {
   const cocktail = class _Cocktail extends (baseClass || Empty) {
-    constructor(...args) {
+    constructor (...args) {
       super(...args);
 
       mixins
@@ -121,40 +137,24 @@ export function mix(baseClass, ...mixins) {
 
   const hash = fnv32b(mixins.map(x => x.name).join(','));
 
-  Object.defineProperty(cocktail, 'name', {value: `Cocktail_${hash}`});
+  Object.defineProperty(cocktail, 'name', { value: `Cocktail_${hash}` });
 
   return cocktail;
-}
-
-/**
- * Copy properties from target to source
- * @param {object} target - Object for the properties to be copied to
- * @param {object} source - Object containing properties to be copied
- * @returns {object} - Resulting object with properties from both parameters
- */
-function copyProps(target, source) {
-  Object
-    .getOwnPropertyNames(source)
-    .concat(Object.getOwnPropertySymbols(source))
-    .forEach((prop) => {
-      if (!prop.match(/^(?:constructor|initializer|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
-        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
-      }
-    });
 }
 
 /**
  * Checks if the target has a certain trait.
  *
  * @param {Function|Object} Subject - Instance or class
- * @param {Function} Trait - Trait to check for
+ * @param {Function} TraitClass - Trait to check for
  * @returns {boolean} - If the subject has the trait
+ * @private
  */
-export function hasTrait(Subject, Trait) {
+export function hasTrait (Subject, TraitClass) {
   Subject = typeof Subject === 'function' ? Subject : Subject.constructor;
 
   do {
-    if (Array.isArray(Subject.__mixins) && Subject.__mixins.includes(Trait)) {
+    if (Array.isArray(Subject.__mixins) && Subject.__mixins.includes(TraitClass)) {
       return true;
     }
 

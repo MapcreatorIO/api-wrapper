@@ -44,7 +44,7 @@ import ApiError from './ApiError';
  * @property {Object} constraint -
  * @property {Object<string, string>} constraint.params -
  * @property {string} constraint.name -
- * @see {@link https://github.com/justinrainbow/json-schema}
+ * @see https://github.com/justinrainbow/json-schema
  * @example
  * {
  *   property: "data.meta",
@@ -65,23 +65,25 @@ import ApiError from './ApiError';
  */
 export default class ValidationError extends ApiError {
   /**
-   * @param {String} type - Error type
-   * @param {String} message - Error message
-   * @param {Number} code - Http error code
-   * @param {Object<String, Array<String>>} validationErrors - Any validation errors
-   * @param {SchemaError[]} [schemaErrors=[]] - Optional schema errors
+   * @param {AxiosError} error - Axios error
+   * @param {AxiosRequestConfig} error.config - Request config
+   * @param {XMLHttpRequest|ClientRequest} request - Request
+   * @param {AxiosResponse} response - Response
    */
-  constructor(type, message, code, validationErrors, schemaErrors = []) {
-    super(type, message, code);
-    this._validationErrors = validationErrors;
-    this._schemaErrors = schemaErrors instanceof Array ? schemaErrors : [];
+  constructor ({ config, request, response }) {
+    super({ config, request, response });
+
+    const schemaErrors = response.data.error['schema_errors'];
+
+    this._validationErrors = response.data.error['validation_errors'];
+    this._schemaErrors = Array.isArray(schemaErrors) ? schemaErrors : [];
   }
 
   /**
    * Any validation errors
    * @returns {Object.<String, Array<String>>} - Object containing arrays of validation errors where the field is stored in the key
    */
-  get validationErrors() {
+  get validationErrors () {
     return this._validationErrors;
   }
 
@@ -130,7 +132,7 @@ export default class ValidationError extends ApiError {
    *   }
    * ]
    */
-  get schemaErrors() {
+  get schemaErrors () {
     return this._schemaErrors;
   }
 
@@ -138,7 +140,7 @@ export default class ValidationError extends ApiError {
    * True if the error contains schema errors
    * @return {boolean} - Has schema errors
    */
-  get hasSchemaErrors() {
+  get hasSchemaErrors () {
     return this.schemaErrors.length > 0;
   }
 
@@ -146,7 +148,7 @@ export default class ValidationError extends ApiError {
    * Get validation error messages
    * @returns {Array<String>} - All validation messages
    */
-  get messages() {
+  get messages () {
     const out = [];
 
     for (const key of Object.keys(this.validationErrors)) {
@@ -159,7 +161,7 @@ export default class ValidationError extends ApiError {
   /**
    * @inheritDoc
    */
-  toString() {
+  toString () {
     return `There were some validation errors: ${this.messages.join(', ')}`;
   }
 }

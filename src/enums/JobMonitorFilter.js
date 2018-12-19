@@ -31,7 +31,7 @@
  */
 
 import Enum from './Enum';
-import {ResultStatus} from './ResultStatus';
+import { ResultStatus } from './ResultStatus';
 
 /**
  * Enum containing the possible different values for {@link JobMonitor#filterStatus}
@@ -44,4 +44,4 @@ import {ResultStatus} from './ResultStatus';
  * @property {string} FAILED - Job has failed
  * @readonly
  */
-export const JobMonitorFilter = new Enum(Object.assign({}, ResultStatus, {DEFAULT: 'default'}));
+export const JobMonitorFilter = new Enum({ ...ResultStatus, DEFAULT: 'default' });

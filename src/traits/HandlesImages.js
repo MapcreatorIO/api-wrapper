@@ -44,7 +44,7 @@ export default class HandlesImages extends Trait {
    * Handler for item image management
    * @returns {ImageHandler} - Image handler
    */
-  get imageHandler() {
+  get imageHandler () {
     return new ImageHandler(this.api, this);
   }
 }

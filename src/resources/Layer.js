@@ -32,7 +32,7 @@
 
 import HandlesImages from '../traits/HandlesImages';
 import OwnableResource from '../traits/OwnableResource';
-import {mix} from '../utils/reflection';
+import { mix } from '../utils/reflection';
 import CrudBase from './base/CrudBase';
 
 /**
@@ -42,7 +42,7 @@ import CrudBase from './base/CrudBase';
  * @mixes HandlesImages
  */
 export default class Layer extends mix(CrudBase, OwnableResource, HandlesImages) {
-  static get resourceName() {
+  static get resourceName () {
     return 'layers';
   }
 }

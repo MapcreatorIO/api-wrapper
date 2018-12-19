@@ -30,14 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {execFileSync} from 'child_process';
 
-export function stopWebserver(port) {
-  if (port > 0) {
-    execFileSync('./scripts/stop_webserver.sh', [port]);
-  }
-}
+import Maps4News from '../../../src/Maps4News';
 
-export function startWebserver(path) {
-  return Number(execFileSync('./scripts/start_webserver.sh', [path], {encoding: 'ascii'}).trim());
-}
+const api = new Maps4News('token', 'https://example.com');
+
+test('baseUrl returns the proxy target url', () => {
+  expect(api.users.baseUrl).toEqual('https://example.com/v1/users');
+  expect(api.layers.select(100).organisations.baseUrl).toEqual('https://example.com/v1/layers/100/organisations');
+});

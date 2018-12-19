@@ -35,27 +35,59 @@
  */
 export default class ApiError {
   /**
-   * @param {String} type - Error type
-   * @param {String} message - Error message
-   * @param {Number} code - Http error code
-   * @param {String|null} trace - Stack trace
+   * @param {AxiosError} error - Axios error
+   * @param {AxiosRequestConfig} error.config - Request config
+   * @param {XMLHttpRequest|ClientRequest} request - Request
+   * @param {AxiosResponse} response - Response
    */
-  constructor(type, message, code, trace = null) {
+  constructor ({ config, request, response }) {
+    this._config = config;
+    this._response = response;
+    this._request = request;
+
+    this._code = response.status;
+
+    const { type, message, trace } = response.data.error;
+
     this._type = type;
     this._message = message;
-    this._code = code;
     this._trace = [];
 
+    // Only available when the api is in debug mode
     if (typeof trace === 'string') {
       this._trace = ApiError._parseTrace(trace);
     }
   }
 
   /**
+   * Get the request config
+   * @return {AxiosRequestConfig} - Request config
+   */
+  get config () {
+    return this._config;
+  }
+
+  /**
+   * Get the axios response
+   * @return {AxiosResponse} - Axios response
+   */
+  get response () {
+    return this._response;
+  }
+
+  /**
+   * Get the axios request
+   * @return {Object} - Request object
+   */
+  get request () {
+    return this._request;
+  }
+
+  /**
    * Error type
    * @returns {String} - Error type
    */
-  get type() {
+  get type () {
     return this._type;
   }
 
@@ -63,7 +95,7 @@ export default class ApiError {
    * Error message
    * @returns {String} - Error message
    */
-  get message() {
+  get message () {
     return this._message;
   }
 
@@ -71,15 +103,16 @@ export default class ApiError {
    * Http error code
    * @returns {Number} - Http error code
    */
-  get code() {
+  get code () {
     return this._code;
   }
 
   /**
    * Returns if the error contained a stacktrace that has been parsed
+   * This should only be true if the API is in debug mode.
    * @returns {boolean} - If the Error contains a stacktrace
    */
-  get hasTrace() {
+  get hasTrace () {
     return this._trace.length > 0;
   }
 
@@ -87,7 +120,7 @@ export default class ApiError {
    * Get the parsed stacktrace from the error
    * @returns {Array<{line: Number, file: String, code: String}>} - Stacktrace
    */
-  get trace() {
+  get trace () {
     return this._trace;
   }
 
@@ -95,14 +128,15 @@ export default class ApiError {
    * Display-able string
    * @returns {string} - Displayable error string
    */
-  toString() {
+  toString () {
     return `[${this._code}] ${this._type}: ${this._message}`;
   }
 
-  static _parseTrace(input) {
+  static _parseTrace (input) {
     // https://regex101.com/r/64cAbt/1
     const regex = /^#(\d+)\s(?:(.*?)\((\d+)\)|(.*?)):\s(.*?)$/gm;
     const output = [];
+
     let match;
 
     // eslint-disable-next-line no-cond-assign

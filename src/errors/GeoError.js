@@ -33,13 +33,4 @@
 /**
  * Thrown when an error occurs during geo processing
  */
-export default class GeoError extends Error {
-  /**
-   * GeoError construcotr
-   * @param {String} message - Error message
-   */
-  constructor(message) {
-    // noinspection JSCheckFunctionSignatures
-    super(message);
-  }
-}
+export default class GeoError extends Error {}

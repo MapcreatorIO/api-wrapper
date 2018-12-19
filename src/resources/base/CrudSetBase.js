@@ -30,9 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractError} from '../../errors/AbstractError';
+import { AbstractError } from '../../errors/AbstractError';
 import CrudBase from './CrudBase';
-import {camel as camelCase} from 'case';
+import { camel as camelCase } from 'case';
 
 /**
  * Crud base for resource sets
@@ -44,9 +44,8 @@ export default class CrudSetBase extends CrudBase {
    * Get items associated with the set
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get items() {
+  get items () {
     const url = `${this.url}/items`;
-
     const data = {};
 
     data[this.constructor.foreignKeyName] = this.id;
@@ -61,7 +60,7 @@ export default class CrudSetBase extends CrudBase {
    * @abstract
    * @protected
    */
-  get _Child() {
+  get _Child () {
     throw new AbstractError();
   }
 
@@ -71,7 +70,7 @@ export default class CrudSetBase extends CrudBase {
    * @example
    * api.fontFamilies.select(1).constructor.foreignKeyName === 'fontFamilyId'
    */
-  static get foreignKeyName() {
+  static get foreignKeyName () {
     if (!this._fk) {
       let key = this.name; // ex: FontFamily
 

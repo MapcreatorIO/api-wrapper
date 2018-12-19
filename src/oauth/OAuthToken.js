@@ -31,7 +31,7 @@
  */
 
 import StorageManager from '../storage/StorageManager';
-import {encodeQueryString} from '../utils/requests';
+import { encodeQueryString } from '../utils/requests';
 
 /**
  * Oauth token container
@@ -43,14 +43,16 @@ export default class OAuthToken {
    * @param {Date|Number} [expires=5 days] - expire time in seconds or Date
    * @param {Array<string>} [scopes=[]] - Any scopes
    */
-  constructor(token, type = 'Bearer', expires = 432000, scopes = []) {
+  constructor (token, type = 'Bearer', expires = 432000, scopes = []) {
     this.scopes = scopes;
     this.token = token;
     this.type = type.toLowerCase().replace(/(\s|^)\w/g, x => x.toUpperCase());
 
     if (typeof expires === 'number') {
+      const ms = expires * 1000;
+
       // Expires is in seconds
-      this.expires = new Date(Date.now() + expires * 1000);
+      this.expires = new Date(Date.now() + ms);
     } else if (expires instanceof Date) {
       this.expires = expires;
     } else {
@@ -62,7 +64,7 @@ export default class OAuthToken {
    * String representation of the token, usable in the Authorization header
    * @returns {string} - String representation
    */
-  toString() {
+  toString () {
     return `${this.type} ${this.token}`;
   }
 
@@ -70,7 +72,7 @@ export default class OAuthToken {
    * Get equivalent OAuth response object
    * @returns {{access_token: (String|*), token_type: String, expires_in: Number, scope: (Array.<String>|Array|*)}} - Raw response object
    */
-  toResponseObject() {
+  toResponseObject () {
     return {
       'access_token': this.token,
       'token_type': this.type.toLowerCase(),
@@ -83,7 +85,7 @@ export default class OAuthToken {
    * Export oauth response query string
    * @returns {string} - OAuth response query
    */
-  toQueryString() {
+  toQueryString () {
     return encodeQueryString(this.toResponseObject());
   }
 
@@ -91,7 +93,7 @@ export default class OAuthToken {
    * If the token has expired
    * @returns {Boolean} - expired
    */
-  get expired() {
+  get expired () {
     return new Date() > this.expires;
   }
 
@@ -100,7 +102,7 @@ export default class OAuthToken {
    * @returns {String} - storage name
    * @constant
    */
-  static get storageName() {
+  static get storageName () {
     return 'api_token';
   }
 
@@ -109,7 +111,7 @@ export default class OAuthToken {
    * @param {String|Object} data - object or JSON string
    * @returns {OAuthToken} - New OAuthToken instance
    */
-  static fromResponseObject(data) {
+  static fromResponseObject (data) {
     if (typeof data === 'string') {
       data = JSON.parse(data);
     }
@@ -119,25 +121,24 @@ export default class OAuthToken {
 
     if (typeof data['exipires_in'] !== 'undefined') {
       expires = Number(data['expires_in']);
-    } else if (typeof data['expires'] === 'string') {
-      expires = new Date(data['expires']);
+    } else if (typeof data.expires === 'string') {
+      expires = new Date(data.expires);
     }
 
     return new OAuthToken(
       data['access_token'],
       data['token_type'],
       expires,
-      data['scope'] || [],
+      data.scope || [],
     );
   }
 
   /**
    * Store the token for later recovery. Token will be stored in HTTPS cookie if possible.
    * @param {String} name - db key name
-   * @returns {void}
-   * @see OAuthToken#recover
+   * @throws {OAuthToken#recover}
    */
-  save(name = OAuthToken.storageName) {
+  save (name = OAuthToken.storageName) {
     const data = {
       token: this.token,
       type: this.type,
@@ -153,9 +154,9 @@ export default class OAuthToken {
    * Recover a token by looking through the HTTPS cookies and localStorage
    * @param {String} name - Storage key name
    * @returns {OAuthToken|null} - null if none could be recovered
-   * @see OAuthToken#save
+   * @throws {OAuthToken#save}
    */
-  static recover(name = OAuthToken.storageName) {
+  static recover (name = OAuthToken.storageName) {
     const data = StorageManager.secure.get(name);
 
     if (!data) {

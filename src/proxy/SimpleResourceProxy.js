@@ -34,7 +34,7 @@ import PaginatedResourceListing from '../PaginatedResourceListing';
 import RequestParameters from '../RequestParameters';
 import ResourceLister from '../ResourceLister';
 import ResourceBase from '../resources/base/ResourceBase';
-import {isParentOf} from '../utils/reflection';
+import { isParentOf } from '../utils/reflection';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -48,7 +48,7 @@ export default class SimpleResourceProxy {
    * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    * @param {object} seedData - Internal use, used for seeding ::new
    */
-  constructor(api, Target, altUrl = null, seedData = {}) {
+  constructor (api, Target, altUrl = null, seedData = {}) {
     if (!isParentOf(ResourceBase, Target)) {
       throw new TypeError('Target is not a child of ResourceBase');
     }
@@ -72,7 +72,7 @@ export default class SimpleResourceProxy {
    * @example
    * api.layers.select(100).organisations.baseUrl === "https://maponline-api.dev/v1/layers/100/organisations"
    */
-  get baseUrl() {
+  get baseUrl () {
     if (!this.__baseUrl) {
       this.__baseUrl = this.new().baseUrl;
     }
@@ -84,7 +84,7 @@ export default class SimpleResourceProxy {
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -93,19 +93,8 @@ export default class SimpleResourceProxy {
    * @returns {ResourceBase} - Target constructor
    * @constructor
    */
-  get Target() {
+  get Target () {
     return this._Target;
-  }
-
-  /**
-   * The name of the target
-   * @returns {String} - Target name
-   * @example
-   * api.colors.accessorName === 'Color'
-   * api.fontFamilies.accessorName = 'Font Families'
-   */
-  get accessorName() {
-    return this.Target.name.replace(/([A-Z])/g, x => ' ' + x).trim();
   }
 
   /**
@@ -113,9 +102,9 @@ export default class SimpleResourceProxy {
    * @param {Object<String, *>} data - Data for the object to be populated with
    * @returns {ResourceBase} - Resource with target data
    */
-  new(data = {}) {
+  new (data = {}) {
     // Merge but don't overwrite using seed data
-    data = Object.assign({}, this._seedData, data);
+    data = { ...this._seedData, ...data };
 
     return new this.Target(this._api, data);
   }
@@ -128,7 +117,8 @@ export default class SimpleResourceProxy {
    * @param {Number} [params.sort=''] - Amount of items per page. This is silently capped by the API
    * @param {Number} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
-   * @returns {Promise} - Resolves with {@link PaginatedResourceListing} instance and rejects with {@link ApiError}
+   * @returns {Promise<PaginatedResourceListing>} - paginated resource
+   * @throws {ApiError}
    * @example
    * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
    * // See Api documentation for search query syntax
@@ -139,7 +129,7 @@ export default class SimpleResourceProxy {
    *
    * api.layers.list({perPage: 10, search});
    */
-  list(params = {}) {
+  list (params = {}) {
     const resolver = this._buildResolver(params);
 
     return resolver.getPage(resolver.page);
@@ -166,11 +156,12 @@ export default class SimpleResourceProxy {
    *
    * api.layers.listandWrap({perPage: 10, search});
    */
-  listAndWrap(params = {}) {
+  listAndWrap (params = {}) {
     const resolver = this._buildResolver(params);
     const wrapped = resolver.wrap(resolver.page);
 
     wrapped.get(resolver.page);
+
     return wrapped;
   }
 
@@ -181,7 +172,7 @@ export default class SimpleResourceProxy {
    * @param {number} maxRows - Maximum amount of rows
    * @returns {ResourceLister} - Resource lister
    */
-  lister(parameters = {}, maxRows = 50) {
+  lister (parameters = {}, maxRows = 50) {
     return new ResourceLister(this.api, this.baseUrl, this.Target, parameters, maxRows, this.Target.resourceUrlKey);
   }
 
@@ -192,7 +183,7 @@ export default class SimpleResourceProxy {
   //  *
   //  * @param {object|RequestParameters} parameters - parameters
   //  * @returns {Promise<ResourceBase[]>} - All the resources
-  //  * @throws ApiError
+  //  * @throws {ApiError}
   //  */
   // async all(parameters = {}) {
   //   const page = await this.list(parameters);
@@ -207,7 +198,7 @@ export default class SimpleResourceProxy {
   //   return results.reduce((a, v) => a.concat(v.data), [...page.data]);
   // }
 
-  _buildResolver(params = {}) {
+  _buildResolver (params = {}) {
     const paramType = typeof params;
     const url = this.baseUrl;
 
@@ -216,7 +207,7 @@ export default class SimpleResourceProxy {
     }
 
     if (paramType === 'number') {
-      return this._buildResolver({page: params});
+      return this._buildResolver({ page: params });
     }
 
     if (!(params instanceof RequestParameters)) {

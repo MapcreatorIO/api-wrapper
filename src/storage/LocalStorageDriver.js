@@ -31,7 +31,7 @@
  */
 
 import DataStoreContract from './DataStoreContract';
-import {isNode} from '../utils/node';
+import { isNode } from '../utils/node';
 
 /**
  * @private
@@ -42,14 +42,14 @@ export default class LocalStorageDriver extends DataStoreContract {
    * @returns {String} - Prefix
    * @private
    */
-  static get _prefix() {
+  static get _prefix () {
     return '_m4n_';
   }
 
   /**
    * @inheritDoc
    */
-  static get available() {
+  static get available () {
     return !isNode();
   }
 
@@ -57,9 +57,8 @@ export default class LocalStorageDriver extends DataStoreContract {
    * Store a value in the storage
    * @param {String} name - value name
    * @param {*} value - value
-   * @returns {void}
    */
-  set(name, value) {
+  set (name, value) {
     name = LocalStorageDriver._prefix + name;
 
     window.localStorage.setItem(name, value);
@@ -68,9 +67,8 @@ export default class LocalStorageDriver extends DataStoreContract {
   /**
    * Get a value from the store
    * @param {String} name - value name
-   * @returns {void}
    */
-  get(name) {
+  get (name) {
     name = LocalStorageDriver._prefix + name;
 
     return window.localStorage.getItem(name);
@@ -79,9 +77,8 @@ export default class LocalStorageDriver extends DataStoreContract {
   /**
    * Remove a value from the store
    * @param {String} name - value name
-   * @returns {void}
    */
-  remove(name) {
+  remove (name) {
     name = LocalStorageDriver._prefix + name;
 
     window.localStorage.removeItem(name);
@@ -91,7 +88,7 @@ export default class LocalStorageDriver extends DataStoreContract {
    * Storage keys
    * @returns {Array<String>} - Stored keys
    */
-  keys() {
+  keys () {
     const keys = [];
     const storage = window.localStorage;
     const prefix = LocalStorageDriver._prefix;

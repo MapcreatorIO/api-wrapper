@@ -60,27 +60,27 @@ test('RequestParameters should be able to reset defaults', () => {
 test('RequestParameters can generate cache tokens', () => {
   const params = cleanParams.copy();
 
-  expect(params.token()).toEqual('d243d801'); // Default token
+  expect(params.token()).toEqual('65f40b0d'); // Default token
 
   // Page and perPage shouldn't affect the token
   params.page = Math.round(Math.random() * 100000);
   params.perPage = Math.round(Math.random() * 50);
 
-  expect(params.token()).toEqual('d243d801');
+  expect(params.token()).toEqual('65f40b0d');
 
   params.sort = 'quick,-brown,fox';
 
-  expect(params.token()).toEqual('a900b290');
+  expect(params.token()).toEqual('b4b47dc1');
 });
 
 const validationTests = {
   page: {
     good: [1, 2, 3, 4, 100],
-    bad: [new Date(), {}, [], '1', 13.37, -1],
+    bad: [new Date(), {}, [], '1', 13.37, -1, NaN, Infinity],
   },
   perPage: {
     good: [1, 2, 3, 4, [100, 50]],
-    bad: [new Date(), {}, [], '1', 13.37],
+    bad: [new Date(), {}, [], '1', 13.37, -1, 0, NaN, Infinity],
   },
   offset: {
     good: [
@@ -102,6 +102,8 @@ const validationTests = {
       {f: () => false},
       420,
       'Hello World!',
+      ['foo'],
+      {foo: [[]]},
     ],
   },
   sort: {
@@ -158,11 +160,15 @@ test('extra parameters overwrite others', () => {
       deleted: 'some',
       pirateFlag: 'cool',
     },
+    search: {
+      foo: true,
+      bar: null,
+    },
   });
 
   expect(params.toObject().deleted).toEqual('none');
   expect(params.toParameterObject().deleted).toEqual('some');
-  expect(params.encode()).toEqual('deleted=some&page=1&per_page=12&pirateFlag=cool&sort=');
+  expect(params.encode()).toEqual('deleted=some&page=1&per_page=12&pirateFlag=cool&search[foo]=1&sort=');
 });
 
 test('encoded search keys must be snake_case', () => {
@@ -198,6 +204,25 @@ test('RequestParameters can have properties applied to it', () => {
     },
     _deleted: 'only',
   });
+
+  expect(params.deleted).toEqual('none');
+  expect(params.toParameterObject().pirateFlag).toEqual('cool');
+  expect(params.foo).toEqual(undefined);
+});
+
+test('RequestParameters can have properties applied to it from other RequestParameters', () => {
+  const params = cleanParams.copy();
+
+  params.apply(new RequestParameters({
+    extra: {
+      deleted: 'some',
+      pirateFlag: 'cool',
+    },
+    foo: {
+      bar: 'baz',
+    },
+    _deleted: 'only',
+  }));
 
   expect(params.deleted).toEqual('none');
   expect(params.toParameterObject().pirateFlag).toEqual('cool');

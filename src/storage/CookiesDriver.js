@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {isNode} from '../utils/node';
+import { isNode } from '../utils/node';
 import DataStoreContract from './DataStoreContract';
 
 /**
@@ -38,7 +38,7 @@ import DataStoreContract from './DataStoreContract';
  * @todo fix
  */
 export default class CookiesDriver extends DataStoreContract {
-  constructor(prefix = '_m4n_') {
+  constructor (prefix = '_m4n_') {
     super();
 
     this.__prefix = prefix;
@@ -49,21 +49,21 @@ export default class CookiesDriver extends DataStoreContract {
    * @returns {String} - Prefix
    * @private
    */
-  get _prefix() {
+  get _prefix () {
     return this.__prefix;
   }
 
   /**
    * @inheritDoc
    */
-  static get secure() {
+  static get secure () {
     return window.location.protocol === 'https:';
   }
 
   /**
    * @inheritDoc
    */
-  static get available() {
+  static get available () {
     return !isNode();
   }
 
@@ -72,9 +72,8 @@ export default class CookiesDriver extends DataStoreContract {
    * @param {String} name - value name
    * @param {*} value - value
    * @param {Date|String} [expires=2050-01-01] - Expiration date
-   * @returns {void}
    */
-  set(name, value, expires = new Date('2050-01-01')) {
+  set (name, value, expires = new Date('2050-01-01')) {
     name = encodeURIComponent(this._prefix + name);
     value = encodeURIComponent(value);
 
@@ -94,7 +93,7 @@ export default class CookiesDriver extends DataStoreContract {
   /**
    * @inheritDoc
    */
-  get(name) {
+  get (name) {
     name = this._prefix + name;
 
     return this._toObject()[name];
@@ -103,15 +102,15 @@ export default class CookiesDriver extends DataStoreContract {
   /**
    * @inheritDoc
    */
-  remove(name) {
+  remove (name) {
     this.set(name, '', new Date(1970));
   }
 
   /**
    * @inheritDoc
    */
-  keys() {
-    const regex = new RegExp('^' + this._prefix);
+  keys () {
+    const regex = new RegExp(`^${this._prefix}`);
 
     return Object.keys(this._toObject()).map(x => x.replace(regex, ''));
   }
@@ -121,7 +120,7 @@ export default class CookiesDriver extends DataStoreContract {
    * @returns {Object} - cookies
    * @private
    */
-  _toObject() {
+  _toObject () {
     const cookies = {};
 
     document.cookie

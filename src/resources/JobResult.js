@@ -30,15 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {downloadFile} from '../utils/requests';
+import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 
 export default class JobResult extends ResourceBase {
-  get resourcePath() {
+  static get resourcePath () {
     return '/jobs/{job_id}/revisions/{revision}/result';
   }
 
-  static get resourceName() {
+  static get resourceName () {
     return 'job-result';
   }
 
@@ -46,7 +46,7 @@ export default class JobResult extends ResourceBase {
    * Get the related job
    * @returns {Promise<Job, ApiError>} - The job related to this row
    */
-  get job() {
+  get job () {
     return this.api.jobs.get(this.jobId);
   }
 
@@ -54,7 +54,7 @@ export default class JobResult extends ResourceBase {
    * Get the related job revision
    * @returns {Promise<JobRevision, ApiError>} - The job revision related to this row
    */
-  get jobRevision() {
+  get jobRevision () {
     return this.api.jobs.select(this.jobId).revisions.get(this.id);
   }
 
@@ -62,76 +62,77 @@ export default class JobResult extends ResourceBase {
    * Job result archive url
    * @returns {string} - Archive url
    */
-  get outputUrl() {
+  get outputUrl () {
     return `${this.url}/output`;
   }
 
   /**
    * Get archive blob url
-   * @returns {PromiseLike<{filename: string, blob: string}>} - Resolves with a blob reference and it's filename and rejects with {@link ApiError}
+   * @returns {Promise<DownloadedResource>} - Job result output
    */
-  downloadOutput() {
-    return downloadFile(this.outputUrl, this._getDownloadHeaders());
+  async downloadOutput () {
+    const response = await this.api.axios.get(this.outputUrl, {
+      responseType: 'arraybuffer',
+    });
+
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
    * Get the output url url
    * @returns {string} - Output url url
    */
-  get outputUrlUrl() {
+  get outputUrlUrl () {
     return `${this.url}/output-url`;
   }
 
   /**
    * Get the remote output url
-   * @returns {Promise} -  Resolves with a {@link String} containing the url to the output and rejects with {@link ApiError}
+   * @returns {Promise<string>} - The url to the output
+   * @throws {ApiError}
    */
-  getOutputUrl() {
-    return this.api.request(this.outputUrlUrl).then(x => x.url);
+  async getOutputUrl () {
+    const { data: { data } } = await this.api.axios.get(this.outputUrlUrl);
+
+    return data.url;
   }
 
   /**
    * Job result log url
    * @returns {string} - log url
    */
-  get logUrl() {
+  get logUrl () {
     return `${this.url}/log`;
   }
 
   /**
-   * Get log blob url
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the archive and rejects with {@link ApiError}
+   * Download the job result log
+   * @returns {Promise<string>} - job result log
    */
-  downloadLog() {
-    return downloadFile(this.logUrl, this._getDownloadHeaders()).then(data => data.blob);
+  async downloadLog () {
+    const { data } = await this.api.axios.get(this.logUrl, { responseType: 'text' });
+
+    return data;
   }
 
   /**
    * Job result preview url, usable in an `<img>` tag
    * @returns {string} - Preview url
    */
-  get previewUrl() {
+  get previewUrl () {
     return `${this.url}/preview`;
   }
 
   /**
-   * Get image blob url representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the job preview
+   * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  downloadPreview() {
-    return downloadFile(`${this.previewUrl}`, this._getDownloadHeaders()).then(data => data.blob);
-  }
+  async downloadPreview () {
+    const response = await this.api.axios.get(this.previewUrl, {
+      responseType: 'arraybuffer',
+    });
 
-  /**
-   * Get headers for downloading resources
-   * @returns {{Accept: string, Authorization: string}} - Request headers
-   * @private
-   */
-  _getDownloadHeaders() {
-    return {
-      Accept: 'application/json',
-      Authorization: this.api.auth.token.toString(),
-    };
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
@@ -139,15 +140,15 @@ export default class JobResult extends ResourceBase {
    * This method is for internal use for our support team.
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
-   * @returns {Promise} - A promise that resolves with no data
    */
-  dealWith(value = true) {
+  async dealWith (value = true) {
+    value = Boolean(value);
+
     const method = value ? 'POST' : 'DELETE';
+    const url = `${this.url}/deal-with`;
 
-    return this.api.request(this.url + '/deal-with', method).then(() => {
-      this.dealtWith = value;
+    await this.api.axios.request({ method, url });
 
-      return value;
-    });
+    this.dealtWith = value;
   }
 }

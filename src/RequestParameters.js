@@ -31,12 +31,12 @@
  */
 
 
-import {camel as camelCase, pascal as pascalCase, snake as snakeCase} from 'case';
-import {EventEmitter} from 'events';
-import {DeletedState} from './enums';
-import {hashObject} from './utils/hash';
-import {getTypeName} from './utils/reflection';
-import {encodeQueryString} from './utils/requests';
+import { camel as camelCase, pascal as pascalCase, snake as snakeCase } from 'case';
+import { EventEmitter } from 'events';
+import { DeletedState } from './enums';
+import { hashObject } from './utils/hash';
+import { getTypeName } from './utils/reflection';
+import { encodeQueryString } from './utils/requests';
 
 /**
  * Used for keeping track of the request parameters
@@ -54,7 +54,7 @@ export default class RequestParameters extends EventEmitter {
    * RequestParameters constructor
    * @param {Object} object - properties
    */
-  constructor(object = {}) {
+  constructor (object = {}) {
     super();
 
     // Apply defaults
@@ -69,45 +69,45 @@ export default class RequestParameters extends EventEmitter {
   /**
    * Get page number
    * @returns {Number} - Page number
-   * @throws TypeError
+   * @throws {TypeError}
    */
-  get page() {
+  get page () {
     return this._resolve('page');
   }
 
   /**
    * Get rows per page
    * @returns {Number} - Per page
-   * @throws TypeError
+   * @throws {TypeError}
    */
-  get perPage() {
+  get perPage () {
     return this._resolve('perPage');
   }
 
   /**
    * Get pagination offset
    * @returns {Number} - Offset
-   * @throws TypeError
+   * @throws {TypeError}
    */
-  get offset() {
+  get offset () {
     return this._resolve('offset');
   }
 
   /**
    * Search query
    * @returns {Object<String, String|Array<String>>} - Query
-   * @throws TypeError
+   * @throws {TypeError}
    */
-  get search() {
+  get search () {
     return this._resolve('search');
   }
 
   /**
    * Get sort options
    * @returns {Array<String>} - Per page
-   * @throws TypeError
+   * @throws {TypeError}
    */
-  get sort() {
+  get sort () {
     return this._resolve('sort');
   }
 
@@ -116,7 +116,7 @@ export default class RequestParameters extends EventEmitter {
    * @returns {String} - Deleted items filter state
    * @see {@link DeletedState}
    */
-  get deleted() {
+  get deleted () {
     return this._resolve('deleted');
   }
 
@@ -124,7 +124,7 @@ export default class RequestParameters extends EventEmitter {
    * Extra parameters
    * @returns {Object} - Extra parameters
    */
-  get extra() {
+  get extra () {
     return this._resolve('extra');
   }
 
@@ -135,7 +135,7 @@ export default class RequestParameters extends EventEmitter {
    * Page number
    * @param {Number} value - Page number
    */
-  set page(value) {
+  set page (value) {
     this._update('page', value);
   }
 
@@ -143,7 +143,7 @@ export default class RequestParameters extends EventEmitter {
    * Rows per page
    * @param {Number} value - Per page
    */
-  set perPage(value) {
+  set perPage (value) {
     this._update('perPage', value);
   }
 
@@ -151,7 +151,7 @@ export default class RequestParameters extends EventEmitter {
    * Pagination offset
    * @param {Number} value - Offset
    */
-  set offset(value) {
+  set offset (value) {
     this._update('offset', value);
   }
 
@@ -159,7 +159,7 @@ export default class RequestParameters extends EventEmitter {
    * Search query
    * @param {Object<String, String|Array<String>>} value - Search query
    */
-  set search(value) {
+  set search (value) {
     this._update('search', value);
   }
 
@@ -167,7 +167,7 @@ export default class RequestParameters extends EventEmitter {
    * Sort query
    * @param {Array<String>} value - Sort query
    */
-  set sort(value) {
+  set sort (value) {
     this._update('sort', value);
   }
 
@@ -176,7 +176,7 @@ export default class RequestParameters extends EventEmitter {
    * @param {String} value - Deleted items filter state
    * @see {@link DeletedState}
    */
-  set deleted(value) {
+  set deleted (value) {
     this._update('deleted', value);
   }
 
@@ -184,7 +184,7 @@ export default class RequestParameters extends EventEmitter {
    * Extra request parameters
    * @param {Object} value - Extra request parameters
    */
-  set extra(value) {
+  set extra (value) {
     this._update('extra', value);
   }
 
@@ -197,7 +197,7 @@ export default class RequestParameters extends EventEmitter {
    * Default page number
    * @returns {Number} - Page number
    */
-  static get page() {
+  static get page () {
     return RequestParameters._page || 1;
   }
 
@@ -205,7 +205,7 @@ export default class RequestParameters extends EventEmitter {
    * Default per page
    * @returns {Number} - Per page
    */
-  static get perPage() {
+  static get perPage () {
     return RequestParameters._perPage || Number(process.env.PER_PAGE) || 12;
   }
 
@@ -213,7 +213,7 @@ export default class RequestParameters extends EventEmitter {
    * Default pagination offset
    * @returns {Number} - Offset
    */
-  static get offset() {
+  static get offset () {
     return RequestParameters._offset || 0;
   }
 
@@ -222,7 +222,7 @@ export default class RequestParameters extends EventEmitter {
    * Some users will have a special permission that allows them to fetch more than 50 resources at once
    * @returns {Number} - Maximum amount of resources per page
    */
-  static get maxPerPage() {
+  static get maxPerPage () {
     return RequestParameters._maxPerPage || 50;
   }
 
@@ -230,7 +230,7 @@ export default class RequestParameters extends EventEmitter {
    * Default search query
    * @returns {Object<String, String|Array<String>>} - Search query
    */
-  static get search() {
+  static get search () {
     return RequestParameters._search || {};
   }
 
@@ -238,7 +238,7 @@ export default class RequestParameters extends EventEmitter {
    * Default sort query
    * @returns {Array<String>} - Sort query
    */
-  static get sort() {
+  static get sort () {
     return RequestParameters._sort || [];
   }
 
@@ -246,7 +246,7 @@ export default class RequestParameters extends EventEmitter {
    * Default deleted items filter state
    * @returns {String} -  Deleted items filter state
    */
-  static get deleted() {
+  static get deleted () {
     return RequestParameters._deleted || DeletedState.NONE;
   }
 
@@ -254,7 +254,7 @@ export default class RequestParameters extends EventEmitter {
    * Default extra request parameters
    * @returns {Object} - Extra request parameters
    */
-  static get extra() {
+  static get extra () {
     return RequestParameters._extra || {};
   }
 
@@ -265,7 +265,7 @@ export default class RequestParameters extends EventEmitter {
    * Default page number
    * @param {Number} value - Page number
    */
-  static set page(value) {
+  static set page (value) {
     RequestParameters._page = RequestParameters._validatePage(value);
   }
 
@@ -273,7 +273,7 @@ export default class RequestParameters extends EventEmitter {
    * Default per page
    * @param {Number} value - Per page
    */
-  static set perPage(value) {
+  static set perPage (value) {
     RequestParameters._perPage = RequestParameters._validatePerPage(value);
   }
 
@@ -281,7 +281,7 @@ export default class RequestParameters extends EventEmitter {
    * Default pagination offset
    * @param {Number} value - Offset
    */
-  static set offset(value) {
+  static set offset (value) {
     RequestParameters._offset = RequestParameters._validateOffset(value);
   }
 
@@ -290,7 +290,7 @@ export default class RequestParameters extends EventEmitter {
    * Some users will have a special permission that allows them to fetch more than 50 resources at once
    * @param {Number} value - Maximum amount of resources per page
    */
-  static set maxPerPage(value) {
+  static set maxPerPage (value) {
     RequestParameters._maxPerPage = RequestParameters._validateMaxPerPage(value);
   }
 
@@ -298,7 +298,7 @@ export default class RequestParameters extends EventEmitter {
    * Default search query
    * @param {Object<String, String|Array<String>>} value - Search query
    */
-  static set search(value) {
+  static set search (value) {
     RequestParameters._search = RequestParameters._validateSearch(value);
   }
 
@@ -306,7 +306,7 @@ export default class RequestParameters extends EventEmitter {
    * Default sort query
    * @param {Array<String>} value - Sort query
    */
-  static set sort(value) {
+  static set sort (value) {
     RequestParameters._sort = RequestParameters._validateSort(value);
   }
 
@@ -314,7 +314,7 @@ export default class RequestParameters extends EventEmitter {
    * Default deleted items filter state
    * @param {String} value -  Deleted items filter state
    */
-  static set deleted(value) {
+  static set deleted (value) {
     RequestParameters._deleted = RequestParameters._validateDeleted(value);
   }
 
@@ -322,7 +322,7 @@ export default class RequestParameters extends EventEmitter {
    * Default extra request parameters
    * @param {Object} value - Extra request parameters
    */
-  static set extra(value) {
+  static set extra (value) {
     RequestParameters._extra = RequestParameters._validateExtra(value);
   }
 
@@ -335,7 +335,7 @@ export default class RequestParameters extends EventEmitter {
    * this means that they will throw a TypeError or return a normalized result.
    */
 
-  static _validatePage(value) {
+  static _validatePage (value) {
     if (typeof value !== 'number') {
       throw new TypeError(`Expected page to be of type 'number' instead got '${typeof value}'`);
     }
@@ -355,7 +355,7 @@ export default class RequestParameters extends EventEmitter {
     return Math.round(value);
   }
 
-  static _validatePerPage(value) {
+  static _validatePerPage (value) {
     if (typeof value !== 'number') {
       throw new TypeError(`Expected per page to be of type 'Number' instead got '${getTypeName(value)}'`);
     }
@@ -378,7 +378,7 @@ export default class RequestParameters extends EventEmitter {
     return value;
   }
 
-  static _validateOffset(value) {
+  static _validateOffset (value) {
     if (typeof value !== 'number') {
       throw new TypeError(`Expected offset to be of type 'Number' instead got '${getTypeName(value)}'`);
     }
@@ -398,7 +398,7 @@ export default class RequestParameters extends EventEmitter {
     return value;
   }
 
-  static _validateMaxPerPage(value) {
+  static _validateMaxPerPage (value) {
     if (typeof value !== 'number') {
       throw new TypeError(`Expected page to be of type 'Number' instead got '${getTypeName(value)}'`);
     }
@@ -410,7 +410,7 @@ export default class RequestParameters extends EventEmitter {
     return value;
   }
 
-  static _validateSearch(value) {
+  static _validateSearch (value) {
     if (typeof value !== 'object' || Array.isArray(value)) {
       throw new TypeError(`Expected value to be of type "Object" got "${getTypeName(value)}"`);
     }
@@ -447,7 +447,7 @@ export default class RequestParameters extends EventEmitter {
     return value;
   }
 
-  static _validateSort(value) {
+  static _validateSort (value) {
     if (typeof value === 'string') {
       return this._validateSort(value.split(','));
     }
@@ -469,7 +469,7 @@ export default class RequestParameters extends EventEmitter {
     return value;
   }
 
-  static _validateDeleted(value) {
+  static _validateDeleted (value) {
     if (typeof value !== 'string') {
       throw new TypeError(`Expected deleted to be of type "string" got "${getTypeName(value)}". See: DeletedState`);
     }
@@ -485,7 +485,7 @@ export default class RequestParameters extends EventEmitter {
     return value;
   }
 
-  static _validateExtra(value) {
+  static _validateExtra (value) {
     if (typeof value !== 'object') {
       throw new TypeError(`Expected extra to be of type 'object', got '${getTypeName(value)}'`);
     }
@@ -495,8 +495,8 @@ export default class RequestParameters extends EventEmitter {
 
   // endregion validators
 
-  _resolve(name) {
-    const _name = '_' + name;
+  _resolve (name) {
+    const _name = `_${name}`;
 
     if (!this[_name]) {
       // Confuse esdoc
@@ -506,10 +506,10 @@ export default class RequestParameters extends EventEmitter {
     return this[_name];
   }
 
-  _update(name, value, preventEvent = false) {
-    const _name = '_' + name;
+  _update (name, value, preventEvent = false) {
+    const _name = `_${name}`;
 
-    value = RequestParameters['_validate' + pascalCase(name)](value);
+    value = RequestParameters[`_validate${pascalCase(name)}`](value);
     (this || {})[_name] = value; // Weird syntax confuses esdoc
 
     if (!preventEvent) {
@@ -521,8 +521,8 @@ export default class RequestParameters extends EventEmitter {
        * @property {string} name - Parameter name
        * @property {*} value - New value
        */
-      this.emit('change', [{name, value}]);
-      this.emit('change:' + name, value);
+      this.emit('change', [{ name, value }]);
+      this.emit(`change:${name}`, value);
     }
 
     return value;
@@ -533,7 +533,7 @@ export default class RequestParameters extends EventEmitter {
    * Urlencode parameters
    * @returns {string} - HTTP query
    */
-  encode() {
+  encode () {
     return encodeQueryString(this.toParameterObject());
   }
 
@@ -541,11 +541,12 @@ export default class RequestParameters extends EventEmitter {
    * Convert to object
    * @returns {Object} - Object
    */
-  toObject() {
+  toObject () {
     return RequestParameters
       .keys()
       .reduce((obj, key) => {
         obj[snakeCase(key)] = this._resolve(key);
+
         return obj;
       }, {});
   }
@@ -554,7 +555,7 @@ export default class RequestParameters extends EventEmitter {
    * Convert to object
    * @returns {Object} - Object
    */
-  toParameterObject() {
+  toParameterObject () {
     const data = {};
 
     RequestParameters
@@ -569,9 +570,11 @@ export default class RequestParameters extends EventEmitter {
       });
 
     // Fix column names for sort
-    data.sort = data.sort.map(x =>
-      snakeCase(x).replace(/^_/, '-'),
-    ).join(',');
+    data.sort = data.sort.map(snakeCase).map(x => x.replace(/^_/, '-')).join(',');
+
+    if (data.offset === 0) {
+      delete data.offset;
+    }
 
     // Fix column names for search
     for (const key of Object.keys(data.search)) {
@@ -609,7 +612,7 @@ export default class RequestParameters extends EventEmitter {
    * Copy object
    * @returns {RequestParameters} - Copy
    */
-  copy() {
+  copy () {
     return new RequestParameters(this.toObject());
   }
 
@@ -617,11 +620,12 @@ export default class RequestParameters extends EventEmitter {
    * Different parameters
    * @returns {Array<String>} - keys
    */
-  static keys() {
+  static keys () {
     // enumeration is disabled for properties
     return [
       'page',
       'perPage',
+      'offset',
       'search',
       'sort',
       'deleted',
@@ -633,10 +637,10 @@ export default class RequestParameters extends EventEmitter {
    * Generates a cache token
    * @returns {string} - Cache token
    */
-  token() {
+  token () {
     const data = this.toObject();
 
-    delete data['page'];
+    delete data.page;
     delete data['per_page'];
 
     return hashObject(data);
@@ -644,11 +648,10 @@ export default class RequestParameters extends EventEmitter {
 
   /**
    * Resets all parameters back to default
-   * @returns {void}
    */
-  static resetDefaults() {
+  static resetDefaults () {
     for (const key of RequestParameters.keys()) {
-      delete RequestParameters['_' + key];
+      delete RequestParameters[`_${key}`];
     }
   }
 
@@ -656,9 +659,16 @@ export default class RequestParameters extends EventEmitter {
    * Apply parameters from object
    * @param {object|RequestParameters} params - parameters
    * @returns {Object[]} - Array containing the updated values
-   * @todo update JSDoc
+   * @example
+   * const params = new RequestParameters({perPage: 12});
+   *
+   * params.perPage === 12;
+   *
+   * params.apply({perPage: 50});
+   *
+   * params.perPage === 50;
    */
-  apply(params) {
+  apply (params) {
     if (params instanceof RequestParameters) {
       params = params.toObject();
     }
@@ -680,8 +690,8 @@ export default class RequestParameters extends EventEmitter {
 
     this.emit('change', out);
 
-    for (const {name, value} of out) {
-      this.emit('change:' + name, value);
+    for (const { name, value } of out) {
+      this.emit(`change:${name}`, value);
     }
 
     return out;

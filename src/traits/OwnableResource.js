@@ -42,7 +42,7 @@ export default class OwnableResource extends Trait {
    * Get the list of associated organisations
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get organisations() {
+  get organisations () {
     return new OrganisationProxy(this.api, this);
   }
 
@@ -50,7 +50,7 @@ export default class OwnableResource extends Trait {
    * If the resource can be owned by an organisation
    * @returns {boolean} - Can be owned by an organisation
    */
-  get ownable() {
+  get ownable () {
     return true;
   }
 }

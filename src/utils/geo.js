@@ -42,7 +42,7 @@ export class GeoPoint {
    * @param {Number} lat - latitude
    * @param {Number} lng - longitude
    */
-  constructor(lat, lng) {
+  constructor (lat, lng) {
     this.lat = lat;
     this.lng = lng;
   }
@@ -51,7 +51,7 @@ export class GeoPoint {
    * Get latitude
    * @returns {Number} - latitude
    */
-  get lat() {
+  get lat () {
     return this._lat;
   }
 
@@ -59,7 +59,7 @@ export class GeoPoint {
    * Set latitude
    * @param {Number} value - latitude
    */
-  set lat(value) {
+  set lat (value) {
     value = Number(value);
 
     if (!Number.isFinite(value) || value > 90 || value < -90) {
@@ -73,7 +73,7 @@ export class GeoPoint {
    * Get longitude
    * @returns {Number} - longitude
    */
-  get lng() {
+  get lng () {
     return this._lng;
   }
 
@@ -81,7 +81,7 @@ export class GeoPoint {
    * Set longitude
    * @param {Number} value - longitude
    */
-  set lng(value) {
+  set lng (value) {
     value = Number(value);
 
     if (!Number.isFinite(value) || value > 180 || value < -180) {
@@ -95,8 +95,8 @@ export class GeoPoint {
    * Get data to be JSON encoded
    * @returns {{lat: Number, lng: Number}} - data
    */
-  toJSON() {
-    return {lat: this.lat, lng: this.lng};
+  toJSON () {
+    return { lat: this.lat, lng: this.lng };
   }
 }
 
@@ -113,12 +113,12 @@ export class GeoBoundary {
    * @param {Number} bottomRight.lat - bottom right corner latitude
    * @param {Number} bottomRight.lng - bottom right corner longitude
    */
-  constructor({lat: lat1, lng: lng1}, {lat: lat2, lng: lng2}) {
+  constructor ({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
     this.topLeft = new GeoPoint(lat1, lng1);
     this.bottomRight = new GeoPoint(lat2, lng2);
   }
 
-  getCenter() {
+  getCenter () {
     const lat = (this.topLeft.lat + this.bottomRight.lat) / 2;
     const lng = (this.topLeft.lng + this.bottomRight.lng) / 2;
 

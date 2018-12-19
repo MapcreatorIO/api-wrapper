@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {constant as constantCase} from 'case';
-import {getTypeName} from '../utils/reflection';
+import { constant as constantCase } from 'case';
+import { getTypeName } from '../utils/reflection';
 import Unobservable from '../utils/Unobservable';
 
 
@@ -60,7 +60,7 @@ export default class Enum extends Unobservable {
    * @param {boolean} auto - Auto generate enum from data making assumptions about
    *                         the data, requires enums to be of type array.
    */
-  constructor(enums, auto = false) {
+  constructor (enums, auto = false) {
     super();
 
     const isArray = Array.isArray(enums);
@@ -87,7 +87,7 @@ export default class Enum extends Unobservable {
       }
     } else {
       for (const key of Object.keys(enums)) {
-        const init = {enumerable: true};
+        const init = { enumerable: true };
 
         if (typeof enums[key] === 'function') {
           init.get = enums[key];
@@ -106,7 +106,7 @@ export default class Enum extends Unobservable {
    * List enum keys
    * @returns {Array} - Enum keys
    */
-  keys() {
+  keys () {
     return Object.keys(this);
   }
 
@@ -114,13 +114,13 @@ export default class Enum extends Unobservable {
    * List enum values
    * @returns {Array<*>} - Enum values
    */
-  values() {
+  values () {
     return this.keys()
       .map(key => this[key])
       .filter((v, i, s) => s.indexOf(v) === i);
   }
 
-  static get _iota() {
+  static get _iota () {
     if (!Enum.__iota) {
       Enum.__iota = 0;
     }

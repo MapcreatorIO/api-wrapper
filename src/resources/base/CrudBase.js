@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {AbstractClassError} from '../../errors/AbstractError';
+import { AbstractClassError } from '../../errors/AbstractError';
 import ResourceBase from './ResourceBase';
 
 /**
@@ -42,7 +42,7 @@ export default class CrudBase extends ResourceBase {
    * @param {Maps4News} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
-  constructor(api, data = {}) {
+  constructor (api, data = {}) {
     super(api, data);
 
     if (this.constructor === CrudBase) {
@@ -55,7 +55,7 @@ export default class CrudBase extends ResourceBase {
    * @returns {Object<String, *>} - Create data
    * @protected
    */
-  _buildCreateData() {
+  _buildCreateData () {
     this._updateProperties();
 
     const out = {};
@@ -69,103 +69,102 @@ export default class CrudBase extends ResourceBase {
     }
 
     delete out.id;
+
     return out;
   }
 
   /**
    * Save item. This will create a new item if `id` is unset
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
-   * .catch(reject)
-   * .then(data => {
-   *        this._properties = {};
-   *        this._baseProperties = data;
-   *
-   *        this._updateProperties();
-   *        resolve(this);
-   *      });
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
+   * @throws {ValidationError}
    */
-  save() {
-    return !this.id ? this._create() : this._update();
+  save () {
+    return this.id ? this._update() : this._create();
   }
 
   /**
    * Store new item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
+   * @throws {ValidationError}
    * @private
    */
-  _create() {
-    return this.api
-      .request(this.baseUrl, 'POST', this._buildCreateData())
-      .then(data => {
-        this._properties = {};
-        this._baseProperties = data;
+  async _create () {
+    const { data: { data } } = await this.api.axios.post(this.baseUrl, this._buildCreateData());
 
-        this._updateProperties();
-        return this;
-      });
+    this._properties = {};
+    this._baseProperties = data;
+
+    this._updateProperties();
+
+    return this;
   }
 
   /**
    * Update existing item
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
+   * @throws {ValidationError}
    * @private
    */
-  _update() {
+  async _update () {
     this._updateProperties();
 
     // We'll just fake it, no need to bother the server
     // with an empty request.
     if (Object.keys(this._properties).length === 0) {
-      return new Promise(resolve => resolve(this));
+      return this;
     }
 
-    return this.api
-      .request(this.url, 'PATCH', this._properties)
-      .then(() => {
-        if (this.api.defaults.autoUpdateSharedCache) {
-          this.api.cache.update(this);
-        }
+    await this.api.axios.patch(this.url, this._properties);
 
-        return this;
-      });
+    // Reset changes
+    Object.assign(this._baseProperties, this._properties);
+    this._properties = {};
+
+    if (this.api.defaults.autoUpdateSharedCache) {
+      this.api.cache.update(this);
+    }
+
+    return this;
   }
 
   /**
    * Delete item
-   * @param {Boolean} [updateSelf=true] - Update current instance
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @param {Boolean} [updateSelf=true] - Update current instance (set the deletedAt property)
+   * @returns {Promise<CrudBase>} - Current instance
+   * @throws {ApiError}
+   * @throws {ValidationError}
    */
-  delete(updateSelf = true) {
-    return this.api
-      .request(this.url, 'DELETE')
-      .then(data => {
-        if (updateSelf) {
-          this._baseProperties['deleted_at'] = new Date();
-        }
+  async delete (updateSelf = true) {
+    await this.api.axios.delete(this.url);
 
-        return data;
-      });
+    if (updateSelf) {
+      this._baseProperties['deleted_at'] = new Date();
+    }
+
+    return this;
   }
 
   /**
    * Restore item
-   * @param {Boolean} [updateSelf=true] - Update current instance
-   * @returns {Promise} - Resolves with {@link CrudBase} instance and rejects with {@link ApiError}
+   * @param {Boolean} [updateSelf=true] - Update current instance (unset the deletedAt property)
+   * @returns {Promise<CrudBase>} - New restored instance
+   * @throws {ApiError}
+   * @throws {ValidationError}
    */
-  restore(updateSelf = true) {
-    return this.api
-      .request(this.url, 'PUT')
-      .then(data => {
-        const instance = new this.constructor(this.api, data);
+  async restore (updateSelf = true) {
+    const { data: { data } } = await this.api.axios.put(this.url);
+    const instance = new this.constructor(this.api, data);
 
-        if (updateSelf) {
-          this._properties = {};
-          this._baseProperties = data;
+    if (updateSelf) {
+      this._properties = {};
+      this._baseProperties = data;
 
-          this._updateProperties();
-        }
+      this._updateProperties();
+    }
 
-        return instance;
-      });
+    return instance;
   }
 }

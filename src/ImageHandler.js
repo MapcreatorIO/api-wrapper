@@ -31,10 +31,10 @@
  */
 
 import Maps4News from './Maps4News';
+import DownloadedResource from './resources/base/DownloadedResource';
 import ResourceBase from './resources/base/ResourceBase';
-import {isNode} from './utils/node';
-import {isParentOf} from './utils/reflection';
-import {FormData} from './utils/requests';
+import { isParentOf } from './utils/reflection';
+import { FormData } from './utils/requests';
 
 /**
  * Image resource handler
@@ -45,7 +45,7 @@ export default class ImageHandler {
    * @param {Maps4News} api - Api instance
    * @param {ResourceBase} target - Instance of target item
    */
-  constructor(api, target) {
+  constructor (api, target) {
     if (!isParentOf(Maps4News, api)) {
       throw new TypeError('Expected api to be of type Maps4News');
     }
@@ -62,7 +62,7 @@ export default class ImageHandler {
    * Get api instance
    * @returns {Maps4News} - Api instance
    */
-  get api() {
+  get api () {
     return this._api;
   }
 
@@ -70,71 +70,55 @@ export default class ImageHandler {
    * Resource url, can be used in an image tag
    * @returns {string} - Resource url
    */
-  get url() {
+  get url () {
     return `${this._target.url}/image`;
   }
 
   /**
    * Delete image
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @throws {ApiError}
    */
-  delete() {
-    return this._api.request(this.url, 'DELETE');
+  async delete () {
+    await this.api.axios.delete(this.url);
   }
 
   /**
-   * Get image base64 representation
-   * @returns {Promise} - Resolves with a {@link String} containing a blob reference to the image and rejects with {@link ApiError}
+   * Download the image
+   * @returns {Promise<DownloadedResource>} - image
    * @example
    * // Browser
-   * layer.imageHandler.download().then(url => {
-   *   $('img').src = url;
+   * layer.imageHandler.download().then(image => {
+   *   $('img').src = image.createObjectURL();
    * });
    *
    * // NodeJs
-   * layer.imageHandler.download().then(buffer => {
-   *   fs.open(path, 'w', function(err, fd) {
-   *     if (err) {
-   *         throw 'could not open file: ' + err;
-   *     }
-   *
-   *     // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
-   *     fs.write(fd, buffer, 0, buffer.length, null, function(err) {
-   *       if (err) throw 'error writing file: ' + err;
-   *       fs.close(fd, function() {
-   *         console.log('wrote the file successfully');
-   *       });
-   *     });
-   *   });
+   * layer.imageHandler.download().then({fileName, data} => {
+   *   fs.writeFileSync(fileName, data);
    * });
    */
-  async download() {
-    // const data = await this.api.request(`${this.url}`);
-    const data = await this.api.request(`${this.url}`, 'GET', {}, { 'X-No-CDN-Redirect': true });
+  async download () {
+    const response = await this.api.axios.get(this.url, {
+      responseType: 'arraybuffer',
+    });
 
-    if (isNode()) {
-      return data;
-    }
-
-    return (window.URL || window.webkitURL).createObjectURL(data);
+    return DownloadedResource.fromAxiosResponse(response);
   }
 
   /**
    * Upload new image
-   * @param {File|Buffer} image - Image file
-   * @returns {Promise} - Resolves with an empty {@link Object} and rejects with {@link ApiError}
+   * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
    */
-  upload(image) {
-    const Type = isNode() ? Buffer : File;
+  async upload (image) {
+    const form = new FormData();
 
-    if (!isParentOf(Type, image)) {
-      throw new TypeError('Expected image to be of type File');
+    form.append('image', image, 'image');
+
+    const headers = {};
+
+    if (form.getHeaders) {
+      Object.assign(headers, form.getHeaders());
     }
 
-    const formData = new FormData();
-
-    formData.append('image', image);
-
-    return this.api.request(this.url, 'POST', formData);
+    await this.api.axios.post(this.url, form, { headers });
   }
 }

@@ -38,7 +38,7 @@ export default class Logger {
    * Create a Logger instance
    * @param {string} [logLevel=warn] - Log level
    */
-  constructor(logLevel = 'warn') {
+  constructor (logLevel = 'warn') {
     this.logLevel = logLevel;
   }
 
@@ -46,7 +46,7 @@ export default class Logger {
    * Get available log levels
    * @returns {Array<string>} - Log levels
    */
-  getLogLevels() {
+  getLogLevels () {
     return [
       'debug',
       'info',
@@ -60,9 +60,8 @@ export default class Logger {
    * Log a message
    * @param {string} message - Message to be logged
    * @param {string} level - Log level
-   * @returns {void}
    */
-  log(message, level = 'info') {
+  log (message, level = 'info') {
     if (level === 'none') {
       return;
     }
@@ -76,36 +75,32 @@ export default class Logger {
   /**
    * Log a debug message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
-  debug(message) {
+  debug (message) {
     this.log(message, 'debug');
   }
 
   /**
    * Log an informative message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
-  info(message) {
+  info (message) {
     this.log(message, 'info');
   }
 
   /**
    * Log a warning message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
-  warn(message) {
+  warn (message) {
     this.log(message, 'warn');
   }
 
   /**
    * Log an error message
    * @param {string} message - Message to be logged
-   * @returns {void}
    */
-  error(message) {
+  error (message) {
     this.log(message, 'error');
   }
 
@@ -113,16 +108,16 @@ export default class Logger {
    * Get the current log level
    * @returns {string} - log level
    */
-  get logLevel() {
+  get logLevel () {
     return this._logLevel;
   }
 
   /**
    * Set the current log level
    * @param {string} value - log level
-   * @see Logger#getLogLevels
+   * @throws {Logger#getLogLevels}
    */
-  set logLevel(value) {
+  set logLevel (value) {
     value = value.toLowerCase();
 
     if (!this.getLogLevels().includes(value)) {
@@ -132,9 +127,8 @@ export default class Logger {
     this._logLevel = value;
   }
 
-  _shouldLog(level) {
+  _shouldLog (level) {
     const logLevels = this.getLogLevels();
-
     const targetLevel = logLevels.findIndex(x => x === level);
     const currentLevel = logLevels.findIndex(x => x === this.logLevel);
 

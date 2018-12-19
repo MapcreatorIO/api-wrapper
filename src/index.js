@@ -38,7 +38,7 @@ export JobMonitor from './JobMonitor';
 
 // Enums
 export Enum from './enums/Enum';
-export {DeletedState, JobMonitorFilter, ResultStatus} from './enums';
+export { DeletedState, JobMonitorFilter, ResultStatus } from './enums';
 
 // Flows
 export OAuth from './oauth/OAuth';
@@ -70,9 +70,3 @@ export * as errors from './errors';
  * @private
  */
 export const version = VERSION;
-
-/**
- * Package license
- * @private
- */
-export const license = LICENSE;
