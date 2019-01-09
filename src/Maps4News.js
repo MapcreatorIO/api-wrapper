@@ -215,16 +215,23 @@ export default class Maps4News extends mix(null, Injectable) {
    * @return {AxiosInstance} - Axios instance
    */
   get axios () {
+    if (this._axios) {
+      return this._axios;
+    }
+
     const instance = axios.create({
       baseURL: `${this.host}/${this.version}/`,
       responseType: 'json',
       responseEncoding: 'utf8',
       timeout: 30000, // 30 seconds
-      headers: {
-        Accept: 'application/json',
-      },
       maxRedirects: 0,
     });
+
+    // I feel ashamed for this hack
+    // For some reason headers is a reference even when passing custom headers in the instance options
+    instance.defaults.headers = JSON.parse(JSON.stringify(instance.defaults.headers));
+
+    instance.defaults.headers.common.Accept = 'application/json';
 
     instance.defaults.headers.post['Content-Type'] = 'application/json';
     instance.defaults.headers.put['Content-Type'] = 'application/json';
@@ -248,6 +255,8 @@ export default class Maps4News extends mix(null, Injectable) {
 
     // Transform errors
     instance.interceptors.response.use(null, transformAxiosErrors);
+
+    this._axios = instance;
 
     return instance;
   }
