@@ -414,7 +414,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @returns {GeoResourceProxy} - A proxy for accessing the resource
    */
   get highlights () {
-    return new GeoResourceProxy(this, Highlight, null, {}, { hasForBoundary: false });
+    return new GeoResourceProxy(this, Highlight, null, {}, {});
   }
 
   /**
