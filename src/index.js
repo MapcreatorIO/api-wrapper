@@ -42,6 +42,7 @@ export { DeletedState, JobMonitorFilter, ResultStatus } from './enums';
 
 // Flows
 export OAuth from './oauth/OAuth';
+export OAuthToken from './oauth/OAuthToken';
 export ImplicitFlow from './oauth/ImplicitFlow';
 export ImplicitFlowPopup from './oauth/ImplicitFlowPopup';
 export PasswordFlow from './oauth/PasswordFlow';
