@@ -241,17 +241,17 @@ export default class Maps4News extends mix(null, Injectable) {
       instance.defaults.headers.common.Authorization = this.auth.token.toString();
     }
 
-    // The xhrAdapter does not support catching redirects, so we
-    // can't strip the Authentication header during a redirect.
     if (instance.defaults.adapter.name === 'xhrAdapter') {
+      // The xhrAdapter does not support catching redirects, so we
+      // can't strip the Authentication header during a redirect.
       instance.defaults.headers.common['X-No-CDN-Redirect'] = 'true';
+    } else {
+      // Intercept 3xx redirects and rewrite headers
+      instance.interceptors.response.use(null, custom3xxHandler);
     }
 
     // Retry requests if rate limiter is hit
     instance.interceptors.response.use(null, retry429ResponseInterceptor);
-
-    // Intercept 3xx redirects and rewrite headers (node)
-    instance.interceptors.response.use(null, custom3xxHandler);
 
     // Transform errors
     instance.interceptors.response.use(null, transformAxiosErrors);

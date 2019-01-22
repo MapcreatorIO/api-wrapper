@@ -45,7 +45,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {boolean} [options.hasForPoint=true] - If the endpoint supports for-point
    * @param {boolean} [options.hasForBoundary=true] - If the endpoint supports for-boundary
    */
-  constructor (api, Target, altUrl = null, seedData = {}, { hasForPoint = true, hasForBoundary = true }) {
+  constructor (api, Target, altUrl = null, seedData = {}, { hasForPoint = true, hasForBoundary = true } = {}) {
     super(api, Target, altUrl, seedData);
     this._hasForPoint = hasForPoint;
     this._hasForBoundary = hasForBoundary;
