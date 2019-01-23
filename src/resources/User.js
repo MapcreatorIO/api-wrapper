@@ -34,19 +34,23 @@ import OwnedResourceProxy from '../proxy/OwnedResourceProxy';
 import ResourceProxy from '../proxy/ResourceProxy';
 import CrudBase from './base/CrudBase';
 import Color from './Color';
+import Dimension from './Dimension';
 import DimensionSet from './DimensionSet';
 import Feature from './Feature';
+import Font from './Font';
 import FontFamily from './FontFamily';
 import Job from './Job';
 import JobShare from './JobShare';
 import JobType from './JobType';
 import Language from './Language';
 import Layer from './Layer';
+import Mapstyle from './Mapstyle';
 import MapstyleSet from './MapstyleSet';
 import Notification from './Notification';
 import Organisation from './Organisation';
 import Permission from './Permission';
 import Role from './Role';
+import Svg from './Svg';
 import SvgSet from './SvgSet';
 
 export default class User extends CrudBase {
@@ -102,11 +106,27 @@ export default class User extends CrudBase {
   }
 
   /**
+   * Get the list mapstyles linked to the user
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get mapstyles () {
+    return this._proxyResourceList(Mapstyle);
+  }
+
+  /**
    * Get the list dimension sets linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get dimensionSets () {
     return this._proxyResourceList(DimensionSet);
+  }
+
+  /**
+   * Get the list dimensions linked to the user
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get dimensions () {
+    return this._proxyResourceList(Dimension);
   }
 
   /**
@@ -118,11 +138,27 @@ export default class User extends CrudBase {
   }
 
   /**
+   * Get the list fonts linked to the user
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get fonts () {
+    return this._proxyResourceList(Font);
+  }
+
+  /**
    * Get the list svg sets linked to the user
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get svgSets () {
     return this._proxyResourceList(SvgSet);
+  }
+
+  /**
+   * Get the list svgs linked to the user
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get svgs () {
+    return this._proxyResourceList(Svg);
   }
 
   /**
