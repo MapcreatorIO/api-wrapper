@@ -80,7 +80,7 @@ node('npm') {
     }
   }
 
-  if (SHOULD_TAG) {
+  if (BRANCH_NAME == 'master') {
     build job: '/MapCreator/api-docs/master', wait: false
   }
 
