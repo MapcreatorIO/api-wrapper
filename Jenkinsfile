@@ -91,6 +91,8 @@ node('npm') {
     }
   }
 
+  build job: '/MapCreator/api-docs/master', wait: false
+
   stage('cleanup') {
     sh 'rm -rf node_modules dist docs build .env || true'
   }
