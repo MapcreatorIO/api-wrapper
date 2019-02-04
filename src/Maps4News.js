@@ -241,7 +241,7 @@ export default class Maps4News extends mix(null, Injectable) {
       instance.defaults.headers.common.Authorization = this.auth.token.toString();
     }
 
-    if (instance.defaults.adapter.name === 'xhrAdapter') {
+    if (['xhrAdapter', ''].includes(instance.defaults.adapter.name)) {
       // The xhrAdapter does not support catching redirects, so we
       // can't strip the Authentication header during a redirect.
       instance.defaults.headers.common['X-No-CDN-Redirect'] = 'true';
