@@ -62,11 +62,11 @@ export class GeoPoint {
   set lat (value) {
     value = Number(value);
 
-    if (!Number.isFinite(value) || value > 90 || value < -90) {
+    if (!Number.isFinite(value)) {
       throw new GeoError(`Invalid latitude: ${value}`);
     }
 
-    this._lat = value;
+    this._lat = Math.min(90, Math.max(-90, value));
   }
 
   /**
@@ -84,7 +84,7 @@ export class GeoPoint {
   set lng (value) {
     value = Number(value);
 
-    if (!Number.isFinite(value) || value > 180 || value < -180) {
+    if (!Number.isFinite(value)) {
       throw new GeoError(`Invalid longitude: ${value}`);
     }
 
