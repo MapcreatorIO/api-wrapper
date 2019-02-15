@@ -150,7 +150,7 @@ export default class JobResult extends ResourceBase {
    * @param {boolean} [value=true] - What to set the dealt-with value to
    * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
-  async dealWith (value = true, deleted) {
+  async dealWith (value = true, deleted = RequestParameters.deleted) {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';
