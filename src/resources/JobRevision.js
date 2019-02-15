@@ -35,6 +35,8 @@ import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobShare from './JobShare';
 import Layer from './Layer';
+import RequestParameters from '../RequestParameters';
+import { encodeQueryString } from '../utils/requests';
 
 export default class JobRevision extends CrudBase {
   get baseUrl () {
@@ -63,11 +65,12 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get the job result
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<JobResult>} - The associated job result
    * @throws {ApiError}
    */
-  async result () {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/result`);
+  async result (deleted = RequestParameters.deleted) {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/result?${encodeQueryString({ deleted })}`);
 
     data.jobId = this.jobId;
     data.revision = this.revision;
@@ -94,11 +97,12 @@ export default class JobRevision extends CrudBase {
    * Save updated job revision
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<JobRevision>} - New job revision
    * @throws {TypeError}
    * @throws {ApiError}
    */
-  async save (object = {}, layers = null) {
+  async save (object = {}, layers = null, deleted = RequestParameters.deleted) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -117,19 +121,20 @@ export default class JobRevision extends CrudBase {
       data.layers = layers;
     }
 
-    const response = await this.api.axios.post(this.baseUrl, data);
+    const response = await this.api.axios.post(`${this.baseUrl}?${encodeQueryString({ deleted })}`, data);
 
     return new JobRevision(this.api, response.data.data);
   }
 
   /**
    * Get job object
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<Object>} - The map object
    * @throws {ApiError}
    * @todo document object format
    */
-  async object () {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/object`);
+  async object (deleted = RequestParameters.deleted) {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/object?${encodeQueryString({ deleted })}`);
 
     return data;
   }
@@ -137,26 +142,29 @@ export default class JobRevision extends CrudBase {
   /**
    * Build the revision
    * @param {String} callbackUrl - Optional callback url for when the job completes
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */
-  async build (callbackUrl) {
-    await this.api.axios.post(`${this.url}/build`, { callbackUrl });
+  async build (callbackUrl, deleted = RequestParameters.deleted) {
+    await this.api.axios.post(`${this.url}/build?${encodeQueryString({ deleted })}`, { callbackUrl });
   }
 
   /**
    * Cancels a running job
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
-  async cancel () {
-    await this.api.axios.post(`${this.url}/cancel`);
+  async cancel (deleted = RequestParameters.deleted) {
+    await this.api.axios.post(`${this.url}/cancel?${encodeQueryString({ deleted })}`);
   }
 
   /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<String>} - the share link
    * @throws {ApiError}
    */
-  async share (visibility = JobShare.visibility.PRIVATE) {
+  async share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted) {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
@@ -164,16 +172,18 @@ export default class JobRevision extends CrudBase {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
-    const { data: { data } } = await this.api.axios.post(`${this.url}/share`, { visibility });
+    const { data: { data } } = await this.api.axios.post(`${this.url}/share?${encodeQueryString({ deleted })}`, { visibility });
 
     return data.url;
   }
 
+  // noinspection JSCheckFunctionSignatures
   /**
    * Clones a job revision to the user requesting it
+   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */
-  async clone () {
-    await this.api.axios.post(`${this.url}/clone`);
+  async clone (deleted = RequestParameters.deleted) {
+    await this.api.axios.post(`${this.url}/clone?${encodeQueryString({ deleted })}`);
   }
 }
