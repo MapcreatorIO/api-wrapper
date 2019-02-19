@@ -252,7 +252,15 @@ export default class ResourceLister extends EventEmitter {
       }
 
       if (this._realData.length < this.maxRows) {
-        await this._fetchMore();
+        try {
+          await this._fetchMore();
+        } catch (e) {
+          this.autoUpdate = false;
+
+          this.emit('error', e);
+
+          throw e;
+        }
       }
 
       if (this.data.length !== this.maxRows) {
