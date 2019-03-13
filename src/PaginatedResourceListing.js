@@ -239,8 +239,8 @@ export default class PaginatedResourceListing {
 
     const { data: { data }, headers } = await this.api.axios.get(url);
 
-    const rowCount = Number(headers['X-Paginate-Total'] || data.length);
-    const totalPages = Number(headers['X-Paginate-Pages'] || 1);
+    const rowCount = Number(headers['x-paginate-total'] || data.length);
+    const totalPages = Number(headers['x-paginate-pages'] || 1);
     const parameters = this.parameters.copy();
 
     parameters.page = page;
