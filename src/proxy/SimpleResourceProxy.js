@@ -114,8 +114,8 @@ export default class SimpleResourceProxy {
    * @param {Number|Object|RequestParameters} [params] - Parameters or the page number to be requested
    * @param {Number} [params.page=1] - The page to be requested
    * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
-   * @param {Number} [params.sort=''] - Amount of items per page. This is silently capped by the API
-   * @param {Number} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
+   * @param {String|String[]} [params.sort=''] - Amount of items per page. This is silently capped by the API
+   * @param {String} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
    * @returns {Promise<PaginatedResourceListing>} - paginated resource
    * @throws {ApiError}
