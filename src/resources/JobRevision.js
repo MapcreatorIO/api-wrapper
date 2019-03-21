@@ -65,7 +65,7 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get the job result
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<JobResult>} - The associated job result
    * @throws {ApiError}
    */
@@ -97,7 +97,7 @@ export default class JobRevision extends CrudBase {
    * Save updated job revision
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<JobRevision>} - New job revision
    * @throws {TypeError}
    * @throws {ApiError}
@@ -128,7 +128,7 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Get job object
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<Object>} - The map object
    * @throws {ApiError}
    * @todo document object format
@@ -142,7 +142,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Build the revision
    * @param {String} callbackUrl - Optional callback url for when the job completes
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */
   async build (callbackUrl, deleted = RequestParameters.deleted) {
@@ -151,7 +151,7 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Cancels a running job
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
   async cancel (deleted = RequestParameters.deleted) {
     await this.api.axios.post(`${this.url}/cancel?${encodeQueryString({ deleted })}`);
@@ -160,7 +160,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<String>} - the share link
    * @throws {ApiError}
    */
@@ -180,7 +180,7 @@ export default class JobRevision extends CrudBase {
   // noinspection JSCheckFunctionSignatures
   /**
    * Clones a job revision to the user requesting it
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */
   async clone (deleted = RequestParameters.deleted) {

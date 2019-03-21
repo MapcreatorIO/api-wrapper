@@ -70,7 +70,7 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get archive blob url
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result output
    */
   async downloadOutput (deleted = RequestParameters.deleted) {
@@ -91,7 +91,7 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get the remote output url
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
    */
@@ -111,7 +111,7 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Download the job result log
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - job result log
    */
   async downloadLog (deleted = RequestParameters.deleted) {
@@ -132,7 +132,7 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Download the job preview
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview (deleted = RequestParameters.deleted) {
@@ -148,7 +148,7 @@ export default class JobResult extends ResourceBase {
    * This method is for internal use for our support team.
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
-   * @param {String} deleted - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
   async dealWith (value = true, deleted = RequestParameters.deleted) {
     value = Boolean(value);

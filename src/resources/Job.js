@@ -35,6 +35,8 @@ import DownloadedResource from './base/DownloadedResource';
 import CrudBase from './base/CrudBase';
 import JobResult from './JobResult';
 import JobRevision from './JobRevision';
+import RequestParameters from '../RequestParameters';
+import { encodeQueryString } from '../utils/requests';
 
 export default class Job extends CrudBase {
   /**
@@ -94,10 +96,11 @@ export default class Job extends CrudBase {
 
   /**
    * Download the job preview
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  async downloadPreview () {
-    const response = await this.api.axios.get(this.previewUrl, {
+  async downloadPreview (deleted = RequestParameters.deleted) {
+    const response = await this.api.axios.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
 
@@ -106,10 +109,11 @@ export default class Job extends CrudBase {
 
   /**
    * Get archive blob url
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result output
    */
-  async downloadOutput () {
-    const response = await this.api.axios.get(this.lastArchiveUrl, {
+  async downloadOutput (deleted = RequestParameters.deleted) {
+    const response = await this.api.axios.get(`${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
 
@@ -118,11 +122,12 @@ export default class Job extends CrudBase {
 
   /**
    * Get the remote output url
+   * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
    */
-  async getOutputUrl () {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/output-url`);
+  async getOutputUrl (deleted = RequestParameters.deleted) {
+    const { data: { data } } = await this.api.axios.get(`${this.url}/output-url?${encodeQueryString({ deleted })}`);
 
     return data.url;
   }
