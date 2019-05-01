@@ -145,8 +145,8 @@ export default class JobRevision extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */
-  async build (callbackUrl, deleted = RequestParameters.deleted) {
-    await this.api.axios.post(`${this.url}/build?${encodeQueryString({ deleted })}`, { callbackUrl });
+  async build (callback, deleted = RequestParameters.deleted) {
+    await this.api.axios.post(`${this.url}/build?${encodeQueryString({ deleted })}`, { callback });
   }
 
   /**
