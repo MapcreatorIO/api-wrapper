@@ -123,7 +123,7 @@ export default class Organisation extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get jobs () {
-    return this._proxyBuilder(Job);
+    return this._proxyResourceList(Job);
   }
 
   /**
