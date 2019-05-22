@@ -182,8 +182,11 @@ export default class JobRevision extends CrudBase {
    * Clones a job revision to the user requesting it
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
+   * @returns {Promise<JobRevision>} - The new job revision, which will be linked to a new job
    */
   async clone (deleted = RequestParameters.deleted) {
-    await this.api.axios.post(`${this.url}/clone?${encodeQueryString({ deleted })}`);
+    const { data: { data } } = await this.api.axios.post(`${this.url}/clone?${encodeQueryString({ deleted })}`);
+
+    return new JobRevision(this.api, data);
   }
 }
