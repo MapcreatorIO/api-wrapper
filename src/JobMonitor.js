@@ -62,6 +62,7 @@ export default class JobMonitor {
     this._filterTags = [];
     this._purge = false;
     this._skipMaxUpdate = false;
+    this._waiting = 0;
   }
 
   /**
@@ -98,15 +99,15 @@ export default class JobMonitor {
    * @throws {ApiError}
    * @todo refactor
    */
-  update () {
-    if (this.waiting || this._lastUpdate === this._getTimestamp()) {
+  update (force = false) {
+    if (!force && (this.waiting || this._lastUpdate === this._getTimestamp())) {
       return new Promise(resolve => {
         resolve(0); // Still waiting for the other promise to resolve or we're sure there is no new data
       });
     }
 
     // Counter so we don't have to worry about racing
-    this._waiting = 1;
+    this._waiting += 1;
 
     if (this._purge) {
       this._data = [];
