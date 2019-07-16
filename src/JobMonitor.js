@@ -95,12 +95,13 @@ export default class JobMonitor {
 
   /**
    * Update the job list
+   * @param {Boolean} [allowLongPoll=true] - If long polling is allowed
    * @returns {Promise<Number>} - number of updated rows
    * @throws {ApiError}
    * @todo refactor
    */
-  update (force = false) {
-    if (!force && (this.waiting || this._lastUpdate === this._getTimestamp())) {
+  update (allowLongPoll = true) {
+    if (allowLongPoll && (this.waiting || this._lastUpdate === this._getTimestamp())) {
       return new Promise(resolve => {
         resolve(0); // Still waiting for the other promise to resolve or we're sure there is no new data
       });
@@ -127,6 +128,10 @@ export default class JobMonitor {
     const requests = [];
 
     const skipLongPoll = rowCountDiff > 0;
+
+    if (!skipLongPoll && !allowLongPoll) {
+      return new Promise(resolve => resolve(0));
+    }
 
     while (rowCountDiff > 0) {
       // @todo Either always do 50 or calculate the correct page number and stuff which takes time...
