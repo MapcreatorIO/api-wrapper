@@ -79,7 +79,8 @@ export default class ResourceBase extends mix(null, Injectable) {
     this._properties = {};
     this._api = api;
 
-    const fields = Object.keys(this._baseProperties);
+    const fields = Object.keys(this._baseProperties)
+      .filter(field => !Object.prototype.hasOwnProperty.call(this, field));
 
     // Apply properties
     for (const key of fields) {
