@@ -68,6 +68,12 @@ export default class ResourceBase extends mix(null, Injectable) {
     for (const key of Object.keys(data)) {
       const newKey = snakeCase(key);
 
+      if (newKey in this) {
+        delete data[key];
+
+        continue;
+      }
+
       data[newKey] = this.constructor._guessType(newKey, data[key]);
 
       if (newKey !== key) {
@@ -79,8 +85,7 @@ export default class ResourceBase extends mix(null, Injectable) {
     this._properties = {};
     this._api = api;
 
-    const fields = Object.keys(this._baseProperties)
-      .filter(field => !Object.prototype.hasOwnProperty.call(this, camelCase(field)));
+    const fields = Object.keys(this._baseProperties);
 
     // Apply properties
     for (const key of fields) {
