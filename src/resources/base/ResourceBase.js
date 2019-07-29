@@ -68,7 +68,7 @@ export default class ResourceBase extends mix(null, Injectable) {
     for (const key of Object.keys(data)) {
       const newKey = snakeCase(key);
 
-      if (newKey in this) {
+      if (camelCase(newKey) in this) {
         delete data[key];
 
         continue;
