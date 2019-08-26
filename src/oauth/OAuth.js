@@ -103,7 +103,7 @@ export default class OAuth {
 
     const url = `${this.host}/oauth/logout`;
 
-    await axios.post(url, {
+    await axios.post(url, {}, {
       headers: {
         Accept: 'application/json',
         Authorization: this.token.toString(),
