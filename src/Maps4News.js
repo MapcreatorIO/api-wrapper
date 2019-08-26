@@ -601,9 +601,10 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Forget the current session
    * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
+   * @async
    */
   logout () {
-    this.auth.logout();
+    return this.auth.logout();
   }
 
   /**
