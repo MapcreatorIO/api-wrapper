@@ -141,7 +141,7 @@ export default class JobRevision extends CrudBase {
 
   /**
    * Build the revision
-   * @param {String} callbackUrl - Optional callback url for when the job completes
+   * @param {String} callback - Optional callback url for when the job completes
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */

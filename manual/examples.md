@@ -136,4 +136,4 @@ api.layers.search(query).then(console.dir);
 The `search` method is an extension of `list`. This means that `.search({})` is the same as 
 `list()`. More information about search query formatting can be found in the [api documentation].
  
-[api documepntation]: https://api.beta.maps4news.com/docs/
+[api documepntation]: https://docs.maps4news.com/

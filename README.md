@@ -36,15 +36,15 @@ Examples can be found in the documentation under the "[Manual]" section.
 ## License
 See the [LICENSE] file for license information. This project is licensed under a [BSD-3-Clause] license.
 
-[download library]: https://mapcreatoreu.github.io/api-wrapper/dist/bundle.js
-[minified]: https://mapcreatoreu.github.io/api-wrapper/dist/bundle.min.js
+[download library]: https://docs.maps4news.com/wrapper/dist/bundle.js
+[minified]: https://docs.maps4news.com/wrapper/dist/bundle.min.js
 
-[installation]: https://mapcreatoreu.github.io/api-wrapper/manual/installation/installation.html
-[building]: https://mapcreatoreu.github.io/api-wrapper/manual/installation/building.html
+[installation]: https://docs.maps4news.com/wrapper/manual/installation/installation.html
+[building]: https://docs.maps4news.com/wrapper/manual/installation/building.html
 [api documentation]: https://api.beta.maps4news.com/docs/
-[docs]: https://mapcreatoreu.github.io/api-wrapper/
-[docs-auth]: https://mapcreatoreu.github.io/api-wrapper/manual/example/examples.authentication.html
-[manual]: https://mapcreatoreu.github.io/api-wrapper/manual/index.html
+[docs]: https://docs.maps4news.com/wrapper/
+[docs-auth]: https://docs.maps4news.com/wrapper/manual/example/examples.authentication.html
+[manual]: https://docs.maps4news.com/wrapper/manual/index.html
 [GitHub repo]: https://github.com/MapCreatorEU/api-wrapper
 [esdoc]: https://esdoc.org
 [example-basics]: examples/basics.js
@@ -53,8 +53,8 @@ See the [LICENSE] file for license information. This project is licensed under a
 [LICENSE]: https://github.com/MapCreatorEU/api-wrapper/blob/master/LICENSE
 [BSD-3-Clause]: https://tldrlegal.com/license/bsd-3-clause-license-(revised)
 
-[ImplicitFlow]: https://mapcreatoreu.github.io/api-wrapper/manual/example/examples.authentication.html#implicit-flow
-[ImplicitPopupFlow]: https://mapcreatoreu.github.io/api-wrapper/manual/example/examples.authentication.html#implicit-flow-pop-up
-[PasswordFlow]: https://mapcreatoreu.github.io/api-wrapper/manual/example/examples.authentication.html#password-flow
-[PasswordFlow-web]: https://mapcreatoreu.github.io/api-wrapper/manual/example/examples.authentication.html#password-flow-dangerous-
-[DummyFlow]: https://mapcreatoreu.github.io/api-wrapper/manual/example/examples.authentication.html#dummy-flow
+[ImplicitFlow]: https://docs.maps4news.com/wrapper/manual/example/examples.authentication.html#implicit-flow
+[ImplicitPopupFlow]: https://docs.maps4news.com/wrapper/manual/example/examples.authentication.html#implicit-flow-pop-up
+[PasswordFlow]: https://docs.maps4news.com/wrapper/manual/example/examples.authentication.html#password-flow
+[PasswordFlow-web]: https://docs.maps4news.com/wrapper/manual/example/examples.authentication.html#password-flow-dangerous-
+[DummyFlow]: https://docs.maps4news.com/wrapper/manual/example/examples.authentication.html#dummy-flow
