@@ -30,46 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export Choropleth from './Choropleth';
-export Color from './Color';
-export Contract from './Contract';
-export Dimension from './Dimension';
-export DimensionSet from './DimensionSet';
-export Domain from './Domain';
-export Faq from './Faq';
-export Feature from './Feature';
-export Font from './Font';
-export FontFamily from './FontFamily';
-export Highlight from './Highlight';
-export InsetMap from './InsetMap';
-export Job from './Job';
-export JobMonitorRow from './JobMonitorRow';
-export JobResult from './JobResult';
-export JobRevision from './JobRevision';
-export JobShare from './JobShare';
-export JobType from './JobType';
-export Language from './Language';
-export Layer from './Layer';
-export Mapstyle from './Mapstyle';
-export MapstyleSet from './MapstyleSet';
-export Notification from './Notification';
-export Organisation from './Organisation';
-export Permission from './Permission';
-export PlaceName from './PlaceName';
-export Role from './Role';
-export Svg from './Svg';
-export SvgSet from './SvgSet';
-export Tag from './Tag';
-export TagType from './TagType';
-export User from './User';
-
-import CrudBase from './base/CrudBase';
 import CrudSetBase from './base/CrudSetBase';
-import ResourceBase from './base/ResourceBase';
+import Tag from './Tag';
 
 /**
- * @private
+ * TagType resource
+ * @mixes CrudSetBase
  */
-export const base = {
-  CrudBase, CrudSetBase, ResourceBase,
-};
+export default class TagType extends CrudSetBase {
+  static get resourcePath () {
+    return '/tags/types/{id}';
+  }
+
+  static get resourceName () {
+    return 'tag-types';
+  }
+
+  get _Child () {
+    return Tag;
+  }
+
+  /**
+   * Get items associated with the set
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get items () {
+    const data = { [this.constructor.foreignKeyName]: this.id };
+
+    return this._proxyResourceList(this._Child, `${this.url}/tags`, data);
+  }
+}

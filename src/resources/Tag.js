@@ -30,17 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudBase from './base/CrudBase';
 import OwnableResource from '../traits/OwnableResource';
 import { mix } from '../utils/reflection';
+import CrudSetItemBase from './base/CrudSetItemBase';
 
 /**
  * Tag resource
- * @extends CrudBase
+ * @extends CrudSetItemBase
  * @mixes OwnableResource
  */
-export default class Tag extends mix(CrudBase, OwnableResource) {
+export default class Tag extends mix(CrudSetItemBase, OwnableResource) {
   static get resourceName () {
     return 'tags';
+  }
+
+  static get parentKey () {
+    return 'tag_type_id';
   }
 }
