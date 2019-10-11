@@ -40,8 +40,6 @@ test('lister update should stop if it gets a 500', async () => {
   moxios.wait(() => {
     const request = moxios.requests.mostRecent();
 
-    expect(true).toBeTruthy();
-
     request.respondWith({
       status: 500,
       response: {
@@ -53,8 +51,6 @@ test('lister update should stop if it gets a 500', async () => {
       },
     });
   });
-
-  expect.assertions(3);
 
   const lister = api.users.lister({}, 0);
 
