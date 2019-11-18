@@ -67,6 +67,7 @@ import {
   Svg,
   SvgSet,
   Tag,
+  TagType,
   User,
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
@@ -334,6 +335,15 @@ export default class Maps4News extends mix(null, Injectable) {
    */
   get tags () {
     return this.static(Tag);
+  }
+
+  /**
+   * Tag accessor
+   * @see {@link Tag}
+   * @returns {ResourceProxy} - A proxy for accessing the resource
+   */
+  get tagTypes () {
+    return this.static(TagType);
   }
 
   /**
