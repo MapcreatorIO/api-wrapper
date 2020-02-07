@@ -127,9 +127,15 @@ export default class DownloadedResource {
       throw new Error('Object urls are not supported by Node');
     }
 
-    const blob = new Blob([this.data], { type: this.type });
+    return URL.createObjectURL(this.createBlob());
+  }
 
-    return URL.createObjectURL(blob);
+  /**
+   * Create a blob from the resource
+   * @returns {Blob}
+   */
+  createBlob () {
+    return new Blob([this.data], { type: this.type });
   }
 
   /**
