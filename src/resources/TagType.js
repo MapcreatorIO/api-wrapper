@@ -51,8 +51,6 @@ export default class TagType extends CrudBase {
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
   get tags () {
-    const data = { [this.constructor.foreignKeyName]: this.id };
-
-    return this._proxyResourceList(Tag, `${this.url}/tags`, data);
+    return this._proxyResourceList(Tag, `${this.url}/tags`);
   }
 }
