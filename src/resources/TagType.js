@@ -30,14 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CrudSetBase from './base/CrudSetBase';
+import CrudBase from './base/CrudBase';
 import Tag from './Tag';
 
 /**
  * TagType resource
  * @mixes CrudSetBase
  */
-export default class TagType extends CrudSetBase {
+export default class TagType extends CrudBase {
   static get resourcePath () {
     return '/tags/types/{id}';
   }
@@ -46,17 +46,11 @@ export default class TagType extends CrudSetBase {
     return 'tag-types';
   }
 
-  get _Child () {
-    return Tag;
-  }
-
   /**
-   * Get items associated with the set
+   * Get the list of tags that are attached to this type
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    */
-  get items () {
-    const data = { [this.constructor.foreignKeyName]: this.id };
-
-    return this._proxyResourceList(this._Child, `${this.url}/tags`, data);
+  get tags () {
+    return this._proxyResourceList(Tag, `${this.url}/tags`);
   }
 }
