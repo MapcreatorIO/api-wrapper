@@ -55,7 +55,6 @@ export MapstyleSet from './MapstyleSet';
 export Notification from './Notification';
 export Organisation from './Organisation';
 export Permission from './Permission';
-export PlaceName from './PlaceName';
 export Role from './Role';
 export Svg from './Svg';
 export SvgSet from './SvgSet';
