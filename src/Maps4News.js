@@ -69,6 +69,8 @@ import {
   Tag,
   TagType,
   User,
+  VectorHighlight,
+  VectorChoropleth,
 } from './resources';
 import ResourceBase from './resources/base/ResourceBase';
 import Injectable from './traits/Injectable';
@@ -320,6 +322,15 @@ export default class Maps4News extends mix(null, Injectable) {
   }
 
   /**
+   * VectorChoropleth accessor
+   * @see {@link VectorChoropleth}
+   * @returns {GeoResourceProxy} - A proxy for accessing the resource
+   */
+  get vectorChoropleths () {
+    return new GeoResourceProxy(this, VectorChoropleth, null, {}, {});
+  }
+
+  /**
    * Color accessor
    * @see {@link Color}
    * @returns {ResourceProxy} - A proxy for accessing the resource
@@ -425,6 +436,15 @@ export default class Maps4News extends mix(null, Injectable) {
    */
   get highlights () {
     return new GeoResourceProxy(this, Highlight, null, {}, {});
+  }
+
+  /**
+   * VectorHighlight accessor
+   * @see {@link VectorHighlight}
+   * @returns {GeoResourceProxy} - A proxy for accessing the resource
+   */
+  get vectorHighlights () {
+    return new GeoResourceProxy(this, VectorHighlight, null, {}, {});
   }
 
   /**
