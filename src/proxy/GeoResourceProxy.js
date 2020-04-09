@@ -127,4 +127,22 @@ export default class GeoResourceProxy extends ResourceProxy {
 
     return result.map(r => this.new(r));
   }
+
+  /**
+   * Stub implementation of the get method
+   * Geographic resources don't have stable IDs so we can not reference them by ID
+   * @throws TypeError
+   */
+  get () {
+    throw new TypeError('Geographic resources do not support IDs');
+  }
+
+  /**
+   * Stub implementation of the get method
+   * Geographic resources don't have stable IDs so we can not reference them by ID
+   * @throws TypeError
+   */
+  select () {
+    throw new TypeError('Geographic resources do not support IDs');
+  }
 }
