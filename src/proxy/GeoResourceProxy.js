@@ -138,7 +138,7 @@ export default class GeoResourceProxy extends ResourceProxy {
   }
 
   /**
-   * Stub implementation of the get method
+   * Stub implementation of the select method
    * Geographic resources don't have stable IDs so we can not reference them by ID
    * @throws TypeError
    */
