@@ -30,39 +30,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CrudBase from './base/CrudBase';
+import Tag from './Tag';
 
-import moxios from 'moxios';
-import Maps4News from '../../src/Maps4News';
-
-const api = new Maps4News('token', 'https://example.com');
-
-test('lister update should stop if it gets a 500', async () => {
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 500,
-      response: {
-        success: false,
-        error: {
-          type: 'ServerError',
-          message: 'Something broke',
-        },
-      },
-    });
-  });
-
-  const lister = api.users.lister({}, 0);
-
-  lister.autoUpdate = false;
-
-  lister.maxRows = 50;
-
-  try {
-    await lister.update();
-  } catch (error) {
-    expect(error.type).toEqual('ServerError');
-    expect(error.message).toEqual('Something broke');
+/**
+ * TagType resource
+ * @mixes CrudSetBase
+ */
+export default class TagType extends CrudBase {
+  static get resourcePath () {
+    return '/tags/types/{id}';
   }
-});
 
+  static get resourceName () {
+    return 'tag-types';
+  }
+
+  /**
+   * Get the list of tags that are attached to this type
+   * @returns {SimpleResourceProxy} - A proxy for accessing the resource
+   */
+  get tags () {
+    return this._proxyResourceList(Tag, `${this.url}/tags`);
+  }
+}

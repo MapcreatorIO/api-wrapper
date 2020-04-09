@@ -60,6 +60,7 @@ export Role from './Role';
 export Svg from './Svg';
 export SvgSet from './SvgSet';
 export Tag from './Tag';
+export TagType from './TagType';
 export User from './User';
 
 import CrudBase from './base/CrudBase';

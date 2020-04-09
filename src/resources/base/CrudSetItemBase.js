@@ -32,6 +32,7 @@
 
 import { AbstractClassError } from '../../errors/AbstractError';
 import CrudBase from './CrudBase';
+import { camel as camelCase } from 'case';
 
 /**
  * Items that are part of a set
@@ -50,16 +51,24 @@ export default class CrudSetItemBase extends CrudBase {
     }
   }
 
+  get hasParent () {
+    const parentKey = camelCase(this.constructor.parentKey);
+
+    return this.hasOwnProperty(parentKey);
+  }
+
   /**
    * Get the parent id
-   * @returns {?number|undefined} - Parent number
+   * @returns {number|undefined} - Parent number
    */
   get parentId () {
     if (this.hasParent) {
-      return Number(this[this.constructor.parentKey]);
+      const parentKey = camelCase(this.constructor.parentKey);
+
+      return Number(this[parentKey]);
     }
 
-    return [][0]; // same as "undefined"
+    return void 0;
   }
 
   /**
