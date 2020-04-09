@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, MapCreator
+ * Copyright (c) 2020, Mapcreator
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ import StaticClass from '../../src/utils/StaticClass';
 import Uuid from '../../src/utils/uuid';
 
 test('fnv32b hashes properly', () => {
-  expect(fnv32b('MapCreator')).toEqual('f6a48d4e');
+  expect(fnv32b('Mapcreator')).toEqual('f6a48d4e');
 });
 
 test('objects are correctly hashed', () => {
