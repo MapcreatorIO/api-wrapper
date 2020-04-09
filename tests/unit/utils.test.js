@@ -42,7 +42,7 @@ import StaticClass from '../../src/utils/StaticClass';
 import Uuid from '../../src/utils/uuid';
 
 test('fnv32b hashes properly', () => {
-  expect(fnv32b('Mapcreator')).toEqual('f6a48d4e');
+  expect(fnv32b('Mapcreator')).toEqual('df1d3f67');
 });
 
 test('objects are correctly hashed', () => {
