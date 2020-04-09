@@ -62,7 +62,6 @@ import {
   Notification,
   Organisation,
   Permission,
-  PlaceName,
   Role,
   Svg,
   SvgSet,
@@ -533,15 +532,6 @@ export default class Maps4News extends mix(null, Injectable) {
    */
   get roles () {
     return this.static(Role);
-  }
-
-  /**
-   * PlaceName accessor
-   * @see {@link PlaceName}
-   * @returns {ResourceProxy} - A proxy for accessing the resource
-   */
-  get placeNames () {
-    return this.static(PlaceName);
   }
 
   /**
