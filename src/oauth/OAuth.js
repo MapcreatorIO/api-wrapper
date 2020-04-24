@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import axios from 'redaxios';
 import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError';
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';

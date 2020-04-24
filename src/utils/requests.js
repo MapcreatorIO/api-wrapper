@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import axios from 'redaxios';
 import ApiError from '../errors/ApiError';
 import ValidationError from '../errors/ValidationError';
 import { windowTest } from './node';

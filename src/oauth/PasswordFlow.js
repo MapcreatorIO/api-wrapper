@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import axios from 'redaxios';
 import OAuthError from '../errors/OAuthError';
 import { isNode } from '../utils/node';
 import OAuth from './OAuth';

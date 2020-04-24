@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import axios from 'redaxios';
 
 import { Enum } from './enums';
 import DummyFlow from './oauth/DummyFlow';
@@ -243,14 +243,8 @@ export default class Maps4News extends mix(null, Injectable) {
       instance.defaults.headers.common.Authorization = this.auth.token.toString();
     }
 
-    if (['xhrAdapter', ''].includes(instance.defaults.adapter.name)) {
-      // The xhrAdapter does not support catching redirects, so we
-      // can't strip the Authentication header during a redirect.
-      instance.defaults.headers.common['X-No-CDN-Redirect'] = 'true';
-    } else {
-      // Intercept 3xx redirects and rewrite headers
-      instance.interceptors.response.use(null, custom3xxHandler);
-    }
+    // Intercept 3xx redirects and rewrite headers
+    instance.interceptors.response.use(null, custom3xxHandler);
 
     // Retry requests if rate limiter is hit
     instance.interceptors.response.use(null, retry429ResponseInterceptor);
