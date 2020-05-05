@@ -93,7 +93,7 @@ export default class GeoResourceProxy extends ResourceProxy {
       throw new TypeError(`Invalid resource limit ${limit}, maximum allowed is ${RequestParameters.maxPerPage}`);
     }
 
-    const url = `${this.new().baseUrl}/for-boundary?per_page=limit`;
+    const url = `${this.new().baseUrl}/for-boundary?per_page=${limit}`;
 
     const { data: { data: result } } = await this.api.axios.post(url, { boundary });
 
