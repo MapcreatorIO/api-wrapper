@@ -79,9 +79,10 @@ export default class ResourceProxy extends SimpleResourceProxy {
   async get (id, deleted = null) {
     const data = { ...this._seedData, ...this._parseSelector(id) };
     let url = this.new(data).url;
-    const glue = url.includes('?') ? '&' : '?';
 
     if (typeof deleted === 'string') {
+      const glue = url.includes('?') ? '&' : '?';
+      
       url += glue + encodeQueryString({ deleted });
     }
 
