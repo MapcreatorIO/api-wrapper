@@ -60,17 +60,17 @@ test('RequestParameters should be able to reset defaults', () => {
 test('RequestParameters can generate cache tokens', () => {
   const params = cleanParams.copy();
 
-  expect(params.token()).toEqual('65f40b0d'); // Default token
+  expect(params.token()).toEqual('0c574931'); // Default token
 
   // Page and perPage shouldn't affect the token
   params.page = Math.round(Math.random() * 100000);
   params.perPage = Math.round(Math.random() * 50);
 
-  expect(params.token()).toEqual('65f40b0d');
+  expect(params.token()).toEqual('0c574931');
 
   params.sort = 'quick,-brown,fox';
 
-  expect(params.token()).toEqual('b4b47dc1');
+  expect(params.token()).toEqual('47115fb4');
 });
 
 const validationTests = {
