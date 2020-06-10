@@ -470,6 +470,10 @@ export default class RequestParameters extends EventEmitter {
   }
 
   static _validateDeleted (value) {
+    if (typeof value === 'undefined') {
+      return value;
+    }
+
     if (typeof value !== 'string') {
       throw new TypeError(`Expected deleted to be of type "string" got "${getTypeName(value)}". See: DeletedState`);
     }
