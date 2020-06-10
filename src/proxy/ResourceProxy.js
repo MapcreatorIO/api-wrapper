@@ -82,7 +82,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
 
     if (typeof deleted === 'string') {
       const glue = url.includes('?') ? '&' : '?';
-      
+
       url += glue + encodeQueryString({ deleted });
     }
 

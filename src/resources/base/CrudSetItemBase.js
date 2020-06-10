@@ -54,7 +54,7 @@ export default class CrudSetItemBase extends CrudBase {
   get hasParent () {
     const parentKey = camelCase(this.constructor.parentKey);
 
-    return this.hasOwnProperty(parentKey);
+    return parentKey in this;
   }
 
   /**
