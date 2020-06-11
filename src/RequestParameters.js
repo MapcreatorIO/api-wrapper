@@ -244,10 +244,10 @@ export default class RequestParameters extends EventEmitter {
 
   /**
    * Default deleted items filter state
-   * @returns {String} -  Deleted items filter state
+   * @returns {String|undefined} -  Deleted items filter state
    */
   static get deleted () {
-    return RequestParameters._deleted || DeletedState.NONE;
+    return RequestParameters._deleted || void 0;
   }
 
   /**
@@ -470,6 +470,10 @@ export default class RequestParameters extends EventEmitter {
   }
 
   static _validateDeleted (value) {
+    if (typeof value === 'undefined') {
+      return value;
+    }
+
     if (typeof value !== 'string') {
       throw new TypeError(`Expected deleted to be of type "string" got "${getTypeName(value)}". See: DeletedState`);
     }
@@ -603,6 +607,12 @@ export default class RequestParameters extends EventEmitter {
 
     for (const key of Object.keys(extra)) {
       data[key] = extra[key];
+    }
+
+    for (const key of Object.keys(data)) {
+      if (typeof data[key] === 'undefined') {
+        delete data[key];
+      }
     }
 
     return data;

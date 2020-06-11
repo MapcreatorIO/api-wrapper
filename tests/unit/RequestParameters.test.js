@@ -60,17 +60,17 @@ test('RequestParameters should be able to reset defaults', () => {
 test('RequestParameters can generate cache tokens', () => {
   const params = cleanParams.copy();
 
-  expect(params.token()).toEqual('65f40b0d'); // Default token
+  expect(params.token()).toEqual('0c574931'); // Default token
 
   // Page and perPage shouldn't affect the token
   params.page = Math.round(Math.random() * 100000);
   params.perPage = Math.round(Math.random() * 50);
 
-  expect(params.token()).toEqual('65f40b0d');
+  expect(params.token()).toEqual('0c574931');
 
   params.sort = 'quick,-brown,fox';
 
-  expect(params.token()).toEqual('b4b47dc1');
+  expect(params.token()).toEqual('47115fb4');
 });
 
 const validationTests = {
@@ -150,7 +150,19 @@ test('issue #93', () => {
   const params = new RequestParameters({sort: '-name'});
 
   expect(params.toObject().sort).toEqual(['-name']);
-  expect(params.encode()).toEqual('deleted=none&page=1&per_page=12&sort=-name');
+  expect(params.encode()).toEqual('page=1&per_page=12&sort=-name');
+});
+
+test('deleted will be omitted unless defined', () => {
+  const params = new RequestParameters();
+
+  expect(params.toObject().deleted).toBeUndefined();
+  expect(params.encode()).toEqual('page=1&per_page=12&sort=');
+
+  params.deleted = DeletedState.ALL;
+
+  expect(params.toObject().deleted).toEqual(DeletedState.ALL);
+  expect(params.encode()).toEqual('deleted=all&page=1&per_page=12&sort=');
 });
 
 test('extra parameters overwrite others', () => {
@@ -178,7 +190,7 @@ test('encoded search keys must be snake_case', () => {
     'fooBar,Baz': 'test',
   };
 
-  expect(params.encode()).toEqual('deleted=none&page=1&per_page=12&search[foo_bar,baz]=test&sort='.replace(',', '%2C'));
+  expect(params.encode()).toEqual('page=1&per_page=12&search[foo_bar,baz]=test&sort='.replace(',', '%2C'));
 });
 
 test('null is properly encoded', () => {
@@ -188,7 +200,7 @@ test('null is properly encoded', () => {
     foo: null,
   };
 
-  expect(params.encode()).toEqual('deleted=none&foo&page=1&per_page=12&sort=');
+  expect(params.encode()).toEqual('foo&page=1&per_page=12&sort=');
 });
 
 test('RequestParameters can have properties applied to it', () => {
@@ -205,9 +217,9 @@ test('RequestParameters can have properties applied to it', () => {
     _deleted: 'only',
   });
 
-  expect(params.deleted).toEqual('none');
+  expect(params.deleted).toBeUndefined();
   expect(params.toParameterObject().pirateFlag).toEqual('cool');
-  expect(params.foo).toEqual(undefined);
+  expect(params.foo).toBeUndefined();
 });
 
 test('RequestParameters can have properties applied to it from other RequestParameters', () => {
@@ -224,7 +236,7 @@ test('RequestParameters can have properties applied to it from other RequestPara
     _deleted: 'only',
   }));
 
-  expect(params.deleted).toEqual('none');
+  expect(params.deleted).toBeUndefined();
   expect(params.toParameterObject().pirateFlag).toEqual('cool');
-  expect(params.foo).toEqual(undefined);
+  expect(params.foo).toBeUndefined();
 });

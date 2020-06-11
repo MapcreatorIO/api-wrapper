@@ -76,6 +76,10 @@ export function isParentOf (parent, child) {
  * @returns {string} - Value type name
  */
 export function getTypeName (value) {
+  if (typeof value === 'undefined') {
+    return 'undefined';
+  }
+
   value = typeof value === 'function' ? value : value.constructor;
 
   return value.name;
@@ -86,7 +90,8 @@ export function getTypeName (value) {
  * Helper class for mix
  * @see {@link mix}
  */
-class Empty {}
+class Empty {
+}
 
 /**
  * Copy properties from source to target

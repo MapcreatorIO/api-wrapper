@@ -62,7 +62,7 @@ export default class ResourceLister extends EventEmitter {
 
     this._api = api;
     this._Resource = Resource;
-    this._route = route || (new this.Resource(api, {})).baseUrl;
+    this._route = route || new this.Resource(api, {}).baseUrl;
     this._parameters = new RequestParameters(parameters || { perPage: RequestParameters.maxPerPage });
     this._key = snakeCase(key);
     this._waiting = false;

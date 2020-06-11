@@ -76,7 +76,7 @@ export default class User extends CrudBase {
    * @throws {ApiError}
    */
   organisation () {
-    return (new ResourceProxy(this.api, Organisation)).get(this.organisationId);
+    return new ResourceProxy(this.api, Organisation).get(this.organisationId);
   }
 
   /**
@@ -85,7 +85,7 @@ export default class User extends CrudBase {
    * @throws {ApiError}
    */
   language () {
-    return (new ResourceProxy(this.api, Language)).get(this.languageCode);
+    return new ResourceProxy(this.api, Language).get(this.languageCode);
   }
 
   // region Resource listing
