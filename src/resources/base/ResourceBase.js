@@ -282,7 +282,7 @@ export default class ResourceBase extends mix(null, Injectable) {
       configurable: true,
 
       get: () => {
-        if (Object.prototype.hasOwnProperty.call(this._properties, key)) {
+        if (this._properties.hasOwnProperty(key)) {
           return this._properties[key];
         }
 
