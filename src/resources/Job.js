@@ -37,6 +37,7 @@ import JobResult from './JobResult';
 import JobRevision from './JobRevision';
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
+import { DeletedState } from '../enums';
 
 export default class Job extends CrudBase {
   /**
@@ -99,7 +100,7 @@ export default class Job extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  async downloadPreview (deleted = RequestParameters.deleted) {
+  async downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const response = await this.api.axios.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
@@ -112,7 +113,7 @@ export default class Job extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result output
    */
-  async downloadOutput (deleted = RequestParameters.deleted) {
+  async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const response = await this.api.axios.get(`${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
@@ -126,7 +127,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
    */
-  async getOutputUrl (deleted = RequestParameters.deleted) {
+  async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const { data: { data } } = await this.api.axios.get(`${this.url}/output-url?${encodeQueryString({ deleted })}`);
 
     return data.url;

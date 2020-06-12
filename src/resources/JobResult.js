@@ -34,6 +34,7 @@ import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
+import { DeletedState } from '../enums';
 
 export default class JobResult extends ResourceBase {
   static get resourcePath () {
@@ -73,7 +74,7 @@ export default class JobResult extends ResourceBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result output
    */
-  async downloadOutput (deleted = RequestParameters.deleted) {
+  async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const response = await this.api.axios.get(`${this.outputUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
@@ -95,7 +96,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
    */
-  async getOutputUrl (deleted = RequestParameters.deleted) {
+  async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const { data: { data } } = await this.api.axios.get(`${this.outputUrlUrl}?${encodeQueryString({ deleted })}`);
 
     return data.url;
@@ -114,7 +115,7 @@ export default class JobResult extends ResourceBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - job result log
    */
-  async downloadLog (deleted = RequestParameters.deleted) {
+  async downloadLog (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const response = await this.api.axios.get(`${this.logUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
@@ -135,7 +136,7 @@ export default class JobResult extends ResourceBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
-  async downloadPreview (deleted = RequestParameters.deleted) {
+  async downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const response = await this.api.axios.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, {
       responseType: 'arraybuffer',
     });
@@ -150,7 +151,7 @@ export default class JobResult extends ResourceBase {
    * @param {boolean} [value=true] - What to set the dealt-with value to
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
-  async dealWith (value = true, deleted = RequestParameters.deleted) {
+  async dealWith (value = true, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';

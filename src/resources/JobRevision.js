@@ -37,6 +37,7 @@ import JobShare from './JobShare';
 import Layer from './Layer';
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
+import { DeletedState } from '../enums';
 
 export default class JobRevision extends CrudBase {
   get baseUrl () {
@@ -69,7 +70,7 @@ export default class JobRevision extends CrudBase {
    * @returns {Promise<JobResult>} - The associated job result
    * @throws {ApiError}
    */
-  async result (deleted = RequestParameters.deleted) {
+  async result (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const { data: { data } } = await this.api.axios.get(`${this.url}/result?${encodeQueryString({ deleted })}`);
 
     data.jobId = this.jobId;
@@ -102,7 +103,7 @@ export default class JobRevision extends CrudBase {
    * @throws {TypeError}
    * @throws {ApiError}
    */
-  async save (object = {}, layers = null, deleted = RequestParameters.deleted) {
+  async save (object = {}, layers = null, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -133,7 +134,7 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @todo document object format
    */
-  async object (deleted = RequestParameters.deleted) {
+  async object (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const { data: { data } } = await this.api.axios.get(`${this.url}/object?${encodeQueryString({ deleted })}`);
 
     return data;
@@ -145,7 +146,7 @@ export default class JobRevision extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError}
    */
-  async build (callback, deleted = RequestParameters.deleted) {
+  async build (callback, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     await this.api.axios.post(`${this.url}/build?${encodeQueryString({ deleted })}`, { callback });
   }
 
@@ -153,7 +154,7 @@ export default class JobRevision extends CrudBase {
    * Cancels a running job
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
-  async cancel (deleted = RequestParameters.deleted) {
+  async cancel (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     await this.api.axios.post(`${this.url}/cancel?${encodeQueryString({ deleted })}`);
   }
 
@@ -164,7 +165,7 @@ export default class JobRevision extends CrudBase {
    * @returns {Promise<String>} - the share link
    * @throws {ApiError}
    */
-  async share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted) {
+  async share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
@@ -184,7 +185,7 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @returns {Promise<JobRevision>} - The new job revision, which will be linked to a new job
    */
-  async clone (deleted = RequestParameters.deleted) {
+  async clone (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const { data: { data } } = await this.api.axios.post(`${this.url}/clone?${encodeQueryString({ deleted })}`);
 
     return new JobRevision(this.api, data);
