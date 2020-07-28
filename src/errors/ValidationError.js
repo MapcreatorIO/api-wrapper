@@ -65,17 +65,18 @@ import ApiError from './ApiError';
  */
 export default class ValidationError extends ApiError {
   /**
-   * @param {AxiosError} error - Axios error
-   * @param {AxiosRequestConfig} error.config - Request config
-   * @param {XMLHttpRequest|ClientRequest} request - Request
-   * @param {AxiosResponse} response - Response
+   * @param {Object} params
+   * @param {Object} params.options - Request options
+   * @param {Object} params.data - Response data
+   * @param {Request} params.request - Request
+   * @param {Response} params.response - Response
    */
-  constructor ({ config, request, response }) {
-    super({ config, request, response });
+  constructor ({ options, request, response, data }) {
+    super({ options, request, response, data });
 
-    const schemaErrors = response.data.error['schema_errors'];
+    const schemaErrors = data.error['schema_errors'];
 
-    this._validationErrors = response.data.error['validation_errors'];
+    this._validationErrors = data.error['validation_errors'];
     this._schemaErrors = Array.isArray(schemaErrors) ? schemaErrors : [];
   }
 

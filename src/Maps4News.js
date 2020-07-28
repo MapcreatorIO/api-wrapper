@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import ky from 'ky';
 
 import { Enum } from './enums';
 import DummyFlow from './oauth/DummyFlow';
@@ -40,6 +40,7 @@ import GeoResourceProxy from './proxy/GeoResourceProxy';
 import ResourceProxy from './proxy/ResourceProxy';
 import SimpleResourceProxy from './proxy/SimpleResourceProxy';
 import ResourceCache from './ResourceCache';
+import uuid from './utils/uuid';
 import {
   Choropleth,
   Color,
@@ -76,7 +77,9 @@ import Injectable from './traits/Injectable';
 import { fnv32b } from './utils/hash';
 import Logger from './utils/Logger';
 import { isParentOf, mix } from './utils/reflection';
-import { custom3xxHandler, retry429ResponseInterceptor, transformAxiosErrors } from './utils/requests';
+import { delay } from './utils/helpers';
+import ValidationError from './errors/ValidationError';
+import ApiError from './errors/ApiError';
 
 /**
  * Base API class
@@ -212,55 +215,79 @@ export default class Maps4News extends mix(null, Injectable) {
     return this;
   }
 
-  /**
-   * Pre-configured Axios instance
-   * @return {AxiosInstance} - Axios instance
-   */
-  get axios () {
-    if (this._axios) {
-      return this._axios;
+  get ky () {
+    if (this._ky) {
+      return this._ky;
     }
 
-    const instance = axios.create({
-      baseURL: `${this.host}/${this.version}/`,
-      responseType: 'json',
-      responseEncoding: 'utf8',
+    const placeholderUrl = `http://${uuid.uuid4()}.local`;
+
+    const hooks = {
+      beforeRequest: [
+        // Set auth header for api requests & prefix url
+        request => {
+          let url = request.url.replace(placeholderUrl, '');
+
+          if (!url.startsWith('http')) {
+            const prefixUrl = `${this.host}/${this.version}`;
+
+            if (url.startsWith('/')) {
+              url = `${prefixUrl}${url}`;
+            } else {
+              url = `${prefixUrl}/${url}`;
+            }
+          }
+
+          if (this.authenticated && url.startsWith(this.host)) {
+            request.headers.set('Authorization', this.auth.token.toString());
+          }
+
+          return new Request(url, request);
+        },
+      ],
+      afterResponse: [
+        // 429 response
+        async (request, _options, response) => {
+          if (response.status !== 429) {
+            return response;
+          }
+
+          const resetDelay = (response.headers.get('x-ratelimit-reset') * 1000) || 500;
+
+          await delay(resetDelay);
+
+          return ky.request(request);
+        },
+        // transform errors
+        async (request, options, response) => {
+          if (response.status < 400 || response.status >= 600) {
+            return response;
+          }
+
+          const data = await response.json();
+          const params = { data, request, options, response };
+
+          if (data.error['validation_errors']) {
+            return new ValidationError(params);
+          }
+
+          return new ApiError(params);
+        },
+      ],
+    };
+
+    this._ky = ky.create({
+      prefixUrl: placeholderUrl,
       timeout: 30000, // 30 seconds
-      maxRedirects: 0,
+      throwHttpErrors: false, // This is done through a custom hook
+      redirect: 'follow',
+      headers: {
+        Accept: 'application/json',
+      },
+      hooks,
     });
 
-    // I feel ashamed for this hack
-    // For some reason headers is a reference even when passing custom headers in the instance options
-    instance.defaults.headers = JSON.parse(JSON.stringify(instance.defaults.headers));
-
-    instance.defaults.headers.common.Accept = 'application/json';
-
-    instance.defaults.headers.post['Content-Type'] = 'application/json';
-    instance.defaults.headers.put['Content-Type'] = 'application/json';
-    instance.defaults.headers.patch['Content-Type'] = 'application/json';
-
-    if (this.authenticated) {
-      instance.defaults.headers.common.Authorization = this.auth.token.toString();
-    }
-
-    if (['xhrAdapter', ''].includes(instance.defaults.adapter.name)) {
-      // The xhrAdapter does not support catching redirects, so we
-      // can't strip the Authentication header during a redirect.
-      instance.defaults.headers.common['X-No-CDN-Redirect'] = 'true';
-    } else {
-      // Intercept 3xx redirects and rewrite headers
-      instance.interceptors.response.use(null, custom3xxHandler);
-    }
-
-    // Retry requests if rate limiter is hit
-    instance.interceptors.response.use(null, retry429ResponseInterceptor);
-
-    // Transform errors
-    instance.interceptors.response.use(null, transformAxiosErrors);
-
-    this._axios = instance;
-
-    return instance;
+    return this._ky;
   }
 
   /**

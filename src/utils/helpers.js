@@ -75,3 +75,4 @@ export async function getPaginatedRange (page, start = 1, stop) {
   return out.concat(...rows.map(x => x.data));
 }
 
+export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
