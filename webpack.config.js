@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const exec = require('child_process').execSync;
 const Dotenv = require('dotenv-webpack');
 const nodeExternals = require('webpack-node-externals');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const merge = require('webpack-merge');
 
 const version = exec('git describe --exact-match --tag HEAD 2>/dev/null || git rev-parse --short HEAD').toString().trim();
@@ -36,17 +36,10 @@ const common = {
     ],
   },
   optimization: {
-    minimize: true,
     concatenateModules: true,
+    minimize: true,
+    minimizer: [new TerserPlugin()],
     occurrenceOrder: true,
-
-    minimizer: [
-      new UglifyJsPlugin({
-        include: /\.min\.js$/,
-        sourceMap: false, // Useless because it's based on the bundle
-        parallel: true,
-      }),
-    ],
   },
   node: false,
   devtool: 'source-map',
