@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import ky from 'ky';
 import OAuthError from '../errors/OAuthError';
 import { isNode } from '../utils/node';
 import OAuth from './OAuth';
@@ -147,7 +147,7 @@ export default class PasswordFlow extends OAuth {
       'scope': this.scopes.join(' '),
     };
 
-    const { data } = await axios.post(url, query);
+    const data = await ky.post(url, query).json();
 
     if (data.error) {
       throw new OAuthError(data.error, data.message);

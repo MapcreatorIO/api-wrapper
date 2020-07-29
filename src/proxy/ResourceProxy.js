@@ -86,7 +86,7 @@ export default class ResourceProxy extends SimpleResourceProxy {
       url += glue + encodeQueryString({ deleted });
     }
 
-    const { data: { data: result } } = await this.api.axios.get(url);
+    const { data: result } = await this.api.ky.get(url).json();
 
     return this.new(result);
   }

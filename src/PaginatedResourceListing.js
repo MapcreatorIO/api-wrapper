@@ -237,10 +237,11 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + query.encode();
 
-    const { data: { data }, headers } = await this.api.axios.get(url);
+    const response = await this.api.ky.get(url);
+    const data = await response.json();
 
-    const rowCount = Number(headers['x-paginate-total'] || data.length);
-    const totalPages = Number(headers['x-paginate-pages'] || 1);
+    const rowCount = Number(response.headers['x-paginate-total'] || data.length);
+    const totalPages = Number(response.headers['x-paginate-pages'] || 1);
     const parameters = this.parameters.copy();
 
     parameters.page = page;

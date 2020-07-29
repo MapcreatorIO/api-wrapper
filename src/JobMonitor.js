@@ -158,9 +158,9 @@ export default class JobMonitor {
       }
 
       const url = `${this._baseUrl}&${encodeQueryString(params)}`;
+      const buildRows = json => json.data.map(x => new JobMonitorRow(this.api, x));
 
-      const request = this.api.axios.get(url)
-        .then(response => response.data.data.map(x => new JobMonitorRow(this.api, x)));
+      const request = this.api.ky.get(url).json().then(buildRows);
 
       requests.push(request);
 
@@ -199,10 +199,10 @@ export default class JobMonitor {
 
     this._lastUpdate = this._getTimestamp();
 
-    const promise = this.api.axios
+    const promise = this.api.ky
       .get(url)
-      .then(response => response.data.data)
-      .then(data => data.map(x => new JobMonitorRow(this.api, x)))
+      .json()
+      .then(json => json.data.map(x => new JobMonitorRow(this.api, x)))
       .then(data => {
         const lookup = data.map(x => x.id);
         let updateCount = 0;

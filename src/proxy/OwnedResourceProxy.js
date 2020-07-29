@@ -84,7 +84,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {ApiError}
    */
   async attachAll () {
-    await this.api.axios.post(`${this.baseUrl}/all`);
+    await this.api.ky.post(`${this.baseUrl}/all`);
   }
 
   /**
@@ -92,7 +92,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {ApiError}
    */
   async detachAll () {
-    await this.api.axios.delete(`${this.baseUrl}/all`);
+    await this.api.ky.delete(`${this.baseUrl}/all`);
   }
 
   /**
@@ -112,10 +112,9 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
       .map(Number)
       .filter(x => !Number.isNaN(x));
 
-    await this.api.axios.request({
-      url: this.baseUrl,
+    await this.api.ky(this.baseUrl, {
       method,
-      data: { keys },
+      json: { keys },
     });
   }
 

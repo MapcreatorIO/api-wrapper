@@ -637,7 +637,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @throws {ApiError}
    */
   async getSvgSetTypes () {
-    const { data: { data } } = await this.axios.get('/svgs/sets/types');
+    const { data }  = await this.ky.get('/svgs/sets/types').json();
 
     return new Enum(data, true);
   }
@@ -649,7 +649,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @throws {ApiError}
    */
   async getFontStyles () {
-    const { data: { data } } = await this.axios.get('/fonts/styles');
+    const { data }  = await this.ky.get('/fonts/styles').json();
 
     return new Enum(data, true);
   }

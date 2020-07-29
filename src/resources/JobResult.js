@@ -98,7 +98,7 @@ export default class JobResult extends ResourceBase {
    */
   async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const url = `${this.outputUrlUrl}?${encodeQueryString({ deleted })}`;
-    const { data } = await this.api.axios.get(url).json();
+    const { data } = await this.api.ky.get(url).json();
 
     return data.url;
   }

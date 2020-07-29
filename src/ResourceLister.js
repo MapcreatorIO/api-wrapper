@@ -294,17 +294,19 @@ export default class ResourceLister extends EventEmitter {
 
     for (; parameters.page <= endPage; parameters.page++) {
       const url = this.route + glue + parameters.encode();
-      const promise = this.api.axios.get(url);
+      const promise = this.api.ky.get(url);
 
       promises.push(promise);
     }
 
     const responses = await Promise.all(promises);
 
-    for (const { data: { data }, headers } of responses) {
+    for (const response of responses) {
+      const { data } = await response.json();
+
       data.forEach(row => this.push(row, false));
 
-      this._availableRows = Number(headers['x-paginate-total']) + parameters.offset;
+      this._availableRows = Number(response.headers['x-paginate-total']) + parameters.offset;
     }
   }
 

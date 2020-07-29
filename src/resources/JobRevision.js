@@ -181,7 +181,7 @@ export default class JobRevision extends CrudBase {
     }
 
     const url = `${this.url}/share?${encodeQueryString({ deleted })}`;
-    const { data } = await this.api.ky.post(url, { json: { visibility } });
+    const { data } = await this.api.ky.post(url, { json: { visibility } }).json();
 
     return data.url;
   }

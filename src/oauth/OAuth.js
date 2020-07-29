@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import ky from 'ky';
 import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError';
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';
@@ -103,7 +103,7 @@ export default class OAuth {
 
     const url = `${this.host}/oauth/logout`;
 
-    await axios.post(url, {}, {
+    await ky.post(url, {
       headers: {
         Accept: 'application/json',
         Authorization: this.token.toString(),

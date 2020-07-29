@@ -95,7 +95,7 @@ export default class GeoResourceProxy extends ResourceProxy {
 
     const url = `${this.new().baseUrl}/for-boundary?per_page=${limit}`;
 
-    const { data: { data: result } } = await this.api.axios.post(url, { boundary });
+    const { data: { result } } = await this.api.ky.post(url, { json: { boundary } }).json();
 
     return result.map(r => this.new(r));
   }
@@ -123,7 +123,7 @@ export default class GeoResourceProxy extends ResourceProxy {
     }
 
     const url = `${this.new().baseUrl}/for-point`;
-    const { data: { data: result } } = await this.api.axios.post(url, { limit, point });
+    const { data: { result } } = await this.api.ky.post(url, { json: { limit, point } }).json();
 
     return result.map(r => this.new(r));
   }
