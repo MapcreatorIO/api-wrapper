@@ -265,28 +265,6 @@ export default class Maps4News extends mix(null, Injectable) {
 
           return ky.request(request);
         },
-        // redirect if needed
-        // (request, options, response) => {
-        //   console.log('test redirect ', response.redirected, response);
-        //
-        //   if (![301, 302, 303, 307].includes(response.status)) {
-        //     return response;
-        //   }
-        //
-        //   console.log('redirect!', response);
-        //
-        //   if (!response.headers.has('Location')) {
-        //     throw new Error('Missing Location header in redirect response');
-        //   }
-        //
-        //   if (response.status === 301) {
-        //     const redirectUrl = response.headers.get('Location');
-        //
-        //     movedPermanently.set(request.url, redirectUrl);
-        //   }
-        //
-        //   return this.ky(response.redirect());
-        // },
         // transform errors
         async (request, options, response) => {
           if (response.status < 400 || response.status >= 600) {
@@ -312,7 +290,8 @@ export default class Maps4News extends mix(null, Injectable) {
       // redirect: 'error',
       retry: 0,
       headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
+        'X-No-CDN-Redirect': 'true',
       },
       hooks,
     });

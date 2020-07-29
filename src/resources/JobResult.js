@@ -79,7 +79,7 @@ export default class JobResult extends ResourceBase {
       responseType: 'arraybuffer',
     });
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 
   /**
@@ -97,7 +97,8 @@ export default class JobResult extends ResourceBase {
    * @throws {ApiError}
    */
   async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.outputUrlUrl}?${encodeQueryString({ deleted })}`);
+    const url = `${this.outputUrlUrl}?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.axios.get(url).json();
 
     return data.url;
   }
@@ -120,7 +121,7 @@ export default class JobResult extends ResourceBase {
       responseType: 'arraybuffer',
     });
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 
   /**
@@ -141,7 +142,7 @@ export default class JobResult extends ResourceBase {
       responseType: 'arraybuffer',
     });
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 
   /**
@@ -157,7 +158,7 @@ export default class JobResult extends ResourceBase {
     const method = value ? 'POST' : 'DELETE';
     const url = `${this.url}/deal-with?${encodeQueryString({ deleted })}`;
 
-    await this.api.axios.request({ method, url });
+    await this.api.ky(url, { method });
 
     this.dealtWith = value;
   }

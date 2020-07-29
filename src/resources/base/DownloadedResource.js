@@ -50,12 +50,12 @@ export default class DownloadedResource {
   }
 
   /**
-   * Build instance from Axios response
-   * @param {AxiosResponse} axiosResponse - axios response
+   * Build instance from response
+   * @param {Response} response - response
    * @returns {DownloadedResource} - instance
    */
-  static fromAxiosResponse (axiosResponse) {
-    const { data, headers } = axiosResponse;
+  static fromResponse (response) {
+    const { data, headers } = response;
 
     // Find mimeType
     let mimeType;

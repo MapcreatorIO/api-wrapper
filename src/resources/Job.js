@@ -105,7 +105,7 @@ export default class Job extends CrudBase {
       responseType: 'arraybuffer',
     });
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 
   /**
@@ -118,7 +118,7 @@ export default class Job extends CrudBase {
       responseType: 'arraybuffer',
     });
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 
   /**
@@ -128,7 +128,8 @@ export default class Job extends CrudBase {
    * @throws {ApiError}
    */
   async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/output-url?${encodeQueryString({ deleted })}`);
+    const url = `${this.url}/output-url?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.ky.get(url).json();
 
     return data.url;
   }

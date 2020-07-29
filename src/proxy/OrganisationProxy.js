@@ -90,7 +90,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @throws {ApiError}
    */
   async attachAll () {
-    await this.api.axios.post(`${this.baseUrl}/all`);
+    await this.api.ky.post(`${this.baseUrl}/all`);
   }
 
   /**
@@ -98,7 +98,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @throws {ApiError}
    */
   async detachAll () {
-    await this.api.axios.delete(`${this.baseUrl}/all`);
+    await this.api.ky.delete(`${this.baseUrl}/all`);
   }
 
   /**
@@ -131,6 +131,6 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
     const url = `${this.parent.url}/${path}`;
 
-    await this.api.axios.request({ url, method, data: { keys } });
+    await this.api.ky(url, { method, json: { keys } });
   }
 }

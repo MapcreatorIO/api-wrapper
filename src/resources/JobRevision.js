@@ -71,7 +71,8 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    */
   async result (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/result?${encodeQueryString({ deleted })}`);
+    const url = `${this.url}/result?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.ky.get(url).json();
 
     data.jobId = this.jobId;
     data.revision = this.revision;
@@ -112,19 +113,20 @@ export default class JobRevision extends CrudBase {
       }
     }
 
-    const data = {
+    const json = {
       'object': JSON.stringify(object),
       'language_code': this.languageCode,
       'mapstyle_set_id': this.mapstyleSetId,
     };
 
     if (layers) {
-      data.layers = layers;
+      json.layers = layers;
     }
 
-    const response = await this.api.axios.post(`${this.baseUrl}?${encodeQueryString({ deleted })}`, data);
+    const url = `${this.baseUrl}?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.ky.post(url, { json }).json();
 
-    return new JobRevision(this.api, response.data.data);
+    return new JobRevision(this.api, data);
   }
 
   /**
@@ -135,7 +137,8 @@ export default class JobRevision extends CrudBase {
    * @todo document object format
    */
   async object (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/object?${encodeQueryString({ deleted })}`);
+    const url = `${this.url}/object?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.ky.get(url).json();
 
     return data;
   }
@@ -147,7 +150,9 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    */
   async build (callback, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    await this.api.axios.post(`${this.url}/build?${encodeQueryString({ deleted })}`, { callback });
+    const url = `${this.url}/build?${encodeQueryString({ deleted })}`;
+
+    await this.api.ky.post(url, { json: { callback } });
   }
 
   /**
@@ -155,7 +160,9 @@ export default class JobRevision extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    */
   async cancel (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    await this.api.axios.post(`${this.url}/cancel?${encodeQueryString({ deleted })}`);
+    const url = `${this.url}/cancel?${encodeQueryString({ deleted })}`;
+
+    await this.api.ky.post(url);
   }
 
   /**
@@ -173,7 +180,8 @@ export default class JobRevision extends CrudBase {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
-    const { data: { data } } = await this.api.axios.post(`${this.url}/share?${encodeQueryString({ deleted })}`, { visibility });
+    const url = `${this.url}/share?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.ky.post(url, { json: { visibility } });
 
     return data.url;
   }
@@ -186,7 +194,8 @@ export default class JobRevision extends CrudBase {
    * @returns {Promise<JobRevision>} - The new job revision, which will be linked to a new job
    */
   async clone (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.post(`${this.url}/clone?${encodeQueryString({ deleted })}`);
+    const url = `${this.url}/clone?${encodeQueryString({ deleted })}`;
+    const { data } = await this.api.ky.post(url).json();
 
     return new JobRevision(this.api, data);
   }

@@ -44,11 +44,10 @@ export default class Choropleth extends ResourceBase {
   /**
    * Get the inset ma[ json
    * @returns {Promise<Object>} - choropleth json
+   * @async
    */
-  async getJson () {
-    const { data } = await this.api.axios.get(`${this.url}/json`);
-
-    return data;
+  getJson () {
+    return this.api.ky.get(`${this.url}/json`).json();
   }
 
   /**

@@ -65,7 +65,7 @@ export default class User extends CrudBase {
    */
   async ips () {
     const url = `${this.url}/ips`;
-    const { data: { data } } = await this.api.axios.get(url);
+    const { data } = await this.api.ky.get(url).json();
 
     return data.map(row => row['ip_address']);
   }

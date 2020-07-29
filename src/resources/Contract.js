@@ -71,7 +71,7 @@ export default class Contract extends CrudBase {
       data['date_end'] = this._formatDate(data['date_end']);
     }
 
-    await this.api.axios.patch(this.url, data);
+    await this.api.ky.patch(this.url, { json: data });
 
     if (this.api.defaults.autoUpdateSharedCache) {
       this.api.cache.update(this);
@@ -95,7 +95,7 @@ export default class Contract extends CrudBase {
       createData['date_end'] = this._formatDate(createData['date_end']);
     }
 
-    const { data: { data } } = await this.api.axios.post(this.baseUrl, createData);
+    const { data } = await this.api.ky.post(this.baseUrl, { json: createData }).json();
 
     this._properties = {};
     this._baseProperties = data;

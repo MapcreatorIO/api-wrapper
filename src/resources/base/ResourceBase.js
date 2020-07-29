@@ -259,7 +259,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @throws {ApiError}
    */
   async refresh (updateSelf = true) {
-    const { data: { data } } = await this.api.axios.get(this.url);
+    const { data } = await this.api.ky.get(this.url).json();
 
     if (updateSelf) {
       this._properties = {};

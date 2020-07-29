@@ -79,7 +79,7 @@ export default class ImageHandler {
    * @throws {ApiError}
    */
   async delete () {
-    await this.api.axios.delete(this.url);
+    await this.api.ky.delete(this.url);
   }
 
   /**
@@ -97,11 +97,11 @@ export default class ImageHandler {
    * });
    */
   async download () {
-    const response = await this.api.axios.get(this.url, {
+    const response = await this.api.ky.get(this.url, {
       responseType: 'arraybuffer',
     });
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 
   /**
@@ -109,16 +109,16 @@ export default class ImageHandler {
    * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
    */
   async upload (image) {
-    const form = new FormData();
+    const body = new FormData();
 
-    form.append('image', image, 'image');
+    body.append('image', image, 'image');
 
     const headers = {};
 
-    if (form.getHeaders) {
-      Object.assign(headers, form.getHeaders());
+    if (body.getHeaders) {
+      Object.assign(headers, body.getHeaders());
     }
 
-    await this.api.axios.post(this.url, form, { headers });
+    await this.api.ky.post(this.url, { headers, body });
   }
 }

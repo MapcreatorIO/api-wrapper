@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { AbstractClassError } from '../../errors/AbstractError';
+import { AbstractClassError } from '../../errors';
 import ResourceBase from './ResourceBase';
 
 /**
@@ -91,7 +91,7 @@ export default class CrudBase extends ResourceBase {
    * @private
    */
   async _create () {
-    const { data: { data } } = await this.api.axios.post(this.baseUrl, this._buildCreateData());
+    const { data } = await this.api.ky.post(this.baseUrl, { json: this._buildCreateData() }).json();
 
     this._properties = {};
     this._baseProperties = data;
@@ -117,7 +117,7 @@ export default class CrudBase extends ResourceBase {
       return this;
     }
 
-    await this.api.axios.patch(this.url, this._properties);
+    await this.api.ky.patch(this.url, { json: this._properties });
 
     // Reset changes
     Object.assign(this._baseProperties, this._properties);
@@ -142,7 +142,7 @@ export default class CrudBase extends ResourceBase {
    * @throws {ValidationError}
    */
   async delete (updateSelf = true) {
-    await this.api.axios.delete(this.url);
+    await this.api.ky.delete(this.url);
 
     if (updateSelf) {
       this._baseProperties['deleted_at'] = new Date();
@@ -159,7 +159,7 @@ export default class CrudBase extends ResourceBase {
    * @throws {ValidationError}
    */
   async restore (updateSelf = true) {
-    const { data: { data } } = await this.api.axios.put(this.url);
+    const { data } = await this.api.ky.put(this.url).json();
     const instance = new this.constructor(this.api, data);
 
     if (updateSelf) {
