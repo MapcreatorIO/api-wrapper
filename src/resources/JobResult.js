@@ -75,9 +75,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - Job result output
    */
   async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.outputUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await this.api.ky.get(`${this.outputUrl}?${encodeQueryString({ deleted })}`);
 
     return DownloadedResource.fromResponse(response);
   }
@@ -117,9 +115,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - job result log
    */
   async downloadLog (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.logUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await this.api.ky.get(`${this.logUrl}?${encodeQueryString({ deleted })}`);
 
     return DownloadedResource.fromResponse(response);
   }
@@ -138,9 +134,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await this.api.ky.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`);
 
     return DownloadedResource.fromResponse(response);
   }

@@ -101,9 +101,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<DownloadedResource>} - Job result preview
    */
   async downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await this.api.ky.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`);
 
     return DownloadedResource.fromResponse(response);
   }
@@ -114,9 +112,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<DownloadedResource>} - Job result output
    */
   async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await this.api.ky.get(`${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`);
 
     return DownloadedResource.fromResponse(response);
   }

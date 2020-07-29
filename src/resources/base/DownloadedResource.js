@@ -54,8 +54,9 @@ export default class DownloadedResource {
    * @param {Response} response - response
    * @returns {DownloadedResource} - instance
    */
-  static fromResponse (response) {
-    const { data, headers } = response;
+  static async fromResponse (response) {
+    const headers = response.headers;
+    const data = await response.arrayBuffer();
 
     // Find mimeType
     let mimeType;

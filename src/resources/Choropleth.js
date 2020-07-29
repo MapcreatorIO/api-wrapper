@@ -55,10 +55,8 @@ export default class Choropleth extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - choropleth preview
    */
   async downloadPreview () {
-    const response = await this.api.axios.get(`${this.url}/preview`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await this.api.ky.get(`${this.url}/preview`);
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return DownloadedResource.fromResponse(response);
   }
 }
