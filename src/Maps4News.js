@@ -221,6 +221,7 @@ export default class Maps4News extends mix(null, Injectable) {
     }
 
     const placeholderUrl = `http://${uuid.uuid4()}.local`;
+    const movedPermanently = new Map();
 
     const hooks = {
       beforeRequest: [
@@ -240,6 +241,12 @@ export default class Maps4News extends mix(null, Injectable) {
 
           if (this.authenticated && url.startsWith(this.host)) {
             request.headers.set('Authorization', this.auth.token.toString());
+          } else {
+            request.headers.delete('Authorization');
+          }
+
+          if (movedPermanently.has(url)) {
+            url = movedPermanently.get(url);
           }
 
           return new Request(url, request);
@@ -258,6 +265,28 @@ export default class Maps4News extends mix(null, Injectable) {
 
           return ky.request(request);
         },
+        // redirect if needed
+        // (request, options, response) => {
+        //   console.log('test redirect ', response.redirected, response);
+        //
+        //   if (![301, 302, 303, 307].includes(response.status)) {
+        //     return response;
+        //   }
+        //
+        //   console.log('redirect!', response);
+        //
+        //   if (!response.headers.has('Location')) {
+        //     throw new Error('Missing Location header in redirect response');
+        //   }
+        //
+        //   if (response.status === 301) {
+        //     const redirectUrl = response.headers.get('Location');
+        //
+        //     movedPermanently.set(request.url, redirectUrl);
+        //   }
+        //
+        //   return this.ky(response.redirect());
+        // },
         // transform errors
         async (request, options, response) => {
           if (response.status < 400 || response.status >= 600) {
@@ -268,10 +297,10 @@ export default class Maps4News extends mix(null, Injectable) {
           const params = { data, request, options, response };
 
           if (data.error['validation_errors']) {
-            return new ValidationError(params);
+            throw new ValidationError(params);
           }
 
-          return new ApiError(params);
+          throw new ApiError(params);
         },
       ],
     };
@@ -279,8 +308,9 @@ export default class Maps4News extends mix(null, Injectable) {
     this._ky = ky.create({
       prefixUrl: placeholderUrl,
       timeout: 30000, // 30 seconds
-      throwHttpErrors: false, // This is done through a custom hook
-      redirect: 'follow',
+      // throwHttpErrors: false, // This is done through a custom hook
+      // redirect: 'error',
+      retry: 0,
       headers: {
         Accept: 'application/json',
       },
