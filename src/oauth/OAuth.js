@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ky from 'ky';
+import ky from 'ky-universal';
 import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError';
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';

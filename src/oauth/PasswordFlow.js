@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import ky from 'ky';
+import ky from 'ky-universal';
 import OAuthError from '../errors/OAuthError';
 import { isNode } from '../utils/node';
 import OAuth from './OAuth';
