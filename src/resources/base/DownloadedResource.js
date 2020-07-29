@@ -55,12 +55,12 @@ export default class DownloadedResource {
    * @returns {DownloadedResource} - instance
    */
   static async fromResponse (response) {
-    const headers = response.headers;
+    // Get data
     const data = await response.arrayBuffer();
 
     // Find mimeType
     let mimeType;
-    const contentType = headers['content-type'];
+    const contentType = response.headers.get('content-type');
 
     if (contentType) {
       mimeType = contentType.split(';')[0].trim();
@@ -68,7 +68,7 @@ export default class DownloadedResource {
 
     // Extract file name
     let fileName;
-    const contentDisposition = headers['content-disposition'];
+    const contentDisposition = response.headers.get('content-disposition');
 
     if (contentDisposition) {
       const regex = /filename[^;=\n]*=((['"])(.*?)\2|([^;\s]*))/i;

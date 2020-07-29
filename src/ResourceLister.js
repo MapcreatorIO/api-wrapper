@@ -306,7 +306,7 @@ export default class ResourceLister extends EventEmitter {
 
       data.forEach(row => this.push(row, false));
 
-      this._availableRows = Number(response.headers['x-paginate-total']) + parameters.offset;
+      this._availableRows = Number(response.headers.get('x-paginate-total')) + parameters.offset;
     }
   }
 

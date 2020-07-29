@@ -227,7 +227,7 @@ export default class Maps4News extends mix(null, Injectable) {
       beforeRequest: [
         // Set auth header for api requests & prefix url
         request => {
-          let url = request.url.replace(placeholderUrl, '');
+          let url = request.url.replace(placeholderUrl, '').replace(/^\/+/, '');
 
           if (!url.startsWith('http')) {
             const prefixUrl = `${this.host}/${this.version}`;
@@ -637,7 +637,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @throws {ApiError}
    */
   async getSvgSetTypes () {
-    const { data }  = await this.ky.get('/svgs/sets/types').json();
+    const { data } = await this.ky.get('/svgs/sets/types').json();
 
     return new Enum(data, true);
   }
@@ -649,7 +649,7 @@ export default class Maps4News extends mix(null, Injectable) {
    * @throws {ApiError}
    */
   async getFontStyles () {
-    const { data }  = await this.ky.get('/fonts/styles').json();
+    const { data } = await this.ky.get('/fonts/styles').json();
 
     return new Enum(data, true);
   }
