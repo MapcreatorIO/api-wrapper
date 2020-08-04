@@ -76,3 +76,14 @@ export async function getPaginatedRange (page, start = 1, stop) {
 }
 
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+export function wrapKyCancelable (fn) {
+  return (input, options) => {
+    const controller = new AbortController();
+    const promise = fn(input, { signal: controller.signal, ...options });
+
+    promise.cancel = () => controller.abort();
+
+    return promise;
+  };
+}

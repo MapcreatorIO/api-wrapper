@@ -77,7 +77,7 @@ import Injectable from './traits/Injectable';
 import { fnv32b } from './utils/hash';
 import Logger from './utils/Logger';
 import { isParentOf, mix } from './utils/reflection';
-import { delay } from './utils/helpers';
+import { delay, wrapKyCancelable } from './utils/helpers';
 import ValidationError from './errors/ValidationError';
 import ApiError from './errors/ApiError';
 
@@ -283,7 +283,7 @@ export default class Maps4News extends mix(null, Injectable) {
       ],
     };
 
-    this._ky = ky.create({
+    this._ky = wrapKyCancelable(ky.create({
       prefixUrl: placeholderUrl,
       timeout: 30000, // 30 seconds
       // throwHttpErrors: false, // This is done through a custom hook
@@ -294,7 +294,17 @@ export default class Maps4News extends mix(null, Injectable) {
         'X-No-CDN-Redirect': 'true',
       },
       hooks,
-    });
+    }));
+
+    const requestMethods = [
+      'get', 'post',
+      'put', 'patch',
+      'head', 'delete',
+    ];
+
+    for (const method of requestMethods) {
+      this._ky[method] = (input, options) => this._ky(input, { ...options, method });
+    }
 
     return this._ky;
   }
