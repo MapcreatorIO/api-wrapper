@@ -297,13 +297,12 @@ export default class Maps4News extends mix(null, Injectable) {
     }));
 
     const requestMethods = [
-      'get', 'post',
-      'put', 'patch',
-      'head', 'delete',
+      'get', 'post', 'put',
+      'patch', 'head', 'delete',
     ];
 
     for (const method of requestMethods) {
-      this._ky[method] = (input, options) => this._ky(input, { ...options, method });
+      this._ky[method] = wrapKyCancelable((input, options) => this._ky(input, { ...options, method }));
     }
 
     return this._ky;
