@@ -97,3 +97,17 @@ export function encodeQueryString (paramsObject) {
   // Removes any extra unused &'s.
   return query.replace(/^&*|&+(?=&)|&*$/g, '');
 }
+
+export function wrapKyPrefixUrl (fn, baseUrl) {
+  return function (input, options) {
+    if (typeof input === 'string' && !/^https?:\/\//.test(input)) {
+      if (!input.startsWith('/')) {
+        input = `/${input}`;
+      }
+
+      input = baseUrl + input;
+    }
+
+    return fn(input, options);
+  };
+}

@@ -238,7 +238,7 @@ export default class PaginatedResourceListing {
     const url = this.route + glue + query.encode();
 
     const response = await this.api.ky.get(url);
-    const data = await response.json();
+    const { data } = await response.json();
 
     const rowCount = Number(response.headers.get('x-paginate-total') || data.length);
     const totalPages = Number(response.headers.get('x-paginate-pages') || 1);

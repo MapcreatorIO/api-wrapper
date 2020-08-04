@@ -40,7 +40,6 @@ import GeoResourceProxy from './proxy/GeoResourceProxy';
 import ResourceProxy from './proxy/ResourceProxy';
 import SimpleResourceProxy from './proxy/SimpleResourceProxy';
 import ResourceCache from './ResourceCache';
-import uuid from './utils/uuid';
 import {
   Choropleth,
   Color,
@@ -80,6 +79,7 @@ import { isParentOf, mix } from './utils/reflection';
 import { delay, wrapKyCancelable } from './utils/helpers';
 import ValidationError from './errors/ValidationError';
 import ApiError from './errors/ApiError';
+import { wrapKyPrefixUrl } from './utils/requests';
 
 /**
  * Base API class
@@ -220,38 +220,7 @@ export default class Maps4News extends mix(null, Injectable) {
       return this._ky;
     }
 
-    const placeholderUrl = `http://${uuid.uuid4()}.local`;
-    const movedPermanently = new Map();
-
     const hooks = {
-      beforeRequest: [
-        // Set auth header for api requests & prefix url
-        request => {
-          let url = request.url.replace(placeholderUrl, '').replace(/^\/+/, '');
-
-          if (!url.startsWith('http')) {
-            const prefixUrl = `${this.host}/${this.version}`;
-
-            if (url.startsWith('/')) {
-              url = `${prefixUrl}${url}`;
-            } else {
-              url = `${prefixUrl}/${url}`;
-            }
-          }
-
-          if (this.authenticated && url.startsWith(this.host)) {
-            request.headers.set('Authorization', this.auth.token.toString());
-          } else {
-            request.headers.delete('Authorization');
-          }
-
-          if (movedPermanently.has(url)) {
-            url = movedPermanently.get(url);
-          }
-
-          return new Request(url, request);
-        },
-      ],
       afterResponse: [
         // 429 response
         async (request, _options, response) => {
@@ -283,8 +252,7 @@ export default class Maps4News extends mix(null, Injectable) {
       ],
     };
 
-    this._ky = wrapKyCancelable(ky.create({
-      prefixUrl: placeholderUrl,
+    this._ky = ky.create({
       timeout: 30000, // 30 seconds
       // throwHttpErrors: false, // This is done through a custom hook
       // redirect: 'error',
@@ -292,9 +260,13 @@ export default class Maps4News extends mix(null, Injectable) {
       headers: {
         'Accept': 'application/json',
         'X-No-CDN-Redirect': 'true',
+        'Authorization': this.auth.token.toString(),
       },
       hooks,
-    }));
+    });
+
+    this._ky = wrapKyCancelable(this._ky);
+    this._ky = wrapKyPrefixUrl(this._ky, `${this.host}/${this.version}`);
 
     const requestMethods = [
       'get', 'post', 'put',
@@ -302,7 +274,7 @@ export default class Maps4News extends mix(null, Injectable) {
     ];
 
     for (const method of requestMethods) {
-      this._ky[method] = wrapKyCancelable((input, options) => this._ky(input, { ...options, method }));
+      this._ky[method] = (input, options) => this._ky(input, { ...options, method });
     }
 
     return this._ky;

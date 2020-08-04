@@ -78,8 +78,8 @@ export async function getPaginatedRange (page, start = 1, stop) {
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export function wrapKyCancelable (fn) {
-  return (input, options) => {
-    if (options.hasOwnProperty('signal')) {
+  return (input, options = {}) => {
+    if (typeof options === 'object' && options.hasOwnProperty('signal')) {
       return fn(input, options);
     }
 
