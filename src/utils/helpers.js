@@ -79,6 +79,10 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export function wrapKyCancelable (fn) {
   return (input, options) => {
+    if (options.hasOwnProperty('signal')) {
+      return fn(input, options);
+    }
+
     const controller = new AbortController();
     const promise = fn(input, { signal: controller.signal, ...options });
 
