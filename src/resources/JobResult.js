@@ -35,6 +35,7 @@ import ResourceBase from './base/ResourceBase';
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
 import { DeletedState } from '../enums';
+import { makeCancelable } from '../utils/helpers';
 
 export default class JobResult extends ResourceBase {
   static get resourcePath () {
@@ -132,11 +133,14 @@ export default class JobResult extends ResourceBase {
    * Download the job preview
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result preview
+   * @async
    */
-  async downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.ky.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`);
+  downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, { signal });
 
-    return DownloadedResource.fromResponse(response);
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**

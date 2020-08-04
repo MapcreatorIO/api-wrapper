@@ -32,6 +32,7 @@
 
 import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Choropleth resource
@@ -53,10 +54,13 @@ export default class Choropleth extends ResourceBase {
   /**
    * Download the choropleth preview
    * @returns {Promise<DownloadedResource>} - choropleth preview
+   * @async
    */
-  async downloadPreview () {
-    const response = await this.api.ky.get(`${this.url}/preview`);
+  downloadPreview () {
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(`${this.url}/preview`, { signal });
 
-    return DownloadedResource.fromResponse(response);
+      return DownloadedResource.fromResponse(response);
+    });
   }
 }

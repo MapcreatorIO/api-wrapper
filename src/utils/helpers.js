@@ -91,3 +91,13 @@ export function wrapKyCancelable (fn) {
     return promise;
   };
 }
+
+export function makeCancelable (fn) {
+  const controller = new AbortController();
+
+  const promise = fn(controller.signal);
+
+  promise.cancel = () => controller.abort();
+
+  return promise;
+}
