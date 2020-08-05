@@ -43,7 +43,7 @@ export default class Choropleth extends ResourceBase {
   }
 
   /**
-   * Get the inset ma[ json
+   * Get the inset map json
    * @returns {Promise<Object>} - choropleth json
    * @async
    */
