@@ -33,6 +33,7 @@
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
 import SimpleResourceProxy from './SimpleResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -75,20 +76,23 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * @param {String} [deleted=null] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<ResourceBase>} - Target resource
    * @throws {ApiError}
+   * @async
    */
-  async get (id, deleted = null) {
-    const data = { ...this._seedData, ...this._parseSelector(id) };
-    let url = this.new(data).url;
+  get (id, deleted = null) {
+    return makeCancelable(async signal => {
+      const data = { ...this._seedData, ...this._parseSelector(id) };
+      let url = this.new(data).url;
 
-    if (typeof deleted === 'string') {
-      const glue = url.includes('?') ? '&' : '?';
+      if (typeof deleted === 'string') {
+        const glue = url.includes('?') ? '&' : '?';
 
-      url += glue + encodeQueryString({ deleted });
-    }
+        url += glue + encodeQueryString({ deleted });
+      }
 
-    const { data: result } = await this.api.ky.get(url).json();
+      const { data: result } = await this.api.ky.get(url, { signal }).json();
 
-    return this.new(result);
+      return this.new(result);
+    });
   }
 
   /**

@@ -74,11 +74,16 @@ export default class JobResult extends ResourceBase {
    * Get archive blob url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result output
+   * @async
    */
-  async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.ky.get(`${this.outputUrl}?${encodeQueryString({ deleted })}`);
+  downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+    const url = `${this.outputUrl}?${encodeQueryString({ deleted })}`;
 
-    return DownloadedResource.fromResponse(response);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
@@ -94,12 +99,16 @@ export default class JobResult extends ResourceBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
+   * @async
    */
-  async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const url = `${this.outputUrlUrl}?${encodeQueryString({ deleted })}`;
-    const { data } = await this.api.ky.get(url).json();
 
-    return data.url;
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(url, { signal }).json();
+
+      return data.url;
+    });
   }
 
   /**
@@ -114,11 +123,16 @@ export default class JobResult extends ResourceBase {
    * Download the job result log
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - job result log
+   * @async
    */
-  async downloadLog (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.ky.get(`${this.logUrl}?${encodeQueryString({ deleted })}`);
+  downloadLog (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+    const url = `${this.logUrl}?${encodeQueryString({ deleted })}`;
 
-    return DownloadedResource.fromResponse(response);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
@@ -136,8 +150,10 @@ export default class JobResult extends ResourceBase {
    * @async
    */
   downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+    const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
+
     return makeCancelable(async signal => {
-      const response = await this.api.ky.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, { signal });
+      const response = await this.api.ky.get(url, { signal });
 
       return DownloadedResource.fromResponse(response);
     });
@@ -149,15 +165,18 @@ export default class JobResult extends ResourceBase {
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @async
    */
-  async dealWith (value = true, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  dealWith (value = true, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';
     const url = `${this.url}/deal-with?${encodeQueryString({ deleted })}`;
 
-    await this.api.ky(url, { method });
+    return makeCancelable(async signal => {
+      await this.api.ky(url, { method, signal });
 
-    this.dealtWith = value;
+      this.dealtWith = value;
+    });
   }
 }

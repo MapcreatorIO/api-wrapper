@@ -35,6 +35,7 @@ import DownloadedResource from './resources/base/DownloadedResource';
 import ResourceBase from './resources/base/ResourceBase';
 import { isParentOf } from './utils/reflection';
 import { FormData } from './utils/requests';
+import { makeCancelable } from './utils/helpers';
 
 /**
  * Image resource handler
@@ -77,14 +78,19 @@ export default class ImageHandler {
   /**
    * Delete image
    * @throws {ApiError}
+   * @async
    */
-  async delete () {
-    await this.api.ky.delete(this.url);
+  delete () {
+    // use the makeCancelable helper so we don't return the response object
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(this.url, { signal });
+    });
   }
 
   /**
    * Download the image
    * @returns {Promise<DownloadedResource>} - image
+   * @async
    * @example
    * // Browser
    * layer.imageHandler.download().then(image => {
@@ -96,19 +102,20 @@ export default class ImageHandler {
    *   fs.writeFileSync(fileName, data);
    * });
    */
-  async download () {
-    const response = await this.api.ky.get(this.url, {
-      responseType: 'arraybuffer',
-    });
+  download () {
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(this.url, { signal });
 
-    return DownloadedResource.fromResponse(response);
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
    * Upload new image
    * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
+   * @async
    */
-  async upload (image) {
+  upload (image) {
     const body = new FormData();
 
     body.append('image', image, 'image');
@@ -119,6 +126,8 @@ export default class ImageHandler {
       Object.assign(headers, body.getHeaders());
     }
 
-    await this.api.ky.post(this.url, { headers, body });
+    return makeCancelable(async signal => {
+      await this.api.ky.post(this.url, { headers, body, signal });
+    });
   }
 }
