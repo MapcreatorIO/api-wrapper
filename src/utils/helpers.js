@@ -75,8 +75,20 @@ export async function getPaginatedRange (page, start = 1, stop) {
   return out.concat(...rows.map(x => x.data));
 }
 
+/**
+ * Async delay
+ * @private
+ * @param {number} ms - milliseconds
+ * @async
+ */
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+/**
+ * Wraps around ky to make it return cancelable requests
+ * @param {function(*=, *=): Response} fn - ky instance
+ * @returns {function(*=, *=): Response}
+ * @private
+ */
 export function wrapKyCancelable (fn) {
   return (input, options = {}) => {
     if (typeof options === 'object' && options.hasOwnProperty('signal')) {
@@ -92,6 +104,11 @@ export function wrapKyCancelable (fn) {
   };
 }
 
+/**
+ * Makes a promise cancelable by passing it a signal
+ * @param {function} fn - async method
+ * @returns {Promise}
+ */
 export function makeCancelable (fn) {
   const controller = new AbortController();
 

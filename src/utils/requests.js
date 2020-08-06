@@ -98,6 +98,13 @@ export function encodeQueryString (paramsObject) {
   return query.replace(/^&*|&+(?=&)|&*$/g, '');
 }
 
+/**
+ * Wraps around ky to ensure that the prefix is correctly set
+ * @param {function(*=, *=): Response} fn - ky instance
+ * @param {string} baseUrl - url to be prefixed
+ * @returns {function(*=, *=): Response}
+ * @private
+ */
 export function wrapKyPrefixUrl (fn, baseUrl) {
   return function (input, options) {
     if (typeof input === 'string' && !/^https?:\/\//.test(input)) {
