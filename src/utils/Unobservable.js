@@ -32,7 +32,7 @@
 
 /**
  * Makes an object and it's children unobservable by frameworks like Vuejs
- * @private
+ * @protected
  */
 export default class Unobservable {
   /**
