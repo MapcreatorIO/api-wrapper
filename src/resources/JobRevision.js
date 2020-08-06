@@ -72,7 +72,7 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @async
    */
-  result (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  result (deleted = RequestParameters.deleted || DeletedState.NONE) {
     return makeCancelable(async signal => {
       const url = `${this.url}/result?${encodeQueryString({ deleted })}`;
       const { data } = await this.api.ky.get(url, { signal }).json();
@@ -109,7 +109,7 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @async
    */
-  save (object = {}, layers = null, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  save (object = {}, layers = null, deleted = RequestParameters.deleted || DeletedState.NONE) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -145,7 +145,7 @@ export default class JobRevision extends CrudBase {
    * @async
    * @todo document object format
    */
-  object (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  object (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/object?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -162,7 +162,7 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @async
    */
-  build (callback, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  build (callback, deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/build?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -175,7 +175,7 @@ export default class JobRevision extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @async
    */
-  cancel (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  cancel (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/cancel?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -191,7 +191,7 @@ export default class JobRevision extends CrudBase {
    * @throws {ApiError}
    * @async
    */
-  share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted || DeletedState.NONE) {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
@@ -216,7 +216,7 @@ export default class JobRevision extends CrudBase {
    * @returns {Promise<JobRevision>} - The new job revision, which will be linked to a new job
    * @async
    */
-  clone (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  clone (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/clone?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {

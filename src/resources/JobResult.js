@@ -76,7 +76,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - Job result output
    * @async
    */
-  downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  downloadOutput (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.outputUrl}?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -101,7 +101,7 @@ export default class JobResult extends ResourceBase {
    * @throws {ApiError}
    * @async
    */
-  getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  getOutputUrl (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.outputUrlUrl}?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -125,7 +125,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - job result log
    * @async
    */
-  downloadLog (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  downloadLog (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.logUrl}?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -149,7 +149,7 @@ export default class JobResult extends ResourceBase {
    * @returns {Promise<DownloadedResource>} - Job result preview
    * @async
    */
-  downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  downloadPreview (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -167,7 +167,7 @@ export default class JobResult extends ResourceBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @async
    */
-  dealWith (value = true, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  dealWith (value = true, deleted = RequestParameters.deleted || DeletedState.NONE) {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';

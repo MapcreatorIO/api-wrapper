@@ -102,7 +102,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<DownloadedResource>} - Job result preview
    * @async
    */
-  downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  downloadPreview (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -118,7 +118,7 @@ export default class Job extends CrudBase {
    * @returns {Promise<DownloadedResource>} - Job result output
    * @async
    */
-  downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  downloadOutput (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
@@ -135,7 +135,7 @@ export default class Job extends CrudBase {
    * @throws {ApiError}
    * @async
    */
-  getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  getOutputUrl (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/output-url?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
