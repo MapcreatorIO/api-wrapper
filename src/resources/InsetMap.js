@@ -31,6 +31,7 @@
  */
 
 import ResourceBase from './base/ResourceBase';
+import { makeCancelable } from '../utils/helpers';
 
 export default class InsetMap extends ResourceBase {
   static get resourceName () {
@@ -43,6 +44,6 @@ export default class InsetMap extends ResourceBase {
    * @async
    */
   getJson () {
-    return this.api.ky.get(`${this.url}/json`).json();
+    return makeCancelable(signal => this.api.ky.get(`${this.url}/json`, { signal }).json());
   }
 }

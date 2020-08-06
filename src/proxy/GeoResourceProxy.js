@@ -34,6 +34,7 @@ import GeoError from '../errors/GeoError';
 import RequestParameters from '../RequestParameters';
 import { GeoBoundary, GeoPoint } from '../utils/geo';
 import ResourceProxy from './ResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 export default class GeoResourceProxy extends ResourceProxy {
   /**
@@ -81,8 +82,9 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @returns {Promise<ResourceBase[]>} - target resource for boundary
    * @throws TypeError
    * @throws GeoError
+   * @async
    */
-  async forBoundary ({ topLeft, bottomRight }, limit = RequestParameters.perPage) {
+  forBoundary ({ topLeft, bottomRight }, limit = RequestParameters.perPage) {
     if (!this.hasForBoundary) {
       throw new GeoError(`${this.Target.name} does not support the operation forBoundary`);
     }
@@ -95,12 +97,13 @@ export default class GeoResourceProxy extends ResourceProxy {
 
     const url = `${this.new().baseUrl}/for-boundary?per_page=${limit}`;
 
-    const { data: { result } } = await this.api.ky.post(url, { json: { boundary } }).json();
+    return makeCancelable(async signal => {
+      const { data: { result } } = await this.api.ky.post(url, { json: { boundary }, signal }).json();
 
-    return result.map(r => this.new(r));
+      return result.map(r => this.new(r));
+    });
   }
 
-  // noinspection JSCommentMatchesSignature
   /**
    * Get an array of results for point
    * @param {Object} point - point to search at
@@ -110,8 +113,9 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @returns {Promise<ResourceBase[]>} - target resource for boundary
    * @throws TypeError
    * @throws GeoError
+   * @async
    */
-  async forPoint ({ lat, lng }, limit = RequestParameters.perPage) {
+  forPoint ({ lat, lng }, limit = RequestParameters.perPage) {
     if (!this.hasForPoint) {
       throw new GeoError(`${this.Target.name} does not support the operation forPoint`);
     }
@@ -123,8 +127,11 @@ export default class GeoResourceProxy extends ResourceProxy {
     }
 
     const url = `${this.new().baseUrl}/for-point`;
-    const { data: { result } } = await this.api.ky.post(url, { json: { limit, point } }).json();
 
-    return result.map(r => this.new(r));
+    return makeCancelable(async signal => {
+      const { data: { result } } = await this.api.ky.post(url, { json: { limit, point }, signal }).json();
+
+      return result.map(r => this.new(r));
+    });
   }
 }

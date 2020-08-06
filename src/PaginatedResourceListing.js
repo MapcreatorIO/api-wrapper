@@ -34,6 +34,7 @@ import Maps4News from './Maps4News';
 import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 import RequestParameters from './RequestParameters';
 import { isParentOf } from './utils/reflection';
+import { makeCancelable } from './utils/helpers';
 
 /**
  * Proxy for accessing paginated resources
@@ -227,8 +228,9 @@ export default class PaginatedResourceListing {
    * @param {Number} perPage - Amount of items per page (max 50)
    * @returns {Promise<PaginatedResourceListing>} - Target page
    * @throws {ApiError}
+   * @async
    */
-  async getPage (page = this.page, perPage = this.perPage) {
+  getPage (page = this.page, perPage = this.perPage) {
     const query = this.parameters.copy();
 
     query.page = page;
@@ -237,20 +239,22 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + query.encode();
 
-    const response = await this.api.ky.get(url);
-    const { data } = await response.json();
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+      const { data } = await response.json();
 
-    const rowCount = Number(response.headers.get('x-paginate-total') || data.length);
-    const totalPages = Number(response.headers.get('x-paginate-pages') || 1);
-    const parameters = this.parameters.copy();
+      const rowCount = Number(response.headers.get('x-paginate-total') || data.length);
+      const totalPages = Number(response.headers.get('x-paginate-pages') || 1);
+      const parameters = this.parameters.copy();
 
-    parameters.page = page;
+      parameters.page = page;
 
-    return new PaginatedResourceListing(
-      this.api, this.route, this._Target,
-      parameters, totalPages, rowCount,
-      data.map(row => new this._Target(this.api, row)),
-    );
+      return new PaginatedResourceListing(
+        this.api, this.route, this._Target,
+        parameters, totalPages, rowCount,
+        data.map(row => new this._Target(this.api, row)),
+      );
+    });
   }
 
   /**

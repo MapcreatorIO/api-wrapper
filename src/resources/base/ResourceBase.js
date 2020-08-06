@@ -37,6 +37,7 @@ import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
 import Injectable from '../../traits/Injectable';
 import { fnv32b } from '../../utils/hash';
 import { isParentOf, mix } from '../../utils/reflection';
+import { makeCancelable } from '../../utils/helpers';
 
 function unique (input) {
   return input.filter((v, i) => input.findIndex(vv => vv === v) === i);
@@ -257,18 +258,21 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @param {Boolean} updateSelf - Update the current instance
    * @returns {Promise<ResourceBase>} - Refreshed instance
    * @throws {ApiError}
+   * @async
    */
-  async refresh (updateSelf = true) {
-    const { data } = await this.api.ky.get(this.url).json();
+  refresh (updateSelf = true) {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(this.url, { signal }).json();
 
-    if (updateSelf) {
-      this._properties = {};
-      this._baseProperties = data;
+      if (updateSelf) {
+        this._properties = {};
+        this._baseProperties = data;
 
-      this._updateProperties();
-    }
+        this._updateProperties();
+      }
 
-    return new this.constructor(this._api, data);
+      return new this.constructor(this._api, data);
+    });
   }
 
   /**

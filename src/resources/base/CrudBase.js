@@ -32,6 +32,7 @@
 
 import { AbstractClassError } from '../../errors';
 import ResourceBase from './ResourceBase';
+import { makeCancelable } from '../../utils/helpers';
 
 /**
  * Base of all resource items that support Crud operations
@@ -89,16 +90,19 @@ export default class CrudBase extends ResourceBase {
    * @throws {ApiError}
    * @throws {ValidationError}
    * @private
+   * @async
    */
-  async _create () {
-    const { data } = await this.api.ky.post(this.baseUrl, { json: this._buildCreateData() }).json();
+  _create () {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.post(this.baseUrl, { json: this._buildCreateData(), signal }).json();
 
-    this._properties = {};
-    this._baseProperties = data;
+      this._properties = {};
+      this._baseProperties = data;
 
-    this._updateProperties();
+      this._updateProperties();
 
-    return this;
+      return this;
+    });
   }
 
   /**
@@ -107,31 +111,34 @@ export default class CrudBase extends ResourceBase {
    * @throws {ApiError}
    * @throws {ValidationError}
    * @private
+   * @async
    */
-  async _update () {
+  _update () {
     this._updateProperties();
 
-    // We'll just fake it, no need to bother the server
-    // with an empty request.
-    if (Object.keys(this._properties).length === 0) {
+    return makeCancelable(async signal => {
+      // We'll just fake it, no need to bother the server
+      // with an empty request.
+      if (Object.keys(this._properties).length === 0) {
+        return this;
+      }
+
+      await this.api.ky.patch(this.url, { json: this._properties, signal });
+
+      // Reset changes
+      Object.assign(this._baseProperties, this._properties);
+      this._properties = {};
+
+      if ('updated_at' in this._baseProperties) {
+        this._baseProperties['updated_at'] = new Date();
+      }
+
+      if (this.api.defaults.autoUpdateSharedCache) {
+        this.api.cache.update(this);
+      }
+
       return this;
-    }
-
-    await this.api.ky.patch(this.url, { json: this._properties });
-
-    // Reset changes
-    Object.assign(this._baseProperties, this._properties);
-    this._properties = {};
-
-    if ('updated_at' in this._baseProperties) {
-      this._baseProperties['updated_at'] = new Date();
-    }
-
-    if (this.api.defaults.autoUpdateSharedCache) {
-      this.api.cache.update(this);
-    }
-
-    return this;
+    });
   }
 
   /**
@@ -140,15 +147,18 @@ export default class CrudBase extends ResourceBase {
    * @returns {Promise<CrudBase>} - Current instance
    * @throws {ApiError}
    * @throws {ValidationError}
+   * @async
    */
-  async delete (updateSelf = true) {
-    await this.api.ky.delete(this.url);
+  delete (updateSelf = true) {
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(this.url, { signal });
 
-    if (updateSelf) {
-      this._baseProperties['deleted_at'] = new Date();
-    }
+      if (updateSelf) {
+        this._baseProperties['deleted_at'] = new Date();
+      }
 
-    return this;
+      return this;
+    });
   }
 
   /**
@@ -157,18 +167,21 @@ export default class CrudBase extends ResourceBase {
    * @returns {Promise<CrudBase>} - New restored instance
    * @throws {ApiError}
    * @throws {ValidationError}
+   * @async
    */
-  async restore (updateSelf = true) {
-    const { data } = await this.api.ky.put(this.url).json();
-    const instance = new this.constructor(this.api, data);
+  restore (updateSelf = true) {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.put(this.url, { signal }).json();
+      const instance = new this.constructor(this.api, data);
 
-    if (updateSelf) {
-      this._properties = {};
-      this._baseProperties = data;
+      if (updateSelf) {
+        this._properties = {};
+        this._baseProperties = data;
 
-      this._updateProperties();
-    }
+        this._updateProperties();
+      }
 
-    return instance;
+      return instance;
+    });
   }
 }

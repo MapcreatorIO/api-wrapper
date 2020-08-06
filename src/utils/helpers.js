@@ -97,7 +97,9 @@ export function makeCancelable (fn) {
 
   const promise = fn(controller.signal);
 
-  promise.cancel = () => controller.abort();
+  if (promise instanceof Promise) {
+    promise.cancel = () => controller.abort();
+  }
 
   return promise;
 }

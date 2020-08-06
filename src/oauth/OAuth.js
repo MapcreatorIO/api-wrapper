@@ -35,6 +35,7 @@ import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * OAuth base class
@@ -95,22 +96,26 @@ export default class OAuth {
    * Invalidates the session token
    * @throws {OAuthError} - If de-authentication fails
    * @throws {ApiError} - If the api returns errors
+   * @async
    */
-  async logout () {
+  logout () {
     if (!this.token) {
       return;
     }
 
     const url = `${this.host}/oauth/logout`;
 
-    await ky.post(url, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: this.token.toString(),
-      },
-    });
+    return makeCancelable(async signal => {
+      await ky.post(url, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: this.token.toString(),
+        },
+        signal,
+      });
 
-    this.forget();
+      this.forget();
+    });
   }
 
   /**

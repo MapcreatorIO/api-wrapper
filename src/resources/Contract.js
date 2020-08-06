@@ -31,6 +31,7 @@
  */
 
 import CrudBase from './base/CrudBase';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Contract resource
@@ -43,8 +44,9 @@ export default class Contract extends CrudBase {
   /**
    * @inheritDoc
    * @override
+   * @async
    */
-  async _update () {
+  _update () {
     this._updateProperties();
 
     // We'll just fake it, no need to bother the server
@@ -71,13 +73,15 @@ export default class Contract extends CrudBase {
       data['date_end'] = this._formatDate(data['date_end']);
     }
 
-    await this.api.ky.patch(this.url, { json: data });
+    return makeCancelable(async signal => {
+      await this.api.ky.patch(this.url, { json: data, signal });
 
-    if (this.api.defaults.autoUpdateSharedCache) {
-      this.api.cache.update(this);
-    }
+      if (this.api.defaults.autoUpdateSharedCache) {
+        this.api.cache.update(this);
+      }
 
-    return this;
+      return this;
+    });
   }
 
   /**
@@ -95,14 +99,16 @@ export default class Contract extends CrudBase {
       createData['date_end'] = this._formatDate(createData['date_end']);
     }
 
-    const { data } = await this.api.ky.post(this.baseUrl, { json: createData }).json();
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.post(this.baseUrl, { json: createData, signal }).json();
 
-    this._properties = {};
-    this._baseProperties = data;
+      this._properties = {};
+      this._baseProperties = data;
 
-    this._updateProperties();
+      this._updateProperties();
 
-    return this;
+      return this;
+    });
   }
 
   /**

@@ -48,7 +48,9 @@ export default class Choropleth extends ResourceBase {
    * @async
    */
   getJson () {
-    return this.api.ky.get(`${this.url}/json`).json();
+    return makeCancelable(async signal => {
+      await this.api.ky.get(`${this.url}/json`, { signal }).json();
+    });
   }
 
   /**

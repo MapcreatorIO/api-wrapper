@@ -99,6 +99,7 @@ export default class JobMonitor {
    * @returns {Promise<Number>} - number of updated rows
    * @throws {ApiError}
    * @todo refactor
+   * @todo make cancelable
    */
   update (allowLongPoll = true) {
     if (allowLongPoll && (this.waiting || this._lastUpdate === this._getTimestamp())) {

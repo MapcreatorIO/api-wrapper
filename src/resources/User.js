@@ -52,6 +52,7 @@ import Permission from './Permission';
 import Role from './Role';
 import Svg from './Svg';
 import SvgSet from './SvgSet';
+import { makeCancelable } from '../utils/helpers';
 
 export default class User extends CrudBase {
   static get resourceName () {
@@ -62,12 +63,16 @@ export default class User extends CrudBase {
    * Get all known ips
    * @returns {Promise<string[]>} - List of ip addresses
    * @throws {ApiError}
+   * @async
    */
-  async ips () {
+  ips () {
     const url = `${this.url}/ips`;
-    const { data } = await this.api.ky.get(url).json();
 
-    return data.map(row => row['ip_address']);
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(url, { signal }).json();
+
+      return data.map(row => row['ip_address']);
+    });
   }
 
   /**

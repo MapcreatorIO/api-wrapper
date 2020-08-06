@@ -32,6 +32,7 @@
 
 import { isParentOf } from '../utils/reflection';
 import SimpleResourceProxy from './SimpleResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 export default class OrganisationProxy extends SimpleResourceProxy {
   /**
@@ -60,9 +61,10 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * The organisations attached to the target resource will be replaced with the organisations provided in the request.
    * @param {Array<Organisation|number>} organisations - List of items to sync
    * @throws {ApiError}
+   * @async
    */
-  async sync (organisations) {
-    await this._modifyLink(organisations, 'PATCH', this.Target);
+  sync (organisations) {
+    return this._modifyLink(organisations, 'PATCH', this.Target);
   }
 
   /**
@@ -70,9 +72,10 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * The provided organisations will be attached to the resource if they're not already attached
    * @param {Array<Organisation|number>} organisations - List of items to attach
    * @throws {ApiError}
+   * @async
    */
-  async attach (organisations) {
-    await this._modifyLink(organisations, 'POST', this.Target);
+  attach (organisations) {
+    return this._modifyLink(organisations, 'POST', this.Target);
   }
 
   /**
@@ -80,25 +83,32 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * The provided organisations will be detached from the resource
    * @param {Array<Organisation|number>} organisations - List of items to detach
    * @throws {ApiError}
+   * @async
    */
-  async detach (organisations) {
-    await this._modifyLink(organisations, 'DELETE', this.Target);
+  detach (organisations) {
+    return this._modifyLink(organisations, 'DELETE', this.Target);
   }
 
   /**
    * Attach all organisations to the parent resource
    * @throws {ApiError}
+   * @async
    */
-  async attachAll () {
-    await this.api.ky.post(`${this.baseUrl}/all`);
+  attachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.post(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
    * Detach all organisations from the parent resource
    * @throws {ApiError}
+   * @async
    */
-  async detachAll () {
-    await this.api.ky.delete(`${this.baseUrl}/all`);
+  detachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
@@ -109,8 +119,9 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {?String} path - Optional appended resource path, will guess if null
    * @throws {ApiError}
    * @protected
+   * @async
    */
-  async _modifyLink (items, method, Type, path = null) {
+  _modifyLink (items, method, Type, path = null) {
     if (!Array.isArray(items)) {
       items = [items];
     }
@@ -131,6 +142,8 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
     const url = `${this.parent.url}/${path}`;
 
-    await this.api.ky(url, { method, json: { keys } });
+    return makeCancelable(async signal => {
+      await this.api.ky(url, { method, signal, json: { keys } });
+    });
   }
 }

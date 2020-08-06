@@ -46,6 +46,7 @@ import MapstyleSet from './MapstyleSet';
 import SvgSet from './SvgSet';
 import Tag from './Tag';
 import User from './User';
+import { makeCancelable } from '../utils/helpers';
 
 
 export default class Organisation extends CrudBase {
@@ -169,6 +170,7 @@ export default class Organisation extends CrudBase {
   /**
    * Get a tree representation of the organisation's relationships
    * @returns {Promise<Array<Organisation>>} - List of organisation root nodes. Organisations contain an extra property called "children"
+   * @async
    * @example
    * function printTree(nodes, prefix = '-') {
    *  for (const node of nodes) {
@@ -180,10 +182,12 @@ export default class Organisation extends CrudBase {
    *
    * organisation.getTree().then(printTree)
    */
-  async getTree () {
-    const { data } = await this.api.ky.get(`${this.url}/tree`).json();
+  getTree () {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(`${this.url}/tree`, { signal }).json();
 
-    return data.map(root => this._parseTree(root));
+      return data.map(root => this._parseTree(root));
+    });
   }
 
   _parseTree (rawNode) {

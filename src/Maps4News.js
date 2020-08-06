@@ -76,7 +76,7 @@ import Injectable from './traits/Injectable';
 import { fnv32b } from './utils/hash';
 import Logger from './utils/Logger';
 import { isParentOf, mix } from './utils/reflection';
-import { delay, wrapKyCancelable } from './utils/helpers';
+import { delay, makeCancelable, wrapKyCancelable } from './utils/helpers';
 import ValidationError from './errors/ValidationError';
 import ApiError from './errors/ApiError';
 import { wrapKyPrefixUrl } from './utils/requests';
@@ -232,7 +232,7 @@ export default class Maps4News extends mix(null, Injectable) {
 
           await delay(resetDelay);
 
-          return ky.request(request);
+          return this._ky(request);
         },
         // transform errors
         async (request, options, response) => {
@@ -616,11 +616,14 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link SvgSet}
    * @returns {Promise<Enum>} - Contains all the possible SVG set types
    * @throws {ApiError}
+   * @async
    */
-  async getSvgSetTypes () {
-    const { data } = await this.ky.get('/svgs/sets/types').json();
+  getSvgSetTypes () {
+    return makeCancelable(async signal => {
+      const { data } = await this.ky.get('svgs/sets/types', { signal }).json();
 
-    return new Enum(data, true);
+      return new Enum(data, true);
+    });
   }
 
   /**
@@ -628,11 +631,14 @@ export default class Maps4News extends mix(null, Injectable) {
    * @see {@link Font}
    * @returns {Promise<Enum>} - Contains all the possible font styles
    * @throws {ApiError}
+   * @async
    */
-  async getFontStyles () {
-    const { data } = await this.ky.get('/fonts/styles').json();
+  getFontStyles () {
+    return makeCancelable(async signal => {
+      const { data } = await this.ky.get('fonts/styles', { signal }).json();
 
-    return new Enum(data, true);
+      return new Enum(data, true);
+    });
   }
 
   /**

@@ -31,6 +31,7 @@
  */
 
 import SimpleResourceProxy from './SimpleResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Used for proxying resource => organisation
@@ -54,9 +55,10 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
    * @throws {TypeError}
    * @throws {ApiError}
+   * @async
    */
-  async sync (items) {
-    await this._modifyResourceLink(items, 'PATCH');
+  sync (items) {
+    return this._modifyResourceLink(items, 'PATCH');
   }
 
   /**
@@ -64,9 +66,10 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
    * @throws {TypeError}
    * @throws {ApiError}
+   * @async
    */
-  async attach (items) {
-    await this._modifyResourceLink(items, 'POST');
+  attach (items) {
+    return this._modifyResourceLink(items, 'POST');
   }
 
   /**
@@ -74,25 +77,32 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
    * @throws {TypeError}
    * @throws {ApiError}
+   * @async
    */
-  async detach (items) {
-    await this._modifyResourceLink(items, 'DELETE');
+  detach (items) {
+    return this._modifyResourceLink(items, 'DELETE');
   }
 
   /**
    * Attach parent resource to all organisations
    * @throws {ApiError}
+   * @async
    */
-  async attachAll () {
-    await this.api.ky.post(`${this.baseUrl}/all`);
+  attachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.post(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
    * Detach parent resource to all organisations
    * @throws {ApiError}
+   * @async
    */
-  async detachAll () {
-    await this.api.ky.delete(`${this.baseUrl}/all`);
+  detachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
@@ -101,8 +111,9 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @throws {ApiError}
    * @throws {TypeError}
    * @private
+   * @async
    */
-  async _modifyResourceLink (items, method) {
+  _modifyResourceLink (items, method) {
     if (!Array.isArray(items)) {
       items = [items];
     }
@@ -112,9 +123,12 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
       .map(Number)
       .filter(x => !Number.isNaN(x));
 
-    await this.api.ky(this.baseUrl, {
-      method,
-      json: { keys },
+    return makeCancelable(async signal => {
+      await this.api.ky(this.baseUrl, {
+        method,
+        signal,
+        json: { keys },
+      });
     });
   }
 

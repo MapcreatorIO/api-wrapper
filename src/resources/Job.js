@@ -103,8 +103,10 @@ export default class Job extends CrudBase {
    * @async
    */
   downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+    const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
+
     return makeCancelable(async signal => {
-      const response = await this.api.ky.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, { signal });
+      const response = await this.api.ky.get(url, { signal });
 
       return DownloadedResource.fromResponse(response);
     });
@@ -114,11 +116,16 @@ export default class Job extends CrudBase {
    * Get archive blob url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<DownloadedResource>} - Job result output
+   * @async
    */
-  async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.ky.get(`${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`);
+  downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+    const url = `${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`;
 
-    return DownloadedResource.fromResponse(response);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
@@ -126,11 +133,15 @@ export default class Job extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {Promise<string>} - The url to the output
    * @throws {ApiError}
+   * @async
    */
-  async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
     const url = `${this.url}/output-url?${encodeQueryString({ deleted })}`;
-    const { data } = await this.api.ky.get(url).json();
 
-    return data.url;
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(url, { signal }).json();
+
+      return data.url;
+    });
   }
 }

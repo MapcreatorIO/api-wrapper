@@ -36,6 +36,7 @@ import Maps4News from './Maps4News';
 import RequestParameters from './RequestParameters';
 import ResourceBase from './resources/base/ResourceBase';
 import { isParentOf } from './utils/reflection';
+import { makeCancelable } from './utils/helpers';
 
 /**
  * Paginated resource lister
@@ -292,22 +293,24 @@ export default class ResourceLister extends EventEmitter {
     const endPage = Math.ceil((this.maxRows - this.rowCount) / this.parameters.perPage);
     const promises = [];
 
-    for (; parameters.page <= endPage; parameters.page++) {
-      const url = this.route + glue + parameters.encode();
-      const promise = this.api.ky.get(url);
+    return makeCancelable(async signal => {
+      for (; parameters.page <= endPage; parameters.page++) {
+        const url = this.route + glue + parameters.encode();
+        const promise = this.api.ky.get(url, { signal });
 
-      promises.push(promise);
-    }
+        promises.push(promise);
+      }
 
-    const responses = await Promise.all(promises);
+      const responses = await Promise.all(promises);
 
-    for (const response of responses) {
-      const { data } = await response.json();
+      for (const response of responses) {
+        const { data } = await response.json();
 
-      data.forEach(row => this.push(row, false));
+        data.forEach(row => this.push(row, false));
 
-      this._availableRows = Number(response.headers.get('x-paginate-total')) + parameters.offset;
-    }
+        this._availableRows = Number(response.headers.get('x-paginate-total')) + parameters.offset;
+      }
+    });
   }
 
   /**
