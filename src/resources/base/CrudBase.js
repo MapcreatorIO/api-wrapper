@@ -133,10 +133,6 @@ export default class CrudBase extends ResourceBase {
         this._baseProperties['updated_at'] = new Date();
       }
 
-      if (this.api.defaults.autoUpdateSharedCache) {
-        this.api.cache.update(this);
-      }
-
       return this;
     });
   }

@@ -72,16 +72,6 @@ export default class Job extends CrudBase {
 
   /**
    * Get the most up to date preview url
-   * @returns {string} - Last preview url
-   * @deprecated
-   * @throws {Job#previewUrl}
-   */
-  get lastPreviewUrl () {
-    return `${this.url}/revisions/last/result/archive`;
-  }
-
-  /**
-   * Get the most up to date preview url
    * @returns {string} - Preview url
    */
   get previewUrl () {

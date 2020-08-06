@@ -113,9 +113,9 @@ export default class SimpleResourceProxy {
    * List target resource
    * @param {Number|Object|RequestParameters} [params] - Parameters or the page number to be requested
    * @param {Number} [params.page=1] - The page to be requested
-   * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
+   * @param {Number} [params.perPage=RequestParameters.perPage] - Amount of items per page. This is silently capped by the API
    * @param {String|String[]} [params.sort=''] - Amount of items per page. This is silently capped by the API
-   * @param {String} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
+   * @param {String} [params.deleted=RequestParameters.deleted] - Show deleted resources, posible values: only, none, all
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
    * @returns {Promise<PaginatedResourceListing>} - paginated resource
    * @throws {ApiError}
@@ -133,36 +133,6 @@ export default class SimpleResourceProxy {
     const resolver = this._buildResolver(params);
 
     return resolver.getPage(resolver.page);
-  }
-
-  /**
-   * List target resource
-   * @param {Number|Object|RequestParameters} [params] - Parameters or the page to be requested
-   * @param {Number} [params.page=1] - The page to be requested
-   * @param {Number} [params.perPage=this.api.defaults.perPage] - Amount of items per page. This is silently capped by the API
-   * @param {Array<String>|string} [params.sort=''] - Comma separated list or array
-   * @param {String} [params.deleted=this.api.defaults.showDeleted] - Show deleted resources, posible values: only, none, all
-   * @param {Boolean} [params.shareCache=this.api.defaults.shareCache] - Share cache across instances
-   * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
-   * @returns {PaginatedResourceWrapper} - Wrapped paginated resource
-   * @deprecated
-   * @example
-   * // Find layers with a name that starts with "test" and a scale_min between 1 and 10
-   * // See Api documentation for search query syntax
-   * const search = {
-   *   name: '^:test',
-   *   scale_min: ['>:1', '<:10'],
-   * };
-   *
-   * api.layers.listandWrap({perPage: 10, search});
-   */
-  listAndWrap (params = {}) {
-    const resolver = this._buildResolver(params);
-    const wrapped = resolver.wrap(resolver.page);
-
-    wrapped.get(resolver.page);
-
-    return wrapped;
   }
 
   /**

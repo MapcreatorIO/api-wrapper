@@ -31,7 +31,6 @@
  */
 
 import Maps4News from './Maps4News';
-import PaginatedResourceWrapper from './PaginatedResourceWrapper';
 import RequestParameters from './RequestParameters';
 import { isParentOf } from './utils/reflection';
 import { makeCancelable } from './utils/helpers';
@@ -301,14 +300,5 @@ export default class PaginatedResourceListing {
    */
   previous () {
     return this.getPage(this.page - 1);
-  }
-
-  /**
-   * Wraps {@link PaginatedResourceWrapper} around the page
-   * @param {Boolean} shareCache - Share cache across instances
-   * @returns {PaginatedResourceWrapper} - Wrapped resource listing
-   */
-  wrap (shareCache = this.api.defaults._shareCache) {
-    return new PaginatedResourceWrapper(this, this.api, shareCache);
   }
 }

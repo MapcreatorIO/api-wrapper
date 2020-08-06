@@ -39,7 +39,6 @@ import OAuthToken from './oauth/OAuthToken';
 import GeoResourceProxy from './proxy/GeoResourceProxy';
 import ResourceProxy from './proxy/ResourceProxy';
 import SimpleResourceProxy from './proxy/SimpleResourceProxy';
-import ResourceCache from './ResourceCache';
 import {
   Choropleth,
   Color,
@@ -106,20 +105,6 @@ export default class Maps4News extends mix(null, Injectable) {
     this.host = host;
     this.autoLogout = true;
 
-    const bool = str => String(str).toLowerCase() === 'true';
-
-    /**
-     * Defaults for common parameters. These are populated during the build process using the `.env` file.
-     * @type {{cacheSeconds: number, shareCache: boolean, autoUpdateSharedCache: boolean, dereferenceCache: boolean}}
-     */
-    this.defaults = {
-      cacheSeconds: Number(process.env.CACHE_SECONDS),
-      shareCache: bool(process.env.CACHE_SHARED),
-      autoUpdateSharedCache: bool(process.env.CACHE_SHARED_AUTO_UPDATE),
-      dereferenceCache: bool(process.env.CACHE_DEREFERENCE_OUTPUT),
-    };
-
-    this._cache = new ResourceCache(this.defaults.cacheSeconds, this.defaults.dereferenceCache);
     this._logger = new Logger(process.env.LOG_LEVEL);
   }
 
@@ -130,14 +115,6 @@ export default class Maps4News extends mix(null, Injectable) {
    */
   get version () {
     return 'v1';
-  }
-
-  /**
-   * Get the shared cache instance
-   * @returns {ResourceCache} - Shared cache instance
-   */
-  get cache () {
-    return this._cache;
   }
 
   /**
@@ -596,19 +573,6 @@ export default class Maps4News extends mix(null, Injectable) {
    */
   get users () {
     return this.static(User);
-  }
-
-  /**
-   * Get SVG set types
-   * @see {@link SvgSet}
-   * @async
-   * @returns {Promise<Enum>} - Contains all the possible SVG set types
-   * @throws {ApiError}
-   * @deprecated Use getSvgSetTypes
-   * @todo Remove
-   */
-  getSvgSetType () {
-    return this.getSvgSetTypes();
   }
 
   /**

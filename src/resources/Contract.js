@@ -76,10 +76,6 @@ export default class Contract extends CrudBase {
     return makeCancelable(async signal => {
       await this.api.ky.patch(this.url, { json: data, signal });
 
-      if (this.api.defaults.autoUpdateSharedCache) {
-        this.api.cache.update(this);
-      }
-
       return this;
     });
   }
@@ -87,8 +83,9 @@ export default class Contract extends CrudBase {
   /**
    * @inheritDoc
    * @override
+   * @async
    */
-  async _create () {
+  _create () {
     const createData = this._buildCreateData();
 
     if (createData['date_start'] instanceof Date) {
