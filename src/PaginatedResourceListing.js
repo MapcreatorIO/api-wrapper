@@ -287,6 +287,7 @@ export default class PaginatedResourceListing {
    * Get next page
    * @returns {Promise<PaginatedResourceListing>} - paginated resource {
    * @throws {ApiError}
+   * @async
    */
   next () {
     return this.getPage(this.page + 1);
@@ -296,6 +297,7 @@ export default class PaginatedResourceListing {
    * Get previous page
    * @returns {Promise<PaginatedResourceListing>} - paginated resource {
    * @throws {ApiError}
+   * @async
    */
   previous () {
     return this.getPage(this.page - 1);

@@ -283,8 +283,9 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Fetch more data from the server
    * @private
+   * @async
    */
-  async _fetchMore () {
+  _fetchMore () {
     const glue = this.route.includes('?') ? '&' : '?';
     const parameters = this.parameters.copy();
 
