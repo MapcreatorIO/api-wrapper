@@ -108,6 +108,7 @@ export function wrapKyCancelable (fn) {
  * Makes a promise cancelable by passing it a signal
  * @param {function} fn - async method
  * @returns {Promise}
+ * @private
  */
 export function makeCancelable (fn) {
   const controller = new AbortController();

@@ -1,15 +1,15 @@
 # Basics
-These examples assume that an instance of the api exists and is authenticated. 
+These examples assume that an instance of the api exists and is authenticated.
 See the node and web authentication examples for more information on authenticating.
 
 ### Getting a resource
-Resources are bound to the base api class by default. Resources can be fetched in 
+Resources are bound to the base api class by default. Resources can be fetched in
 two ways; by selecting them (`.select`) or by fetching them (`.get`). Selecting them will only set the
 object's id to it's properties. Fetching a resource
 
 Fetch resource and all it's properties:
 
-```js 
+```js
 api.colors.get(1).then(function(color) {
     console.log(color.id + " " + color.name + ": " + color.hex);
 })
@@ -25,7 +25,7 @@ api.users.select('me').mapstyleSets().then(function(sets) {
 });
 ```
 
-Selection is only usefull as a stepping stone to related resources that can be easily obtained 
+Selection is only usefull as a stepping stone to related resources that can be easily obtained
 using the id of the parent. Please refer to the [api documentation] for further reference.
 
 ### Create a new resource
@@ -47,7 +47,7 @@ api.users.get('me').then(me => {
 ```
 
 ### Clone a resource
-Setting the id to null forces the creation of a new object upon saving. 
+Setting the id to null forces the creation of a new object upon saving.
 
 ```js
 api.colors.get(1).then(color => {
@@ -67,16 +67,16 @@ api.colors.list(1, 5).then(page => {
     console.log(page.data[i].toString());
   }
 });
-``` 
+```
 
 Loop over every page and print the result to the console.
 
 ```js
 function parsePages(page) {
   for (var i = 0; i < page.data.length; i++) {
-    console.log(page.data[i].toString());     
-  }  
-    
+    console.log(page.data[i].toString());
+  }
+
   if (page.hasNext) {
     console.log('Grabbing page ' + (page.page + 1));
     page.next().then(parsePage);
@@ -93,17 +93,17 @@ Loop over all pages and return the data in a promise
 ```js
 function parsePages(page) {
   var data = [];
-  
+
   function parse(page) {
       data = data.concat(page.data);
-      
+
       if(page.hasNext) {
           return page.next().then(parse);
       } else {
           return data;
       }
-  }  
-    
+  }
+
   return parse(page);
 }
 
@@ -133,7 +133,21 @@ var query = {
 api.layers.search(query).then(console.dir);
 ```
 
-The `search` method is an extension of `list`. This means that `.search({})` is the same as 
+The `search` method is an extension of `list`. This means that `.search({})` is the same as
 `list()`. More information about search query formatting can be found in the [api documentation].
- 
-[api documepntation]: https://docs.maps4news.com/
+
+### Canceling a requests
+Most methods that return a promise will have a method called `cancel`. This method can be called
+to cancel the request. If the request is running or about to be ran the promise will throw an error
+once canceled. If the request has been completed before the promise has been canceled it will not
+throw an error and instead complete successfully.
+
+```js
+// Fetch a preview
+const promise = api.jobs.select(123456).downloadPreview();
+
+// Turns out we don't need it anyways
+promise.cancel();
+```
+
+[api documentation]: https://docs.maps4news.com/
