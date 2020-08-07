@@ -39,9 +39,9 @@ import { makeCancelable } from '../utils/helpers';
 export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * OwnedResourceProxy Constructor
-   * @param {Maps4News} api - api instance
-   * @param {ResourceBase} parent - parent instance
-   * @param {Class<ResourceBase>} Target - target constructor
+   * @param {Mapcreator} api - Api instance
+   * @param {ResourceBase} parent - Parent instance
+   * @param {Class<ResourceBase>} Target - Target constructor
    */
   constructor (api, parent, Target) {
     const resource = Target.resourceName.replace(/s+$/, '');

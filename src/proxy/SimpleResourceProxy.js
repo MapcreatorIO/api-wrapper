@@ -82,7 +82,7 @@ export default class SimpleResourceProxy {
 
   /**
    * Get api instance
-   * @returns {Maps4News} - Api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;

@@ -40,7 +40,7 @@ import { camel as camelCase } from 'case';
  */
 export default class CrudSetItemBase extends CrudBase {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor (api, data = {}) {

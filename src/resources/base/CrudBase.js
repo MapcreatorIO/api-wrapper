@@ -40,7 +40,7 @@ import { makeCancelable } from '../../utils/helpers';
  */
 export default class CrudBase extends ResourceBase {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor (api, data = {}) {

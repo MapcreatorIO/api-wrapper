@@ -36,7 +36,7 @@ import { makeCancelable } from '../utils/helpers';
 
 export default class OrganisationProxy extends SimpleResourceProxy {
   /**
-   * @param {Maps4News} api - Instance of the api
+   * @param {Mapcreator} api - Instance of the api
    * @param {ResourceBase} parent - parent instance
    */
   constructor (api, parent) {

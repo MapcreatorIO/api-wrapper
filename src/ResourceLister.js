@@ -136,7 +136,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the api instance
-   * @returns {Mapcreator} - api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;
