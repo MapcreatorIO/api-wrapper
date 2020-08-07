@@ -44,7 +44,6 @@ export default class Contract extends CrudBase {
   /**
    * @inheritDoc
    * @override
-   * @returns {CancelablePromise}
    */
   _update () {
     this._updateProperties();
@@ -83,7 +82,6 @@ export default class Contract extends CrudBase {
   /**
    * @inheritDoc
    * @override
-   * @returns {CancelablePromise}
    */
   _create () {
     const createData = this._buildCreateData();

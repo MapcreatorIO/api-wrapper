@@ -225,7 +225,7 @@ export default class PaginatedResourceListing {
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
    * @returns {CancelablePromise<PaginatedResourceListing>} - Target page
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   getPage (page = this.page, perPage = this.perPage) {
     const query = this.parameters.copy();
@@ -283,7 +283,7 @@ export default class PaginatedResourceListing {
   /**
    * Get next page
    * @returns {CancelablePromise<PaginatedResourceListing>} - Paginated resource
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   next () {
     return this.getPage(this.page + 1);
@@ -292,7 +292,7 @@ export default class PaginatedResourceListing {
   /**
    * Get previous page
    * @returns {CancelablePromise<PaginatedResourceListing>} - Paginated resource
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   previous () {
     return this.getPage(this.page - 1);

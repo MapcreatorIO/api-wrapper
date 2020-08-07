@@ -284,6 +284,7 @@ export default class ResourceLister extends EventEmitter {
    * Fetch more data from the server
    * @private
    * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
   _fetchMore () {
     const glue = this.route.includes('?') ? '&' : '?';

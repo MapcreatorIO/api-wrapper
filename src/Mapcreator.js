@@ -184,7 +184,7 @@ export default class Mapcreator extends mix(null, Injectable) {
    * Authenticate with the api using the authentication method provided.
    * @returns {Promise<Mapcreator>} - Current instance
    * @throws {OAuthError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   async authenticate () {
     await this.auth.authenticate();
@@ -589,7 +589,7 @@ export default class Mapcreator extends mix(null, Injectable) {
    * Get SVG set types
    * @see {@link SvgSet}
    * @returns {CancelablePromise<Enum>} - Contains all the possible SVG set types
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   getSvgSetTypes () {
     return makeCancelable(async signal => {
@@ -603,7 +603,7 @@ export default class Mapcreator extends mix(null, Injectable) {
    * Get font styles
    * @see {@link Font}
    * @returns {CancelablePromise<Enum>} - Contains all the possible font styles
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   getFontStyles () {
     return makeCancelable(async signal => {
@@ -617,6 +617,7 @@ export default class Mapcreator extends mix(null, Injectable) {
    * Forget the current session
    * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
    * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
   logout () {
     return this.auth.logout();

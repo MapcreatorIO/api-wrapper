@@ -80,6 +80,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Number} boundary.bottomRight.lng - bottom right corner longitude
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
    * @returns {CancelablePromise<ResourceBase[]>} - target resource for boundary
+   * @throws {ApiError} - If the api returns errors
    * @throws TypeError
    * @throws GeoError
    */
@@ -110,6 +111,7 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Number} point.lng - top left corner longitude
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
    * @returns {CancelablePromise<ResourceBase[]>} - target resource for boundary
+   * @throws {ApiError} - If the api returns errors
    * @throws TypeError
    * @throws GeoError
    */

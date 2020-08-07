@@ -36,7 +36,7 @@
  * @param {?Number} [start=1] - Start page
  * @param {?Number} [stop] - Stop page, defaults to the page count if not filled in.
  * @returns {Promise<Array<ResourceBase>>} - multiple pages
- * @throws {ApiError}
+ * @throws {ApiError} - If the api returns errors
  * @example
  * import { helpers } from "@mapcreator/api";
  *

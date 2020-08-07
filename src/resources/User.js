@@ -62,7 +62,7 @@ export default class User extends CrudBase {
   /**
    * Get all known ips
    * @returns {CancelablePromise<string[]>} - List of ip addresses
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   ips () {
     const url = `${this.url}/ips`;
@@ -77,7 +77,7 @@ export default class User extends CrudBase {
   /**
    * Get the user's organisation
    * @returns {CancelablePromise<Organisation>} - User's organisation
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   organisation () {
     return new ResourceProxy(this.api, Organisation).get(this.organisationId);
@@ -86,7 +86,7 @@ export default class User extends CrudBase {
   /**
    * Get the user's language
    * @returns {CancelablePromise<Language>} - User's language
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   language () {
     return new ResourceProxy(this.api, Language).get(this.languageCode);

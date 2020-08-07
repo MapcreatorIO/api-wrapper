@@ -170,6 +170,7 @@ export default class Organisation extends CrudBase {
   /**
    * Get a tree representation of the organisation's relationships
    * @returns {CancelablePromise<Array<Organisation>>} - List of organisation root nodes. Organisations contain an extra property called "children"
+   * @throws {ApiError} - If the api returns errors
    * @example
    * function printTree(nodes, prefix = '-') {
    *  for (const node of nodes) {

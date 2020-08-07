@@ -77,8 +77,8 @@ export default class CrudBase extends ResourceBase {
   /**
    * Save item. This will create a new item if `id` is unset
    * @returns {CancelablePromise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    */
   save () {
     return this.id ? this._update() : this._create();
@@ -87,8 +87,8 @@ export default class CrudBase extends ResourceBase {
   /**
    * Store new item
    * @returns {CancelablePromise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    * @private
    */
   _create () {
@@ -107,8 +107,8 @@ export default class CrudBase extends ResourceBase {
   /**
    * Update existing item
    * @returns {CancelablePromise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    * @private
    */
   _update () {
@@ -139,8 +139,8 @@ export default class CrudBase extends ResourceBase {
    * Delete item
    * @param {Boolean} [updateSelf=true] - Update current instance (set the deletedAt property)
    * @returns {CancelablePromise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    */
   delete (updateSelf = true) {
     return makeCancelable(async signal => {
@@ -158,8 +158,8 @@ export default class CrudBase extends ResourceBase {
    * Restore item
    * @param {Boolean} [updateSelf=true] - Update current instance (unset the deletedAt property)
    * @returns {CancelablePromise<CrudBase>} - New restored instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    */
   restore (updateSelf = true) {
     return makeCancelable(async signal => {

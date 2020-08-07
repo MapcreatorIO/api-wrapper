@@ -257,7 +257,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
    * @returns {CancelablePromise<ResourceBase>} - Refreshed instance
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   refresh (updateSelf = true) {
     return makeCancelable(async signal => {

@@ -54,7 +54,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Sync items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   sync (items) {
@@ -65,7 +65,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Attach items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   attach (items) {
@@ -76,7 +76,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Detach items from the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   detach (items) {
@@ -85,7 +85,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Attach parent resource to all organisations
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   attachAll () {
@@ -96,7 +96,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
 
   /**
    * Detach parent resource to all organisations
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   detachAll () {
@@ -108,7 +108,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync, attach or detach
    * @param {string} method - http method
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @throws {TypeError}
    * @returns {CancelablePromise}
    * @private

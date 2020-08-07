@@ -49,6 +49,7 @@ export default class JobResult extends ResourceBase {
   /**
    * Get the related job
    * @returns {CancelablePromise<Job>} - The job related to this row
+   * @throws {ApiError} - If the api returns errors
    */
   get job () {
     return this.api.jobs.get(this.jobId);
@@ -57,6 +58,7 @@ export default class JobResult extends ResourceBase {
   /**
    * Get the related job revision
    * @returns {CancelablePromise<JobRevision>} - The job revision related to this row
+   * @throws {ApiError} - If the api returns errors
    */
   get jobRevision () {
     return this.api.jobs.select(this.jobId).revisions.get(this.id);
@@ -74,6 +76,7 @@ export default class JobResult extends ResourceBase {
    * Get archive blob url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<DownloadedResource>} - Job result output
+   * @throws {ApiError} - If the api returns errors
    */
   downloadOutput (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.outputUrl}?${encodeQueryString({ deleted })}`;
@@ -97,7 +100,7 @@ export default class JobResult extends ResourceBase {
    * Get the remote output url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<string>} - The url to the output
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   getOutputUrl (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.outputUrlUrl}?${encodeQueryString({ deleted })}`;
@@ -121,6 +124,7 @@ export default class JobResult extends ResourceBase {
    * Download the job result log
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<DownloadedResource>} - job result log
+   * @throws {ApiError} - If the api returns errors
    */
   downloadLog (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.logUrl}?${encodeQueryString({ deleted })}`;
@@ -144,6 +148,7 @@ export default class JobResult extends ResourceBase {
    * Download the job preview
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<DownloadedResource>} - Job result preview
+   * @throws {ApiError} - If the api returns errors
    */
   downloadPreview (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
@@ -162,6 +167,7 @@ export default class JobResult extends ResourceBase {
    * @param {boolean} [value=true] - What to set the dealt-with value to
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
   dealWith (value = true, deleted = RequestParameters.deleted || DeletedState.NONE) {
     value = Boolean(value);

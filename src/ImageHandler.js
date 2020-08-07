@@ -77,7 +77,7 @@ export default class ImageHandler {
 
   /**
    * Delete image
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   delete () {
@@ -90,6 +90,7 @@ export default class ImageHandler {
   /**
    * Download the image
    * @returns {CancelablePromise<DownloadedResource>} - image
+   * @throws {ApiError} - If the api returns errors
    * @example
    * // Browser
    * layer.imageHandler.download().then(image => {
@@ -113,6 +114,7 @@ export default class ImageHandler {
    * Upload new image
    * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
    * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
   upload (image) {
     const body = new FormData();

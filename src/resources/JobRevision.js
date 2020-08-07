@@ -69,7 +69,7 @@ export default class JobRevision extends CrudBase {
    * Get the job result
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<JobResult>} - The associated job result
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   result (deleted = RequestParameters.deleted || DeletedState.NONE) {
     return makeCancelable(async signal => {
@@ -105,7 +105,7 @@ export default class JobRevision extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<JobRevision>} - New job revision
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   save (object = {}, layers = null, deleted = RequestParameters.deleted || DeletedState.NONE) {
     if (layers && layers.length > 0) {
@@ -139,7 +139,7 @@ export default class JobRevision extends CrudBase {
    * Get job object
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<Object>} - The map object
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   object (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/object?${encodeQueryString({ deleted })}`;
@@ -155,7 +155,7 @@ export default class JobRevision extends CrudBase {
    * Build the revision
    * @param {String} callback - Optional callback url for when the job completes
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   build (callback, deleted = RequestParameters.deleted || DeletedState.NONE) {
@@ -170,6 +170,7 @@ export default class JobRevision extends CrudBase {
    * Cancels a running job
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
   cancel (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/cancel?${encodeQueryString({ deleted })}`;
@@ -184,7 +185,7 @@ export default class JobRevision extends CrudBase {
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<String>} - the share link
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted || DeletedState.NONE) {
     visibility = visibility.toLowerCase();
@@ -207,7 +208,7 @@ export default class JobRevision extends CrudBase {
   /**
    * Clones a job revision to the user requesting it
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise<JobRevision>} - The new job revision, which will be linked to a new job
    */
   clone (deleted = RequestParameters.deleted || DeletedState.NONE) {
