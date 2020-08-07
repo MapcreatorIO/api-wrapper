@@ -38,7 +38,7 @@
  * @returns {Promise<Array<ResourceBase>>} - multiple pages
  * @throws {ApiError}
  * @example
- * import { helpers } from "@mapcreator/maps4news";
+ * import { helpers } from "@mapcreator/api";
  *
  * const promise = api.users.list(1, 50); // 50 per page is more efficient
  *

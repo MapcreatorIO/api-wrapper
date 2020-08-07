@@ -85,7 +85,7 @@ import { wrapKyPrefixUrl } from './utils/requests';
  *
  * @mixes Injectable
  */
-export default class Maps4News extends mix(null, Injectable) {
+export default class Mapcreator extends mix(null, Injectable) {
   /**
    * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
@@ -182,7 +182,7 @@ export default class Maps4News extends mix(null, Injectable) {
 
   /**
    * Authenticate with the api using the authentication method provided.
-   * @returns {Promise<Maps4News>} - current instance
+   * @returns {Promise<Mapcreator>} - current instance
    * @throws {OAuthError}
    * @throws {ApiError}
    */

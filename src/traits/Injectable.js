@@ -65,7 +65,7 @@ export default class Injectable extends Trait {
    *
    * @example
    *
-   * Maps4News.injectProxy({Domain});
+   * Mapcreator.injectProxy({Domain});
    *
    * // After creating new api instance
    *

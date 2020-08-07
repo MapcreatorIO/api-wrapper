@@ -32,7 +32,7 @@
 
 import { snake as snakeCase } from 'case';
 import { EventEmitter } from 'events';
-import Maps4News from './Maps4News';
+import Mapcreator from './Mapcreator';
 import RequestParameters from './RequestParameters';
 import ResourceBase from './resources/base/ResourceBase';
 import { isParentOf } from './utils/reflection';
@@ -47,7 +47,7 @@ export default class ResourceLister extends EventEmitter {
   /**
    * ResourceLister constructor
    *
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {string} route - Resource url route
    * @param {constructor<ResourceBase>} Resource - Resource constructor
    * @param {?RequestParameters} parameters - Request parameters
@@ -57,8 +57,8 @@ export default class ResourceLister extends EventEmitter {
   constructor (api, route, Resource = ResourceBase, parameters = null, maxRows = 50, key = 'id') {
     super();
 
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
+    if (!isParentOf(Mapcreator, api)) {
+      throw new TypeError('Expected api to be of type Mapcreator');
     }
 
     this._api = api;
@@ -136,7 +136,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the api instance
-   * @returns {Maps4News} - api instance
+   * @returns {Mapcreator} - api instance
    */
   get api () {
     return this._api;

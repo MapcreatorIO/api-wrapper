@@ -32,9 +32,9 @@
 
 
 import moxios from 'moxios';
-import Maps4News from '../../../src/Maps4News';
+import Mapcreator from '../../../src/Mapcreator';
 
-const api = new Maps4News('token', 'https://example.com');
+const api = new Mapcreator('token', 'https://example.com');
 
 test('attach/sync/detach organisations to items', async () => {
   expect.assertions(9);

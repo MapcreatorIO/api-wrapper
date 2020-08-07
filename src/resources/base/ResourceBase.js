@@ -32,7 +32,7 @@
 
 import { camel as camelCase, snake as snakeCase } from 'case';
 import { AbstractClassError, AbstractError } from '../../errors/AbstractError';
-import Maps4News from '../../Maps4News';
+import Mapcreator from '../../Mapcreator';
 import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
 import Injectable from '../../traits/Injectable';
 import { fnv32b } from '../../utils/hash';
@@ -49,7 +49,7 @@ function unique (input) {
  */
 export default class ResourceBase extends mix(null, Injectable) {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor (api, data = {}) {
@@ -113,7 +113,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Get api instance
-   * @returns {Maps4News} - Api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;
@@ -121,11 +121,11 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Set the api instance
-   * @param {Maps4News} value - Api instance
+   * @param {Mapcreator} value - Api instance
    */
   set api (value) {
-    if (!isParentOf(Maps4News, value)) {
-      throw new TypeError('Expected api to be of type Maps4News or null');
+    if (!isParentOf(Mapcreator, value)) {
+      throw new TypeError('Expected api to be of type Mapcreator or null');
     }
 
     this._api = value;

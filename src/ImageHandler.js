@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Maps4News from './Maps4News';
+import Mapcreator from './Mapcreator';
 import DownloadedResource from './resources/base/DownloadedResource';
 import ResourceBase from './resources/base/ResourceBase';
 import { isParentOf } from './utils/reflection';
@@ -43,12 +43,12 @@ import { makeCancelable } from './utils/helpers';
  */
 export default class ImageHandler {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {ResourceBase} target - Instance of target item
    */
   constructor (api, target) {
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
+    if (!isParentOf(Mapcreator, api)) {
+      throw new TypeError('Expected api to be of type Mapcreator');
     }
 
     if (!isParentOf(ResourceBase, target)) {
@@ -61,7 +61,7 @@ export default class ImageHandler {
 
   /**
    * Get api instance
-   * @returns {Maps4News} - Api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;

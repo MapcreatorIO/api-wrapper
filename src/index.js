@@ -31,7 +31,7 @@
  */
 
 // Core
-export Maps4News from './Maps4News';
+export Mapcreator from './Mapcreator';
 export RequestParameters from './RequestParameters';
 export StorageManager from './storage/StorageManager';
 

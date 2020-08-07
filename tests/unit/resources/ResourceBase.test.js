@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Maps4News from '../../../src/Maps4News';
+import Mapcreator from '../../../src/Mapcreator';
 import ResourceBase from '../../../src/resources/base/ResourceBase';
 
 class DummyResource extends ResourceBase {
@@ -39,7 +39,7 @@ class DummyResource extends ResourceBase {
   }
 }
 
-const api = new Maps4News('token', 'example.com');
+const api = new Mapcreator('token', 'example.com');
 
 test('::toObject(false) should return snake_case keys', () => {
   const input = {

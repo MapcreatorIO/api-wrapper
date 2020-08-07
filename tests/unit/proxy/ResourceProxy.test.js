@@ -32,9 +32,9 @@
 
 
 import moxios from 'moxios';
-import Maps4News from '../../../src/Maps4News';
+import Mapcreator from '../../../src/Mapcreator';
 
-const api = new Maps4News('token', 'https://example.com');
+const api = new Mapcreator('token', 'https://example.com');
 
 test('get should return a result on success', async () => {
   moxios.wait(() => {
