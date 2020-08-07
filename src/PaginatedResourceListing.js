@@ -42,7 +42,7 @@ export default class PaginatedResourceListing {
   /**
    * @param {Mapcreator} api - Instance of the api
    * @param {String} route - Resource route
-   * @param {ResourceBase} Target - Wrapper target
+   * @param {Class<ResourceBase>} Target - Wrapper target
    * @param {RequestParameters} parameters - Request parameters
    * @param {Number} pageCount - Resolved page count
    * @param {Number} rowCount - Resolved rowCount
@@ -102,8 +102,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Target to wrap results in
-   * @returns {ResourceBase} - Target constructor
-   * @constructor
+   * @returns {Class<ResourceBase>} - Target constructor
    */
   get Target () {
     return this._Target;

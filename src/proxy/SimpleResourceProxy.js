@@ -44,7 +44,7 @@ import { isParentOf } from '../utils/reflection';
 export default class SimpleResourceProxy {
   /**
    * @param {Mapcreator} api - Instance of the api
-   * @param {ResourceBase} Target - Target to wrap
+   * @param {Class<ResourceBase>} Target - Target to wrap
    * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    * @param {object} seedData - Internal use, used for seeding ::new
    */
@@ -90,8 +90,7 @@ export default class SimpleResourceProxy {
 
   /**
    * Target to wrap results in
-   * @returns {ResourceBase} - Target constructor
-   * @constructor
+   * @returns {Class<ResourceBase>} - Target constructor
    */
   get Target () {
     return this._Target;

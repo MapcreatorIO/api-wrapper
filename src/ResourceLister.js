@@ -49,7 +49,7 @@ export default class ResourceLister extends EventEmitter {
    *
    * @param {Mapcreator} api - Api instance
    * @param {string} route - Resource url route
-   * @param {constructor<ResourceBase>} Resource - Resource constructor
+   * @param {Class<ResourceBase>} Resource - Resource constructor
    * @param {?RequestParameters} parameters - Request parameters
    * @param {number} [maxRows=50] - Initial max rows
    * @param {string} [key=id] - Key
@@ -112,7 +112,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Resource constructor accessor, used for building the resource instance
-   * @returns {constructor<ResourceBase>} - resource constructor
+   * @returns {Class<ResourceBase>} - resource constructor
    */
   get Resource () {
     return this._Resource;

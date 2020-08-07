@@ -259,8 +259,8 @@ export default class Mapcreator extends mix(null, Injectable) {
 
   /**
    * Static proxy generation
-   * @param {string|function} Target - Constructor or url
-   * @param {function?} Constructor - Constructor for a resource that the results should be cast to
+   * @param {string|Class} Target - Constructor or url
+   * @param {Class?} Constructor - Constructor for a resource that the results should be cast to
    * @returns {ResourceProxy} - A proxy for accessing the resource
    * @example
    * api.static('/custom/resource/path/{id}/').get(123);

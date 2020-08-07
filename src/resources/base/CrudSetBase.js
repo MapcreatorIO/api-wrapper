@@ -55,8 +55,7 @@ export default class CrudSetBase extends CrudBase {
 
   /**
    * Child constructor
-   * @returns {ResourceBase} - Child constructor
-   * @constructor
+   * @returns {Class<ResourceBase>} - Child constructor
    * @abstract
    * @protected
    */

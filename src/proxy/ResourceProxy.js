@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
 import SimpleResourceProxy from './SimpleResourceProxy';
 import { makeCancelable } from '../utils/helpers';
