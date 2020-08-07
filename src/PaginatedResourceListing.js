@@ -78,7 +78,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Target route
-   * @returns {String} - url
+   * @returns {String} - Url
    */
   get route () {
     return this._route;
@@ -282,7 +282,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Get next page
-   * @returns {CancelablePromise<PaginatedResourceListing>} - paginated resource {
+   * @returns {CancelablePromise<PaginatedResourceListing>} - Paginated resource
    * @throws {ApiError}
    */
   next () {
@@ -291,7 +291,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Get previous page
-   * @returns {CancelablePromise<PaginatedResourceListing>} - paginated resource {
+   * @returns {CancelablePromise<PaginatedResourceListing>} - Paginated resource
    * @throws {ApiError}
    */
   previous () {

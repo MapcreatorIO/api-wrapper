@@ -76,7 +76,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the user's organisation
-   * @returns {CancelablePromise<Organisation>} - user's organisation
+   * @returns {CancelablePromise<Organisation>} - User's organisation
    * @throws {ApiError}
    */
   organisation () {
@@ -85,7 +85,7 @@ export default class User extends CrudBase {
 
   /**
    * Get the user's language
-   * @returns {CancelablePromise<Language>} - user's language
+   * @returns {CancelablePromise<Language>} - User's language
    * @throws {ApiError}
    */
   language () {

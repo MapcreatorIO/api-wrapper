@@ -167,7 +167,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Returns if the resource is readonly
-   * @returns {boolean} - readonly
+   * @returns {boolean} - Readonly
    */
   static get readonly () {
     return false;
@@ -397,7 +397,7 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Transform instance to object
    * @param {boolean} [camelCaseKeys=false] - camelCase object keys
-   * @returns {{}} - object
+   * @returns {{}} - Object
    */
   toObject (camelCaseKeys = false) {
     this._updateProperties();

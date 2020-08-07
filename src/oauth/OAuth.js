@@ -65,7 +65,7 @@ export default class OAuth {
 
   /**
    * If the current instance has a valid token
-   * @returns {Boolean} - if a valid token is availble
+   * @returns {Boolean} - If a valid token is available
    */
   get authenticated () {
     return this.token !== null && !this.token.expired;
@@ -73,7 +73,7 @@ export default class OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise<OAuthToken>} - authentication token
+   * @returns {Promise<OAuthToken>} - Authentication token
    * @throws {OAuthError}
    * @abstract
    */

@@ -182,7 +182,7 @@ export default class Mapcreator extends mix(null, Injectable) {
 
   /**
    * Authenticate with the api using the authentication method provided.
-   * @returns {Promise<Mapcreator>} - current instance
+   * @returns {Promise<Mapcreator>} - Current instance
    * @throws {OAuthError}
    * @throws {ApiError}
    */
