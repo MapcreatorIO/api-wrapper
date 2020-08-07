@@ -192,6 +192,16 @@ export default class Mapcreator extends mix(null, Injectable) {
     return this;
   }
 
+  /**
+   * Mapcreator ky instance
+   * This ky instance takes care of the API communication. It has the following responsibilities:
+   *  - Send authenticated requests to the API
+   *  - Transform errors returned from the API into ApiError and ValidationError if possible
+   *  - Wait when the rate limiter responds with a 429 and retry later
+   *  - Prefix urls with the api domain if needed
+   * @returns {function}
+   * @see {@link https://github.com/sindresorhus/ky}
+   */
   get ky () {
     if (this._ky) {
       return this._ky;
