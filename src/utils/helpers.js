@@ -105,9 +105,14 @@ export function wrapKyCancelable (fn) {
 }
 
 /**
+ * @typedef {Promise} CancelablePromise
+ * @property {function(): void} cancel - Cancel the promise
+ */
+
+/**
  * Makes a promise cancelable by passing it a signal
  * @param {function} fn - async method
- * @returns {Promise}
+ * @returns {CancelablePromise}
  * @private
  */
 export function makeCancelable (fn) {
