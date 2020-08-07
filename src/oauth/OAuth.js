@@ -95,7 +95,7 @@ export default class OAuth {
   /**
    * Invalidates the session token
    * @throws {OAuthError} - If de-authentication fails
-   * @throws {ApiError} - If the api returns errors - If the api returns errors
+   * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise}
    */
   logout () {
