@@ -143,7 +143,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Set sort direction
-   * @returns {String} - Sort
+   * @returns {Array<String>} - Sort
    * @example
    * const sort = ['-name', 'id']
    */
@@ -153,7 +153,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Current sorting value
-   * @param {String} value - Sort
+   * @param {Array<String>} value - Sort
    */
   set sort (value) {
     this.parameters.sort = value;

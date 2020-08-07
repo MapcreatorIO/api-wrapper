@@ -38,7 +38,7 @@ import { makeCancelable } from '../utils/helpers';
 
 export default class GeoResourceProxy extends ResourceProxy {
   /**
-   * @param {Maps4News} api - Instance of the api
+   * @param {Mapcreator} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
    * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    * @param {object} seedData - Internal use, used for seeding ::new

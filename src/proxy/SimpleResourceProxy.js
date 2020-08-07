@@ -43,7 +43,7 @@ import { isParentOf } from '../utils/reflection';
  */
 export default class SimpleResourceProxy {
   /**
-   * @param {Maps4News} api - Instance of the api
+   * @param {Mapcreator} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
    * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    * @param {object} seedData - Internal use, used for seeding ::new
