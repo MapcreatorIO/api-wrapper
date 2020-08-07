@@ -55,7 +55,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
    * @throws {TypeError}
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   sync (items) {
     return this._modifyResourceLink(items, 'PATCH');
@@ -66,7 +66,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
    * @throws {TypeError}
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   attach (items) {
     return this._modifyResourceLink(items, 'POST');
@@ -77,7 +77,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
    * @throws {TypeError}
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   detach (items) {
     return this._modifyResourceLink(items, 'DELETE');
@@ -86,7 +86,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * Attach parent resource to all organisations
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   attachAll () {
     return makeCancelable(async signal => {
@@ -97,7 +97,7 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * Detach parent resource to all organisations
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   detachAll () {
     return makeCancelable(async signal => {
@@ -110,8 +110,8 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * @param {string} method - http method
    * @throws {ApiError}
    * @throws {TypeError}
+   * @returns {CancelablePromise}
    * @private
-   * @async
    */
   _modifyResourceLink (items, method) {
     if (!Array.isArray(items)) {

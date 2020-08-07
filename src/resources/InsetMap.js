@@ -40,8 +40,7 @@ export default class InsetMap extends ResourceBase {
 
   /**
    * Get the inset map json
-   * @returns {Promise<Object>} - inset map json
-   * @async
+   * @returns {CancelablePromise<Object>} - inset map json
    */
   getJson () {
     return makeCancelable(signal => this.api.ky.get(`${this.url}/json`, { signal }).json());

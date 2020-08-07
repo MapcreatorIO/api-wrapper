@@ -79,7 +79,7 @@ export async function getPaginatedRange (page, start = 1, stop) {
  * Async delay
  * @private
  * @param {number} ms - milliseconds
- * @async
+ * @returns {Promise}
  */
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 

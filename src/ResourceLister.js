@@ -283,7 +283,7 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Fetch more data from the server
    * @private
-   * @async
+   * @returns {CancelablePromise}
    */
   _fetchMore () {
     const glue = this.route.includes('?') ? '&' : '?';

@@ -79,10 +79,9 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Number} boundary.bottomRight.lat - bottom right corner latitude
    * @param {Number} boundary.bottomRight.lng - bottom right corner longitude
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
-   * @returns {Promise<ResourceBase[]>} - target resource for boundary
+   * @returns {CancelablePromise<ResourceBase[]>} - target resource for boundary
    * @throws TypeError
    * @throws GeoError
-   * @async
    */
   forBoundary ({ topLeft, bottomRight }, limit = RequestParameters.perPage) {
     if (!this.hasForBoundary) {
@@ -110,10 +109,9 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Number} point.lat - top left corner latitude
    * @param {Number} point.lng - top left corner longitude
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
-   * @returns {Promise<ResourceBase[]>} - target resource for boundary
+   * @returns {CancelablePromise<ResourceBase[]>} - target resource for boundary
    * @throws TypeError
    * @throws GeoError
-   * @async
    */
   forPoint ({ lat, lng }, limit = RequestParameters.perPage) {
     if (!this.hasForPoint) {

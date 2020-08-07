@@ -578,9 +578,8 @@ export default class Mapcreator extends mix(null, Injectable) {
   /**
    * Get SVG set types
    * @see {@link SvgSet}
-   * @returns {Promise<Enum>} - Contains all the possible SVG set types
+   * @returns {CancelablePromise<Enum>} - Contains all the possible SVG set types
    * @throws {ApiError}
-   * @async
    */
   getSvgSetTypes () {
     return makeCancelable(async signal => {
@@ -593,9 +592,8 @@ export default class Mapcreator extends mix(null, Injectable) {
   /**
    * Get font styles
    * @see {@link Font}
-   * @returns {Promise<Enum>} - Contains all the possible font styles
+   * @returns {CancelablePromise<Enum>} - Contains all the possible font styles
    * @throws {ApiError}
-   * @async
    */
   getFontStyles () {
     return makeCancelable(async signal => {
@@ -608,7 +606,7 @@ export default class Mapcreator extends mix(null, Injectable) {
   /**
    * Forget the current session
    * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
-   * @async
+   * @returns {CancelablePromise}
    */
   logout () {
     return this.auth.logout();

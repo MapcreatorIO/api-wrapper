@@ -61,7 +61,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * The organisations attached to the target resource will be replaced with the organisations provided in the request.
    * @param {Array<Organisation|number>} organisations - List of items to sync
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   sync (organisations) {
     return this._modifyLink(organisations, 'PATCH', this.Target);
@@ -72,7 +72,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * The provided organisations will be attached to the resource if they're not already attached
    * @param {Array<Organisation|number>} organisations - List of items to attach
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   attach (organisations) {
     return this._modifyLink(organisations, 'POST', this.Target);
@@ -83,7 +83,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * The provided organisations will be detached from the resource
    * @param {Array<Organisation|number>} organisations - List of items to detach
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   detach (organisations) {
     return this._modifyLink(organisations, 'DELETE', this.Target);
@@ -92,7 +92,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
   /**
    * Attach all organisations to the parent resource
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   attachAll () {
     return makeCancelable(async signal => {
@@ -103,7 +103,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
   /**
    * Detach all organisations from the parent resource
    * @throws {ApiError}
-   * @async
+   * @returns {CancelablePromise}
    */
   detachAll () {
     return makeCancelable(async signal => {
@@ -119,7 +119,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * @param {?String} path - Optional appended resource path, will guess if null
    * @throws {ApiError}
    * @protected
-   * @async
+   * @returns {CancelablePromise}
    */
   _modifyLink (items, method, Type, path = null) {
     if (!Array.isArray(items)) {

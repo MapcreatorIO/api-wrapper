@@ -134,9 +134,8 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise<OAuthToken>} - Response token
+   * @returns {CancelablePromise<OAuthToken>} - Response token
    * @throws {OAuthError}
-   * @async
    */
   authenticate () {
     const url = this.host + this.path;

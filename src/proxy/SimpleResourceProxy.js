@@ -117,7 +117,7 @@ export default class SimpleResourceProxy {
    * @param {String|String[]} [params.sort=''] - Amount of items per page. This is silently capped by the API
    * @param {String} [params.deleted=RequestParameters.deleted] - Show deleted resources, posible values: only, none, all
    * @param {?Object<String, String|Array<String>>} [params.search] - Search parameters
-   * @returns {Promise<PaginatedResourceListing>} - paginated resource
+   * @returns {CancelablePromise<PaginatedResourceListing>} - paginated resource
    * @throws {ApiError}
    * @example
    * // Find layers with a name that starts with "test" and a scale_min between 1 and 10

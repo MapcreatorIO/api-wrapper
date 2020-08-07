@@ -74,9 +74,8 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * Get target resource
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @param {String} [deleted=null] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<ResourceBase>} - Target resource
+   * @returns {CancelablePromise<ResourceBase>} - Target resource
    * @throws {ApiError}
-   * @async
    */
   get (id, deleted = null) {
     return makeCancelable(async signal => {

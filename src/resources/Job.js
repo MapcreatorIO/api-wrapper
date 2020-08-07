@@ -89,8 +89,7 @@ export default class Job extends CrudBase {
   /**
    * Download the job preview
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<DownloadedResource>} - Job result preview
-   * @async
+   * @returns {CancelablePromise<DownloadedResource>} - Job result preview
    */
   downloadPreview (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
@@ -105,8 +104,7 @@ export default class Job extends CrudBase {
   /**
    * Get archive blob url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<DownloadedResource>} - Job result output
-   * @async
+   * @returns {CancelablePromise<DownloadedResource>} - Job result output
    */
   downloadOutput (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.lastArchiveUrl}?${encodeQueryString({ deleted })}`;
@@ -121,9 +119,8 @@ export default class Job extends CrudBase {
   /**
    * Get the remote output url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<string>} - The url to the output
+   * @returns {CancelablePromise<string>} - The url to the output
    * @throws {ApiError}
-   * @async
    */
   getOutputUrl (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/output-url?${encodeQueryString({ deleted })}`;

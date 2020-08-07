@@ -76,7 +76,7 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Save item. This will create a new item if `id` is unset
-   * @returns {Promise<CrudBase>} - Current instance
+   * @returns {CancelablePromise<CrudBase>} - Current instance
    * @throws {ApiError}
    * @throws {ValidationError}
    */
@@ -86,11 +86,10 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Store new item
-   * @returns {Promise<CrudBase>} - Current instance
+   * @returns {CancelablePromise<CrudBase>} - Current instance
    * @throws {ApiError}
    * @throws {ValidationError}
    * @private
-   * @async
    */
   _create () {
     return makeCancelable(async signal => {
@@ -107,11 +106,10 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Update existing item
-   * @returns {Promise<CrudBase>} - Current instance
+   * @returns {CancelablePromise<CrudBase>} - Current instance
    * @throws {ApiError}
    * @throws {ValidationError}
    * @private
-   * @async
    */
   _update () {
     this._updateProperties();
@@ -140,10 +138,9 @@ export default class CrudBase extends ResourceBase {
   /**
    * Delete item
    * @param {Boolean} [updateSelf=true] - Update current instance (set the deletedAt property)
-   * @returns {Promise<CrudBase>} - Current instance
+   * @returns {CancelablePromise<CrudBase>} - Current instance
    * @throws {ApiError}
    * @throws {ValidationError}
-   * @async
    */
   delete (updateSelf = true) {
     return makeCancelable(async signal => {
@@ -160,10 +157,9 @@ export default class CrudBase extends ResourceBase {
   /**
    * Restore item
    * @param {Boolean} [updateSelf=true] - Update current instance (unset the deletedAt property)
-   * @returns {Promise<CrudBase>} - New restored instance
+   * @returns {CancelablePromise<CrudBase>} - New restored instance
    * @throws {ApiError}
    * @throws {ValidationError}
-   * @async
    */
   restore (updateSelf = true) {
     return makeCancelable(async signal => {

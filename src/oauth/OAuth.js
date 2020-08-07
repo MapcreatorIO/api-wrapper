@@ -96,11 +96,11 @@ export default class OAuth {
    * Invalidates the session token
    * @throws {OAuthError} - If de-authentication fails
    * @throws {ApiError} - If the api returns errors
-   * @async
+   * @returns {CancelablePromise}
    */
   logout () {
     if (!this.token) {
-      return;
+      return makeCancelable(() => {});
     }
 
     const url = `${this.host}/oauth/logout`;
