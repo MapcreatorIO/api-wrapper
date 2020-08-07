@@ -140,7 +140,6 @@ export default class JobRevision extends CrudBase {
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @returns {CancelablePromise<Object>} - The map object
    * @throws {ApiError}
-   * @todo document object format
    */
   object (deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/object?${encodeQueryString({ deleted })}`;
