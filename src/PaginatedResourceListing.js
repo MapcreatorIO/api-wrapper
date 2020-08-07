@@ -247,9 +247,9 @@ export default class PaginatedResourceListing {
       parameters.page = page;
 
       return new PaginatedResourceListing(
-        this.api, this.route, this._Target,
+        this.api, this.route, this.Target,
         parameters, totalPages, rowCount,
-        data.map(row => new this._Target(this.api, row)),
+        data.map(row => new this.Target(this.api, row)),
       );
     });
   }

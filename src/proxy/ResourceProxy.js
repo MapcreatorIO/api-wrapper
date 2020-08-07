@@ -41,13 +41,6 @@ import { makeCancelable } from '../utils/helpers';
  */
 export default class ResourceProxy extends SimpleResourceProxy {
   /**
-   * @inheritDoc
-   */
-  constructor (api, Target, altUrl = null, seedData = {}) {
-    super(api, Target, altUrl, seedData);
-  }
-
-  /**
    * Parse selector
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @returns {Object} - Parsed selector

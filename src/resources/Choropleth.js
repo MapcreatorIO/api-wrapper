@@ -44,7 +44,7 @@ export default class Choropleth extends ResourceBase {
 
   /**
    * Get the inset map json
-   * @returns {CancelablePromise<Object>} - choropleth json
+   * @returns {CancelablePromise<Object>} - Choropleth json
    */
   getJson () {
     return makeCancelable(signal => this.api.ky.get(`${this.url}/json`, { signal }).json());
@@ -52,7 +52,7 @@ export default class Choropleth extends ResourceBase {
 
   /**
    * Download the choropleth preview
-   * @returns {CancelablePromise<DownloadedResource>} - choropleth preview
+   * @returns {CancelablePromise<DownloadedResource>} - Choropleth preview
    */
   downloadPreview () {
     return makeCancelable(async signal => {

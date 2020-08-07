@@ -48,7 +48,7 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get the related job
-   * @returns {CancelablePromise<Job, ApiError>} - The job related to this row
+   * @returns {CancelablePromise<Job>} - The job related to this row
    */
   get job () {
     return this.api.jobs.get(this.jobId);
@@ -56,7 +56,7 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get the related job revision
-   * @returns {CancelablePromise<JobRevision, ApiError>} - The job revision related to this row
+   * @returns {CancelablePromise<JobRevision>} - The job revision related to this row
    */
   get jobRevision () {
     return this.api.jobs.select(this.jobId).revisions.get(this.id);

@@ -37,7 +37,7 @@ import { makeCancelable } from '../utils/helpers';
 export default class OrganisationProxy extends SimpleResourceProxy {
   /**
    * @param {Mapcreator} api - Instance of the api
-   * @param {ResourceBase} parent - parent instance
+   * @param {ResourceBase} parent - Parent instance
    */
   constructor (api, parent) {
     // Fixes dependency issue
@@ -50,7 +50,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
   /**
    * Returns parent instance
-   * @returns {ResourceBase} - parent instance
+   * @returns {ResourceBase} - Parent instance
    */
   get parent () {
     return this._parent;
@@ -115,7 +115,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Sync, attach or unlink resources
    * @param {Array<Organisation|Number>|Organisation|Number} items - List of items to sync or attach
    * @param {String} method - Http method to use
-   * @param {function(new:ResourceBase)} Type - Resource type
+   * @param {Class<ResourceBase>} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
    * @throws {ApiError}
    * @protected
