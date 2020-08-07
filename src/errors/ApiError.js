@@ -128,7 +128,7 @@ export default class ApiError {
    * @returns {string} - Displayable error string
    */
   toString () {
-    return `[${this._status}] ${this._type}: ${this._message}`;
+    return `[${this.status}] ${this.type}: ${this.message}`;
   }
 
   static _parseTrace (input) {
