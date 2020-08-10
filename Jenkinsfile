@@ -51,15 +51,15 @@ node('npm') {
       }
   }, failFast: true
 
-//   stage('test') {
-//     timeout(activity: true, time: 2) {
-//       sh 'npm run test-ci'
-//     }
-//
-//     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
-//     step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
-//     junit 'build/junit.xml'
-//   }
+  stage('test') {
+    timeout(activity: true, time: 2) {
+      sh 'npm run test-ci'
+    }
+
+    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/coverage/', reportFiles: 'index.html', reportName: 'NYC Coverage', reportTitles: ''])
+    step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 100, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
+    junit 'build/junit.xml'
+  }
 
   stage('publish') {
     if (SHOULD_TAG) {
