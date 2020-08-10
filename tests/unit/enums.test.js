@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Enum} from '../../src/enums';
+import { Enum } from '../../src/enums';
 
 test('Enum should be numeric by default', () => {
   const values = ['RED', 'BLACK', 'GREEN', 'WHITE', 'BLUE'];
@@ -84,7 +84,7 @@ test('Enum::values should only return unique values', () => {
 test('Enum should be able to automatically map values', () => {
   const FontStyles = new Enum(['italic', 'bold', 'underline', 'regular'], true);
 
-  expect(Object.assign({}, FontStyles)).toEqual({
+  expect({ ...FontStyles }).toEqual({
     ITALIC: 'italic',
     BOLD: 'bold',
     UNDERLINE: 'underline',

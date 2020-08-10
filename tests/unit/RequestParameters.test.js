@@ -30,10 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {DeletedState} from '../../src/enums';
+import { DeletedState } from '../../src/enums';
 import RequestParameters from '../../src/RequestParameters';
 
 RequestParameters.resetDefaults();
+
 const cleanParams = new RequestParameters();
 
 test('RequestParameters should use defaults', () => {
@@ -95,15 +96,15 @@ const validationTests = {
         scaleMin: ['>:1', '<:10'],
       },
       {},
-      [{a: [], b: '', c: null}, {b: ''}],
+      [{ a: [], b: '', c: null }, { b: '' }],
     ],
     bad: [
-      {o: {}},
-      {f: () => false},
+      { o: {} },
+      { f: () => false },
       420,
       'Hello World!',
       ['foo'],
-      {foo: [[]]},
+      { foo: [[]] },
     ],
   },
   sort: {
@@ -118,7 +119,7 @@ const validationTests = {
     bad: ['foo', 'bar', {}, 123],
   },
   extra: {
-    good: [{}, {foo: 'bar'}],
+    good: [{}, { foo: 'bar' }],
     bad: ['', 123],
   },
 };
@@ -147,7 +148,7 @@ for (const key of Object.keys(validationTests)) {
 }
 
 test('issue #93', () => {
-  const params = new RequestParameters({sort: '-name'});
+  const params = new RequestParameters({ sort: '-name' });
 
   expect(params.toObject().sort).toEqual(['-name']);
   expect(params.encode()).toEqual('page=1&per_page=12&sort=-name');

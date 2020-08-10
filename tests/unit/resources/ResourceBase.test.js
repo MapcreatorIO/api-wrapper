@@ -34,7 +34,7 @@ import Mapcreator from '../../../src/Mapcreator';
 import ResourceBase from '../../../src/resources/base/ResourceBase';
 
 class DummyResource extends ResourceBase {
-  static get resourceName() {
+  static get resourceName () {
     return 'dummy';
   }
 }
@@ -43,7 +43,7 @@ const api = new Mapcreator('token', 'example.com');
 
 test('::toObject(false) should return snake_case keys', () => {
   const input = {
-    helloWorld: 123,
+    'helloWorld': 123,
     'foo_bar': 456,
   };
 
@@ -60,7 +60,7 @@ test('::toObject(false) should return snake_case keys', () => {
 
 test('::toObject(true) should return camelCase keys', () => {
   const input = {
-    helloWorld: 123,
+    'helloWorld': 123,
     'foo_bar': 456,
   };
 
@@ -76,7 +76,7 @@ test('::toObject(true) should return camelCase keys', () => {
 
 test('keys are normalized', () => {
   const input = {
-    helloWorld: 123,
+    'helloWorld': 123,
     'foo_bar': 456,
   };
 
@@ -87,15 +87,15 @@ test('keys are normalized', () => {
 });
 
 test('if deleted_at is present deleted should also exist', () => {
-  const resource1 = new DummyResource(api, {'deleted_at': null});
-  const resource2 = new DummyResource(api, {'deleted_at': new Date()});
+  const resource1 = new DummyResource(api, { 'deleted_at': null });
+  const resource2 = new DummyResource(api, { 'deleted_at': new Date() });
 
   expect(resource1.deleted).toEqual(false);
   expect(resource2.deleted).toEqual(true);
 });
 
 test('protected fields should not be writable', () => {
-  const resource = new DummyResource(api, {id: 123});
+  const resource = new DummyResource(api, { id: 123 });
 
   expect(resource.id).toEqual(123);
 
@@ -107,7 +107,7 @@ test('protected fields should not be writable', () => {
 });
 
 test('sanitize should commit updates locally', () => {
-  const resource = new DummyResource(api, {'foo_bar': 0});
+  const resource = new DummyResource(api, { 'foo_bar': 0 });
 
   expect(resource.fooBar).toEqual(0);
 
@@ -140,7 +140,7 @@ test('_updateProperties should move properties', () => {
 });
 
 test('reset should reset all fields', () => {
-  const resource = new DummyResource(api, {foo: 1, bar: 2, baz: 3});
+  const resource = new DummyResource(api, { foo: 1, bar: 2, baz: 3 });
 
   expect(resource.foo).toEqual(1);
   expect(resource.bar).toEqual(2);
@@ -162,7 +162,7 @@ test('reset should reset all fields', () => {
 });
 
 test('reset(field) should reset a single field', () => {
-  const resource = new DummyResource(api, {foo: 1, bar: 2, baz: 3});
+  const resource = new DummyResource(api, { foo: 1, bar: 2, baz: 3 });
 
   expect(resource.foo).toEqual(1);
   expect(resource.bar).toEqual(2);
@@ -184,13 +184,13 @@ test('reset(field) should reset a single field', () => {
 });
 
 test('url should bind instance variables', () => {
-  const resource = new DummyResource(api, {id: 123});
+  const resource = new DummyResource(api, { id: 123 });
 
   expect(resource.url).toEqual('example.com/v1/dummy/123');
 });
 
 test('fieldNames should return a list of all fields', () => {
-  const resource = new DummyResource(api, {foo: 1, bar: 2, baz: 3});
+  const resource = new DummyResource(api, { foo: 1, bar: 2, baz: 3 });
 
   expect(resource.fieldNames).toEqual(['foo', 'bar', 'baz']);
 });
