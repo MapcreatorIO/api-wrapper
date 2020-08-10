@@ -31,25 +31,18 @@
  */
 
 
-import moxios from 'moxios';
 import Mapcreator from '../../../src/Mapcreator';
+import nock from 'nock';
 
 const api = new Mapcreator('token', 'https://example.com');
 
 test('get should return a result on success', async () => {
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 200,
-      response: {
-        success: true,
-        data: {
-          id: 123,
-          name: 'foo bar',
-        },
-      },
-    });
+  nock('https://example.com').get('/v1/users/123').reply(200, {
+    success: true,
+    data: {
+      id: 123,
+      name: 'foo bar',
+    },
   });
 
   const user = await api.users.get(123);
@@ -61,19 +54,12 @@ test('get should return a result on success', async () => {
 });
 
 test('get should throw an exception when an api call is unsuccessful', async () => {
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 404,
-      response: {
-        success: false,
-        error: {
-          type: 'ModelNotFoundException',
-          message: 'User with id 123 not found',
-        },
-      },
-    });
+  nock('https://example.com').get('/v1/users/123').reply(404, {
+    success: false,
+    error: {
+      type: 'ModelNotFoundException',
+      message: 'User with id 123 not found',
+    },
   });
 
   expect.assertions(2);

@@ -41,18 +41,18 @@ test('attach/sync/detach items to the organisation', async () => {
 
   const keys = [1, 2, 3, 4];
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors');
 
-      const {keys} = JSON.parse(request.config.data);
+      const { keys } = JSON.parse(request.config.data);
 
       expect(keys).toEqual(keys);
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
@@ -71,23 +71,23 @@ test('attach/sync/detach parses items properly', async () => {
 
   const input = [
     api.languages.select(1), // Uses a different resource key
-    {id: 2},
+    { id: 2 },
     api.users.select(3),
     4,
   ];
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors');
 
-      const {keys} = JSON.parse(request.config.data);
+      const { keys } = JSON.parse(request.config.data);
 
       expect(keys).toEqual([1, 2, 3, 4]);
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
@@ -106,18 +106,18 @@ test('attach/sync/detach single items', async () => {
 
   const key = 123;
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors');
 
-      const {keys} = JSON.parse(request.config.data);
+      const { keys } = JSON.parse(request.config.data);
 
       expect(keys).toEqual([key]);
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
@@ -135,7 +135,7 @@ test('invalid values throw TypeErrors', async () => {
   expect.assertions(1);
 
   try {
-    await api.organisations.select('mine').colors.attach({foo: 'bar'});
+    await api.organisations.select('mine').colors.attach({ foo: 'bar' });
   } catch (error) {
     expect(error).toBeInstanceOf(TypeError);
   }
@@ -144,14 +144,14 @@ test('invalid values throw TypeErrors', async () => {
 test('attachAll/detachAll items to the organisation', async () => {
   expect.assertions(4);
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors/all');
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 

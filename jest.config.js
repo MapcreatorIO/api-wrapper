@@ -17,7 +17,7 @@ module.exports = {
   coverageDirectory: 'build/coverage',
   reporters: [
     'default',
-    ['jest-junit', {outputDirectory: 'build'}],
+    ['jest-junit', { outputDirectory: 'build' }],
   ],
   setupFiles: [
     '<rootDir>/tests/setup.js',

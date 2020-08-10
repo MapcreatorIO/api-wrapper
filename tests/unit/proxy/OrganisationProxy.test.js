@@ -41,18 +41,18 @@ test('attach/sync/detach organisations to items', async () => {
 
   const keys = [1, 2, 3, 4];
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations');
 
-      const {keys} = JSON.parse(request.config.data);
+      const { keys } = JSON.parse(request.config.data);
 
       expect(keys).toEqual(keys);
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
@@ -73,23 +73,23 @@ test('attach/sync/detach parses items properly', async () => {
 
   const input = [
     api.organisations.select(1),
-    {id: 2},
-    {id: '3'},
+    { id: 2 },
+    { id: '3' },
     4,
   ];
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations');
 
-      const {keys} = JSON.parse(request.config.data);
+      const { keys } = JSON.parse(request.config.data);
 
       expect(keys).toEqual([1, 2, 3, 4]);
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
@@ -110,18 +110,18 @@ test('attach/sync/detach single organisations', async () => {
 
   const key = 123;
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations');
 
-      const {keys} = JSON.parse(request.config.data);
+      const { keys } = JSON.parse(request.config.data);
 
       expect(keys).toEqual([key]);
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
@@ -143,7 +143,7 @@ test('invalid values throw TypeErrors', async () => {
   const resource = api.mapstyleSets.select(1234);
 
   try {
-    await resource.organisations.attach({foo: 'bar'});
+    await resource.organisations.attach({ foo: 'bar' });
   } catch (error) {
     expect(error).toBeInstanceOf(TypeError);
   }
@@ -152,14 +152,14 @@ test('invalid values throw TypeErrors', async () => {
 test('attachAll/detachAll organisation to items ', async () => {
   expect.assertions(4);
 
-  function getHandler(method) {
+  function getHandler (method) {
     return () => {
       const request = moxios.requests.mostRecent();
 
       expect(request.config.method).toEqual(method);
       expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations/all');
 
-      request.respondWith({status: 204});
+      request.respondWith({ status: 204 });
     };
   }
 
