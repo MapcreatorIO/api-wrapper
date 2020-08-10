@@ -31,46 +31,32 @@
  */
 
 
-import moxios from 'moxios';
 import Mapcreator from '../../../src/Mapcreator';
+import nock from 'nock';
 
 const api = new Mapcreator('token', 'https://example.com');
 
 test('attach/sync/detach organisations to items', async () => {
-  expect.assertions(9);
-
   const keys = [1, 2, 3, 4];
 
-  function getHandler (method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations');
-
-      const { keys } = JSON.parse(request.config.data);
-
-      expect(keys).toEqual(keys);
-
-      request.respondWith({ status: 204 });
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/mapstyles/sets/1234/organisations', method, { keys }).reply(200);
   }
 
   const resource = api.mapstyleSets.select(1234);
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await resource.organisations.attach(keys);
 
-  moxios.wait(getHandler('patch'));
+  nockRequest('patch');
   await resource.organisations.sync(keys);
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await resource.organisations.detach(keys);
 });
 
 test('attach/sync/detach parses items properly', async () => {
-  expect.assertions(9);
-
+  const keys = [1, 2, 3, 4];
   const input = [
     api.organisations.select(1),
     { id: 2 },
@@ -78,62 +64,38 @@ test('attach/sync/detach parses items properly', async () => {
     4,
   ];
 
-  function getHandler (method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations');
-
-      const { keys } = JSON.parse(request.config.data);
-
-      expect(keys).toEqual([1, 2, 3, 4]);
-
-      request.respondWith({ status: 204 });
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/mapstyles/sets/1234/organisations', method, { keys }).reply(200);
   }
 
   const resource = api.mapstyleSets.select(1234);
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await resource.organisations.attach(input);
 
-  moxios.wait(getHandler('patch'));
+  nockRequest('patch');
   await resource.organisations.sync(input);
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await resource.organisations.detach(input);
 });
 
 test('attach/sync/detach single organisations', async () => {
-  expect.assertions(9);
-
   const key = 123;
 
-  function getHandler (method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations');
-
-      const { keys } = JSON.parse(request.config.data);
-
-      expect(keys).toEqual([key]);
-
-      request.respondWith({ status: 204 });
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/mapstyles/sets/1234/organisations', method, { keys: [key] }).reply(200);
   }
 
   const resource = api.mapstyleSets.select(1234);
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await resource.organisations.attach(key);
 
-  moxios.wait(getHandler('patch'));
+  nockRequest('patch');
   await resource.organisations.sync(key);
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await resource.organisations.detach(key);
 });
 
@@ -150,24 +112,15 @@ test('invalid values throw TypeErrors', async () => {
 });
 
 test('attachAll/detachAll organisation to items ', async () => {
-  expect.assertions(4);
-
-  function getHandler (method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/mapstyles/sets/1234/organisations/all');
-
-      request.respondWith({ status: 204 });
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/mapstyles/sets/1234/organisations/all', method).reply(200);
   }
 
   const resource = api.mapstyleSets.select(1234);
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await resource.organisations.attachAll();
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await resource.organisations.detachAll();
 });
