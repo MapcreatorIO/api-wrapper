@@ -32,11 +32,12 @@
 
 import { camel as camelCase, snake as snakeCase } from 'case';
 import { AbstractClassError, AbstractError } from '../../errors/AbstractError';
-import Maps4News from '../../Maps4News';
+import Mapcreator from '../../Mapcreator';
 import SimpleResourceProxy from '../../proxy/SimpleResourceProxy';
 import Injectable from '../../traits/Injectable';
 import { fnv32b } from '../../utils/hash';
 import { isParentOf, mix } from '../../utils/reflection';
+import { makeCancelable } from '../../utils/helpers';
 
 function unique (input) {
   return input.filter((v, i) => input.findIndex(vv => vv === v) === i);
@@ -48,7 +49,7 @@ function unique (input) {
  */
 export default class ResourceBase extends mix(null, Injectable) {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor (api, data = {}) {
@@ -112,7 +113,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Get api instance
-   * @returns {Maps4News} - Api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;
@@ -120,11 +121,11 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Set the api instance
-   * @param {Maps4News} value - Api instance
+   * @param {Mapcreator} value - Api instance
    */
   set api (value) {
-    if (!isParentOf(Maps4News, value)) {
-      throw new TypeError('Expected api to be of type Maps4News or null');
+    if (!isParentOf(Mapcreator, value)) {
+      throw new TypeError('Expected api to be of type Mapcreator or null');
     }
 
     this._api = value;
@@ -166,7 +167,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Returns if the resource is readonly
-   * @returns {boolean} - readonly
+   * @returns {boolean} - Readonly
    */
   static get readonly () {
     return false;
@@ -255,20 +256,22 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Refresh the resource by requesting it from the server again
    * @param {Boolean} updateSelf - Update the current instance
-   * @returns {Promise<ResourceBase>} - Refreshed instance
-   * @throws {ApiError}
+   * @returns {CancelablePromise<ResourceBase>} - Refreshed instance
+   * @throws {ApiError} - If the api returns errors
    */
-  async refresh (updateSelf = true) {
-    const { data: { data } } = await this.api.axios.get(this.url);
+  refresh (updateSelf = true) {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(this.url, { signal }).json();
 
-    if (updateSelf) {
-      this._properties = {};
-      this._baseProperties = data;
+      if (updateSelf) {
+        this._properties = {};
+        this._baseProperties = data;
 
-      this._updateProperties();
-    }
+        this._updateProperties();
+      }
 
-    return new this.constructor(this._api, data);
+      return new this.constructor(this._api, data);
+    });
   }
 
   /**
@@ -394,7 +397,7 @@ export default class ResourceBase extends mix(null, Injectable) {
   /**
    * Transform instance to object
    * @param {boolean} [camelCaseKeys=false] - camelCase object keys
-   * @returns {{}} - object
+   * @returns {{}} - Object
    */
   toObject (camelCaseKeys = false) {
     this._updateProperties();
@@ -418,7 +421,7 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Macro for resource listing
-   * @param {string|function} Target - Target object
+   * @param {string|Class<ResourceBase>} Target - Target object
    * @param {?String} url - Target url, if null it will guess
    * @param {object} seedData - Internal use, used for seeding SimpleResourceProxy::new
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
@@ -438,8 +441,8 @@ export default class ResourceBase extends mix(null, Injectable) {
 
   /**
    * Static proxy generation
-   * @param {string|function} Target - Constructor or url
-   * @param {function?} Constructor - Constructor for a resource that the results should be cast to
+   * @param {string|Class} Target - Constructor or url
+   * @param {Class?} Constructor - Constructor for a resource that the results should be cast to
    * @param {Object<string, *>} seedData - Optional data to seed the resolved resources
    * @returns {SimpleResourceProxy} - A proxy for accessing the resource
    * @example

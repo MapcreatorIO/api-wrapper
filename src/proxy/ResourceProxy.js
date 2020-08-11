@@ -30,9 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
 import SimpleResourceProxy from './SimpleResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Proxy for accessing resource. This will make sure that they
@@ -40,13 +40,6 @@ import SimpleResourceProxy from './SimpleResourceProxy';
  * @protected
  */
 export default class ResourceProxy extends SimpleResourceProxy {
-  /**
-   * @inheritDoc
-   */
-  constructor (api, Target, altUrl = null, seedData = {}) {
-    super(api, Target, altUrl, seedData);
-  }
-
   /**
    * Parse selector
    * @param {Number|String|Object} [id=] - The resource id to be requested
@@ -73,22 +66,24 @@ export default class ResourceProxy extends SimpleResourceProxy {
    * Get target resource
    * @param {Number|String|Object} [id=] - The resource id to be requested
    * @param {String} [deleted=null] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<ResourceBase>} - Target resource
-   * @throws {ApiError}
+   * @returns {CancelablePromise<ResourceBase>} - Target resource
+   * @throws {ApiError} - If the api returns errors
    */
-  async get (id, deleted = null) {
-    const data = { ...this._seedData, ...this._parseSelector(id) };
-    let url = this.new(data).url;
+  get (id, deleted = null) {
+    return makeCancelable(async signal => {
+      const data = { ...this._seedData, ...this._parseSelector(id) };
+      let url = this.new(data).url;
 
-    if (typeof deleted === 'string') {
-      const glue = url.includes('?') ? '&' : '?';
+      if (typeof deleted === 'string') {
+        const glue = url.includes('?') ? '&' : '?';
 
-      url += glue + encodeQueryString({ deleted });
-    }
+        url += glue + encodeQueryString({ deleted });
+      }
 
-    const { data: { data: result } } = await this.api.axios.get(url);
+      const { data: result } = await this.api.ky.get(url, { signal }).json();
 
-    return this.new(result);
+      return this.new(result);
+    });
   }
 
   /**

@@ -31,103 +31,65 @@
  */
 
 
-import moxios from 'moxios';
-import Maps4News from '../../../src/Maps4News';
+import Mapcreator from '../../../src/Mapcreator';
+import nock from 'nock';
 
-const api = new Maps4News('token', 'https://example.com');
+const api = new Mapcreator('token', 'https://example.com');
 
 test('attach/sync/detach items to the organisation', async () => {
-  expect.assertions(9);
-
   const keys = [1, 2, 3, 4];
 
-  function getHandler(method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors');
-
-      const {keys} = JSON.parse(request.config.data);
-
-      expect(keys).toEqual(keys);
-
-      request.respondWith({status: 204});
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/organisations/mine/colors', method, { keys }).reply(200);
   }
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await api.organisations.select('mine').colors.attach(keys);
 
-  moxios.wait(getHandler('patch'));
+  nockRequest('patch');
   await api.organisations.select('mine').colors.sync(keys);
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await api.organisations.select('mine').colors.detach(keys);
 });
 
 test('attach/sync/detach parses items properly', async () => {
-  expect.assertions(9);
-
+  const keys = [1, 2, 3, 4];
   const input = [
     api.languages.select(1), // Uses a different resource key
-    {id: 2},
+    { id: 2 },
     api.users.select(3),
     4,
   ];
 
-  function getHandler(method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors');
-
-      const {keys} = JSON.parse(request.config.data);
-
-      expect(keys).toEqual([1, 2, 3, 4]);
-
-      request.respondWith({status: 204});
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/organisations/mine/colors', method, { keys }).reply(200);
   }
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await api.organisations.select('mine').colors.attach(input);
 
-  moxios.wait(getHandler('patch'));
+  nockRequest('patch');
   await api.organisations.select('mine').colors.sync(input);
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await api.organisations.select('mine').colors.detach(input);
 });
 
 test('attach/sync/detach single items', async () => {
-  expect.assertions(9);
-
   const key = 123;
 
-  function getHandler(method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors');
-
-      const {keys} = JSON.parse(request.config.data);
-
-      expect(keys).toEqual([key]);
-
-      request.respondWith({status: 204});
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/organisations/mine/colors', method, { keys: [key] }).reply(200);
   }
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await api.organisations.select('mine').colors.attach(key);
 
-  moxios.wait(getHandler('patch'));
+  nockRequest('patch');
   await api.organisations.select('mine').colors.sync(key);
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await api.organisations.select('mine').colors.detach(key);
 });
 
@@ -135,29 +97,20 @@ test('invalid values throw TypeErrors', async () => {
   expect.assertions(1);
 
   try {
-    await api.organisations.select('mine').colors.attach({foo: 'bar'});
+    await api.organisations.select('mine').colors.attach({ foo: 'bar' });
   } catch (error) {
     expect(error).toBeInstanceOf(TypeError);
   }
 });
 
 test('attachAll/detachAll items to the organisation', async () => {
-  expect.assertions(4);
-
-  function getHandler(method) {
-    return () => {
-      const request = moxios.requests.mostRecent();
-
-      expect(request.config.method).toEqual(method);
-      expect(request.config.url).toEqual('https://example.com/v1/organisations/mine/colors/all');
-
-      request.respondWith({status: 204});
-    };
+  function nockRequest (method) {
+    nock('https://example.com').intercept('/v1/organisations/mine/colors/all', method).reply(200);
   }
 
-  moxios.wait(getHandler('post'));
+  nockRequest('post');
   await api.organisations.select('mine').colors.attachAll();
 
-  moxios.wait(getHandler('delete'));
+  nockRequest('delete');
   await api.organisations.select('mine').colors.detachAll();
 });

@@ -48,7 +48,7 @@ export default class DummyFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise<OAuthToken>>} - token
+   * @returns {Promise<OAuthToken>} - token
    * @throws {OAuthError}
    */
   authenticate () {

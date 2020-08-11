@@ -30,19 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Maps4News from './Maps4News';
-import PaginatedResourceWrapper from './PaginatedResourceWrapper';
+import Mapcreator from './Mapcreator';
 import RequestParameters from './RequestParameters';
 import { isParentOf } from './utils/reflection';
+import { makeCancelable } from './utils/helpers';
 
 /**
  * Proxy for accessing paginated resources
  */
 export default class PaginatedResourceListing {
   /**
-   * @param {Maps4News} api - Instance of the api
+   * @param {Mapcreator} api - Instance of the api
    * @param {String} route - Resource route
-   * @param {ResourceBase} Target - Wrapper target
+   * @param {Class<ResourceBase>} Target - Wrapper target
    * @param {RequestParameters} parameters - Request parameters
    * @param {Number} pageCount - Resolved page count
    * @param {Number} rowCount - Resolved rowCount
@@ -50,8 +50,8 @@ export default class PaginatedResourceListing {
    * @private
    */
   constructor (api, route, Target, parameters, pageCount = null, rowCount = 0, data = []) {
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
+    if (!isParentOf(Mapcreator, api)) {
+      throw new TypeError('Expected api to be of type Mapcreator');
     }
 
     if (!isParentOf(RequestParameters, parameters)) {
@@ -70,7 +70,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Get api instance
-   * @returns {Maps4News} - Api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;
@@ -78,7 +78,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Target route
-   * @returns {String} - url
+   * @returns {String} - Url
    */
   get route () {
     return this._route;
@@ -102,8 +102,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Target to wrap results in
-   * @returns {ResourceBase} - Target constructor
-   * @constructor
+   * @returns {Class<ResourceBase>} - Target constructor
    */
   get Target () {
     return this._Target;
@@ -143,7 +142,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Set sort direction
-   * @returns {String} - Sort
+   * @returns {Array<String>} - Sort
    * @example
    * const sort = ['-name', 'id']
    */
@@ -153,7 +152,7 @@ export default class PaginatedResourceListing {
 
   /**
    * Current sorting value
-   * @param {String} value - Sort
+   * @param {Array<String>} value - Sort
    */
   set sort (value) {
     this.parameters.sort = value;
@@ -225,10 +224,10 @@ export default class PaginatedResourceListing {
    * Get target page
    * @param {Number} page - Page number
    * @param {Number} perPage - Amount of items per page (max 50)
-   * @returns {Promise<PaginatedResourceListing>} - Target page
-   * @throws {ApiError}
+   * @returns {CancelablePromise<PaginatedResourceListing>} - Target page
+   * @throws {ApiError} - If the api returns errors
    */
-  async getPage (page = this.page, perPage = this.perPage) {
+  getPage (page = this.page, perPage = this.perPage) {
     const query = this.parameters.copy();
 
     query.page = page;
@@ -237,19 +236,22 @@ export default class PaginatedResourceListing {
     const glue = this.route.includes('?') ? '&' : '?';
     const url = this.route + glue + query.encode();
 
-    const { data: { data }, headers } = await this.api.axios.get(url);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+      const { data } = await response.json();
 
-    const rowCount = Number(headers['x-paginate-total'] || data.length);
-    const totalPages = Number(headers['x-paginate-pages'] || 1);
-    const parameters = this.parameters.copy();
+      const rowCount = Number(response.headers.get('x-paginate-total') || data.length);
+      const totalPages = Number(response.headers.get('x-paginate-pages') || 1);
+      const parameters = this.parameters.copy();
 
-    parameters.page = page;
+      parameters.page = page;
 
-    return new PaginatedResourceListing(
-      this.api, this.route, this._Target,
-      parameters, totalPages, rowCount,
-      data.map(row => new this._Target(this.api, row)),
-    );
+      return new PaginatedResourceListing(
+        this.api, this.route, this.Target,
+        parameters, totalPages, rowCount,
+        data.map(row => new this.Target(this.api, row)),
+      );
+    });
   }
 
   /**
@@ -280,8 +282,8 @@ export default class PaginatedResourceListing {
 
   /**
    * Get next page
-   * @returns {Promise<PaginatedResourceListing>} - paginated resource {
-   * @throws {ApiError}
+   * @returns {CancelablePromise<PaginatedResourceListing>} - Paginated resource
+   * @throws {ApiError} - If the api returns errors
    */
   next () {
     return this.getPage(this.page + 1);
@@ -289,19 +291,10 @@ export default class PaginatedResourceListing {
 
   /**
    * Get previous page
-   * @returns {Promise<PaginatedResourceListing>} - paginated resource {
-   * @throws {ApiError}
+   * @returns {CancelablePromise<PaginatedResourceListing>} - Paginated resource
+   * @throws {ApiError} - If the api returns errors
    */
   previous () {
     return this.getPage(this.page - 1);
-  }
-
-  /**
-   * Wraps {@link PaginatedResourceWrapper} around the page
-   * @param {Boolean} shareCache - Share cache across instances
-   * @returns {PaginatedResourceWrapper} - Wrapped resource listing
-   */
-  wrap (shareCache = this.api.defaults._shareCache) {
-    return new PaginatedResourceWrapper(this, this.api, shareCache);
   }
 }

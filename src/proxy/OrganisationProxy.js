@@ -32,11 +32,12 @@
 
 import { isParentOf } from '../utils/reflection';
 import SimpleResourceProxy from './SimpleResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 export default class OrganisationProxy extends SimpleResourceProxy {
   /**
-   * @param {Maps4News} api - Instance of the api
-   * @param {ResourceBase} parent - parent instance
+   * @param {Mapcreator} api - Instance of the api
+   * @param {ResourceBase} parent - Parent instance
    */
   constructor (api, parent) {
     // Fixes dependency issue
@@ -49,7 +50,7 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
   /**
    * Returns parent instance
-   * @returns {ResourceBase} - parent instance
+   * @returns {ResourceBase} - Parent instance
    */
   get parent () {
     return this._parent;
@@ -59,58 +60,68 @@ export default class OrganisationProxy extends SimpleResourceProxy {
    * Sync organisations to the parent resource
    * The organisations attached to the target resource will be replaced with the organisations provided in the request.
    * @param {Array<Organisation|number>} organisations - List of items to sync
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async sync (organisations) {
-    await this._modifyLink(organisations, 'PATCH', this.Target);
+  sync (organisations) {
+    return this._modifyLink(organisations, 'PATCH', this.Target);
   }
 
   /**
    * Attach organisations to the parent resource
    * The provided organisations will be attached to the resource if they're not already attached
    * @param {Array<Organisation|number>} organisations - List of items to attach
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async attach (organisations) {
-    await this._modifyLink(organisations, 'POST', this.Target);
+  attach (organisations) {
+    return this._modifyLink(organisations, 'POST', this.Target);
   }
 
   /**
    * Detach organisations from the parent resource
    * The provided organisations will be detached from the resource
    * @param {Array<Organisation|number>} organisations - List of items to detach
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async detach (organisations) {
-    await this._modifyLink(organisations, 'DELETE', this.Target);
+  detach (organisations) {
+    return this._modifyLink(organisations, 'DELETE', this.Target);
   }
 
   /**
    * Attach all organisations to the parent resource
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async attachAll () {
-    await this.api.axios.post(`${this.baseUrl}/all`);
+  attachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.post(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
    * Detach all organisations from the parent resource
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async detachAll () {
-    await this.api.axios.delete(`${this.baseUrl}/all`);
+  detachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
    * Sync, attach or unlink resources
    * @param {Array<Organisation|Number>|Organisation|Number} items - List of items to sync or attach
    * @param {String} method - Http method to use
-   * @param {function(new:ResourceBase)} Type - Resource type
+   * @param {Class<ResourceBase>} Type - Resource type
    * @param {?String} path - Optional appended resource path, will guess if null
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @protected
+   * @returns {CancelablePromise}
    */
-  async _modifyLink (items, method, Type, path = null) {
+  _modifyLink (items, method, Type, path = null) {
     if (!Array.isArray(items)) {
       items = [items];
     }
@@ -131,6 +142,8 @@ export default class OrganisationProxy extends SimpleResourceProxy {
 
     const url = `${this.parent.url}/${path}`;
 
-    await this.api.axios.request({ url, method, data: { keys } });
+    return makeCancelable(async signal => {
+      await this.api.ky(url, { method, signal, json: { keys } });
+    });
   }
 }

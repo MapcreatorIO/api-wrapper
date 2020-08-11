@@ -32,6 +32,7 @@
 
 import DownloadedResource from './base/DownloadedResource';
 import ResourceBase from './base/ResourceBase';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Choropleth resource
@@ -42,24 +43,24 @@ export default class Choropleth extends ResourceBase {
   }
 
   /**
-   * Get the inset ma[ json
-   * @returns {Promise<Object>} - choropleth json
+   * Get the inset map json
+   * @returns {CancelablePromise<Object>} - Choropleth json
+   * @throws {ApiError} - If the api returns errors
    */
-  async getJson () {
-    const { data } = await this.api.axios.get(`${this.url}/json`);
-
-    return data;
+  getJson () {
+    return makeCancelable(signal => this.api.ky.get(`${this.url}/json`, { signal }).json());
   }
 
   /**
    * Download the choropleth preview
-   * @returns {Promise<DownloadedResource>} - choropleth preview
+   * @returns {CancelablePromise<DownloadedResource>} - Choropleth preview
+   * @throws {ApiError} - If the api returns errors
    */
-  async downloadPreview () {
-    const response = await this.api.axios.get(`${this.url}/preview`, {
-      responseType: 'arraybuffer',
-    });
+  downloadPreview () {
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(`${this.url}/preview`, { signal });
 
-    return DownloadedResource.fromAxiosResponse(response);
+      return DownloadedResource.fromResponse(response);
+    });
   }
 }

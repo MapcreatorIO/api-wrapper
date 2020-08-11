@@ -35,6 +35,7 @@ import ResourceBase from './base/ResourceBase';
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
 import { DeletedState } from '../enums';
+import { makeCancelable } from '../utils/helpers';
 
 export default class JobResult extends ResourceBase {
   static get resourcePath () {
@@ -47,7 +48,8 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get the related job
-   * @returns {Promise<Job, ApiError>} - The job related to this row
+   * @returns {CancelablePromise<Job>} - The job related to this row
+   * @throws {ApiError} - If the api returns errors
    */
   get job () {
     return this.api.jobs.get(this.jobId);
@@ -55,7 +57,8 @@ export default class JobResult extends ResourceBase {
 
   /**
    * Get the related job revision
-   * @returns {Promise<JobRevision, ApiError>} - The job revision related to this row
+   * @returns {CancelablePromise<JobRevision>} - The job revision related to this row
+   * @throws {ApiError} - If the api returns errors
    */
   get jobRevision () {
     return this.api.jobs.select(this.jobId).revisions.get(this.id);
@@ -72,14 +75,17 @@ export default class JobResult extends ResourceBase {
   /**
    * Get archive blob url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<DownloadedResource>} - Job result output
+   * @returns {CancelablePromise<DownloadedResource>} - Job result output
+   * @throws {ApiError} - If the api returns errors
    */
-  async downloadOutput (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.outputUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+  downloadOutput (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.outputUrl}?${encodeQueryString({ deleted })}`;
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
@@ -93,13 +99,17 @@ export default class JobResult extends ResourceBase {
   /**
    * Get the remote output url
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<string>} - The url to the output
-   * @throws {ApiError}
+   * @returns {CancelablePromise<string>} - The url to the output
+   * @throws {ApiError} - If the api returns errors
    */
-  async getOutputUrl (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.outputUrlUrl}?${encodeQueryString({ deleted })}`);
+  getOutputUrl (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.outputUrlUrl}?${encodeQueryString({ deleted })}`;
 
-    return data.url;
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(url, { signal }).json();
+
+      return data.url;
+    });
   }
 
   /**
@@ -113,14 +123,17 @@ export default class JobResult extends ResourceBase {
   /**
    * Download the job result log
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<DownloadedResource>} - job result log
+   * @returns {CancelablePromise<DownloadedResource>} - job result log
+   * @throws {ApiError} - If the api returns errors
    */
-  async downloadLog (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.logUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+  downloadLog (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.logUrl}?${encodeQueryString({ deleted })}`;
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
@@ -134,14 +147,17 @@ export default class JobResult extends ResourceBase {
   /**
    * Download the job preview
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<DownloadedResource>} - Job result preview
+   * @returns {CancelablePromise<DownloadedResource>} - Job result preview
+   * @throws {ApiError} - If the api returns errors
    */
-  async downloadPreview (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const response = await this.api.axios.get(`${this.previewUrl}?${encodeQueryString({ deleted })}`, {
-      responseType: 'arraybuffer',
-    });
+  downloadPreview (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.previewUrl}?${encodeQueryString({ deleted })}`;
 
-    return DownloadedResource.fromAxiosResponse(response);
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(url, { signal });
+
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
@@ -150,15 +166,19 @@ export default class JobResult extends ResourceBase {
    *
    * @param {boolean} [value=true] - What to set the dealt-with value to
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
-  async dealWith (value = true, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  dealWith (value = true, deleted = RequestParameters.deleted || DeletedState.NONE) {
     value = Boolean(value);
 
     const method = value ? 'POST' : 'DELETE';
     const url = `${this.url}/deal-with?${encodeQueryString({ deleted })}`;
 
-    await this.api.axios.request({ method, url });
+    return makeCancelable(async signal => {
+      await this.api.ky(url, { method, signal });
 
-    this.dealtWith = value;
+      this.dealtWith = value;
+    });
   }
 }

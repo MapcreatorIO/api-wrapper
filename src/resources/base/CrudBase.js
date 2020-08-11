@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { AbstractClassError } from '../../errors/AbstractError';
+import { AbstractClassError } from '../../errors';
 import ResourceBase from './ResourceBase';
+import { makeCancelable } from '../../utils/helpers';
 
 /**
  * Base of all resource items that support Crud operations
@@ -39,7 +40,7 @@ import ResourceBase from './ResourceBase';
  */
 export default class CrudBase extends ResourceBase {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {Object<String, *>} data - Item data
    */
   constructor (api, data = {}) {
@@ -75,9 +76,9 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Save item. This will create a new item if `id` is unset
-   * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @returns {CancelablePromise<CrudBase>} - Current instance
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    */
   save () {
     return this.id ? this._update() : this._create();
@@ -85,90 +86,94 @@ export default class CrudBase extends ResourceBase {
 
   /**
    * Store new item
-   * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @returns {CancelablePromise<CrudBase>} - Current instance
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    * @private
    */
-  async _create () {
-    const { data: { data } } = await this.api.axios.post(this.baseUrl, this._buildCreateData());
+  _create () {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.post(this.baseUrl, { json: this._buildCreateData(), signal }).json();
 
-    this._properties = {};
-    this._baseProperties = data;
+      this._properties = {};
+      this._baseProperties = data;
 
-    this._updateProperties();
+      this._updateProperties();
 
-    return this;
+      return this;
+    });
   }
 
   /**
    * Update existing item
-   * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @returns {CancelablePromise<CrudBase>} - Current instance
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    * @private
    */
-  async _update () {
+  _update () {
     this._updateProperties();
 
-    // We'll just fake it, no need to bother the server
-    // with an empty request.
-    if (Object.keys(this._properties).length === 0) {
+    return makeCancelable(async signal => {
+      // We'll just fake it, no need to bother the server
+      // with an empty request.
+      if (Object.keys(this._properties).length === 0) {
+        return this;
+      }
+
+      await this.api.ky.patch(this.url, { json: this._properties, signal });
+
+      // Reset changes
+      Object.assign(this._baseProperties, this._properties);
+      this._properties = {};
+
+      if ('updated_at' in this._baseProperties) {
+        this._baseProperties['updated_at'] = new Date();
+      }
+
       return this;
-    }
-
-    await this.api.axios.patch(this.url, this._properties);
-
-    // Reset changes
-    Object.assign(this._baseProperties, this._properties);
-    this._properties = {};
-
-    if ('updated_at' in this._baseProperties) {
-      this._baseProperties['updated_at'] = new Date();
-    }
-
-    if (this.api.defaults.autoUpdateSharedCache) {
-      this.api.cache.update(this);
-    }
-
-    return this;
+    });
   }
 
   /**
    * Delete item
    * @param {Boolean} [updateSelf=true] - Update current instance (set the deletedAt property)
-   * @returns {Promise<CrudBase>} - Current instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @returns {CancelablePromise<CrudBase>} - Current instance
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    */
-  async delete (updateSelf = true) {
-    await this.api.axios.delete(this.url);
+  delete (updateSelf = true) {
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(this.url, { signal });
 
-    if (updateSelf) {
-      this._baseProperties['deleted_at'] = new Date();
-    }
+      if (updateSelf) {
+        this._baseProperties['deleted_at'] = new Date();
+      }
 
-    return this;
+      return this;
+    });
   }
 
   /**
    * Restore item
    * @param {Boolean} [updateSelf=true] - Update current instance (unset the deletedAt property)
-   * @returns {Promise<CrudBase>} - New restored instance
-   * @throws {ApiError}
-   * @throws {ValidationError}
+   * @returns {CancelablePromise<CrudBase>} - New restored instance
+   * @throws {ApiError} - If the api returns errors
+   * @throws {ValidationError} - If the submitted data isn't valid
    */
-  async restore (updateSelf = true) {
-    const { data: { data } } = await this.api.axios.put(this.url);
-    const instance = new this.constructor(this.api, data);
+  restore (updateSelf = true) {
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.put(this.url, { signal }).json();
+      const instance = new this.constructor(this.api, data);
 
-    if (updateSelf) {
-      this._properties = {};
-      this._baseProperties = data;
+      if (updateSelf) {
+        this._properties = {};
+        this._baseProperties = data;
 
-      this._updateProperties();
-    }
+        this._updateProperties();
+      }
 
-    return instance;
+      return instance;
+    });
   }
 }

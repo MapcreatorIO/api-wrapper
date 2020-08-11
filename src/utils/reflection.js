@@ -35,8 +35,8 @@ import { fnv32b } from './hash';
 
 /**
  * Tests if the parent is a parent of child
- * @param {function|object} parent - Instance or Class
- * @param {function|object} child - Instance or Class
+ * @param {Class|object} parent - Instance or Class
+ * @param {Class|object} child - Instance or Class
  * @returns {boolean} - is parent a parent of child
  * @private
  * @example
@@ -111,9 +111,9 @@ function copyProps (target, source) {
 
 /**
  * Mix traits into the target class
- * @param {Function} baseClass - Target base class for the traits to be applied to
- * @param {Function} mixins - Traits to be applied
- * @returns {Function} - Constructor with any traits applied
+ * @param {Class} baseClass - Target base class for the traits to be applied to
+ * @param {Class<Trait>} mixins - Traits to be applied
+ * @returns {Class} - Constructor with any traits applied
  * @private
  */
 export function mix (baseClass, ...mixins) {
@@ -150,8 +150,8 @@ export function mix (baseClass, ...mixins) {
 /**
  * Checks if the target has a certain trait.
  *
- * @param {Function|Object} Subject - Instance or class
- * @param {Function} TraitClass - Trait to check for
+ * @param {Class|Object} Subject - Instance or class
+ * @param {Class<Trait>} TraitClass - Trait to check for
  * @returns {boolean} - If the subject has the trait
  * @private
  */

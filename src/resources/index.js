@@ -43,7 +43,6 @@ export FontFamily from './FontFamily';
 export Highlight from './Highlight';
 export InsetMap from './InsetMap';
 export Job from './Job';
-export JobMonitorRow from './JobMonitorRow';
 export JobResult from './JobResult';
 export JobRevision from './JobRevision';
 export JobShare from './JobShare';

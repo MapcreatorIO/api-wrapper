@@ -34,10 +34,11 @@ import GeoError from '../errors/GeoError';
 import RequestParameters from '../RequestParameters';
 import { GeoBoundary, GeoPoint } from '../utils/geo';
 import ResourceProxy from './ResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 export default class GeoResourceProxy extends ResourceProxy {
   /**
-   * @param {Maps4News} api - Instance of the api
+   * @param {Mapcreator} api - Instance of the api
    * @param {ResourceBase} Target - Target to wrap
    * @param {?string} [altUrl=null] - Internal use, Optional alternative url for more complex routing
    * @param {object} seedData - Internal use, used for seeding ::new
@@ -78,11 +79,12 @@ export default class GeoResourceProxy extends ResourceProxy {
    * @param {Number} boundary.bottomRight.lat - bottom right corner latitude
    * @param {Number} boundary.bottomRight.lng - bottom right corner longitude
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
-   * @returns {Promise<ResourceBase[]>} - target resource for boundary
+   * @returns {CancelablePromise<ResourceBase[]>} - target resource for boundary
+   * @throws {ApiError} - If the api returns errors
    * @throws TypeError
    * @throws GeoError
    */
-  async forBoundary ({ topLeft, bottomRight }, limit = RequestParameters.perPage) {
+  forBoundary ({ topLeft, bottomRight }, limit = RequestParameters.perPage) {
     if (!this.hasForBoundary) {
       throw new GeoError(`${this.Target.name} does not support the operation forBoundary`);
     }
@@ -95,23 +97,25 @@ export default class GeoResourceProxy extends ResourceProxy {
 
     const url = `${this.new().baseUrl}/for-boundary?per_page=${limit}`;
 
-    const { data: { data: result } } = await this.api.axios.post(url, { boundary });
+    return makeCancelable(async signal => {
+      const { data: { result } } = await this.api.ky.post(url, { json: { boundary }, signal }).json();
 
-    return result.map(r => this.new(r));
+      return result.map(r => this.new(r));
+    });
   }
 
-  // noinspection JSCommentMatchesSignature
   /**
    * Get an array of results for point
    * @param {Object} point - point to search at
    * @param {Number} point.lat - top left corner latitude
    * @param {Number} point.lng - top left corner longitude
    * @param {Number} limit - maximum amount of results, can't be larger then RequestParameters.maxPerPage
-   * @returns {Promise<ResourceBase[]>} - target resource for boundary
+   * @returns {CancelablePromise<ResourceBase[]>} - target resource for boundary
+   * @throws {ApiError} - If the api returns errors
    * @throws TypeError
    * @throws GeoError
    */
-  async forPoint ({ lat, lng }, limit = RequestParameters.perPage) {
+  forPoint ({ lat, lng }, limit = RequestParameters.perPage) {
     if (!this.hasForPoint) {
       throw new GeoError(`${this.Target.name} does not support the operation forPoint`);
     }
@@ -123,8 +127,11 @@ export default class GeoResourceProxy extends ResourceProxy {
     }
 
     const url = `${this.new().baseUrl}/for-point`;
-    const { data: { data: result } } = await this.api.axios.post(url, { limit, point });
 
-    return result.map(r => this.new(r));
+    return makeCancelable(async signal => {
+      const { data: { result } } = await this.api.ky.post(url, { json: { limit, point }, signal }).json();
+
+      return result.map(r => this.new(r));
+    });
   }
 }

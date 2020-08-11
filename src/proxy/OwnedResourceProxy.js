@@ -31,6 +31,7 @@
  */
 
 import SimpleResourceProxy from './SimpleResourceProxy';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * Used for proxying resource => organisation
@@ -38,9 +39,9 @@ import SimpleResourceProxy from './SimpleResourceProxy';
 export default class OwnedResourceProxy extends SimpleResourceProxy {
   /**
    * OwnedResourceProxy Constructor
-   * @param {Maps4News} api - api instance
-   * @param {ResourceBase} parent - parent instance
-   * @param {constructor} Target - target constructor
+   * @param {Mapcreator} api - Api instance
+   * @param {ResourceBase} parent - Parent instance
+   * @param {Class<ResourceBase>} Target - Target constructor
    */
   constructor (api, parent, Target) {
     const resource = Target.resourceName.replace(/s+$/, '');
@@ -53,56 +54,66 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
    * Sync items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async sync (items) {
-    await this._modifyResourceLink(items, 'PATCH');
+  sync (items) {
+    return this._modifyResourceLink(items, 'PATCH');
   }
 
   /**
    * Attach items to the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to attach
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async attach (items) {
-    await this._modifyResourceLink(items, 'POST');
+  attach (items) {
+    return this._modifyResourceLink(items, 'POST');
   }
 
   /**
    * Detach items from the organisation
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to unlink
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async detach (items) {
-    await this._modifyResourceLink(items, 'DELETE');
+  detach (items) {
+    return this._modifyResourceLink(items, 'DELETE');
   }
 
   /**
    * Attach parent resource to all organisations
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async attachAll () {
-    await this.api.axios.post(`${this.baseUrl}/all`);
+  attachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.post(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
    * Detach parent resource to all organisations
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async detachAll () {
-    await this.api.axios.delete(`${this.baseUrl}/all`);
+  detachAll () {
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(`${this.baseUrl}/all`, { signal });
+    });
   }
 
   /**
    * @param {Array<ResourceBase>|Array<number>|ResourceBase|number} items - List of items to sync, attach or detach
    * @param {string} method - http method
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    * @throws {TypeError}
+   * @returns {CancelablePromise}
    * @private
    */
-  async _modifyResourceLink (items, method) {
+  _modifyResourceLink (items, method) {
     if (!Array.isArray(items)) {
       items = [items];
     }
@@ -112,10 +123,12 @@ export default class OwnedResourceProxy extends SimpleResourceProxy {
       .map(Number)
       .filter(x => !Number.isNaN(x));
 
-    await this.api.axios.request({
-      url: this.baseUrl,
-      method,
-      data: { keys },
+    return makeCancelable(async signal => {
+      await this.api.ky(this.baseUrl, {
+        method,
+        signal,
+        json: { keys },
+      });
     });
   }
 

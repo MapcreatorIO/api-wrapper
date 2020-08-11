@@ -30,9 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
-import ApiError from '../errors/ApiError';
-import ValidationError from '../errors/ValidationError';
 import { windowTest } from './node';
 
 function getFormData () {
@@ -102,91 +99,22 @@ export function encodeQueryString (paramsObject) {
 }
 
 /**
- * Retry request that respond with a 429 error at a later time
- * @private
- * @param {*} error - Axios error
- * @returns {Promise|*} - error or retried request
- */
-export function retry429ResponseInterceptor (error) {
-  const { response, config } = error;
-
-  if (!config || !response || response.status !== 429) {
-    return Promise.reject(error);
-  }
-
-  const delay = response.headers['x-ratelimit-reset'] * 1000 || 500;
-
-  config.transformRequest = [data => data];
-
-  return new Promise(resolve => setTimeout(() => resolve(axios.request(config)), delay));
-}
-
-/**
- * Transform Axios errors into ApiErrors
- * @private
- * @param {*} error - Axios error
- * @returns {Promise<ApiError|ValidationError|*>} - Resolved error
- */
-export function transformAxiosErrors (error) {
-  if (!error || !error.response || !error.response.data) {
-    return Promise.reject(error);
-  }
-
-  const data = error.response.data;
-
-  if (typeof data !== 'object' || data.success !== false) {
-    return Promise.reject(error);
-  }
-
-  if (data.error['validation_errors']) {
-    return Promise.reject(new ValidationError(error));
-  }
-
-  return Promise.reject(new ApiError(error));
-
-  // if (apiError.type === 'AuthenticationException' && apiError.message.startsWith('Unauthenticated') && apiError.code === 401) {
-  //   this.logger.warn('Lost Maps4News session, please re-authenticate');
-  //
-  //   if (this.autoLogout) {
-  //     this.logout();
-  //   }
-  // }
-}
-
-/**
- * Handle http 300 redirects manually, strip Authorization header for cross domain requests
- * @param {*} error - Axios error
- * @returns {Promise<*>} - Axios request or original error
+ * Wraps around ky to ensure that the prefix is correctly set
+ * @param {function(*=, *=): Response} fn - ky instance
+ * @param {string} baseUrl - url to be prefixed
+ * @returns {function(*=, *=): Response}
  * @private
  */
-export function custom3xxHandler (error) {
-  const { response, config } = error;
+export function wrapKyPrefixUrl (fn, baseUrl) {
+  return function (input, options) {
+    if (typeof input === 'string' && !/^https?:\/\//.test(input)) {
+      if (!input.startsWith('/')) {
+        input = `/${input}`;
+      }
 
-  // Do nothing with non-3xx responses
-  if (response.status < 300 || response.status >= 400) {
-    return Promise.reject(error);
-  }
+      input = baseUrl + input;
+    }
 
-  let redirectUrl = response.headers.location;
-
-  // Absolute urls on the same domain
-  if (redirectUrl.startsWith('/')) {
-    const regex = /^(\w+:\/\/[^/]+)/;
-
-    redirectUrl = config.baseURL.match(regex)[1] + redirectUrl;
-  }
-
-  // Drop authorization header
-  if (!redirectUrl.startsWith(config.baseUrl)) {
-    config.transformRequest = [(data, headers) => {
-      delete headers.common.Authorization;
-      delete headers.Authorization;
-
-      return data;
-    }, ...Object.values(config.transformRequest)];
-  }
-
-  config.url = redirectUrl;
-
-  return axios.request(config);
+    return fn(input, options);
+  };
 }

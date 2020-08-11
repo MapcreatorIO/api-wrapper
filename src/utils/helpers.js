@@ -32,13 +32,13 @@
 
 /**
  * Get all the pages from a {@link PaginatedResourceListing} or a range
- * @param {Promise<PaginatedResourceListing>|PaginatedResourceListing} page - Promise that returns a {@link PaginatedResourceWrapper}
+ * @param {Promise<PaginatedResourceListing>|PaginatedResourceListing} page - Promise that returns a {@link PaginatedResourceListing}
  * @param {?Number} [start=1] - Start page
  * @param {?Number} [stop] - Stop page, defaults to the page count if not filled in.
  * @returns {Promise<Array<ResourceBase>>} - multiple pages
- * @throws {ApiError}
+ * @throws {ApiError} - If the api returns errors
  * @example
- * import { helpers } from "@mapcreator/maps4news";
+ * import { helpers } from "@mapcreator/api";
  *
  * const promise = api.users.list(1, 50); // 50 per page is more efficient
  *
@@ -75,3 +75,54 @@ export async function getPaginatedRange (page, start = 1, stop) {
   return out.concat(...rows.map(x => x.data));
 }
 
+/**
+ * Async delay
+ * @private
+ * @param {number} ms - milliseconds
+ * @returns {Promise}
+ */
+export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Wraps around ky to make it return cancelable requests
+ * @param {function(*=, *=): Response} fn - ky instance
+ * @returns {function(*=, *=): Response}
+ * @private
+ */
+export function wrapKyCancelable (fn) {
+  return (input, options = {}) => {
+    if (typeof options === 'object' && options.hasOwnProperty('signal')) {
+      return fn(input, options);
+    }
+
+    const controller = new AbortController();
+    const promise = fn(input, { signal: controller.signal, ...options });
+
+    promise.cancel = () => controller.abort();
+
+    return promise;
+  };
+}
+
+/**
+ * @typedef {Promise} CancelablePromise
+ * @property {function(): void} cancel - Cancel the promise
+ */
+
+/**
+ * Makes a promise cancelable by passing it a signal
+ * @param {function} fn - async method
+ * @returns {CancelablePromise}
+ * @private
+ */
+export function makeCancelable (fn) {
+  const controller = new AbortController();
+
+  const promise = fn(controller.signal);
+
+  if (promise instanceof Promise) {
+    promise.cancel = () => controller.abort();
+  }
+
+  return promise;
+}

@@ -35,19 +35,18 @@
  */
 export default class ApiError {
   /**
-   * @param {AxiosError} error - Axios error
-   * @param {AxiosRequestConfig} error.config - Request config
-   * @param {XMLHttpRequest|ClientRequest} request - Request
-   * @param {AxiosResponse} response - Response
+   * @param {Object} params
+   * @param {Object} params.options - Request options
+   * @param {Object} params.data - Response data
+   * @param {Request} params.request - Request
+   * @param {Response} params.response - Response
    */
-  constructor ({ config, request, response }) {
-    this._config = config;
+  constructor ({ options, request, response, data }) {
+    this._options = options;
     this._response = response;
     this._request = request;
 
-    this._code = response.status;
-
-    const { type, message, trace } = response.data.error;
+    const { type, message, trace } = data.error;
 
     this._type = type;
     this._message = message;
@@ -60,24 +59,24 @@ export default class ApiError {
   }
 
   /**
-   * Get the request config
-   * @return {AxiosRequestConfig} - Request config
+   * Get the request options
+   * @return {Object} - Request options
    */
-  get config () {
-    return this._config;
+  get options () {
+    return this._options;
   }
 
   /**
-   * Get the axios response
-   * @return {AxiosResponse} - Axios response
+   * Get the response
+   * @return {Response} - Response
    */
   get response () {
     return this._response;
   }
 
   /**
-   * Get the axios request
-   * @return {Object} - Request object
+   * Get the request
+   * @return {Request} - Request object
    */
   get request () {
     return this._request;
@@ -103,8 +102,8 @@ export default class ApiError {
    * Http error code
    * @returns {Number} - Http error code
    */
-  get code () {
-    return this._code;
+  get status () {
+    return this.response.status;
   }
 
   /**
@@ -129,7 +128,7 @@ export default class ApiError {
    * @returns {string} - Displayable error string
    */
   toString () {
-    return `[${this._code}] ${this._type}: ${this._message}`;
+    return `[${this.status}] ${this.type}: ${this.message}`;
   }
 
   static _parseTrace (input) {

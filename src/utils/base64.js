@@ -38,6 +38,7 @@
  * @license MIT
  * @see https://gist.github.com/jonleighton/958841
  * @returns {string} - base 64 encoded data
+ * @private
  */
 export function base64Encode (buffer) {
   let base64 = '';

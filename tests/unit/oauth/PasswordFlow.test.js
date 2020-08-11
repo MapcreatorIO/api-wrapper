@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import moxios from 'moxios';
 import PasswordFlow from '../../../src/oauth/PasswordFlow';
+import nock from 'nock';
 
 test('PasswordFlow should auth', async () => {
   const flow = new PasswordFlow('1', 'secret_token', 'test@example.com', 'password');
@@ -39,17 +39,10 @@ test('PasswordFlow should auth', async () => {
   flow.path = '/oauth/passwordFlow.php';
   expect(flow.path).toEqual('/oauth/passwordFlow.php');
 
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 200,
-      response: {
-        'token_type': 'bearer',
-        'expires_in': 86400,
-        'access_token': 'token',
-      },
-    });
+  nock('https://api.maps4news.com').post('/oauth/passwordFlow.php').reply(200, {
+    'token_type': 'bearer',
+    'expires_in': 86400,
+    'access_token': 'token',
   });
 
   const token = await flow.authenticate();
@@ -64,16 +57,9 @@ test('PasswordFlow should catch errors', async () => {
 
   expect.assertions(1);
 
-  moxios.wait(() => {
-    const request = moxios.requests.mostRecent();
-
-    request.respondWith({
-      status: 200,
-      response: {
-        error: 'mock_error',
-        message: 'This is a mock error',
-      },
-    });
+  nock('https://api.maps4news.com').post('/oauth/passwordFlow.php').reply(200, {
+    error: 'mock_error',
+    message: 'This is a mock error',
   });
 
   try {

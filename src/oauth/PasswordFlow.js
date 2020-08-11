@@ -30,11 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import ky from 'ky-universal';
 import OAuthError from '../errors/OAuthError';
 import { isNode } from '../utils/node';
 import OAuth from './OAuth';
 import OAuthToken from './OAuthToken';
+import { makeCancelable } from '../utils/helpers';
 
 
 /**
@@ -133,12 +134,12 @@ export default class PasswordFlow extends OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise<OAuthToken>} - Response token
+   * @returns {CancelablePromise<OAuthToken>} - Response token
    * @throws {OAuthError}
    */
-  async authenticate () {
+  authenticate () {
     const url = this.host + this.path;
-    const query = {
+    const json = {
       'grant_type': 'password',
       'client_id': this.clientId,
       'client_secret': this._secret,
@@ -147,15 +148,17 @@ export default class PasswordFlow extends OAuth {
       'scope': this.scopes.join(' '),
     };
 
-    const { data } = await axios.post(url, query);
+    return makeCancelable(async signal => {
+      const data = await ky.post(url, { json, signal }).json();
 
-    if (data.error) {
-      throw new OAuthError(data.error, data.message);
-    }
+      if (data.error) {
+        throw new OAuthError(data.error, data.message);
+      }
 
-    this.token = OAuthToken.fromResponseObject(data);
-    this.token.scopes = this.scopes;
+      this.token = OAuthToken.fromResponseObject(data);
+      this.token.scopes = this.scopes;
 
-    return this.token;
+      return this.token;
+    });
   }
 }

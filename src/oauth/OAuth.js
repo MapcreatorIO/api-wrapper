@@ -30,11 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import ky from 'ky-universal';
 import { AbstractClassError, AbstractMethodError } from '../errors/AbstractError';
 import StorageManager from '../storage/StorageManager';
 import OAuthToken from './OAuthToken';
 import StateContainer from './StateContainer';
+import { makeCancelable } from '../utils/helpers';
 
 /**
  * OAuth base class
@@ -64,7 +65,7 @@ export default class OAuth {
 
   /**
    * If the current instance has a valid token
-   * @returns {Boolean} - if a valid token is availble
+   * @returns {Boolean} - If a valid token is available
    */
   get authenticated () {
     return this.token !== null && !this.token.expired;
@@ -72,7 +73,7 @@ export default class OAuth {
 
   /**
    * Authenticate
-   * @returns {Promise<OAuthToken>} - authentication token
+   * @returns {Promise<OAuthToken>} - Authentication token
    * @throws {OAuthError}
    * @abstract
    */
@@ -95,22 +96,26 @@ export default class OAuth {
    * Invalidates the session token
    * @throws {OAuthError} - If de-authentication fails
    * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async logout () {
+  logout () {
     if (!this.token) {
-      return;
+      return makeCancelable(() => {});
     }
 
     const url = `${this.host}/oauth/logout`;
 
-    await axios.post(url, {}, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: this.token.toString(),
-      },
-    });
+    return makeCancelable(async signal => {
+      await ky.post(url, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: this.token.toString(),
+        },
+        signal,
+      });
 
-    this.forget();
+      this.forget();
+    });
   }
 
   /**

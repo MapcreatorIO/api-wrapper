@@ -52,6 +52,7 @@ import Permission from './Permission';
 import Role from './Role';
 import Svg from './Svg';
 import SvgSet from './SvgSet';
+import { makeCancelable } from '../utils/helpers';
 
 export default class User extends CrudBase {
   static get resourceName () {
@@ -60,20 +61,23 @@ export default class User extends CrudBase {
 
   /**
    * Get all known ips
-   * @returns {Promise<string[]>} - List of ip addresses
-   * @throws {ApiError}
+   * @returns {CancelablePromise<string[]>} - List of ip addresses
+   * @throws {ApiError} - If the api returns errors
    */
-  async ips () {
+  ips () {
     const url = `${this.url}/ips`;
-    const { data: { data } } = await this.api.axios.get(url);
 
-    return data.map(row => row['ip_address']);
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(url, { signal }).json();
+
+      return data.map(row => row['ip_address']);
+    });
   }
 
   /**
    * Get the user's organisation
-   * @returns {Promise<Organisation>} - user's organisation
-   * @throws {ApiError}
+   * @returns {CancelablePromise<Organisation>} - User's organisation
+   * @throws {ApiError} - If the api returns errors
    */
   organisation () {
     return new ResourceProxy(this.api, Organisation).get(this.organisationId);
@@ -81,8 +85,8 @@ export default class User extends CrudBase {
 
   /**
    * Get the user's language
-   * @returns {Promise<Language>} - user's language
-   * @throws {ApiError}
+   * @returns {CancelablePromise<Language>} - User's language
+   * @throws {ApiError} - If the api returns errors
    */
   language () {
     return new ResourceProxy(this.api, Language).get(this.languageCode);

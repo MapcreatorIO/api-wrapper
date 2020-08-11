@@ -30,11 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Maps4News from './Maps4News';
+import Mapcreator from './Mapcreator';
 import DownloadedResource from './resources/base/DownloadedResource';
 import ResourceBase from './resources/base/ResourceBase';
 import { isParentOf } from './utils/reflection';
 import { FormData } from './utils/requests';
+import { makeCancelable } from './utils/helpers';
 
 /**
  * Image resource handler
@@ -42,12 +43,12 @@ import { FormData } from './utils/requests';
  */
 export default class ImageHandler {
   /**
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {ResourceBase} target - Instance of target item
    */
   constructor (api, target) {
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
+    if (!isParentOf(Mapcreator, api)) {
+      throw new TypeError('Expected api to be of type Mapcreator');
     }
 
     if (!isParentOf(ResourceBase, target)) {
@@ -60,7 +61,7 @@ export default class ImageHandler {
 
   /**
    * Get api instance
-   * @returns {Maps4News} - Api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;
@@ -76,15 +77,20 @@ export default class ImageHandler {
 
   /**
    * Delete image
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async delete () {
-    await this.api.axios.delete(this.url);
+  delete () {
+    // use the makeCancelable helper so we don't return the response object
+    return makeCancelable(async signal => {
+      await this.api.ky.delete(this.url, { signal });
+    });
   }
 
   /**
    * Download the image
-   * @returns {Promise<DownloadedResource>} - image
+   * @returns {CancelablePromise<DownloadedResource>} - image
+   * @throws {ApiError} - If the api returns errors
    * @example
    * // Browser
    * layer.imageHandler.download().then(image => {
@@ -96,29 +102,33 @@ export default class ImageHandler {
    *   fs.writeFileSync(fileName, data);
    * });
    */
-  async download () {
-    const response = await this.api.axios.get(this.url, {
-      responseType: 'arraybuffer',
-    });
+  download () {
+    return makeCancelable(async signal => {
+      const response = await this.api.ky.get(this.url, { signal });
 
-    return DownloadedResource.fromAxiosResponse(response);
+      return DownloadedResource.fromResponse(response);
+    });
   }
 
   /**
    * Upload new image
    * @param {ArrayBuffer|ArrayBufferView|File|Blob|Buffer} image - Image file
+   * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
-  async upload (image) {
-    const form = new FormData();
+  upload (image) {
+    const body = new FormData();
 
-    form.append('image', image, 'image');
+    body.append('image', image, 'image');
 
     const headers = {};
 
-    if (form.getHeaders) {
-      Object.assign(headers, form.getHeaders());
+    if (body.getHeaders) {
+      Object.assign(headers, body.getHeaders());
     }
 
-    await this.api.axios.post(this.url, form, { headers });
+    return makeCancelable(async signal => {
+      await this.api.ky.post(this.url, { headers, body, signal });
+    });
   }
 }

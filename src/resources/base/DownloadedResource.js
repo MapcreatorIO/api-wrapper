@@ -39,9 +39,9 @@ import { isNode } from '../../utils/node';
 export default class DownloadedResource {
   /**
    *
-   * @param {ArrayBuffer|Buffer} data - data
-   * @param {string} [type=application/octet-stream] - mime-type
-   * @param {string} [fileName=Untitled] - file name
+   * @param {ArrayBuffer|Buffer} data - Data
+   * @param {string} [type=application/octet-stream] - Mime-type
+   * @param {string} [fileName=Untitled] - File name
    */
   constructor (data, type = 'application/octet-stream', fileName = 'Untitled') {
     this._data = data;
@@ -50,16 +50,17 @@ export default class DownloadedResource {
   }
 
   /**
-   * Build instance from Axios response
-   * @param {AxiosResponse} axiosResponse - axios response
-   * @returns {DownloadedResource} - instance
+   * Build instance from response
+   * @param {Response} response - Response
+   * @returns {DownloadedResource} - Instance
    */
-  static fromAxiosResponse (axiosResponse) {
-    const { data, headers } = axiosResponse;
+  static async fromResponse (response) {
+    // Get data
+    const data = await response.arrayBuffer();
 
     // Find mimeType
     let mimeType;
-    const contentType = headers['content-type'];
+    const contentType = response.headers.get('content-type');
 
     if (contentType) {
       mimeType = contentType.split(';')[0].trim();
@@ -67,7 +68,7 @@ export default class DownloadedResource {
 
     // Extract file name
     let fileName;
-    const contentDisposition = headers['content-disposition'];
+    const contentDisposition = response.headers.get('content-disposition');
 
     if (contentDisposition) {
       const regex = /filename[^;=\n]*=((['"])(.*?)\2|([^;\s]*))/i;
@@ -83,7 +84,7 @@ export default class DownloadedResource {
 
   /**
    * In Nodejs it will return a {@link Buffer} and in the browser it will respond with a {@link ArrayBuffer}
-   * @returns {ArrayBuffer|Buffer} - resource data
+   * @returns {ArrayBuffer|Buffer} - Resource data
    */
   get data () {
     return this._data;
@@ -91,7 +92,7 @@ export default class DownloadedResource {
 
   /**
    * Resource mime-type
-   * @return {string} - mime-type
+   * @return {string} - Mime-type
    */
   get type () {
     return this._type;
@@ -99,7 +100,7 @@ export default class DownloadedResource {
 
   /**
    * Resource file name, if available
-   * @return {string} - file name
+   * @return {string} - File name
    */
   get fileName () {
     return this._fileName;
@@ -107,7 +108,7 @@ export default class DownloadedResource {
 
   /**
    * Get the size of the data
-   * @return {Number} - size in bytes
+   * @return {Number} - Size in bytes
    */
   get size () {
     return this.data.length;
@@ -120,7 +121,7 @@ export default class DownloadedResource {
    * *Do not forget* to release the object urls once used.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
    * @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL#Memory_management
-   * @return {string} - object url
+   * @return {string} - Object url
    */
   createObjectUrl () {
     if (isNode()) {
@@ -141,7 +142,7 @@ export default class DownloadedResource {
   /**
    * Get base64-encoded data uri
    * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
-   * @returns {string} - data uri
+   * @returns {string} - Data uri
    */
   toDataUri () {
     return `data:${this.type};base64,${this.toBase64()}`;
@@ -149,7 +150,7 @@ export default class DownloadedResource {
 
   /**
    * Base64 encode data
-   * @returns {string} - base64 encoded data
+   * @returns {string} - Base64 encoded data
    */
   toBase64 () {
     return base64Encode(this.data);

@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import axios from 'axios';
+import ky from 'ky-universal';
 
 import { Enum } from './enums';
 import DummyFlow from './oauth/DummyFlow';
@@ -39,7 +39,6 @@ import OAuthToken from './oauth/OAuthToken';
 import GeoResourceProxy from './proxy/GeoResourceProxy';
 import ResourceProxy from './proxy/ResourceProxy';
 import SimpleResourceProxy from './proxy/SimpleResourceProxy';
-import ResourceCache from './ResourceCache';
 import {
   Choropleth,
   Color,
@@ -76,14 +75,17 @@ import Injectable from './traits/Injectable';
 import { fnv32b } from './utils/hash';
 import Logger from './utils/Logger';
 import { isParentOf, mix } from './utils/reflection';
-import { custom3xxHandler, retry429ResponseInterceptor, transformAxiosErrors } from './utils/requests';
+import { delay, makeCancelable, wrapKyCancelable } from './utils/helpers';
+import ValidationError from './errors/ValidationError';
+import ApiError from './errors/ApiError';
+import { wrapKyPrefixUrl } from './utils/requests';
 
 /**
  * Base API class
  *
  * @mixes Injectable
  */
-export default class Maps4News extends mix(null, Injectable) {
+export default class Mapcreator extends mix(null, Injectable) {
   /**
    * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
@@ -103,20 +105,6 @@ export default class Maps4News extends mix(null, Injectable) {
     this.host = host;
     this.autoLogout = true;
 
-    const bool = str => String(str).toLowerCase() === 'true';
-
-    /**
-     * Defaults for common parameters. These are populated during the build process using the `.env` file.
-     * @type {{cacheSeconds: number, shareCache: boolean, autoUpdateSharedCache: boolean, dereferenceCache: boolean}}
-     */
-    this.defaults = {
-      cacheSeconds: Number(process.env.CACHE_SECONDS),
-      shareCache: bool(process.env.CACHE_SHARED),
-      autoUpdateSharedCache: bool(process.env.CACHE_SHARED_AUTO_UPDATE),
-      dereferenceCache: bool(process.env.CACHE_DEREFERENCE_OUTPUT),
-    };
-
-    this._cache = new ResourceCache(this.defaults.cacheSeconds, this.defaults.dereferenceCache);
     this._logger = new Logger(process.env.LOG_LEVEL);
   }
 
@@ -127,14 +115,6 @@ export default class Maps4News extends mix(null, Injectable) {
    */
   get version () {
     return 'v1';
-  }
-
-  /**
-   * Get the shared cache instance
-   * @returns {ResourceCache} - Shared cache instance
-   */
-  get cache () {
-    return this._cache;
   }
 
   /**
@@ -202,9 +182,9 @@ export default class Maps4News extends mix(null, Injectable) {
 
   /**
    * Authenticate with the api using the authentication method provided.
-   * @returns {Promise<Maps4News>} - current instance
+   * @returns {Promise<Mapcreator>} - Current instance
    * @throws {OAuthError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
   async authenticate () {
     await this.auth.authenticate();
@@ -213,60 +193,84 @@ export default class Maps4News extends mix(null, Injectable) {
   }
 
   /**
-   * Pre-configured Axios instance
-   * @return {AxiosInstance} - Axios instance
+   * Mapcreator ky instance
+   * This ky instance takes care of the API communication. It has the following responsibilities:
+   *  - Send authenticated requests to the API
+   *  - Transform errors returned from the API into ApiError and ValidationError if possible
+   *  - Wait when the rate limiter responds with a 429 and retry later
+   *  - Prefix urls with the api domain if needed
+   * @returns {function}
+   * @see {@link https://github.com/sindresorhus/ky}
    */
-  get axios () {
-    if (this._axios) {
-      return this._axios;
+  get ky () {
+    if (this._ky) {
+      return this._ky;
     }
 
-    const instance = axios.create({
-      baseURL: `${this.host}/${this.version}/`,
-      responseType: 'json',
-      responseEncoding: 'utf8',
+    const hooks = {
+      afterResponse: [
+        // 429 response
+        async (request, _options, response) => {
+          if (response.status !== 429) {
+            return response;
+          }
+
+          const resetDelay = (response.headers.get('x-ratelimit-reset') * 1000) || 500;
+
+          await delay(resetDelay);
+
+          return this._ky(request);
+        },
+        // transform errors
+        async (request, options, response) => {
+          if (response.status < 400 || response.status >= 600) {
+            return response;
+          }
+
+          const data = await response.json();
+          const params = { data, request, options, response };
+
+          if (data.error['validation_errors']) {
+            throw new ValidationError(params);
+          }
+
+          throw new ApiError(params);
+        },
+      ],
+    };
+
+    this._ky = ky.create({
       timeout: 30000, // 30 seconds
-      maxRedirects: 0,
+      // throwHttpErrors: false, // This is done through a custom hook
+      // redirect: 'error',
+      retry: 0,
+      headers: {
+        'Accept': 'application/json',
+        'X-No-CDN-Redirect': 'true',
+        'Authorization': this.auth.token.toString(),
+      },
+      hooks,
     });
 
-    // I feel ashamed for this hack
-    // For some reason headers is a reference even when passing custom headers in the instance options
-    instance.defaults.headers = JSON.parse(JSON.stringify(instance.defaults.headers));
+    this._ky = wrapKyCancelable(this._ky);
+    this._ky = wrapKyPrefixUrl(this._ky, `${this.host}/${this.version}`);
 
-    instance.defaults.headers.common.Accept = 'application/json';
+    const requestMethods = [
+      'get', 'post', 'put',
+      'patch', 'head', 'delete',
+    ];
 
-    instance.defaults.headers.post['Content-Type'] = 'application/json';
-    instance.defaults.headers.put['Content-Type'] = 'application/json';
-    instance.defaults.headers.patch['Content-Type'] = 'application/json';
-
-    if (this.authenticated) {
-      instance.defaults.headers.common.Authorization = this.auth.token.toString();
+    for (const method of requestMethods) {
+      this._ky[method] = (input, options) => this._ky(input, { ...options, method });
     }
 
-    if (['xhrAdapter', ''].includes(instance.defaults.adapter.name)) {
-      // The xhrAdapter does not support catching redirects, so we
-      // can't strip the Authentication header during a redirect.
-      instance.defaults.headers.common['X-No-CDN-Redirect'] = 'true';
-    } else {
-      // Intercept 3xx redirects and rewrite headers
-      instance.interceptors.response.use(null, custom3xxHandler);
-    }
-
-    // Retry requests if rate limiter is hit
-    instance.interceptors.response.use(null, retry429ResponseInterceptor);
-
-    // Transform errors
-    instance.interceptors.response.use(null, transformAxiosErrors);
-
-    this._axios = instance;
-
-    return instance;
+    return this._ky;
   }
 
   /**
    * Static proxy generation
-   * @param {string|function} Target - Constructor or url
-   * @param {function?} Constructor - Constructor for a resource that the results should be cast to
+   * @param {string|Class} Target - Constructor or url
+   * @param {Class?} Constructor - Constructor for a resource that the results should be cast to
    * @returns {ResourceProxy} - A proxy for accessing the resource
    * @example
    * api.static('/custom/resource/path/{id}/').get(123);
@@ -584,44 +588,36 @@ export default class Maps4News extends mix(null, Injectable) {
   /**
    * Get SVG set types
    * @see {@link SvgSet}
-   * @async
-   * @returns {Promise<Enum>} - Contains all the possible SVG set types
-   * @throws {ApiError}
-   * @deprecated Use getSvgSetTypes
-   * @todo Remove
+   * @returns {CancelablePromise<Enum>} - Contains all the possible SVG set types
+   * @throws {ApiError} - If the api returns errors
    */
-  getSvgSetType () {
-    return this.getSvgSetTypes();
-  }
+  getSvgSetTypes () {
+    return makeCancelable(async signal => {
+      const { data } = await this.ky.get('svgs/sets/types', { signal }).json();
 
-  /**
-   * Get SVG set types
-   * @see {@link SvgSet}
-   * @returns {Promise<Enum>} - Contains all the possible SVG set types
-   * @throws {ApiError}
-   */
-  async getSvgSetTypes () {
-    const { data: { data } } = await this.axios.get('/svgs/sets/types');
-
-    return new Enum(data, true);
+      return new Enum(data, true);
+    });
   }
 
   /**
    * Get font styles
    * @see {@link Font}
-   * @returns {Promise<Enum>} - Contains all the possible font styles
-   * @throws {ApiError}
+   * @returns {CancelablePromise<Enum>} - Contains all the possible font styles
+   * @throws {ApiError} - If the api returns errors
    */
-  async getFontStyles () {
-    const { data: { data } } = await this.axios.get('/fonts/styles');
+  getFontStyles () {
+    return makeCancelable(async signal => {
+      const { data } = await this.ky.get('fonts/styles', { signal }).json();
 
-    return new Enum(data, true);
+      return new Enum(data, true);
+    });
   }
 
   /**
    * Forget the current session
    * This will clean up any stored OAuth states stored using {@link StateContainer} and any OAuth tokens stored
-   * @async
+   * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
   logout () {
     return this.auth.logout();

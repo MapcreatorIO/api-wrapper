@@ -38,6 +38,7 @@ import Layer from './Layer';
 import RequestParameters from '../RequestParameters';
 import { encodeQueryString } from '../utils/requests';
 import { DeletedState } from '../enums';
+import { makeCancelable } from '../utils/helpers';
 
 export default class JobRevision extends CrudBase {
   get baseUrl () {
@@ -67,16 +68,19 @@ export default class JobRevision extends CrudBase {
   /**
    * Get the job result
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<JobResult>} - The associated job result
-   * @throws {ApiError}
+   * @returns {CancelablePromise<JobResult>} - The associated job result
+   * @throws {ApiError} - If the api returns errors
    */
-  async result (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/result?${encodeQueryString({ deleted })}`);
+  result (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    return makeCancelable(async signal => {
+      const url = `${this.url}/result?${encodeQueryString({ deleted })}`;
+      const { data } = await this.api.ky.get(url, { signal }).json();
 
-    data.jobId = this.jobId;
-    data.revision = this.revision;
+      data.jobId = this.jobId;
+      data.revision = this.revision;
 
-    return new JobResult(this.api, data);
+      return new JobResult(this.api, data);
+    });
   }
 
   /**
@@ -99,11 +103,11 @@ export default class JobRevision extends CrudBase {
    * @param {Object} object - Map object
    * @param {Array<Layer>|Array<Number>|null} layers - Array containing all layers for this revision. If set to null the same layers will be used
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<JobRevision>} - New job revision
+   * @returns {CancelablePromise<JobRevision>} - New job revision
    * @throws {TypeError}
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
    */
-  async save (object = {}, layers = null, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  save (object = {}, layers = null, deleted = RequestParameters.deleted || DeletedState.NONE) {
     if (layers && layers.length > 0) {
       if (isParentOf(Layer, layers[0])) {
         layers = layers.map(layer => layer.id);
@@ -112,60 +116,78 @@ export default class JobRevision extends CrudBase {
       }
     }
 
-    const data = {
+    const json = {
       'object': JSON.stringify(object),
       'language_code': this.languageCode,
       'mapstyle_set_id': this.mapstyleSetId,
     };
 
     if (layers) {
-      data.layers = layers;
+      json.layers = layers;
     }
 
-    const response = await this.api.axios.post(`${this.baseUrl}?${encodeQueryString({ deleted })}`, data);
+    const url = `${this.baseUrl}?${encodeQueryString({ deleted })}`;
 
-    return new JobRevision(this.api, response.data.data);
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.post(url, { json, signal }).json();
+
+      return new JobRevision(this.api, data);
+    });
   }
 
   /**
    * Get job object
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<Object>} - The map object
-   * @throws {ApiError}
-   * @todo document object format
+   * @returns {CancelablePromise<Object>} - The map object
+   * @throws {ApiError} - If the api returns errors
    */
-  async object (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.get(`${this.url}/object?${encodeQueryString({ deleted })}`);
+  object (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.url}/object?${encodeQueryString({ deleted })}`;
 
-    return data;
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.get(url, { signal }).json();
+
+      return data;
+    });
   }
 
   /**
    * Build the revision
    * @param {String} callback - Optional callback url for when the job completes
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @throws {ApiError}
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise}
    */
-  async build (callback, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    await this.api.axios.post(`${this.url}/build?${encodeQueryString({ deleted })}`, { callback });
+  build (callback, deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.url}/build?${encodeQueryString({ deleted })}`;
+
+    return makeCancelable(async signal => {
+      await this.api.ky.post(url, { json: { callback }, signal });
+    });
   }
 
   /**
    * Cancels a running job
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
+   * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
-  async cancel (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    await this.api.axios.post(`${this.url}/cancel?${encodeQueryString({ deleted })}`);
+  cancel (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.url}/cancel?${encodeQueryString({ deleted })}`;
+
+    return makeCancelable(async signal => {
+      await this.api.ky.post(url, { signal });
+    });
   }
 
   /**
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {Promise<String>} - the share link
-   * @throws {ApiError}
+   * @returns {CancelablePromise<String>} - the share link
+   * @throws {ApiError} - If the api returns errors
    */
-  async share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted ?? DeletedState.NONE) {
+  share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted || DeletedState.NONE) {
     visibility = visibility.toLowerCase();
 
     if (visibility !== JobShare.visibility.ORGANISATION &&
@@ -173,21 +195,29 @@ export default class JobRevision extends CrudBase {
       throw new Error(`Unknown visibility '${visibility}'`);
     }
 
-    const { data: { data } } = await this.api.axios.post(`${this.url}/share?${encodeQueryString({ deleted })}`, { visibility });
+    const url = `${this.url}/share?${encodeQueryString({ deleted })}`;
 
-    return data.url;
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.post(url, { json: { visibility }, signal }).json();
+
+      return data.url;
+    });
   }
 
   // noinspection JSCheckFunctionSignatures
   /**
    * Clones a job revision to the user requesting it
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @throws {ApiError}
-   * @returns {Promise<JobRevision>} - The new job revision, which will be linked to a new job
+   * @throws {ApiError} - If the api returns errors
+   * @returns {CancelablePromise<JobRevision>} - The new job revision, which will be linked to a new job
    */
-  async clone (deleted = RequestParameters.deleted ?? DeletedState.NONE) {
-    const { data: { data } } = await this.api.axios.post(`${this.url}/clone?${encodeQueryString({ deleted })}`);
+  clone (deleted = RequestParameters.deleted || DeletedState.NONE) {
+    const url = `${this.url}/clone?${encodeQueryString({ deleted })}`;
 
-    return new JobRevision(this.api, data);
+    return makeCancelable(async signal => {
+      const { data } = await this.api.ky.post(url, { signal }).json();
+
+      return new JobRevision(this.api, data);
+    });
   }
 }

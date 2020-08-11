@@ -32,10 +32,11 @@
 
 import { snake as snakeCase } from 'case';
 import { EventEmitter } from 'events';
-import Maps4News from './Maps4News';
+import Mapcreator from './Mapcreator';
 import RequestParameters from './RequestParameters';
 import ResourceBase from './resources/base/ResourceBase';
 import { isParentOf } from './utils/reflection';
+import { makeCancelable } from './utils/helpers';
 
 /**
  * Paginated resource lister
@@ -46,9 +47,9 @@ export default class ResourceLister extends EventEmitter {
   /**
    * ResourceLister constructor
    *
-   * @param {Maps4News} api - Api instance
+   * @param {Mapcreator} api - Api instance
    * @param {string} route - Resource url route
-   * @param {constructor<ResourceBase>} Resource - Resource constructor
+   * @param {Class<ResourceBase>} Resource - Resource constructor
    * @param {?RequestParameters} parameters - Request parameters
    * @param {number} [maxRows=50] - Initial max rows
    * @param {string} [key=id] - Key
@@ -56,8 +57,8 @@ export default class ResourceLister extends EventEmitter {
   constructor (api, route, Resource = ResourceBase, parameters = null, maxRows = 50, key = 'id') {
     super();
 
-    if (!isParentOf(Maps4News, api)) {
-      throw new TypeError('Expected api to be of type Maps4News');
+    if (!isParentOf(Mapcreator, api)) {
+      throw new TypeError('Expected api to be of type Mapcreator');
     }
 
     this._api = api;
@@ -111,7 +112,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Resource constructor accessor, used for building the resource instance
-   * @returns {constructor<ResourceBase>} - resource constructor
+   * @returns {Class<ResourceBase>} - resource constructor
    */
   get Resource () {
     return this._Resource;
@@ -135,7 +136,7 @@ export default class ResourceLister extends EventEmitter {
 
   /**
    * Get the api instance
-   * @returns {Maps4News} - api instance
+   * @returns {Mapcreator} - Api instance
    */
   get api () {
     return this._api;
@@ -282,8 +283,10 @@ export default class ResourceLister extends EventEmitter {
   /**
    * Fetch more data from the server
    * @private
+   * @returns {CancelablePromise}
+   * @throws {ApiError} - If the api returns errors
    */
-  async _fetchMore () {
+  _fetchMore () {
     const glue = this.route.includes('?') ? '&' : '?';
     const parameters = this.parameters.copy();
 
@@ -292,20 +295,24 @@ export default class ResourceLister extends EventEmitter {
     const endPage = Math.ceil((this.maxRows - this.rowCount) / this.parameters.perPage);
     const promises = [];
 
-    for (; parameters.page <= endPage; parameters.page++) {
-      const url = this.route + glue + parameters.encode();
-      const promise = this.api.axios.get(url);
+    return makeCancelable(async signal => {
+      for (; parameters.page <= endPage; parameters.page++) {
+        const url = this.route + glue + parameters.encode();
+        const promise = this.api.ky.get(url, { signal });
 
-      promises.push(promise);
-    }
+        promises.push(promise);
+      }
 
-    const responses = await Promise.all(promises);
+      const responses = await Promise.all(promises);
 
-    for (const { data: { data }, headers } of responses) {
-      data.forEach(row => this.push(row, false));
+      for (const response of responses) {
+        const { data } = await response.json();
 
-      this._availableRows = Number(headers['x-paginate-total']) + parameters.offset;
-    }
+        data.forEach(row => this.push(row, false));
+
+        this._availableRows = Number(response.headers.get('x-paginate-total')) + parameters.offset;
+      }
+    });
   }
 
   /**

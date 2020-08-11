@@ -31,9 +31,9 @@
  */
 
 
-import Maps4News from '../../../src/Maps4News';
+import Mapcreator from '../../../src/Mapcreator';
 
-const api = new Maps4News('token', 'https://example.com');
+const api = new Mapcreator('token', 'https://example.com');
 
 test('baseUrl returns the proxy target url', () => {
   expect(api.users.baseUrl).toEqual('https://example.com/v1/users');

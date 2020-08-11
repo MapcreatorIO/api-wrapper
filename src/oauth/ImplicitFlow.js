@@ -185,7 +185,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Test if the anchor contains an OAuth response
-   * @returns {Boolean} - if anchor tested positive for containing an OAuth response
+   * @returns {Boolean} - If anchor tested positive for containing an OAuth response
    * @protected
    */
   _anchorContainsOAuthResponse () {
@@ -197,7 +197,7 @@ export default class ImplicitFlow extends OAuth {
 
   /**
    * Test if the anchor contains an OAuth error
-   * @returns {Boolean} - if anchor tested positive for containing an OAuth error
+   * @returns {Boolean} - If anchor tested positive for containing an OAuth error
    * @protected
    */
   _anchorContainsError () {
