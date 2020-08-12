@@ -98,9 +98,9 @@ export default class GeoResourceProxy extends ResourceProxy {
     const url = `${this.new().baseUrl}/for-boundary?per_page=${limit}`;
 
     return makeCancelable(async signal => {
-      const { data: { result } } = await this.api.ky.post(url, { json: { boundary }, signal }).json();
+      const { data } = await this.api.ky.post(url, { json: { boundary }, signal }).json();
 
-      return result.map(r => this.new(r));
+      return data.map(r => this.new(r));
     });
   }
 
@@ -129,9 +129,9 @@ export default class GeoResourceProxy extends ResourceProxy {
     const url = `${this.new().baseUrl}/for-point`;
 
     return makeCancelable(async signal => {
-      const { data: { result } } = await this.api.ky.post(url, { json: { limit, point }, signal }).json();
+      const { data } = await this.api.ky.post(url, { json: { limit, point }, signal }).json();
 
-      return result.map(r => this.new(r));
+      return data.map(r => this.new(r));
     });
   }
 }
