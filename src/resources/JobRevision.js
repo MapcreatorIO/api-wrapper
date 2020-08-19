@@ -207,15 +207,16 @@ export default class JobRevision extends CrudBase {
   // noinspection JSCheckFunctionSignatures
   /**
    * Clones a job revision to the user requesting it
+   * @param {String} [title=null] - The new title for the job
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
    * @throws {ApiError} - If the api returns errors
    * @returns {CancelablePromise<JobRevision>} - The new job revision, which will be linked to a new job
    */
-  clone (deleted = RequestParameters.deleted || DeletedState.NONE) {
+  clone (title = null, deleted = RequestParameters.deleted || DeletedState.NONE) {
     const url = `${this.url}/clone?${encodeQueryString({ deleted })}`;
 
     return makeCancelable(async signal => {
-      const { data } = await this.api.ky.post(url, { signal }).json();
+      const { data } = await this.api.ky.post(url, { json: { title }, signal }).json();
 
       return new JobRevision(this.api, data);
     });
