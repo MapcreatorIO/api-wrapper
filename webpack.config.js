@@ -38,7 +38,9 @@ const common = {
   optimization: {
     concatenateModules: true,
     minimize: true,
-    minimizer: [new TerserPlugin()],
+    minimizer: [new TerserPlugin({
+      test: /\.min\.js(\?.*)?$/i,
+    })],
     occurrenceOrder: true,
   },
   node: false,
