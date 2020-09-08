@@ -315,7 +315,6 @@ export default class ResourceBase extends mix(null, Injectable) {
   static _guessType (name, value) {
     const regexp = /(?:^|_)([^_$]+)$/g;
     const match = regexp.exec(name);
-    const idMacros = ['last', 'me', 'mine'];
 
     if (match === null || typeof value !== 'string') {
       return value;
@@ -327,12 +326,7 @@ export default class ResourceBase extends mix(null, Injectable) {
       case 'at':
         return new Date(value.replace(' ', 'T'));
       case 'id':
-        // Test if the value is in fact a macro
-        if (idMacros.includes(String(value).toLowerCase())) {
-          return value;
-        }
-
-        return Number(value);
+        return Number.isFinite(Number(value)) ? Number(value) : value;
       default:
         return value;
     }
