@@ -79,13 +79,16 @@ import { delay, makeCancelable, wrapKyCancelable } from './utils/helpers';
 import ValidationError from './errors/ValidationError';
 import ApiError from './errors/ApiError';
 import { wrapKyPrefixUrl } from './utils/requests';
+import EventEmitter from 'events';
 
 /**
  * Base API class
  *
  * @mixes Injectable
+ * @extends EventEmitter
+ * @fires Mapcreator#error
  */
-export default class Mapcreator extends mix(null, Injectable) {
+export default class Mapcreator extends mix(EventEmitter, Injectable) {
   /**
    * @param {OAuth|string} auth - Authentication flow
    * @param {string} host - Remote API host
@@ -103,7 +106,6 @@ export default class Mapcreator extends mix(null, Injectable) {
 
     this.auth = auth;
     this.host = host;
-    this.autoLogout = true;
 
     this._logger = new Logger(process.env.LOG_LEVEL);
   }
@@ -208,6 +210,13 @@ export default class Mapcreator extends mix(null, Injectable) {
     }
 
     const hooks = {
+      beforeRequest: [
+        request => {
+          if (this.authenticated) {
+            request.headers.set('Authorization', this.auth.token.toString());
+          }
+        },
+      ],
       afterResponse: [
         // 429 response
         async (request, _options, response) => {
@@ -234,7 +243,19 @@ export default class Mapcreator extends mix(null, Injectable) {
             throw new ValidationError(params);
           }
 
-          throw new ApiError(params);
+          const error = new ApiError(params);
+
+          if (error.type === 'AuthenticationException') {
+            /**
+             * Critical api errors (AuthenticationException)
+             *
+             * @event Mapcreator#error
+             * @type {ApiError}
+             */
+            this.emit('error', error);
+          }
+
+          throw error;
         },
       ],
     };
@@ -247,7 +268,6 @@ export default class Mapcreator extends mix(null, Injectable) {
       headers: {
         'Accept': 'application/json',
         'X-No-CDN-Redirect': 'true',
-        'Authorization': this.auth.token.toString(),
       },
       hooks,
     });
@@ -621,23 +641,5 @@ export default class Mapcreator extends mix(null, Injectable) {
    */
   logout () {
     return this.auth.logout();
-  }
-
-  /**
-   * Get if the api should automatically call logout when it counters an AuthenticationException
-   * @returns {boolean} - Auto logout
-   * @see {@link logout}
-   */
-  get autoLogout () {
-    return this._autoLogout;
-  }
-
-  /**
-   * Set if the api should automatically call logout when it counters an AuthenticationException
-   * @param {boolean} value - Auto logout
-   * @see {@link logout}
-   */
-  set autoLogout (value) {
-    this._autoLogout = Boolean(value);
   }
 }

@@ -36,6 +36,7 @@ import StateContainer from './StateContainer';
 import { encodeQueryString } from '../utils/requests';
 import OAuthError from '../errors/OAuthError';
 import { isNode } from '../utils/node';
+import { title as titleCase } from 'case';
 
 /**
  * Implicit OAuth flow using redirection
@@ -215,7 +216,8 @@ export default class ImplicitFlow extends OAuth {
     }
 
     const params = this._getAnchorParams();
+    const message = params.message ?? titleCase(params.error);
 
-    return new OAuthError(params.error, params.message);
+    return new OAuthError(params.error, message);
   }
 }
