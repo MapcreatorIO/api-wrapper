@@ -56,14 +56,14 @@ export default class OAuthError extends Error {
    * @returns {String} - error
    */
   toString () {
-    let error = this._error;
+    let error = this.error;
 
     if (error.includes('_')) {
       error = error.replace('_', ' ').replace(/^./, x => x.toUpperCase());
     }
 
-    if (this._message) {
-      return `${error}: ${this._message}`;
+    if (this.message) {
+      return `${error}: ${this.message}`;
     }
 
     return error;
