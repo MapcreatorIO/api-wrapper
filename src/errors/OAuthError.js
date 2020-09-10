@@ -35,30 +35,20 @@
  */
 export default class OAuthError extends Error {
   /**
+   * OAuth error code
+   * @type {String}
+   */
+  error;
+
+  /**
    * OAuth error response
    * @param {String} error - OAuth error key
    * @param {String} message - OAuth error message
    */
   constructor (error, message = '') {
-    super();
-    this._error = String(error);
-    this._message = String(message);
-  }
+    super(message);
 
-  /**
-   * OAuth error message
-   * @returns {String} - message
-   */
-  get message () {
-    return this._message;
-  }
-
-  /**
-   * OAuth error code
-   * @returns {String} - error
-   */
-  get error () {
-    return this._error;
+    this.error = String(error);
   }
 
   /**

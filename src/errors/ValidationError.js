@@ -64,36 +64,18 @@ import ApiError from './ApiError';
  * Extension of {@link ApiError} containing an extra field for validation errors
  */
 export default class ValidationError extends ApiError {
-  /**
-   * @param {Object} params
-   * @param {Object} params.options - Request options
-   * @param {Object} params.data - Response data
-   * @param {Request} params.request - Request
-   * @param {Response} params.response - Response
-   */
-  constructor ({ options, request, response, data }) {
-    super({ options, request, response, data });
-
-    const schemaErrors = data.error['schema_errors'];
-
-    this._validationErrors = data.error['validation_errors'];
-    this._schemaErrors = Array.isArray(schemaErrors) ? schemaErrors : [];
-  }
 
   /**
    * Any validation errors
-   * @returns {Object.<String, Array<String>>} - Object containing arrays of validation errors where the field is stored in the key
+   * @type {Object.<String, Array<String>>} - Object containing arrays of validation errors where the field is stored in the key
    */
-  get validationErrors () {
-    return this._validationErrors;
-  }
+  validationErrors;
 
   /**
    * Get the schema errors if available
-   * @return {SchemaError[]} - Array containing schema errors
+   * @type {SchemaError[]} - Array containing schema errors
    * @see {@link hasSchemaErrors}
    * @example
-   *
    * [
    *   {
    *     "property": "data.meta",
@@ -133,8 +115,22 @@ export default class ValidationError extends ApiError {
    *   }
    * ]
    */
-  get schemaErrors () {
-    return this._schemaErrors;
+  schemaErrors;
+
+  /**
+   * @param {Object} params
+   * @param {Object} params.options - Request options
+   * @param {Object} params.data - Response data
+   * @param {Request} params.request - Request
+   * @param {Response} params.response - Response
+   */
+  constructor ({ options, request, response, data }) {
+    super({ options, request, response, data });
+
+    const schemaErrors = data.error['schema_errors'];
+
+    this.validationErrors = data.error['validation_errors'];
+    this.schemaErrors = Array.isArray(schemaErrors) ? schemaErrors : [];
   }
 
   /**
