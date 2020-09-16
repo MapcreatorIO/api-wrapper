@@ -314,7 +314,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    */
   static _guessType (name, value) {
     if (name.endsWith('_at') || name.startsWith('date_')) {
-      return new Date(value.replace(' ', 'T'));
+      return typeof value === 'string' ? new Date(value.replace(' ', 'T')) : value;
     } else if (/(_|^)id$/.test(name)) {
       return Number.isFinite(Number(value)) ? Number(value) : value;
     }
