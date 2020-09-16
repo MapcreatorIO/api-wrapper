@@ -313,23 +313,13 @@ export default class ResourceBase extends mix(null, Injectable) {
    * @returns {*} - Original or converted value
    */
   static _guessType (name, value) {
-    const regexp = /(?:^|_)([^_$]+)$/g;
-    const match = regexp.exec(name);
-
-    if (match === null || typeof value !== 'string') {
-      return value;
+    if (name.endsWith('_at') || name.startsWith('date_')) {
+      return typeof value === 'string' ? new Date(value.replace(' ', 'T')) : value;
+    } else if (/(_|^)id$/.test(name)) {
+      return Number.isFinite(Number(value)) ? Number(value) : value;
     }
 
-    switch (match[1]) {
-      case 'end':
-      case 'start':
-      case 'at':
-        return new Date(value.replace(' ', 'T'));
-      case 'id':
-        return Number.isFinite(Number(value)) ? Number(value) : value;
-      default:
-        return value;
-    }
+    return value;
   }
 
   /**
