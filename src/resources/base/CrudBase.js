@@ -32,7 +32,7 @@
 
 import { AbstractClassError } from '../../errors';
 import ResourceBase from './ResourceBase';
-import { makeCancelable } from '../../utils/helpers';
+import { makeCancelable, serializeUTCDate } from '../../utils/helpers';
 
 /**
  * Base of all resource items that support Crud operations
@@ -93,7 +93,9 @@ export default class CrudBase extends ResourceBase {
    */
   _create () {
     return makeCancelable(async signal => {
-      const { data } = await this.api.ky.post(this.baseUrl, { json: this._buildCreateData(), signal }).json();
+      const json = this._prepareData(this._buildCreateData());
+
+      const { data } = await this.api.ky.post(this.baseUrl, { json, signal }).json();
 
       this._properties = {};
       this._baseProperties = data;
@@ -121,7 +123,9 @@ export default class CrudBase extends ResourceBase {
         return this;
       }
 
-      await this.api.ky.patch(this.url, { json: this._properties, signal });
+      const json = this._prepareData(this._properties);
+
+      await this.api.ky.patch(this.url, { json, signal });
 
       // Reset changes
       Object.assign(this._baseProperties, this._properties);
@@ -175,5 +179,25 @@ export default class CrudBase extends ResourceBase {
 
       return instance;
     });
+  }
+
+  /**
+   * Prepare data to be sent to the api
+   * @param {Object} data
+   * @returns {Object} prepared
+   * @private
+   */
+  _prepareData (data) {
+    const output = {};
+
+    for (const [key, value] of Object.entries(data)) {
+      if (name.endsWith('_at') || name.startsWith('date_')) {
+        output[key] = serializeUTCDate(value);
+      } else {
+        output[key] = value;
+      }
+    }
+
+    return output;
   }
 }

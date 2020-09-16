@@ -126,3 +126,31 @@ export function makeCancelable (fn) {
 
   return promise;
 }
+
+/**
+ * Convert Date into server format
+ * @param {Date} date - Target
+ * @returns {String} - Formatted date
+ * @private
+ */
+export function serializeUTCDate (date) {
+  if (!(date instanceof Date)) {
+    throw new TypeError('Expected date to be of type Date');
+  }
+
+  const pad = num => `00${num}`.slice(-Math.max(String(num).length, 2));
+
+  let out = [
+    date.getUTCFullYear(),
+    date.getUTCMonth() + 1,
+    date.getUTCDate(),
+  ].map(pad).join('-');
+
+  out += ` ${[
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds(),
+  ].map(pad).join(':')}`;
+
+  return out;
+}
