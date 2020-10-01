@@ -31,7 +31,6 @@
  */
 
 import CrudBase from './base/CrudBase';
-import { makeCancelable } from '../utils/helpers';
 
 /**
  * Contract resource
@@ -39,94 +38,5 @@ import { makeCancelable } from '../utils/helpers';
 export default class Contract extends CrudBase {
   static get resourceName () {
     return 'contracts';
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   */
-  _update () {
-    this._updateProperties();
-
-    // We'll just fake it, no need to bother the server
-    // with an empty request.
-    if (Object.keys(this._properties).length === 0) {
-      return new Promise(() => this);
-    }
-
-    const data = { ...this._properties };
-
-    if (typeof data['date_start'] === 'undefined') {
-      data['date_start'] = this.dateStart;
-    }
-
-    if (typeof data['date_end'] === 'undefined') {
-      data['date_end'] = this.dateEnd;
-    }
-
-    if (data['date_start'] instanceof Date) {
-      data['date_start'] = this._formatDate(data['date_start']);
-    }
-
-    if (data['date_end'] instanceof Date) {
-      data['date_end'] = this._formatDate(data['date_end']);
-    }
-
-    return makeCancelable(async signal => {
-      await this.api.ky.patch(this.url, { json: data, signal });
-
-      return this;
-    });
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   */
-  _create () {
-    const createData = this._buildCreateData();
-
-    if (createData['date_start'] instanceof Date) {
-      createData['date_start'] = this._formatDate(createData['date_start']);
-    }
-
-    if (createData['date_end'] instanceof Date) {
-      createData['date_end'] = this._formatDate(createData['date_end']);
-    }
-
-    return makeCancelable(async signal => {
-      const { data } = await this.api.ky.post(this.baseUrl, { json: createData, signal }).json();
-
-      this._properties = {};
-      this._baseProperties = data;
-
-      this._updateProperties();
-
-      return this;
-    });
-  }
-
-  /**
-   * Convert Date into server format
-   * @param {Date} date - Target
-   * @returns {String} - Formatted date
-   * @private
-   */
-  _formatDate (date) {
-    const pad = num => `00${num}`.slice(-Math.max(String(num).length, 2));
-
-    let out = [
-      date.getUTCFullYear(),
-      date.getUTCMonth() + 1,
-      date.getUTCDate(),
-    ].map(pad).join('-');
-
-    out += ` ${[
-      date.getUTCHours(),
-      date.getUTCMinutes(),
-      date.getUTCSeconds(),
-    ].map(pad).join(':')}`;
-
-    return out;
   }
 }
