@@ -30,36 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import OwnableResource from '../traits/OwnableResource';
-import { mix } from '../utils/reflection';
-import CrudSetBase from './base/CrudSetBase';
-import Mapstyle from './Mapstyle';
-import ResourceProxy from '../proxy/ResourceProxy';
-import MapstyleSetColor from './MapstyleSetColor';
+import CrudSetItemBase from './base/CrudSetItemBase';
 
 /**
- * Mapstyle set
- * @extends CrudSetBase
- * @mixes OwnableResource
+ * Mapstyle set color
+ * @extends CrudSetItemBase
  */
-export default class MapstyleSet extends mix(CrudSetBase, OwnableResource) {
+export default class MapstyleSetColor extends CrudSetItemBase {
   static get resourcePath () {
-    return '/mapstyles/sets/{id}';
+    return '/mapstyles/sets/{mapstyle_set_id}/colors/{id}';
   }
 
   static get resourceName () {
-    return 'mapstyle-sets';
+    return 'mapstyle-set-colors';
   }
 
-  get _Child () {
-    return Mapstyle;
-  }
-
-  get colors () {
-    const data = {
-      mapstyleSetId: this.id,
-    };
-
-    return new ResourceProxy(this.api, MapstyleSetColor, null, data);
+  get baseUrl () {
+    return `/mapstyles/sets/${this.mapstyleSetId}/colors`;
   }
 }
