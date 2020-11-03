@@ -47,6 +47,7 @@ import SvgSet from './SvgSet';
 import Tag from './Tag';
 import User from './User';
 import { makeCancelable } from '../utils/helpers';
+import { encodeQueryString } from '../utils/requests';
 
 
 export default class Organisation extends CrudBase {
@@ -182,9 +183,17 @@ export default class Organisation extends CrudBase {
    *
    * organisation.getTree().then(printTree)
    */
-  getTree () {
+  getTree (deleted = null) {
     return makeCancelable(async signal => {
-      const { data } = await this.api.ky.get(`${this.url}/tree`, { signal }).json();
+      let url = `${this.url}/tree`;
+
+      if (typeof deleted === 'string') {
+        const glue = url.includes('?') ? '&' : '?';
+
+        url += glue + encodeQueryString({ deleted });
+      }
+
+      const { data } = await this.api.ky.get(url, { signal }).json();
 
       return data.map(root => this._parseTree(root));
     });
