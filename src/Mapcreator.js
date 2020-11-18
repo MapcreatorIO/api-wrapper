@@ -108,6 +108,9 @@ export default class Mapcreator extends mix(EventEmitter, Injectable) {
     this.host = host;
 
     this._logger = new Logger(process.env.LOG_LEVEL);
+
+    this.wrapKy(wrapKyCancelable);
+    this.wrapKy(wrapKyPrefixUrl, `${this.host}/${this.version}`);
   }
 
   /**
@@ -272,8 +275,11 @@ export default class Mapcreator extends mix(EventEmitter, Injectable) {
       hooks,
     });
 
-    this._ky = wrapKyCancelable(this._ky);
-    this._ky = wrapKyPrefixUrl(this._ky, `${this.host}/${this.version}`);
+    return this._ky;
+  }
+
+  wrapKy (wrapper, ...args) {
+    this._ky = wrapper(this.ky, ...args);
 
     const requestMethods = [
       'get', 'post', 'put',
@@ -283,8 +289,6 @@ export default class Mapcreator extends mix(EventEmitter, Injectable) {
     for (const method of requestMethods) {
       this._ky[method] = (input, options) => this._ky(input, { ...options, method });
     }
-
-    return this._ky;
   }
 
   /**
