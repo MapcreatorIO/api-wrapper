@@ -46,6 +46,6 @@ export default class MapstyleSetColor extends CrudSetItemBase {
   }
 
   get baseUrl () {
-    return `/mapstyles/sets/${this.mapstyleSetId}/colors`;
+    return `${this._api.url}/mapstyles/sets/${this.mapstyleSetId}/colors`;
   }
 }

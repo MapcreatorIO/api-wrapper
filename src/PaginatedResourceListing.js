@@ -94,7 +94,7 @@ export default class PaginatedResourceListing {
         value = `/${value}`;
       }
 
-      value = `${this._api.host}/${this._api.version}${value}`;
+      value = `${this._api.url}${value}`;
     }
 
     this._route = value;

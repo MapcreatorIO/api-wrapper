@@ -42,7 +42,7 @@ import { makeCancelable } from '../utils/helpers';
 
 export default class JobRevision extends CrudBase {
   get baseUrl () {
-    return `/jobs/${this.jobId}/revisions`;
+    return `${this._api.url}/jobs/${this.jobId}/revisions`;
   }
 
   static get resourcePath () {

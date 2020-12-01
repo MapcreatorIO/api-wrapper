@@ -176,6 +176,10 @@ export default class Mapcreator extends mix(EventEmitter, Injectable) {
     this.auth.host = value;
   }
 
+  get url () {
+    return `${this.host}/${this.version}`;
+  }
+
   /**
    * Saves the session token so that it can be recovered at a later time. The wrapper can
    * find the token most of the time if the name parameter is left blank.

@@ -336,7 +336,7 @@ export default class ResourceBase extends mix(null, Injectable) {
    */
   get url () {
     if (!this._url) {
-      let url = `${this._api.host}/${this._api.version}${this.constructor.resourcePath}`;
+      let url = `${this._api.url}${this.constructor.resourcePath}`;
 
       // Find and replace any keys
       url = url.replace(/{(\w+)}/g, (match, key) => this[camelCase(key)]);
@@ -354,7 +354,7 @@ export default class ResourceBase extends mix(null, Injectable) {
   get baseUrl () {
     const basePath = this.constructor.resourcePath.match(/^(\/[^{]+\b)/)[1];
 
-    return `${this._api.host}/${this._api.version}${basePath}`;
+    return `${this._api.url}${basePath}`;
   }
 
   /**
