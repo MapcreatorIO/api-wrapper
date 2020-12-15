@@ -191,9 +191,8 @@ export default class CrudBase extends ResourceBase {
     const output = {};
 
     for (const [key, value] of Object.entries(data)) {
-      if (key.endsWith('_at') || key.startsWith('date_')) {
-        // value can be null
-        output[key] = value === null ? value : serializeUTCDate(value);
+      if (value instanceof Date) {
+        output[key] = serializeUTCDate(value);
       } else {
         output[key] = value;
       }
