@@ -184,7 +184,7 @@ export default class JobRevision extends CrudBase {
    * Share the job revision
    * @param {String} visibility - See {@link JobShareVisibility}, either `private` or `organisation`
    * @param {String} [deleted=RequestParameters.deleted] - Determines if the resource should be shown if deleted, requires special resource permissions. Possible values: only, none, all
-   * @returns {CancelablePromise<String>} - the share link
+   * @returns {CancelablePromise<JobShareResponse>} - Object containing share links
    * @throws {ApiError} - If the api returns errors
    */
   share (visibility = JobShare.visibility.PRIVATE, deleted = RequestParameters.deleted || DeletedState.NONE) {
@@ -200,7 +200,7 @@ export default class JobRevision extends CrudBase {
     return makeCancelable(async signal => {
       const { data } = await this.api.ky.post(url, { json: { visibility }, signal }).json();
 
-      return data.url;
+      return data;
     });
   }
 
@@ -222,3 +222,12 @@ export default class JobRevision extends CrudBase {
     });
   }
 }
+
+/**
+ * Job Share response
+ *
+ * @typedef {Object} JobShareResponse
+ * @property {string} web - Web link
+ * @property {string} api - Api link
+ * @property {string} hash - Share hash
+ */
